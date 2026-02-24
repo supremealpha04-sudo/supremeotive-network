@@ -155,6 +155,18 @@ a, button, .post, .nav-links a, .footer-links a, .reply-btn, .delete-btn, .like-
   width: 100%;
 }
 
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.logo img {
+    height: 40px;
+}
+
 @keyframes logoPop {
   0% { transform: scale(0.7) rotate(-10deg); opacity: 0; }
   50% { transform: scale(1.1) rotate(5deg); }
