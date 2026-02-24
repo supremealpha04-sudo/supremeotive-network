@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive Network</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="cool.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%233b82f6' width='100' height='100'/><text x='50%' y='50%' font-size='70' font-weight='bold' fill='white' text-anchor='middle' dy='.3em' font-family='Arial'>🚀</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%233b82f6' width='180' height='180' rx='40'/><text x='50%' y='50%' font-size='120' font-weight='bold' fill='white' text-anchor='middle' dy='.3em' font-family='Arial'>🚀</text></svg>">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="description" content="SupremeMotive - Inspiring excellence, building futures, transforming lives through motivation and actionable content.">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">suprememotive</div>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="aboout.html">About</a>
+                <a href="contact.htm">Contact</a>
+                <a href="donate.html">Coffee me</a>
+                <a href="profile.html">Profile</a>
+            </nav>
+            <div class="nav-actions">
+                <button id="themeToggle">🌙</button>
+            </div>
+        </div>
+    </header>
+    <section class="hero">
+        <h1>SupremeMotive Network</h1>
+        <p>Inspiring media. Building futures.</p>
+    </section>
+    <main class="container" id="posts-feed">
+        <article class="post" data-post-id="post-1" data-likes="5200" data-comments="48">
+            <img src="https://picsum.photos/900/500?random=1" class="post-img" alt="Success starts with Discipline">
+            <div class="post-body">
+                <h2>Success starts with Discipline</h2>
+                <p class="meta">By Supreme Motive. Jan 2026.</p>
+                <p class="excerpt">
+                    Discipline is the bridge between dreams and achievement. Build habits that move you forward every day.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-1')">❤️ <span class="like-count">5.2k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-1')">💬 <span class="comment-count">48</span></button>
+                    <button class="share-btn" onclick="sharePost('post-1', 'Success starts with Discipline')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-1">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-1')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-2" data-likes="6100" data-comments="92">
+            <img src="https://picsum.photos/901/500?random=2" class="post-img" alt="Consistency Beats Talent">
+            <div class="post-body">
+                <h2>Consistency Beats Talent</h2>
+                <p class="meta">By Supreme Motive. Jan 2026.</p>
+                <p class="excerpt">
+                    Small daily actions repeated over time create extraordinary results.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-2')">❤️ <span class="like-count">6.1k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-2')">💬 <span class="comment-count">92</span></button>
+                    <button class="share-btn" onclick="sharePost('post-2', 'Consistency Beats Talent')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-2">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-2')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-3" data-likes="3200" data-comments="48">
+            <img src="https://picsum.photos/902/500?random=3" class="post-img" alt="Mind Over Matter">
+            <div class="post-body">
+                <h2>Mind Over Matter</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Your mind is your greatest asset. Master your thoughts, master your life. Learn the power of mental resilience.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-3')">❤️ <span class="like-count">3.2k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-3')">💬 <span class="comment-count">48</span></button>
+                    <button class="share-btn" onclick="sharePost('post-3', 'Mind Over Matter')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-3">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-3')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-4" data-likes="4100" data-comments="67">
+            <img src="https://picsum.photos/903/500?random=4" class="post-img" alt="The Art of Persistence">
+            <div class="post-body">
+                <h2>The Art of Persistence</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Failure is not the end—it's the beginning. Discover why persistence beats talent and luck combined.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-4')">❤️ <span class="like-count">4.1k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-4')">💬 <span class="comment-count">67</span></button>
+                    <button class="share-btn" onclick="sharePost('post-4', 'The Art of Persistence')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-4">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-4')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-5" data-likes="6800" data-comments="112">
+            <img src="https://picsum.photos/904/500?random=5" class="post-img" alt="Build Your Empire">
+            <div class="post-body">
+                <h2>Build Your Empire from Zero</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Every empire started with one brick. Learn the foundational principles to build something extraordinary.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-5')">❤️ <span class="like-count">6.8k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-5')">💬 <span class="comment-count">112</span></button>
+                    <button class="share-btn" onclick="sharePost('post-5', 'Build Your Empire from Zero')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-5">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-5')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-6" data-likes="2900" data-comments="84">
+            <img src="https://picsum.photos/905/500?random=6" class="post-img" alt="The Power of Vision">
+            <div class="post-body">
+                <h2>The Power of Clear Vision</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    A clear vision is your compass. Without it, you drift. With it, you soar. Here's how to craft yours.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-6')">❤️ <span class="like-count">2.9k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-6')">💬 <span class="comment-count">84</span></button>
+                    <button class="share-btn" onclick="sharePost('post-6', 'The Power of Clear Vision')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-6">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-6')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-7" data-likes="3500" data-comments="73">
+            <img src="https://picsum.photos/906/500?random=7" class="post-img" alt="Breaking Through Barriers">
+            <div class="post-body">
+                <h2>Breaking Through Barriers</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Every person faces obstacles. What separates winners from quitters is how they respond to adversity.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-7')">❤️ <span class="like-count">3.5k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-7')">💬 <span class="comment-count">73</span></button>
+                    <button class="share-btn" onclick="sharePost('post-7', 'Breaking Through Barriers')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-7">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-7')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-8" data-likes="7200" data-comments="134">
+            <img src="https://picsum.photos/907/500?random=8" class="post-img" alt="The Money Mindset">
+            <div class="post-body">
+                <h2>The Money Mindset Revolution</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Wealth starts in the mind. Change your beliefs about money and watch your bank account transform.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-8')">❤️ <span class="like-count">7.2k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-8')">💬 <span class="comment-count">134</span></button>
+                    <button class="share-btn" onclick="sharePost('post-8', 'The Money Mindset Revolution')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-8">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-8')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-9" data-likes="5600" data-comments="98">
+            <img src="https://picsum.photos/908/500?random=9" class="post-img" alt="Time Management Secrets">
+            <div class="post-body">
+                <h2>Time Management Secrets of Winners</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Everyone has 24 hours. The difference is how the top 1% use theirs. Learn their secrets today.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-9')">❤️ <span class="like-count">5.6k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-9')">💬 <span class="comment-count">98</span></button>
+                    <button class="share-btn" onclick="sharePost('post-9', 'Time Management Secrets of Winners')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-9">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-9')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-10" data-likes="4800" data-comments="92">
+            <img src="https://picsum.photos/909/500?random=10" class="post-img" alt="Confidence Building">
+            <div class="post-body">
+                <h2>Confidence Building 101</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Confidence isn't born, it's built. Discover the 5 pillars of unshakeable self-belief.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-10')">❤️ <span class="like-count">4.8k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-10')">💬 <span class="comment-count">92</span></button>
+                    <button class="share-btn" onclick="sharePost('post-10', 'Confidence Building 101')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-10">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-10')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-11" data-likes="6100" data-comments="115">
+            <img src="https://picsum.photos/910/500?random=11" class="post-img" alt="Health is Wealth">
+            <div class="post-body">
+                <h2>Health is Wealth: Your Ultimate Asset</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    You can have all the money in the world, but without health, you have nothing. Invest in yourself.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-11')">❤️ <span class="like-count">6.1k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-11')">💬 <span class="comment-count">115</span></button>
+                    <button class="share-btn" onclick="sharePost('post-11', 'Health is Wealth: Your Ultimate Asset')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-11">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-11')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-12" data-likes="4300" data-comments="81">
+            <img src="https://picsum.photos/911/500?random=12" class="post-img" alt="Networking Power">
+            <div class="post-body">
+                <h2>Your Network is Your Net Worth</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Success doesn't happen in isolation. Learn how to build a powerful network that propels you forward.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-12')">❤️ <span class="like-count">4.3k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-12')">💬 <span class="comment-count">81</span></button>
+                    <button class="share-btn" onclick="sharePost('post-12', 'Your Network is Your Net Worth')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-12">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-12')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-13" data-likes="5900" data-comments="127">
+            <img src="https://picsum.photos/912/500?random=13" class="post-img" alt="Education Evolution">
+            <div class="post-body">
+                <h2>The Education Evolution Starts Now</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Traditional education is dead. Learn the new skills that will make you unstoppable in 2026.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-13')">❤️ <span class="like-count">5.9k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-13')">💬 <span class="comment-count">127</span></button>
+                    <button class="share-btn" onclick="sharePost('post-13', 'The Education Evolution Starts Now')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-13">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-13')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-14" data-likes="3700" data-comments="105">
+            <img src="https://picsum.photos/913/500?random=14" class="post-img" alt="Leadership Mastery">
+            <div class="post-body">
+                <h2>Leadership Mastery: Lead Yourself First</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    You can't lead others until you master leading yourself. Become the leader you want to become.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-14')">❤️ <span class="like-count">3.7k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-14')">💬 <span class="comment-count">105</span></button>
+                    <button class="share-btn" onclick="sharePost('post-14', 'Leadership Mastery: Lead Yourself First')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-14">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-14')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-15" data-likes="4400" data-comments="95">
+            <img src="https://picsum.photos/914/500?random=15" class="post-img" alt="Emotional Intelligence">
+            <div class="post-body">
+                <h2>Emotional Intelligence: The Hidden Skill</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    EQ is more important than IQ. Master your emotions and watch your life transform dramatically.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-15')">❤️ <span class="like-count">4.4k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-15')">💬 <span class="comment-count">95</span></button>
+                    <button class="share-btn" onclick="sharePost('post-15', 'Emotional Intelligence: The Hidden Skill')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-15">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-15')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-16" data-likes="5200" data-comments="88">
+            <img src="https://picsum.photos/915/500?random=16" class="post-img" alt="Decision Making">
+            <div class="post-body">
+                <h2>Making Decisions That Change Lives</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Your decisions shape your destiny. Learn the framework that elite decision-makers use daily.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-16')">❤️ <span class="like-count">5.2k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-16')">💬 <span class="comment-count">88</span></button>
+                    <button class="share-btn" onclick="sharePost('post-16', 'Making Decisions That Change Lives')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-16">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-16')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-17" data-likes="6700" data-comments="142">
+            <img src="https://picsum.photos/916/500?random=17" class="post-img" alt="Goal Setting Mastery">
+            <div class="post-body">
+                <h2>Goal Setting Mastery: From Dreams to Reality</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Most people have dreams, but few achieve goals. Learn the science behind goal achievement.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-17')">❤️ <span class="like-count">6.7k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-17')">💬 <span class="comment-count">142</span></button>
+                    <button class="share-btn" onclick="sharePost('post-17', 'Goal Setting Mastery: From Dreams to Reality')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-17">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-17')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-18" data-likes="4900" data-comments="76">
+            <img src="https://picsum.photos/917/500?random=18" class="post-img" alt="Fear Mastery">
+            <div class="post-body">
+                <h2>Fear is the Thief of Dreams - Conquer It</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Fear is an illusion. Discover the techniques to face your fears and emerge stronger than ever.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-18')">❤️ <span class="like-count">4.9k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-18')">💬 <span class="comment-count">76</span></button>
+                    <button class="share-btn" onclick="sharePost('post-18', 'Fear is the Thief of Dreams - Conquer It')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-18">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-18')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-19" data-likes="7300" data-comments="156">
+            <img src="https://picsum.photos/918/500?random=19" class="post-img" alt="Motivation Daily">
+            <div class="post-body">
+                <h2>Daily Motivation Rituals That Work</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Motivation is a skill, not a feeling. Build the rituals that keep you fired up every single day.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-19')">❤️ <span class="like-count">7.3k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-19')">💬 <span class="comment-count">156</span></button>
+                    <button class="share-btn" onclick="sharePost('post-19', 'Daily Motivation Rituals That Work')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-19">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-19')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-20" data-likes="5500" data-comments="103">
+            <img src="https://picsum.photos/919/500?random=20" class="post-img" alt="Sleep and Success">
+            <div class="post-body">
+                <h2>Sleep: The Underrated Success Factor</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Hustle culture is killing you. Discover why sleep is the secret weapon of high performers.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-20')">❤️ <span class="like-count">5.5k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-20')">💬 <span class="comment-count">103</span></button>
+                    <button class="share-btn" onclick="sharePost('post-20', 'Sleep: The Underrated Success Factor')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-20">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-20')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-21" data-likes="3100" data-comments="52">
+            <img src="https://picsum.photos/920/500?random=21" class="post-img" alt="Meditation Benefits">
+            <div class="post-body">
+                <h2>Meditation: Calm the Chaos Within</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    A calm mind is a powerful mind. Learn meditation techniques that top performers swear by.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-21')">❤️ <span class="like-count">3.1k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-21')">💬 <span class="comment-count">52</span></button>
+                    <button class="share-btn" onclick="sharePost('post-21', 'Meditation: Calm the Chaos Within')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-21">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-21')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-22" data-likes="4600" data-comments="87">
+            <img src="https://picsum.photos/921/500?random=22" class="post-img" alt="Relationships Matter">
+            <div class="post-body">
+                <h2>Relationships: Your Foundation for Success</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Success without meaningful relationships is just loneliness. Build relationships that matter.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-22')">❤️ <span class="like-count">4.6k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-22')">💬 <span class="comment-count">87</span></button>
+                    <button class="share-btn" onclick="sharePost('post-22', 'Relationships: Your Foundation for Success')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-22">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-22')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-23" data-likes="6400" data-comments="118">
+            <img src="https://picsum.photos/922/500?random=23" class="post-img" alt="Failure Lessons">
+            <div class="post-body">
+                <h2>Failure is Feedback, Not The End</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    The winners aren't people who never fail. They're people who fail fast and learn faster.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-23')">❤️ <span class="like-count">6.4k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-23')">💬 <span class="comment-count">118</span></button>
+                    <button class="share-btn" onclick="sharePost('post-23', 'Failure is Feedback, Not The End')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-23">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-23')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-24" data-likes="5100" data-comments="94">
+            <img src="https://picsum.photos/923/500?random=24" class="post-img" alt="Passion Discovery">
+            <div class="post-body">
+                <h2>Finding Your Passion: The Ultimate Quest</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    You don't find passion by thinking. You find it by doing. Start experimenting today.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-24')">❤️ <span class="like-count">5.1k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-24')">💬 <span class="comment-count">94</span></button>
+                    <button class="share-btn" onclick="sharePost('post-24', 'Finding Your Passion: The Ultimate Quest')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-24">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-24')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-25" data-likes="3900" data-comments="68">
+            <img src="https://picsum.photos/924/500?random=25" class="post-img" alt="Gratitude Power">
+            <div class="post-body">
+                <h2>The Gratitude Advantage: Unlock Abundance</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Gratitude is the gateway to abundance. Transform your life by appreciating what you have.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-25')">❤️ <span class="like-count">3.9k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-25')">💬 <span class="comment-count">68</span></button>
+                    <button class="share-btn" onclick="sharePost('post-25', 'The Gratitude Advantage: Unlock Abundance')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-25">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-25')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-26" data-likes="4700" data-comments="109">
+            <img src="https://picsum.photos/925/500?random=26" class="post-img" alt="Accountability Partners">
+            <div class="post-body">
+                <h2>Accountability: The Secret Weapon to Win</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    You can't succeed alone. Find accountability partners who will push you towards greatness.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-26')">❤️ <span class="like-count">4.7k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-26')">💬 <span class="comment-count">109</span></button>
+                    <button class="share-btn" onclick="sharePost('post-26', 'Accountability: The Secret Weapon to Win')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-26">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-26')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-27" data-likes="7800" data-comments="165">
+            <img src="https://picsum.photos/926/500?random=27" class="post-img" alt="Entrepreneurship Journey">
+            <div class="post-body">
+                <h2>The Entrepreneur's Journey to Freedom</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Entrepreneurship is hard, but the freedom is worth it. Start your journey today.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-27')">❤️ <span class="like-count">7.8k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-27')">💬 <span class="comment-count">165</span></button>
+                    <button class="share-btn" onclick="sharePost('post-27', 'The Entrepreneur's Journey to Freedom')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-27">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-27')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-28" data-likes="5300" data-comments="99">
+            <img src="https://picsum.photos/927/500?random=28" class="post-img" alt="Personal Branding">
+            <div class="post-body">
+                <h2>Personal Branding: Become Your Own CEO</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Your personal brand is your most valuable asset. Learn to build a brand that stands out.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-28')">❤️ <span class="like-count">5.3k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-28')">💬 <span class="comment-count">99</span></button>
+                    <button class="share-btn" onclick="sharePost('post-28', 'Personal Branding: Become Your Own CEO')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-28">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-28')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-29" data-likes="6200" data-comments="124">
+            <img src="https://picsum.photos/928/500?random=29" class="post-img" alt="Productivity Hacks">
+            <div class="post-body">
+                <h2>Productivity Hacks: Work Smarter, Not Harder</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Being busy is not the same as being productive. Master the systems that multiply results.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-29')">❤️ <span class="like-count">6.2k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-29')">💬 <span class="comment-count">124</span></button>
+                    <button class="share-btn" onclick="sharePost('post-29', 'Productivity Hacks: Work Smarter, Not Harder')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-29">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-29')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-30" data-likes="4200" data-comments="71">
+            <img src="https://picsum.photos/929/500?random=30" class="post-img" alt="Legacy Building">
+            <div class="post-body">
+                <h2>Building Your Legacy: Impact That Lasts</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Success is temporary, legacy is eternal. Build something that will outlive you.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-30')">❤️ <span class="like-count">4.2k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-30')">💬 <span class="comment-count">71</span></button>
+                    <button class="share-btn" onclick="sharePost('post-30', 'Building Your Legacy: Impact That Lasts')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-30">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-30')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-31" data-likes="8100" data-comments="148">
+            <img src="https://picsum.photos/930/500?random=31" class="post-img" alt="Money Mastery">
+            <div class="post-body">
+                <h2>Financial Freedom: The Ultimate Goal</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Money is not evil, lack of it is. Build wealth strategically and secure your future.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-31')">❤️ <span class="like-count">8.1k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-31')">💬 <span class="comment-count">148</span></button>
+                    <button class="share-btn" onclick="sharePost('post-31', 'Financial Freedom: The Ultimate Goal')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-31">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-31')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-32" data-likes="5400" data-comments="86">
+            <img src="https://picsum.photos/931/500?random=32" class="post-img" alt="Communication Skills">
+            <div class="post-body">
+                <h2>Communication: The Bridge to Success</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Clear communication is the difference between chaos and harmony. Master this one skill.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-32')">❤️ <span class="like-count">5.4k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-32')">💬 <span class="comment-count">86</span></button>
+                    <button class="share-btn" onclick="sharePost('post-32', 'Communication: The Bridge to Success')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-32">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-32')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-33" data-likes="3800" data-comments="79">
+            <img src="https://picsum.photos/932/500?random=33" class="post-img" alt="Adaptability Edge">
+            <div class="post-body">
+                <h2>The Adaptability Edge: Survive & Thrive</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    The world is changing faster than ever. Learn to adapt or get left behind.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-33')">❤️ <span class="like-count">3.8k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-33')">💬 <span class="comment-count">79</span></button>
+                    <button class="share-btn" onclick="sharePost('post-33', 'The Adaptability Edge: Survive & Thrive')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-33">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-33')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-34" data-likes="6600" data-comments="131">
+            <img src="https://picsum.photos/933/500?random=34" class="post-img" alt="Skill Development">
+            <div class="post-body">
+                <h2>The 10,000 Hour Rule: Master Any Skill</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Expertise is not a gift, it's a choice. Commit to mastery and watch doors open.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-34')">❤️ <span class="like-count">6.6k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-34')">💬 <span class="comment-count">131</span></button>
+                    <button class="share-btn" onclick="sharePost('post-34', 'The 10,000 Hour Rule: Master Any Skill')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-34">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-34')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-35" data-likes="7500" data-comments="139">
+            <img src="https://picsum.photos/934/500?random=35" class="post-img" alt="Action Over Planning">
+            <div class="post-body">
+                <h2>Action Over Planning: Start Before Ready</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    Perfectionism is the enemy of progress. Take massive action and refine as you go.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-35')">❤️ <span class="like-count">7.5k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-35')">💬 <span class="comment-count">139</span></button>
+                    <button class="share-btn" onclick="sharePost('post-35', 'Action Over Planning: Start Before Ready')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-35">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-35')">
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="post" data-post-id="post-36" data-likes="9200" data-comments="178">
+            <img src="https://picsum.photos/935/500?random=36" class="post-img" alt="Ultimate Success">
+            <div class="post-body">
+                <h2>Your Ultimate Success Story Starts Now</h2>
+                <p class="meta">By Supreme Motive. Feb 2026.</p>
+                <p class="excerpt">
+                    You have everything you need to succeed. It's time to believe in yourself and go all in.
+                </p>
+                <div class="actions">
+                    <button class="like-btn" onclick="toggleLike(this, 'post-36')">❤️ <span class="like-count">9.2k</span></button>
+                    <button class="comment-btn" onclick="openComments('post-36')">💬 <span class="comment-count">178</span></button>
+                    <button class="share-btn" onclick="sharePost('post-36', 'Your Ultimate Success Story Starts Now')">↗️ Share</button>
+                </div>
+                <div class="comments-section" style="display:none;" id="comments-post-36">
+                    <div class="comments-list"></div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Add a comment..." class="comment-input" onkeypress="handleCommentKeypress(event, 'post-36')">
+                    </div>
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer>
+        <p>&copy; 2026 SupremeMotive Network</p>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="aboout.html">About</a>
+            <a href="contact.htm">Contact</a>
+            <a href="donate.html">Coffee me</a>
+            <a href="profile.html">Profile</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+        </div>
+    </footer>
+    <script>
+        // Theme toggle functionality
+        const toggle = document.getElementById("themeToggle");
+        toggle.addEventListener("click", () => {
+            const html = document.documentElement;
+            if (html.getAttribute("data-theme") === "light") {
+                html.setAttribute("data-theme", "dark");
+                toggle.textContent = "☀️";
+            } else {
+                html.setAttribute("data-theme", "light");
+                toggle.textContent = "🌙";
+            }
+        });
+
+        // Like/Unlike functionality
+        function toggleLike(btn, postId) {
+            const post = document.querySelector(`[data-post-id="${postId}"]`);
+            const likeCountSpan = btn.querySelector('.like-count');
+            const currentLikes = parseInt(post.getAttribute('data-likes'));
+            
+            if (btn.classList.contains('liked')) {
+                // Unlike
+                btn.classList.remove('liked');
+                post.setAttribute('data-likes', currentLikes - 1);
+                likeCountSpan.textContent = formatLikeCount(currentLikes - 1);
+            } else {
+                // Like
+                btn.classList.add('liked');
+                post.setAttribute('data-likes', currentLikes + 1);
+                likeCountSpan.textContent = formatLikeCount(currentLikes + 1);
+            }
+            
+            // Add animation
+            btn.style.transform = 'scale(1.2)';
+            setTimeout(() => btn.style.transform = 'scale(1)', 200);
+        }
+
+        function formatLikeCount(count) {
+            if (count >= 1000) {
+                return (count / 1000).toFixed(1) + 'k';
+            }
+            return count.toString();
+        }
+
+        // Comments section toggle
+        function openComments(postId) {
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            const commentBtn = document.querySelector(`[data-post-id="${postId}"] .comment-btn`);
+            
+            if (commentsSection.style.display === 'none') {
+                commentsSection.style.display = 'block';
+                commentBtn.classList.add('active');
+                // Focus input field
+                const input = commentsSection.querySelector('.comment-input');
+                if (input) setTimeout(() => input.focus(), 100);
+            } else {
+                commentsSection.style.display = 'none';
+                commentBtn.classList.remove('active');
+            }
+        }
+
+        // Handle comment submission on Enter key
+        function handleCommentKeypress(event, postId) {
+            if (event.key === 'Enter' && event.target.value.trim()) {
+                addComment(event.target, postId);
+            }
+        }
+
+        function addComment(inputElement, postId) {
+            const commentText = inputElement.value.trim();
+            if (!commentText) return;
+
+            const post = document.querySelector(`[data-post-id="${postId}"]`);
+            const commentsList = document.querySelector(`#comments-${postId} .comments-list`);
+            const commentCountSpan = post.querySelector('.comment-count');
+            const currentComments = parseInt(post.getAttribute('data-comments'));
+
+            // Create comment element
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'comment-item';
+            commentDiv.innerHTML = `
+                <div class="comment-author">You</div>
+                <div class="comment-text">${escapeHtml(commentText)}</div>
+                <div class="comment-time">now</div>
+                <div class="comment-actions">
+                    <button class="reply-btn" onclick="replyToComment(this, '${postId}')">Reply</button>
+                    <button class="delete-btn" onclick="deleteComment(this)">Delete</button>
+                </div>
+            `;
+
+            commentsList.insertBefore(commentDiv, commentsList.firstChild);
+            inputElement.value = '';
+
+            // Update comment count
+            post.setAttribute('data-comments', currentComments + 1);
+            commentCountSpan.textContent = currentComments + 1;
+
+            // Add animation
+            commentDiv.style.opacity = '0';
+            setTimeout(() => {
+                commentDiv.style.opacity = '1';
+                commentDiv.style.transition = 'opacity 0.3s ease';
+            }, 10);
+        }
+
+        function replyToComment(btn, postId) {
+            const commentItem = btn.closest('.comment-item');
+            let replyContainer = commentItem.querySelector('.reply-container');
+            
+            if (!replyContainer) {
+                replyContainer = document.createElement('div');
+                replyContainer.className = 'reply-container';
+                replyContainer.innerHTML = `
+                    <input type="text" placeholder="Write a reply..." class="reply-input" onkeypress="handleReplyKeypress(event, this, '${postId}')">
+                    <button onclick="cancelReply(this)">Cancel</button>
+                `;
+                commentItem.appendChild(replyContainer);
+                replyContainer.querySelector('.reply-input').focus();
+            } else {
+                replyContainer.remove();
+            }
+        }
+
+        function handleReplyKeypress(event, inputElement, postId) {
+            if (event.key === 'Enter' && inputElement.value.trim()) {
+                const commentItem = inputElement.closest('.comment-item');
+                const replyText = inputElement.value.trim();
+                
+                let repliesList = commentItem.querySelector('.replies-list');
+                if (!repliesList) {
+                    repliesList = document.createElement('div');
+                    repliesList.className = 'replies-list';
+                    commentItem.appendChild(repliesList);
+                }
+
+                const replyDiv = document.createElement('div');
+                replyDiv.className = 'reply-item';
+                replyDiv.innerHTML = `
+                    <div class="reply-author">You</div>
+                    <div class="reply-text">${escapeHtml(replyText)}</div>
+                    <div class="comment-time">now</div>
+                `;
+                repliesList.appendChild(replyDiv);
+                inputElement.closest('.reply-container').remove();
+            }
+        }
+
+        function cancelReply(btn) {
+            btn.closest('.reply-container').remove();
+        }
+
+        function deleteComment(btn) {
+            if (confirm('Delete this comment?')) {
+                btn.closest('.comment-item').remove();
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Share functionality
+        function sharePost(postId, title) {
+            const url = window.location.href;
+            const text = `Check out: "${title}" on SupremeMotive`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'SupremeMotive',
+                    text: text,
+                    url: url
+                }).catch(err => console.log('Share error:', err));
+            } else {
+                // Fallback - Copy to clipboard
+                const shareText = `${text}\n${url}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Copied to clipboard! Share it with your friends.');
+                }).catch(() => {
+                    alert(`Share this: ${text}\n${url}`);
+                });
+            }
+        }
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
+                   
+
