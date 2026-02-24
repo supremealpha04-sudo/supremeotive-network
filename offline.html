@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Offline - SupremeMotive Network</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+
+  <body>
+    <!-- Header & Navigation -->
+    <header>
+      <nav>
+        <div class="logo">
+          <span>🎬</span>
+          <span class="logo-text">SupremeMotive</span>
+        </div>
+
+        <ul id="nav-menu">
+          <li><a href="/">Home</a></li>
+        </ul>
+
+        <div class="nav-buttons">
+          <button class="theme-toggle" title="Toggle dark mode">🌙</button>
+          <button class="mobile-menu-toggle" title="Menu">☰</button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="container">
+        <div style="text-align: center; padding: 4rem 2rem; max-width: 600px; margin: 0 auto">
+          <div style="font-size: 5rem; margin-bottom: 1rem">📡</div>
+          
+          <h1 style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-color)">
+            You're Offline
+          </h1>
+
+          <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6">
+            We've cached some content for you to view while offline. Check back when you have an internet connection for the latest posts and updates.
+          </p>
+
+          <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 0.75rem; margin-bottom: 2rem; border-left: 4px solid var(--accent-color)">
+            <h3 style="margin-bottom: 1rem; color: var(--text-primary)">What you can do:</h3>
+            <ul style="text-align: left; color: var(--text-secondary); line-height: 1.8">
+              <li>✓ View previously loaded posts</li>
+              <li>✓ Read cached articles</li>
+              <li>✓ Review your profile information</li>
+              <li>✓ Browse through dark/light mode</li>
+              <li>✗ Create new posts (requires connection)</li>
+              <li>✗ Add comments (requires connection)</li>
+              <li>✗ Like posts (requires connection)</li>
+            </ul>
+          </div>
+
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center">
+            <button 
+              onclick="location.href='/';" 
+              style="
+                background: var(--accent-color);
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                border: none;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 1rem;
+              "
+              onmouseover="this.style.background='var(--accent-hover)'"
+              onmouseout="this.style.background='var(--accent-color)'"
+            >
+              ← Go to Homepage
+            </button>
+
+            <button 
+              onclick="location.reload();" 
+              style="
+                background: var(--bg-tertiary);
+                color: var(--text-primary);
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                border: none;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 1rem;
+              "
+              onmouseover="this.style.background='var(--border-color)'"
+              onmouseout="this.style.background='var(--bg-tertiary)'"
+            >
+              🔄 Retry Connection
+            </button>
+          </div>
+
+          <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color); color: var(--text-tertiary); font-size: 0.9rem">
+            <p>Status: Waiting for connection...</p>
+            <p id="connection-status" style="margin-top: 0.5rem"></p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="margin-top: 4rem">
+      <div class="footer-bottom">
+        <p>
+          &copy; 2024 SupremeMotive Network. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+      // Monitor connection status
+      function updateConnectionStatus() {
+        const status = navigator.onLine ? 'Connected ✓' : 'Disconnected ✗';
+        const color = navigator.onLine ? 'var(--success-color)' : 'var(--danger-color)';
+        const statusEl = document.getElementById('connection-status');
+        
+        if (statusEl) {
+          statusEl.textContent = 'Connection: ' + status;
+          statusEl.style.color = color;
+        }
+
+        if (navigator.onLine) {
+          location.reload();
+        }
+      }
+
+      window.addEventListener('online', updateConnectionStatus);
+      window.addEventListener('offline', updateConnectionStatus);
+
+      // Initial status
+      updateConnectionStatus();
+
+      // Check connection every 5 seconds
+      setInterval(updateConnectionStatus, 5000);
+    </script>
+  </body>
+</html>
