@@ -1017,6 +1017,19 @@
                     });
             });
         }
+
+
+function toggleContent(id, btn) {
+  const content = document.getElementById(id);
+  content.classList.toggle('expanded');
+
+  if (content.classList.contains('expanded')) {
+    btn.textContent = 'Read Less';
+  } else {
+    btn.textContent = 'Read More';
+  }
+}
+
     </script>
 </body>
 </html>
