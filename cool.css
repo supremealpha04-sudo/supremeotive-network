@@ -423,6 +423,24 @@ a, button, .post, .nav-links a, .footer-links a, .reply-btn, .delete-btn, .like-
   background-clip: text;
 }
 
+.content {
+    overflow: hidden;
+    max-height: 80px; /* Show only part of content */
+    transition: max-height 0.5s ease;
+  }
+
+  .content.expanded {
+    max-height: 1000px; /* Large enough to show full content */
+  }
+
+  .read-more {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007bff;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
 .meta {
   color: var(--meta);
   font-size: 0.9rem;
