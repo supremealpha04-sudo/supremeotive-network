@@ -1,24 +1,49 @@
 /* cool.css - Modern, vibrant, and animated theme for SupremeMotive Network */
 
 :root {
-  --primary: #1a1a2e;
-  --secondary: #16213e;
-  --accent: #0f3460;
-  --highlight: #e94560;
-  --text: #fff;
-  --meta: #b2becd;
-  --bg: #f5f6fa;
-  --shadow: 0 4px 24px rgba(0,0,0,0.12);
+  --primary-color: #ff9800;
+  --secondary-color: #fdc500;
+  --accent-color: #ff3333;
+  --dark-bg: #111;
+  --light-bg: #fffde4;
+  --text-dark: #fff;
+  --text-light: #333;
+  --card-bg-dark: rgba(30, 30, 40, 0.95);
+  --card-bg-light: rgba(255,255,255,0.90);
+  --success-color: #4CAF50;
+  --warning-color: #ffc107;
+  --info-color: #2196F3;
+  --header-height: 80px;
+  
+  /* Light mode default */
+  --primary: var(--primary-color);
+  --secondary: var(--light-bg);
+  --accent: var(--secondary-color);
+  --highlight: var(--accent-color);
+  --text: var(--text-light);
+  --meta: #666;
+  --bg: #f8f4e5;
+  --card-bg: var(--card-bg-light);
+  --border: #ddd;
+  --hover: #f0f0f0;
+  --input-bg: #fff;
+  --muted: #888;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
 
 [data-theme="dark"] {
-  --primary: #232946;
-  --secondary: #121629;
-  --accent: #e94560;
-  --highlight: #f7c873;
-  --text: #f4f4f4;
-  --meta: #b8c1ec;
-  --bg: #181823;
+  --primary: var(--dark-bg);
+  --secondary: #1a1a1a;
+  --accent: var(--primary-color);
+  --highlight: var(--secondary-color);
+  --text: var(--text-dark);
+  --meta: #aaa;
+  --bg: #0a0a0a;
+  --card-bg: var(--card-bg-dark);
+  --border: #333;
+  --hover: #2a2a2a;
+  --input-bg: #222;
+  --muted: #777;
   --shadow: 0 4px 24px rgba(0,0,0,0.32);
 }
 
@@ -190,7 +215,7 @@ body {
 
 /* Post Cards */
 .post {
-  background: var(--secondary);
+  background: var(--card-bg);
   border-radius: 1.5rem;
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -205,7 +230,7 @@ body {
 
 .post:hover {
   transform: translateY(-12px);
-  box-shadow: 0 20px 60px rgba(233, 69, 96, 0.25);
+  box-shadow: 0 20px 60px rgba(255, 152, 0, 0.25);
 }
 
 .post-img {
@@ -273,7 +298,7 @@ body {
   background: var(--accent);
   color: var(--text);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(233, 69, 96, 0.35);
+  box-shadow: 0 8px 24px rgba(255, 152, 0, 0.35);
 }
 
 .actions button:active {
@@ -289,7 +314,6 @@ body {
 .read-more-btn:hover {
   background: var(--highlight) !important;
   color: var(--primary) !important;
-}
 }
 
 /* Footer */
@@ -481,6 +505,7 @@ footer p {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent);
 }
+
 /* Interactive Comments System */
 .comments-section {
   margin-top: 1.5rem;
@@ -567,9 +592,9 @@ footer p {
 }
 
 .delete-btn:hover {
-  border-color: #e74c3c;
-  color: #e74c3c;
-  background: rgba(231, 76, 60, 0.1);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: rgba(255, 51, 51, 0.1);
 }
 
 .reply-container {
@@ -594,7 +619,7 @@ footer p {
 .reply-input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
 }
 
 .reply-container button {
@@ -622,7 +647,7 @@ footer p {
 .reply-item {
   padding: 0.7rem;
   margin-bottom: 0.4rem;
-  background: rgba(52, 152, 219, 0.05);
+  background: rgba(255, 152, 0, 0.05);
   border-radius: 4px;
   animation: slideDown 0.3s ease;
 }
@@ -660,7 +685,7 @@ footer p {
 .comment-input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
 }
 
 .comment-input::placeholder {
@@ -669,8 +694,8 @@ footer p {
 
 /* Like button animation */
 .like-btn.liked {
-  color: #e74c3c;
-  border-color: #e74c3c;
+  color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 .like-btn,
