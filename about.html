@@ -1,158 +1,536 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SupremeMotive Network · About</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-<style>
-  /* RESET & VARIABLES */
-  *{margin:0;padding:0;box-sizing:border-box;}
-  :root[data-theme="light"] {
-    --bg: #f4f7fd; --card-bg: #fff; --text: #121826;
-    --text-secondary:#2d3a5e; --accent: #2563eb; --accent-gradient: linear-gradient(135deg,#2563eb,#6b46c1,#db2777);
-    --border: #e2e8f0; --shadow:0 25px 45px -18px rgba(0,20,40,0.25),0 0 0 1px rgba(0,0,0,0.02);
-  }
-  :root[data-theme="dark"] {
-    --bg: #0a0e19; --card-bg:#1e293b; --text:#f1f5f9;
-    --text-secondary:#cbd5e1; --accent:#5884ff; --accent-gradient: linear-gradient(135deg,#5884ff,#9f7aea,#f472b6);
-    --border:#334155; --shadow:0 30px 45px -20px #020617,0 0 0 1px #2d3a5e;
-  }
-  body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:0.2s;}
-  a{text-decoration:none;color:var(--accent);transition:0.2s;}
-  h2{font-size:2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
-  h2:after{content:'';flex:1;height:4px;background:var(--accent-gradient);border-radius:4px;max-width:120px;}
-  .container{max-width:1200px;margin:0 auto;padding:2rem;}
-  .card{background:var(--card-bg);border-radius:2rem;padding:2rem;margin-bottom:2rem;border:1px solid var(--border);box-shadow:var(--shadow);}
-  .pill-grid{display:flex;flex-wrap:wrap;gap:1rem;margin:2rem 0;}
-  .pill-item{padding:.8rem 1.8rem;border-radius:60px;background:var(--card-bg);border:1px solid var(--border);display:inline-flex;align-items:center;gap:.6rem;box-shadow:var(--shadow);transition:0.2s;cursor:default;}
-  .pill-item:hover{background:var(--accent);color:#fff;transform:translateY(-4px);}
-  .stats-row{display:flex;gap:2rem;justify-content:space-around;flex-wrap:wrap;margin:2rem 0;}
-  .stat-item{text-align:center;}
-  .stat-number{font-size:2.5rem;font-weight:700;background:var(--accent-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .grid-values{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.8rem;margin:2rem 0;}
-  .value-card{transition:.25s;}
-  .value-card:hover{transform:translateY(-6px) scale(1.02);border-color:var(--accent);}
-  .story-block{margin:2rem 0;padding:2rem;border-radius:2rem;box-shadow:var(--shadow);}
-  .cta-group{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1.5rem;}
-  .cta{padding:1rem 2.5rem;border-radius:60px;display:inline-flex;align-items:center;gap:.6rem;font-weight:600;transition:.2s;}
-  .cta.primary{background:var(--accent-gradient);color:#fff;box-shadow:0 15px 30px -10px var(--accent);}
-  .cta.primary:hover{transform:scale(1.05) translateY(-3px);}
-  .cta.secondary{background:transparent;color:var(--accent);border:2px solid var(--accent);}
-  header{position:sticky;top:0;background:var(--card-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:100;}
-  nav{max-width:1300px;margin:0 auto;padding:.8rem 2rem;display:flex;align-items:center;justify-content:space-between;}
-  .logo{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1.5rem;}
-  #nav-menu{display:flex;list-style:none;gap:2rem;align-items:center;}
-  #nav-menu li a{font-weight:500;color:var(--text-secondary);position:relative;}
-  #nav-menu li a::after{content:'';position:absolute;width:0;height:2px;bottom:-6px;left:0;background:var(--accent-gradient);transition:.2s;}
-  #nav-menu li a:hover::after{width:100%;}
-  #nav-menu a[href*="donation"]{background:var(--accent);color:#fff;padding:.5rem 1.5rem;border-radius:60px;box-shadow:0 8px 14px -6px var(--accent);}
-  .mobile-menu{display:none;}
-  @media(max-width:800px){#nav-menu{display:none;}.mobile-menu-toggle{display:block;}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SupremeMotive · re:about</title>
+  <!-- fonts & icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    /* ----- design tokens (fresh palette) ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f3f5f9;
+      --surface: #ffffff;
+      --surface-soft: #f0f2f6;
+      --text-strong: #10131f;
+      --text-muted: #3f4758;
+      --primary: #3366ff;
+      --primary-soft: #e0e7ff;
+      --secondary: #ff6b6b;
+      --accent-gradient: linear-gradient(145deg, #3366ff, #9f7aea, #ff6b6b);
+      --border: #dee4ed;
+      --card-elevation: 0 30px 50px -30px rgba(0,20,40,0.2), 0 8px 20px -8px rgba(0,0,0,0.05);
+      --glow: 0 0 0 1px rgba(51,102,255,0.15);
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #0e121f;
+      --surface: #1b2335;
+      --surface-soft: #232e44;
+      --text-strong: #f0f4ff;
+      --text-muted: #b2c0d4;
+      --primary: #6080ff;
+      --primary-soft: #26324f;
+      --secondary: #ff8a8a;
+      --accent-gradient: linear-gradient(145deg, #6080ff, #b794f4, #ff8a8a);
+      --border: #2b364f;
+      --card-elevation: 0 30px 45px -20px #030614, 0 0 0 1px #2d3e62;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-strong);
+      line-height: 1.5;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    /* ----- progress (thin accent) ----- */
+    .progress-bar {
+      position: fixed;
+      top: 0; left: 0; height: 3px;
+      background: var(--accent-gradient);
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s;
+    }
+
+    /* ----- header minimal / floating ----- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: color-mix(in srgb, var(--surface) 70%, transparent);
+      backdrop-filter: blur(16px) saturate(180%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.8rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    .logo-icon {
+      font-size: 2rem;
+      filter: drop-shadow(0 4px 8px var(--primary));
+    }
+    .logo-text {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    #nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+      margin: 0;
+      align-items: center;
+    }
+    #nav-menu a {
+      text-decoration: none;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #nav-menu a:hover { color: var(--primary); }
+    #nav-menu a[href*="donation"] {
+      background: var(--primary);
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      box-shadow: 0 8px 16px -8px var(--primary);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .theme-toggle, .mobile-menu-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 1.2rem;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      cursor: pointer;
+      color: var(--text-strong);
+    }
+    .theme-toggle:hover { background: var(--primary); color: white; border-color: transparent; }
+    .mobile-menu-toggle { display: none; }
+
+    /* mobile menu (off‑canvas) */
+    .mobile-menu {
+      position: fixed;
+      top: 72px;
+      left: 0;
+      width: 100%;
+      background: var(--surface);
+      padding: 2rem;
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-150%);
+      transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
+      z-index: 99;
+      box-shadow: var(--card-elevation);
+    }
+    .mobile-menu.open { transform: translateY(0); }
+    .mobile-menu ul { list-style: none; }
+    .mobile-menu li { margin: 1.8rem 0; }
+    .mobile-menu a { font-size: 1.4rem; display: flex; gap: 1rem; color: var(--text-strong); text-decoration: none; }
+
+    /* ----- main container (clean width) ----- */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 2rem 3rem;
+    }
+
+    /* ----- typography ----- */
+    h1, h2 { font-weight: 700; letter-spacing: -0.02em; }
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      display: inline-block;
+      border-bottom: 4px solid var(--primary);
+      padding-bottom: 0.3rem;
+    }
+
+    /* ----- hero split (new) ----- */
+    .hero-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 5rem;
+      align-items: center;
+    }
+    .hero-title {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-sub {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin: 1.5rem 0 2rem;
+      max-width: 90%;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.8rem 2.2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 20px -8px var(--primary);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-strong);
+      border: 1.5px solid var(--border);
+      box-shadow: none;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      background: var(--surface);
+      padding: 2rem 2.5rem;
+      border-radius: 3rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-elevation);
+    }
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 700;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* ----- founder rework (editorial spread) ----- */
+    .founder-spread {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 2rem;
+      background: var(--surface);
+      border-radius: 3rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-elevation);
+      margin: 4rem 0;
+      overflow: hidden;
+    }
+    .founder-visual {
+      background: var(--primary-soft);
+      padding: 2.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .founder-visual img {
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 2rem 4rem 2rem 4rem;
+      box-shadow: 0 30px 40px -20px black;
+      border: 5px solid var(--surface);
+      transition: 0.3s;
+    }
+    .founder-detail {
+      padding: 3rem 3rem 3rem 1rem;
+    }
+    .founder-detail h3 {
+      font-size: 2.8rem;
+      font-weight: 700;
+    }
+    .founder-role {
+      color: var(--primary);
+      font-weight: 500;
+      margin: 0.2rem 0 1.5rem;
+      font-size: 1.2rem;
+    }
+    .founder-bio {
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      border-left: 4px solid var(--primary);
+      padding-left: 1.8rem;
+      margin: 1.8rem 0;
+      font-style: italic;
+    }
+    .signature i { color: var(--primary); }
+
+    /* ----- values grid (framed) ----- */
+    .grid-values {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1.8rem;
+      margin: 3rem 0;
+    }
+    .value-card {
+      background: var(--surface);
+      border-radius: 2rem;
+      padding: 2rem 1.5rem;
+      border: 1px solid var(--border);
+      transition: 0.2s;
+    }
+    .value-card:hover { transform: translateY(-6px); border-color: var(--primary); }
+    .value-card h3 { font-size: 1.7rem; margin-bottom: 1rem; display: flex; gap: 0.5rem; }
+
+    /* ----- pill list (what we do) ----- */
+    .pill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 2rem 0 3rem;
+    }
+    .pill-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.8rem 2rem;
+      border-radius: 60px;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: 0.2s;
+    }
+    .pill-item:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* ----- story block (timeline style) ----- */
+    .story-block {
+      background: var(--surface);
+      border-radius: 2.5rem;
+      padding: 3rem;
+      border: 1px solid var(--border);
+      margin: 3rem 0;
+      position: relative;
+    }
+    .story-block p { font-size: 1.15rem; margin-bottom: 1.2rem; }
+
+    /* ----- footer (simple) ----- */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      margin-top: 4rem;
+    }
+    .footer-grid {
+      max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem;
+    }
+    .footer-links a { display: block; color: var(--text-muted); text-decoration: none; margin: 0.5rem 0; }
+    .footer-links a:hover { color: var(--primary); }
+    .footer-bottom { text-align: center; padding-top: 2.5rem; border-top: 1px dashed var(--border); margin-top: 2rem; }
+
+    @media (max-width: 900px) {
+      #nav-menu { display: none; }
+      .mobile-menu-toggle { display: block; }
+      .hero-split { grid-template-columns: 1fr; }
+      .founder-spread { grid-template-columns: 1fr; }
+      .grid-values { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 550px) {
+      .grid-values { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
+  <div class="progress-bar" id="progressBar"></div>
 
-<header>
-  <nav>
-    <div class="logo"><span class="logo-icon">🎬</span><span class="logo-text">SupremeMotive</span></div>
-    <ul id="nav-menu">
-      <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-      <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-      <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
-      <li><a href="donation.html"><i class="fas fa-mug-hot"></i> Buy a Coffee</a></li>
-    </ul>
-    <div class="nav-buttons">
-      <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-      <button class="mobile-menu-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+  <header>
+    <nav>
+      <div class="logo">
+        <span class="logo-icon">🎬</span>
+        <span class="logo-text">SupremeMotive</span>
+      </div>
+      <ul id="nav-menu">
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+        <li><a href="donation.html"><i class="fas fa-mug-hot"></i> Buy a Coffee</a></li>
+      </ul>
+      <div class="nav-buttons">
+        <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+        <button class="mobile-menu-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+      </div>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+      <ul>
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+        <li><a href="donation.html"><i class="fas fa-mug-hot"></i> Buy a Coffee</a></li>
+      </ul>
     </div>
-  </nav>
-</header>
+  </header>
 
-<main class="container">
-
-  <!-- STATS -->
-  <div class="stats-row">
-    <div class="stat-item"><span class="stat-number" id="stat1">0</span><div>Years of impact</div></div>
-    <div class="stat-item"><span class="stat-number" id="stat2">0</span><div>Contributors</div></div>
-    <div class="stat-item"><span class="stat-number" id="stat3">0</span><div>Topics covered</div></div>
-    <div class="stat-item"><span class="stat-number" id="stat4">0</span><div>Daily readers (k)</div></div>
-  </div>
-
-  <!-- FOUNDER -->
-  <div class="card" style="display:flex;gap:2rem;flex-wrap:wrap;">
-    <div style="flex:1; text-align:center;">
-      <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop&q=80" alt="Founder" style="width:220px;border-radius:50%;box-shadow:0 20px 40px -10px var(--accent);">
+  <main class="container">
+    <!-- HERO split (fresh) -->
+    <div class="hero-split">
+      <div>
+        <h1 class="hero-title">Where stories find their voice.</h1>
+        <div class="hero-sub">We're a media network built for depth, independence, and human connection. No noise, just signal.</div>
+        <div class="hero-cta">
+          <a href="contact.html" class="btn"><i class="fas fa-paper-plane"></i> Reach out</a>
+          <a href="donation.html" class="btn btn-outline"><i class="fas fa-heart"></i> Support</a>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-number" id="stat1">0</span><div>years</div></div>
+        <div class="stat-item"><span class="stat-number" id="stat2">0</span><div>contributors</div></div>
+        <div class="stat-item"><span class="stat-number" id="stat3">0</span><div>topics</div></div>
+      </div>
     </div>
-    <div style="flex:2;">
-      <h3 style="background:var(--accent-gradient);-webkit-background-clip:text;color:transparent;">Alex Chen</h3>
-      <p style="font-style:italic;color:var(--text-secondary);">Founder & Editor-in-Chief: “We started SupremeMotive to build a home for curious minds — where depth isn’t sacrificed for speed, and every story carries purpose.”</p>
+
+    <!-- FOUNDER spread (magazine style) -->
+    <div class="founder-spread">
+      <div class="founder-visual">
+        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop" alt="Alex Chen">
+      </div>
+      <div class="founder-detail">
+        <h3>Alex Chen</h3>
+        <div class="founder-role"><i class="fas fa-crown" style="margin-right: 8px;"></i> Founder & editor</div>
+        <div class="founder-bio">“We started SupremeMotive to build a home for curious minds — where depth isn’t sacrificed for speed, and every story carries purpose.”</div>
+        <div class="signature"><i class="fas fa-feather"></i> — 2018 · NYC</div>
+      </div>
     </div>
-  </div>
 
-  <!-- MISSION -->
-  <div class="card">
-    <h2>Our Mission</h2>
-    <p>Delivering high‑quality, insightful content that informs, inspires, and engages readers through well‑crafted articles, videos, and podcasts.</p>
-  </div>
+    <!-- MISSION (short) -->
+    <h2>Our mission</h2>
+    <div style="background: var(--surface); border-radius: 2rem; padding: 2.5rem; border:1px solid var(--border); margin-bottom: 3rem;">
+      <p style="font-size: 1.6rem; font-weight: 400;">SupremeMotive delivers high‑quality, insightful content that informs, inspires, and engages — through well‑crafted stories and fearless reporting.</p>
+    </div>
 
-  <!-- WHAT WE DO -->
-  <h2>What We Do</h2>
-  <div class="pill-grid">
-    <span class="pill-item"><i class="fas fa-newspaper"></i> Breaking News</span>
-    <span class="pill-item"><i class="fas fa-lightbulb"></i> Thought Leadership</span>
-    <span class="pill-item"><i class="fas fa-graduation-cap"></i> Educational</span>
-    <span class="pill-item"><i class="fas fa-star"></i> Inspiring Stories</span>
-    <span class="pill-item"><i class="fas fa-chart-line"></i> Analysis</span>
-    <span class="pill-item"><i class="fas fa-video"></i> Multimedia</span>
-    <span class="pill-item"><i class="fas fa-podcast"></i> Podcasts</span>
-    <span class="pill-item"><i class="fas fa-globe"></i> Global Affairs</span>
-  </div>
+    <!-- what we do (pill refresh) -->
+    <h2>What we do</h2>
+    <div class="pill-grid">
+      <span class="pill-item"><i class="fas fa-newspaper"></i> News</span>
+      <span class="pill-item"><i class="fas fa-lightbulb"></i> Ideas</span>
+      <span class="pill-item"><i class="fas fa-graduation-cap"></i> Learning</span>
+      <span class="pill-item"><i class="fas fa-star"></i> Profiles</span>
+      <span class="pill-item"><i class="fas fa-chart-line"></i> Analysis</span>
+      <span class="pill-item"><i class="fas fa-video"></i> Docs</span>
+      <span class="pill-item"><i class="fas fa-podcast"></i> Audio</span>
+      <span class="pill-item"><i class="fas fa-globe"></i> Global</span>
+    </div>
 
-  <!-- VALUES -->
-  <h2>Our Values</h2>
-  <div class="grid-values">
-    <div class="value-card"><h3><i class="fas fa-medal" style="color:#2563eb;"></i> Excellence</h3><p>Uncompromising quality in every story.</p></div>
-    <div class="value-card"><h3><i class="fas fa-scale-balanced" style="color:#0e7b5e;"></i> Integrity</h3><p>Ethics above all, always.</p></div>
-    <div class="value-card"><h3><i class="fas fa-globe" style="color:#4299e1;"></i> Inclusivity</h3><p>Every voice matters.</p></div>
-    <div class="value-card"><h3><i class="fas fa-microchip" style="color:#f59e0b;"></i> Innovation</h3><p>Always evolving.</p></div>
-  </div>
+    <!-- values (compact) -->
+    <h2>Core values</h2>
+    <div class="grid-values">
+      <div class="value-card"><h3><i class="fas fa-medal" style="color:#3366ff;"></i> Excellence</h3><p>No compromise on quality.</p></div>
+      <div class="value-card"><h3><i class="fas fa-scale-balanced" style="color:#0e7b5e;"></i> Integrity</h3><p>Ethics always.</p></div>
+      <div class="value-card"><h3><i class="fas fa-globe" style="color:#4299e1;"></i> Inclusivity</h3><p>Every voice matters.</p></div>
+      <div class="value-card"><h3><i class="fas fa-microchip" style="color:#f59e0b;"></i> Innovation</h3><p>Evolving constantly.</p></div>
+      <div class="value-card"><h3><i class="fas fa-magnifying-glass" style="color:#8b5cf6;"></i> Accuracy</h3><p>Fact first.</p></div>
+      <div class="value-card"><h3><i class="fas fa-comments" style="color:#ec4899;"></i> Engagement</h3><p>Community centered.</p></div>
+    </div>
 
-  <!-- ARTICLES -->
-  <h2>Featured Articles</h2>
-  <div class="story-block">
-    <h3>AI and Society: How Tech Shapes Us</h3>
-    <p>Explore the ways artificial intelligence is changing industries, culture, and daily life. Thoughtful insights by our team of experts.</p>
-  </div>
-  <div class="story-block">
-    <h3>Global Perspectives: Voices from Around the World</h3>
-    <p>Diverse stories from international contributors to broaden your worldview.</p>
-  </div>
-  <div class="story-block">
-    <h3>Innovation in Education</h3>
-    <p>How emerging technologies and new methodologies are reshaping learning for future generations.</p>
-  </div>
+    <!-- story block (clean) -->
+    <h2>Our story</h2>
+    <div class="story-block">
+      <p><i class="fas fa-quote-left" style="color:var(--primary); opacity:0.6; font-size:1.5rem; margin-right:0.5rem;"></i> Founded in 2018, we started as a tiny newsletter. Today we're a collective of journalists, creators, and developers committed to one thing: content that actually means something.</p>
+      <p>We believe in slowness in a fast world — research, empathy, and narrative power. SupremeMotive is reader-supported, independent, and built to last.</p>
+    </div>
 
-  <!-- CTA -->
-  <div class="cta-group">
-    <a href="contact.html" class="cta primary"><i class="fas fa-paper-plane"></i> Contact us</a>
-    <a href="donation.html" class="cta secondary"><i class="fas fa-heart"></i> Buy a Coffee</a>
-  </div>
+    <!-- final CTA -->
+    <section style="margin: 3rem 0;">
+      <h2>Let's connect</h2>
+      <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+        <a href="contact.html" class="btn"><i class="fas fa-paper-plane"></i> Contact</a>
+        <a href="donation.html" class="btn btn-outline"><i class="fas fa-heart"></i> Buy a coffee</a>
+      </div>
+    </section>
+  </main>
 
-</main>
+  <footer>
+    <div class="footer-grid">
+      <div><h4>🧠 SupremeMotive</h4><p style="color:var(--text-muted);">Independent media. Since 2018.</p></div>
+      <div><h4>Quick</h4><div class="footer-links"><a href="/">Home</a><a href="about.html">About</a><a href="privacy.html">Privacy</a></div></div>
+      <div><h4>Connect</h4><div class="footer-links"><a href="#"><i class="fab fa-twitter"></i> Twitter</a><a href="#"><i class="fab fa-instagram"></i> Instagram</a></div></div>
+      <div><h4>Support</h4><div class="footer-links"><a href="tel:+2347031924052"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="mailto:suprememotive43@gmail.com"><i class="far fa-envelope"></i> Email</a></div></div>
+    </div>
+    <div class="footer-bottom"><p>© 2025 SupremeMotive Network. All rights reserved. | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p></div>
+  </footer>
 
-<script>
-  // THEME TOGGLE
-  const toggle=document.getElementById('themeToggle');const root=document.documentElement;
-  toggle.addEventListener('click',()=>{const t=root.getAttribute('data-theme')==='light'?'dark':'light';root.setAttribute('data-theme',t);});
-  // COUNTERS
-  function animateCounter(el,target){let c=0;const step=target/60;const t=setInterval(()=>{c+=step;if(c>=target){el.innerText=target;clearInterval(t);}else el.innerText=Math.floor(c);},15);}
-  document.querySelectorAll('.stat-number').forEach((el,i)=>{const targets=[8,150,24,45];animateCounter(el,targets[i]);});
-</script>
+  <script>
+    (function() {
+      // theme toggle
+      const toggle = document.getElementById('themeToggle');
+      const root = document.documentElement;
+      toggle.innerHTML = root.getAttribute('data-theme')==='light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+      toggle.addEventListener('click', () => {
+        const newTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        root.setAttribute('data-theme', newTheme);
+        toggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+      });
 
+      // mobile menu
+      const mobToggle = document.getElementById('mobileToggle');
+      const mobMenu = document.getElementById('mobileMenu');
+      mobToggle.addEventListener('click', (e) => { e.stopPropagation(); mobMenu.classList.toggle('open'); });
+      document.querySelectorAll('.mobile-menu a').forEach(l => l.addEventListener('click', () => mobMenu.classList.remove('open')));
+      document.addEventListener('click', (e) => { if (!mobMenu.contains(e.target) && !mobToggle.contains(e.target)) mobMenu.classList.remove('open'); });
+
+      // progress bar
+      const prog = document.getElementById('progressBar');
+      window.addEventListener('scroll', () => {
+        const win = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        prog.style.width = (win/height)*100+'%';
+      });
+
+      // simple counters
+      [8,150,24].forEach((target, idx) => {
+        let el = document.getElementById(`stat${idx+1}`), curr = 0, step = target/50;
+        if (!el) return;
+        let t = setInterval(() => { curr += step; if(curr >= target) { el.innerText = target; clearInterval(t); } else el.innerText = Math.floor(curr); }, 20);
+      });
+    })();
+  </script>
 </body>
 </html>
