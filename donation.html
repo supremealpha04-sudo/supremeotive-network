@@ -1,474 +1,529 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Support Us - SupremeMotive Network</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support Us - SupremeMotive Network</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <body>
-    <!-- Header & Navigation -->
-    <header>
-      <nav>
-        <div class="logo">
-          <span>🎬</span>
-          <span class="logo-text">SupremeMotive</span>
-        </div>
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --accent-color: #2563eb;
+      --success-color: #16a34a;
+      --warning-color: #f59e0b;
+      --danger-color: #ec4899;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f4f7fb;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --border-color: #e5e7eb;
+      --radius: 0.75rem;
+      --transition: 0.3s ease-in-out;
+    }
 
-        <ul id="nav-menu">
-          <li><a href="/">Home</a></li>
-          <li><a href="profile.html">Profile</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="donation.html">💝 Buy a Coffee</a></li>
-        </ul>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      margin: 0;
+    }
 
-        <div class="nav-buttons">
-          <button class="theme-toggle" title="Toggle dark mode">🌙</button>
-          <button class="mobile-menu-toggle" title="Menu">☰</button>
-        </div>
-      </nav>
-    </header>
+    /* ===== HEADER ===== */
+    header nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-    <!-- Main Content -->
-    <main>
-      <div class="container">
-        <!-- Hero Section -->
-        <section style="text-align: center; margin-bottom: 3rem">
-          <h1 style="font-size: 2.5rem; margin-bottom: 1rem">Support SupremeMotive Network</h1>
-          <p style="font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto">
-            Help us create quality content and keep the platform running. Your support means everything to us! ❤️
-          </p>
-        </section>
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-        <!-- Support Methods -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem">
-          <!-- Bank Transfer -->
-          <div
-            style="
-              background: var(--bg-primary);
-              border: 1px solid var(--border-color);
-              border-radius: 0.75rem;
-              padding: 2rem;
-              text-align: center;
-            "
-          >
-            <div style="font-size: 2.5rem; margin-bottom: 1rem">🏦</div>
-            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem">Bank Transfer</h3>
+    .logo-text {
+      color: var(--accent-color);
+    }
 
-            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem; text-align: left">
-              <p style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem">
-                Opay
-              </p>
-              <p
-                style="
-                  font-weight: 700;
-                  color: var(--accent-color);
-                  margin-bottom: 1rem;
-                  word-break: break-all;
-                "
-              >
-                7031924052
-              </p>
-              <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem">
-                Name: Emmanuel Okafor Ejike
-              </p>
-              <button
-                class="submit-btn"
-                style="width: 100%; cursor: pointer"
-                onclick="copyToClipboard('7031924052', this)"
-              >
-                📋 Copy Account
-              </button>
-            </div>
+    #nav-menu {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
 
-            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 0.5rem">
-              <p style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem">
-                PalmPay
-              </p>
-              <p
-                style="
-                  font-weight: 700;
-                  color: var(--accent-color);
-                  margin-bottom: 1rem;
-                  word-break: break-all;
-                "
-              >
-                8125955756
-              </p>
-              <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem">
-                Name: Emmanuel Okafor Ejike
-              </p>
-              <button
-                class="submit-btn"
-                style="width: 100%; cursor: pointer"
-                onclick="copyToClipboard('8125955756', this)"
-              >
-                📋 Copy Account
-              </button>
-            </div>
-          </div>
+    #nav-menu li a {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      transition: color var(--transition);
+    }
 
-          <!-- Cryptocurrency -->
-          <div
-            style="
-              background: var(--bg-primary);
-              border: 1px solid var(--border-color);
-              border-radius: 0.75rem;
-              padding: 2rem;
-            "
-          >
-            <div style="font-size: 2.5rem; margin-bottom: 1rem; text-align: center">₿</div>
-            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center">
-              Cryptocurrency
-            </h3>
+    #nav-menu li a:hover {
+      color: var(--accent-color);
+    }
 
-            <div style="display: flex; flex-direction: column; gap: 1rem">
-              <!-- USDT -->
-              <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem">
-                <p style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600">
-                  USDT (BEP20)
-                </p>
-                <p
-                  style="
-                    font-size: 0.8rem;
-                    color: var(--accent-color);
-                    margin-bottom: 0.75rem;
-                    word-break: break-all;
-                    font-family: monospace;
-                  "
-                >
-                  0x...YourUSDTAddress
-                </p>
-                <button
-                  class="submit-btn"
-                  style="width: 100%; padding: 0.5rem; font-size: 0.9rem; cursor: pointer"
-                  onclick="copyToClipboard('0x...YourUSDTAddress', this)"
-                >
-                  Copy Address
-                </button>
-              </div>
+    .nav-buttons button {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-left: 1rem;
+      transition: transform var(--transition);
+    }
 
-              <!-- Bitcoin -->
-              <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem">
-                <p style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600">
-                  Bitcoin
-                </p>
-                <p
-                  style="
-                    font-size: 0.8rem;
-                    color: var(--accent-color);
-                    margin-bottom: 0.75rem;
-                    word-break: break-all;
-                    font-family: monospace;
-                  "
-                >
-                  1A1z7agoat...YourBTCAddress
-                </p>
-                <button
-                  class="submit-btn"
-                  style="width: 100%; padding: 0.5rem; font-size: 0.9rem; cursor: pointer"
-                  onclick="copyToClipboard('1A1z7agoat...YourBTCAddress', this)"
-                >
-                  Copy Address
-                </button>
-              </div>
+    .nav-buttons button:hover {
+      transform: scale(1.1);
+    }
 
-              <!-- Ethereum -->
-              <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem">
-                <p style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600">
-                  Ethereum
-                </p>
-                <p
-                  style="
-                    font-size: 0.8rem;
-                    color: var(--accent-color);
-                    margin-bottom: 0.75rem;
-                    word-break: break-all;
-                    font-family: monospace;
-                  "
-                >
-                  0x...YourETHAddress
-                </p>
-                <button
-                  class="submit-btn"
-                  style="width: 100%; padding: 0.5rem; font-size: 0.9rem; cursor: pointer"
-                  onclick="copyToClipboard('0x...YourETHAddress', this)"
-                >
-                  Copy Address
-                </button>
-              </div>
+    /* ===== MAIN ===== */
+    main .container {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
 
-              <!-- BNB -->
-              <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem">
-                <p style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600">
-                  BNB (BSC)
-                </p>
-                <p
-                  style="
-                    font-size: 0.8rem;
-                    color: var(--accent-color);
-                    margin-bottom: 0.75rem;
-                    word-break: break-all;
-                    font-family: monospace;
-                  "
-                >
-                  0x...YourBNBAddress
-                </p>
-                <button
-                  class="submit-btn"
-                  style="width: 100%; padding: 0.5rem; font-size: 0.9rem; cursor: pointer"
-                  onclick="copyToClipboard('0x...YourBNBAddress', this)"
-                >
-                  Copy Address
-                </button>
-              </div>
+    .hero {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
 
-              <!-- Solana -->
-              <div style="background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem">
-                <p style="margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600">
-                  Solana
-                </p>
-                <p
-                  style="
-                    font-size: 0.8rem;
-                    color: var(--accent-color);
-                    margin-bottom: 0.75rem;
-                    word-break: break-all;
-                    font-family: monospace;
-                  "
-                >
-                  YourSolanaWalletAddress
-                </p>
-                <button
-                  class="submit-btn"
-                  style="width: 100%; padding: 0.5rem; font-size: 0.9rem; cursor: pointer"
-                  onclick="copyToClipboard('YourSolanaWalletAddress', this)"
-                >
-                  Copy Address
-                </button>
-              </div>
-            </div>
-          </div>
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
 
-          <!-- Direct Contact -->
-          <div
-            style="
-              background: var(--bg-primary);
-              border: 1px solid var(--border-color);
-              border-radius: 0.75rem;
-              padding: 2rem;
-              text-align: center;
-            "
-          >
-            <div style="font-size: 2.5rem; margin-bottom: 1rem">💬</div>
-            <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem">Direct Contact</h3>
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
 
-            <p style="margin-bottom: 1.5rem; color: var(--text-secondary)">
-              Have questions about supporting us? Reach out directly!
-            </p>
+    /* ===== SUPPORT METHODS ===== */
+    .support-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
 
-            <div style="display: flex; flex-direction: column; gap: 0.75rem">
-              <a
-                href="https://wa.me/2347031924052"
-                class="submit-btn"
-                style="display: inline-block; width: 100%; text-align: center; cursor: pointer"
-                target="_blank"
-              >
-                📱 WhatsApp
-              </a>
+    .support-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      text-align: center;
+      transition: transform var(--transition);
+    }
 
-              <a
-                href="mailto:suprememotive43@gmail.com"
-                class="submit-btn"
-                style="display: inline-block; width: 100%; text-align: center; cursor: pointer"
-              >
-                📧 Email
-              </a>
-            </div>
-          </div>
-        </div>
+    .support-card:hover {
+      transform: translateY(-5px);
+    }
 
-        <!-- Why Support -->
-        <section style="margin-bottom: 3rem">
-          <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; text-align: center">
-            Why Support Us?
-          </h2>
+    .support-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem">
-            <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 0.75rem; border-left: 4px solid var(--accent-color)">
-              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem">Quality Content</h3>
-              <p style="color: var(--text-secondary)">
-                Your support helps us create high-quality, insightful content for our readers.
-              </p>
-            </div>
+    .support-method {
+      background: var(--bg-secondary);
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
 
-            <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 0.75rem; border-left: 4px solid var(--success-color)">
-              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem">Keep it Free</h3>
-              <p style="color: var(--text-secondary)">
-                We believe content should be accessible to everyone. Your support keeps us free!
-              </p>
-            </div>
+    .support-method p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
 
-            <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 0.75rem; border-left: 4px solid #4299e1">
-              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem">Server & Development</h3>
-              <p style="color: var(--text-secondary)">
-                Funds go towards server costs, development, and platform improvements.
-              </p>
-            </div>
+    .support-method p span {
+      font-weight: 700;
+      color: var(--accent-color);
+      word-break: break-all;
+      font-family: monospace;
+    }
 
-            <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 0.75rem; border-left: 4px solid #f59e0b">
-              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem">Community</h3>
-              <p style="color: var(--text-secondary)">
-                Every supporter becomes part of our mission to spread valuable content.
-              </p>
-            </div>
+    .submit-btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--accent-color);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
 
-            <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 0.75rem; border-left: 4px solid #8b5cf6">
-              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem">Special Perks</h3>
-              <p style="color: var(--text-secondary)">
-                Supporters get early access to new content and exclusive updates!
-              </p>
-            </div>
+    .submit-btn:hover {
+      background: #1d4ed8;
+    }
 
-            <div style="background: var(--bg-secondary); padding: 2rem; border-radius: 0.75rem; border-left: 4px solid #ec4899">
-              <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem">Make an Impact</h3>
-              <p style="color: var(--text-secondary)">
-                Your contribution directly impacts the content we can produce for you.
-              </p>
-            </div>
-          </div>
-        </section>
+    /* ===== WHY SUPPORT ===== */
+    .why-support {
+      margin-bottom: 3rem;
+    }
 
-        <!-- Contact Form -->
-        <section style="max-width: 600px; margin: 0 auto">
-          <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; text-align: center">
-            Send us a Message
-          </h2>
+    .why-support h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
 
-          <form id="contact-form" style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 2rem">
-            <div id="form-message" style="display: none; margin-bottom: 1.5rem"></div>
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
 
-            <div class="form-group-full">
-              <label for="contact-name">Name</label>
-              <input
-                type="text"
-                id="contact-name"
-                placeholder="Your name"
-                required
-              />
-            </div>
+    .why-card {
+      background: var(--bg-secondary);
+      padding: 2rem;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--accent-color);
+    }
 
-            <div class="form-group-full">
-              <label for="contact-email">Email</label>
-              <input
-                type="email"
-                id="contact-email"
-                placeholder="your@email.com"
-                required
-              />
-            </div>
+    .why-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
 
-            <div class="form-group-full">
-              <label for="contact-subject">Subject</label>
-              <input
-                type="text"
-                id="contact-subject"
-                placeholder="How can we help?"
-                required
-              />
-            </div>
+    .why-card p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
 
-            <div class="form-group-full">
-              <label for="contact-message">Message</label>
-              <textarea
-                id="contact-message"
-                placeholder="Your message..."
-                required
-              ></textarea>
-            </div>
+    /* ===== CONTACT FORM ===== */
+    .contact-section {
+      max-width: 600px;
+      margin: 0 auto 4rem auto;
+    }
 
-            <button type="submit" class="publish-btn" style="width: 100%">
-              Send Message
-            </button>
-          </form>
-        </section>
-      </div>
-    </main>
+    .contact-section h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
 
-    <!-- Footer -->
-    <footer>
-      <div class="footer-content">
-        <div class="footer-section">
-          <h4>SupremeMotive Network</h4>
-          <p>Professional media platform for insightful content and stories.</p>
-        </div>
+    #contact-form {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-        <div class="footer-section">
-          <h4>Quick Links</h4>
-          <div class="footer-links">
-            <a href="/" class="footer-link">Home</a>
-            <a href="about.html" class="footer-link">About</a>
-            <a href="privacy.html" class="footer-link">Privacy</a>
-            <a href="terms.html" class="footer-link">Terms</a>
-          </div>
-        </div>
+    #contact-form input,
+    #contact-form textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-family: inherit;
+    }
 
-        <div class="footer-section">
-          <h4>Connect</h4>
-          <div class="footer-links">
-            <a href="https://twitter.com/suprememotive" class="footer-link" target="_blank">
-              Twitter
-            </a>
-            <a href="https://instagram.com/suprememotive" class="footer-link" target="_blank">
-              Instagram
-            </a>
-          </div>
-        </div>
+    #contact-form textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
 
-        <div class="footer-section">
-          <h4>Support</h4>
-          <div class="footer-links">
-            <a href="tel:+2347031924052" class="footer-link">📱 WhatsApp</a>
-            <a href="mailto:suprememotive43@gmail.com" class="footer-link">📧 Email</a>
-          </div>
-        </div>
-      </div>
+    .success-message {
+      color: var(--success-color);
+      font-weight: 600;
+    }
 
-      <div class="footer-bottom">
-        <p>
-          &copy; 2024 SupremeMotive Network. All rights reserved. |
-          <a href="privacy.html">Privacy Policy</a> |
-          <a href="terms.html">Terms & Conditions</a>
-        </p>
-      </div>
-    </footer>
+    .error-message {
+      color: var(--danger-color);
+      font-weight: 600;
+    }
 
-    <script src="../js/main.js"></script>
-    <script>
-      function copyToClipboard(text, button) {
-        navigator.clipboard.writeText(text).then(() => {
-          const originalText = button.textContent;
-          button.textContent = '✓ Copied!';
-          setTimeout(() => {
-            button.textContent = originalText;
-          }, 2000);
-        });
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--bg-primary);
+      padding: 3rem 2rem 1rem 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h4 {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .footer-link {
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+    }
+
+    .footer-link:hover {
+      color: var(--accent-color);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+      #nav-menu {
+        display: none;
       }
+      .support-grid,
+      .why-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
 
-      // Contact form submission
-      document.getElementById('contact-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
+<body>
+  <!-- Header & Navigation -->
+  <header>
+    <nav>
+      <div class="logo">
+        <span>🎬</span>
+        <span class="logo-text">SupremeMotive</span>
+      </div>
+      <ul id="nav-menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="donation.html">💝 Buy a Coffee</a></li>
+      </ul>
+      <div class="nav-buttons">
+        <button class="theme-toggle" title="Toggle dark mode">🌙</button>
+        <button class="mobile-menu-toggle" title="Menu">☰</button>
+      </div>
+    </nav>
+  </header>
 
-        const name = document.getElementById('contact-name').value;
-        const email = document.getElementById('contact-email').value;
-        const subject = document.getElementById('contact-subject').value;
-        const message = document.getElementById('contact-message').value;
-        const formMessage = document.getElementById('form-message');
+  <!-- Main Content -->
+  <main>
+    <div class="container">
+      <!-- Hero Section -->
+      <section class="hero">
+        <h1>Support SupremeMotive Network</h1>
+        <p>Help us create quality content and keep the platform running. Your support means everything to us! ❤️</p>
+      </section>
 
-        const result = await SupremeMotive.submitSupportTicket(subject, message);
+      <!-- Support Methods -->
+      <div class="support-grid">
+        <!-- Bank Transfer Card -->
+        <div class="support-card">
+          <div style="font-size: 2.5rem;">🏦</div>
+          <h3>Bank Transfer</h3>
+
+          <div class="support-method">
+            <p>Opay</p>
+            <p><span>7031924052</span></p>
+            <p>Name: Emmanuel Okafor Ejike</p>
+            <button class="submit-btn" onclick="copyToClipboard('7031924052', this)">📋 Copy Account</button>
+          </div>
+
+          <div class="support-method">
+            <p>PalmPay</p>
+            <p><span>8125955756</span></p>
+            <p>Name: Emmanuel Okafor Ejike</p>
+            <button class="submit-btn" onclick="copyToClipboard('8125955756', this)">📋 Copy Account</button>
+          </div>
+        </div>
+
+        <!-- Crypto Card -->
+        <div class="support-card">
+          <div style="font-size: 2.5rem;">₿</div>
+          <h3>Cryptocurrency</h3>
+
+          <div style="display:flex; flex-direction:column; gap:1rem;">
+            <div class="support-method">
+              <p>USDT (BEP20)</p>
+              <p><span>0x...YourUSDTAddress</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('0x...YourUSDTAddress', this)">Copy Address</button>
+            </div>
+            <div class="support-method">
+              <p>Bitcoin</p>
+              <p><span>1A1z7agoat...YourBTCAddress</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('1A1z7agoat...YourBTCAddress', this)">Copy Address</button>
+            </div>
+            <div class="support-method">
+              <p>Ethereum</p>
+              <p><span>0x...YourETHAddress</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('0x...YourETHAddress', this)">Copy Address</button>
+            </div>
+            <div class="support-method">
+              <p>BNB (BSC)</p>
+              <p><span>0x...YourBNBAddress</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('0x...YourBNBAddress', this)">Copy Address</button>
+            </div>
+            <div class="support-method">
+              <p>Solana</p>
+              <p><span>YourSolanaWalletAddress</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('YourSolanaWalletAddress', this)">Copy Address</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct Contact Card -->
+        <div class="support-card">
+          <div style="font-size: 2.5rem;">💬</div>
+          <h3>Direct Contact</h3>
+          <p>Have questions about supporting us? Reach out directly!</p>
+          <div style="display:flex; flex-direction:column; gap:0.5rem;">
+            <a href="https://wa.me/2347031924052" class="submit-btn" target="_blank">📱 WhatsApp</a>
+            <a href="mailto:suprememotive43@gmail.com" class="submit-btn">📧 Email</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Why Support -->
+      <section class="why-support">
+        <h2>Why Support Us?</h2>
+        <div class="why-grid">
+          <div class="why-card" style="border-left-color:var(--accent-color)">
+            <h3>Quality Content</h3>
+            <p>Your support helps us create high-quality, insightful content for our readers.</p>
+          </div>
+          <div class="why-card" style="border-left-color:var(--success-color)">
+            <h3>Keep it Free</h3>
+            <p>We believe content should be accessible to everyone. Your support keeps us free!</p>
+          </div>
+          <div class="why-card" style="border-left-color:#4299e1">
+            <h3>Server & Development</h3>
+            <p>Funds go towards server costs, development, and platform improvements.</p>
+          </div>
+          <div class="why-card" style="border-left-color:#f59e0b">
+            <h3>Community</h3>
+            <p>Every supporter becomes part of our mission to spread valuable content.</p>
+          </div>
+          <div class="why-card" style="border-left-color:#8b5cf6">
+            <h3>Special Perks</h3>
+            <p>Supporters get early access to new content and exclusive updates!</p>
+          </div>
+          <div class="why-card" style="border-left-color:#ec4899">
+            <h3>Make an Impact</h3>
+            <p>Your contribution directly impacts the content we can produce for you.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Form -->
+      <section class="contact-section">
+        <h2>Send us a Message</h2>
+        <form id="contact-form">
+          <div id="form-message" style="display:none;"></div>
+
+          <input type="text" id="contact-name" placeholder="Your name" required />
+          <input type="email" id="contact-email" placeholder="your@email.com" required />
+          <input type="text" id="contact-subject" placeholder="Subject" required />
+          <textarea id="contact-message" placeholder="Your message..." required></textarea>
+          <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>SupremeMotive Network</h4>
+        <p>Professional media platform for insightful content and stories.</p>
+      </div>
+
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <div class="footer-links">
+          <a href="/" class="footer-link">Home</a>
+          <a href="about.html" class="footer-link">About</a>
+          <a href="privacy.html" class="footer-link">Privacy</a>
+          <a href="terms.html" class="footer-link">Terms</a>
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <h4>Connect</h4>
+        <div class="footer-links">
+          <a href="https://twitter.com/suprememotive" target="_blank" class="footer-link">Twitter</a>
+          <a href="https://instagram.com/suprememotive" target="_blank" class="footer-link">Instagram</a>
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <h4>Support</h4>
+        <div class="footer-links">
+          <a href="tel:+2347031924052" class="footer-link">📱 WhatsApp</a>
+          <a href="mailto:suprememotive43@gmail.com" class="footer-link">📧 Email</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2024 SupremeMotive Network. All rights reserved. |
+        <a href="privacy.html">Privacy Policy</a> |
+        <a href="terms.html">Terms & Conditions</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.textContent;
+        button.textContent = '✓ Copied!';
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 2000);
+      });
+    }
+
+    document.getElementById('contact-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value;
+      const email = document.getElementById('contact-email').value;
+      const subject = document.getElementById('contact-subject').value;
+      const message = document.getElementById('contact-message').value;
+      const formMessage = document.getElementById('form-message');
+
+      // Simulate success response for demo
+        const result = { success: true };
 
         if (result.success) {
           formMessage.innerHTML = '<div class="success-message">Message sent! We\'ll get back to you soon.</div>';
@@ -482,7 +537,11 @@
           formMessage.innerHTML = '<div class="error-message">Error: ' + (result.error || 'Could not send message') + '</div>';
           formMessage.style.display = 'block';
         }
-      });
-    </script>
-  </body>
+      } catch (err) {
+        formMessage.innerHTML = '<div class="error-message">Error: ' + (err.message || 'Could not send message') + '</div>';
+        formMessage.style.display = 'block';
+      }
+    });
+  </script>
+</body>
 </html>
