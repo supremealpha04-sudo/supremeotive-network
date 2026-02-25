@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About · SupremeMotive Network (enhanced+)</title>
-  <!-- Inter font + smooth icons via font awesome (clean cdn) -->
+  <title>About · SupremeMotive Network (founder + nav)</title>
+  <!-- Font Awesome 6 (free) + Inter font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
-    /* ----- advanced design system (with micro-interactions) ----- */
+    /* ----- design system (light/dark) ----- */
     * {
       margin: 0;
       padding: 0;
@@ -29,13 +29,11 @@
       --accent-gradient: linear-gradient(135deg, #2563eb, #6b46c1, #db2777);
       --border-light: #e2e8f0;
       --card-shadow: 0 25px 45px -18px rgba(0,20,40,0.25), 0 0 0 1px rgba(0,0,0,0.02);
-      --glow: 0 0 0 2px rgba(37,99,235,0.2);
       --success: #0f7b5e;
       --info: #2563eb;
       --warning: #d97706;
       --pink: #db2777;
       --purple: #7c3aed;
-      --stats-bg: rgba(37,99,235,0.04);
     }
 
     :root[data-theme="dark"] {
@@ -50,13 +48,11 @@
       --accent-gradient: linear-gradient(135deg, #5884ff, #9f7aea, #f472b6);
       --border-light: #334155;
       --card-shadow: 0 30px 45px -20px #020617, 0 0 0 1px #2d3a5e;
-      --glow: 0 0 0 2px #4866b0;
       --success: #2ecc71;
       --info: #60a5fa;
       --warning: #fbbf24;
       --pink: #f472b6;
       --purple: #c084fc;
-      --stats-bg: rgba(88,132,255,0.08);
     }
 
     body {
@@ -67,10 +63,7 @@
       transition: background 0.2s, color 0.2s;
     }
 
-    /* smooth scroll + progress bar */
-    html {
-      scroll-behavior: smooth;
-    }
+    /* ----- progress bar (optional) ----- */
     .progress-bar {
       position: fixed;
       top: 0; left: 0; height: 4px;
@@ -78,11 +71,10 @@
       width: 0%;
       z-index: 999;
       border-radius: 0 2px 2px 0;
-      box-shadow: 0 0 10px var(--accent-primary);
       transition: width 0.1s ease;
     }
 
-    /* sticky glass header */
+    /* ----- fully working navigation (mobile + desktop) ----- */
     header {
       background: var(--bg-elevated);
       backdrop-filter: blur(16px) saturate(180%);
@@ -90,7 +82,7 @@
       border-bottom: 1px solid var(--border-light);
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 100;
     }
 
     nav {
@@ -121,6 +113,7 @@
       color: transparent;
     }
 
+    /* desktop menu */
     #nav-menu {
       display: flex;
       list-style: none;
@@ -136,6 +129,7 @@
       font-size: 0.95rem;
       position: relative;
     }
+    #nav-menu a i { margin-right: 6px; }
     #nav-menu a::after {
       content: '';
       position: absolute;
@@ -157,6 +151,7 @@
     }
     #nav-menu a[href*="donation"]::after { display: none; }
 
+    /* nav buttons (theme + mobile toggle) */
     .nav-buttons {
       display: flex;
       gap: 0.6rem;
@@ -178,8 +173,43 @@
       border-color: transparent;
     }
     .mobile-menu-toggle {
-      display: none;
+      display: none;  /* hidden on desktop */
     }
+
+    /* mobile slide-out menu */
+    .mobile-menu {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      background: var(--bg-secondary);
+      backdrop-filter: blur(20px);
+      padding: 2rem;
+      border-bottom: 1px solid var(--border-light);
+      transform: translateY(-150%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 99;
+      box-shadow: var(--card-shadow);
+    }
+    .mobile-menu.open {
+      transform: translateY(0);
+    }
+    .mobile-menu ul {
+      list-style: none;
+    }
+    .mobile-menu li {
+      margin: 1.5rem 0;
+    }
+    .mobile-menu a {
+      text-decoration: none;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .mobile-menu a i { width: 2rem; color: var(--accent-primary); }
 
     /* container */
     .container {
@@ -188,7 +218,7 @@
       padding: 2.5rem 2rem;
     }
 
-    /* section headings with decorative line */
+    /* headings */
     h2 {
       font-size: 2.2rem;
       font-weight: 650;
@@ -207,92 +237,96 @@
       max-width: 120px;
     }
 
-    /* hero with stats row */
-    .hero-about {
+    /* founder section (with image) */
+    .founder-section {
       background: var(--bg-card);
       border-radius: 2.5rem;
       padding: 3rem;
       margin-bottom: 3rem;
       box-shadow: var(--card-shadow);
       border: 1px solid var(--border-light);
-      backdrop-filter: blur(8px);
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      gap: 3rem;
       align-items: center;
     }
-    .hero-text h1 {
-      font-size: 3.8rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
+    .founder-image {
+      flex: 1 1 260px;
+      text-align: center;
+    }
+    .founder-image img {
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 40% 60% 30% 70% / 50% 40% 60% 50%;
+      box-shadow: 0 30px 40px -15px var(--accent-primary);
+      border: 4px solid var(--bg-card);
+      transition: 1s ease;
+      animation: morph 8s infinite;
+    }
+    @keyframes morph {
+      0% { border-radius: 40% 60% 30% 70% / 50% 40% 60% 50%; }
+      50% { border-radius: 60% 40% 70% 30% / 40% 60% 30% 70%; }
+      100% { border-radius: 40% 60% 30% 70% / 50% 40% 60% 50%; }
+    }
+    .founder-quote {
+      flex: 2 1 380px;
+    }
+    .founder-quote h3 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
       background: var(--accent-gradient);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      margin-bottom: 1rem;
     }
-    .hero-text p {
+    .founder-quote .role {
+      color: var(--accent-primary);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 1.5rem;
+    }
+    .founder-quote p {
       font-size: 1.2rem;
       color: var(--text-secondary);
-      max-width: 550px;
+      border-left: 5px solid var(--accent-primary);
+      padding-left: 1.5rem;
+      font-style: italic;
     }
+    .founder-quote .signature {
+      margin-top: 1.8rem;
+      font-size: 1.1rem;
+    }
+
+    /* stats row */
     .hero-stats {
       display: flex;
       gap: 2.5rem;
-      background: var(--stats-bg);
+      background: var(--bg-card);
       padding: 1.8rem 2.2rem;
       border-radius: 2rem;
       border: 1px solid var(--border-light);
+      margin: 2rem 0;
+      justify-content: center;
     }
-    .stat-item {
-      text-align: center;
-    }
-    .stat-number {
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      letter-spacing: 0.02em;
-    }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 2.5rem; font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .stat-label { color: var(--text-secondary); }
 
-    /* mission block with floating accent */
+    /* mission block */
     .mission-block {
-      background: linear-gradient(145deg, var(--accent-soft, #dbeafe), transparent 80%);
-      background-color: var(--bg-elevated);
+      background: var(--bg-card);
       border-radius: 2.5rem;
       padding: 2.5rem;
       border: 1px solid var(--border-light);
       margin-bottom: 3rem;
-      box-shadow: var(--card-shadow);
       position: relative;
-      overflow: hidden;
     }
-    .mission-block::before {
-      content: "“";
-      position: absolute;
-      bottom: -30px; right: 20px;
-      font-size: 12rem;
-      opacity: 0.1;
-      color: var(--accent-primary);
-      font-family: serif;
-      pointer-events: none;
-    }
-    .mission-block p {
-      font-size: 1.4rem;
-      font-weight: 400;
-      color: var(--text-primary);
-      max-width: 85%;
-    }
+    .mission-block p { font-size: 1.3rem; }
 
-    /* what we do – modern pill list */
+    /* pill list */
     .pill-grid {
       display: flex;
       flex-wrap: wrap;
@@ -317,12 +351,11 @@
       background: var(--accent-primary);
       color: white;
     }
-    .pill-item i { font-size: 1.3rem; width: 1.8rem; }
 
-    /* value cards – 3d tilt + microinteraction */
+    /* values grid */
     .grid-values {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1.8rem;
       margin: 2.5rem 0;
     }
@@ -333,48 +366,20 @@
       border: 1px solid var(--border-light);
       box-shadow: var(--card-shadow);
       transition: all 0.25s ease;
-      position: relative;
-      backdrop-filter: blur(4px);
     }
-    .value-card:hover {
-      transform: translateY(-10px) scale(1.02);
-      box-shadow: 0 40px 50px -20px var(--accent-primary);
-      border-color: var(--accent-primary);
-    }
-    .value-card h3 {
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .value-card h3 i { font-size: 2rem; width: 2rem; }
-    .value-card p { color: var(--text-secondary); }
+    .value-card:hover { transform: translateY(-8px) scale(1.02); border-color: var(--accent-primary); }
+    .value-card h3 { font-size: 1.6rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
 
-    /* story block with quote style */
+    /* story block */
     .story-block {
       background: var(--bg-card);
       border-radius: 2rem;
       padding: 3rem;
       border: 1px solid var(--border-light);
-      box-shadow: var(--card-shadow);
       margin: 2rem 0 3rem;
-      position: relative;
-    }
-    .story-block p {
-      font-size: 1.1rem;
-      margin-bottom: 1.2rem;
-    }
-    .signature-line {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      margin-top: 1.5rem;
-      color: var(--accent-primary);
     }
 
-    /* cta group */
+    /* cta */
     .cta-group {
       display: flex;
       gap: 1.5rem;
@@ -386,12 +391,10 @@
       padding: 1rem 2.8rem;
       border-radius: 60px;
       font-weight: 600;
-      font-size: 1.2rem;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 0.8rem;
-      border: none;
       box-shadow: 0 18px 30px -10px var(--accent-primary);
       transition: 0.2s;
     }
@@ -401,12 +404,9 @@
       border: 2px solid var(--accent-primary);
       box-shadow: none;
     }
-    .cta-modern:hover {
-      transform: scale(1.05) translateY(-3px);
-      filter: brightness(1.1);
-    }
+    .cta-modern:hover { transform: scale(1.05) translateY(-3px); }
 
-    /* footer enhanced */
+    /* footer */
     footer {
       background: var(--bg-secondary);
       border-top: 1px solid var(--border-light);
@@ -414,32 +414,20 @@
       margin-top: 4rem;
     }
     .footer-content {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 2rem;
+      max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem;
     }
-    .footer-section i { margin-right: 0.4rem; color: var(--accent-primary); }
     .footer-links a { text-decoration: none; display: block; margin: 0.5rem 0; color: var(--text-secondary); }
     .footer-links a:hover { color: var(--accent-primary); }
-    .footer-bottom { text-align: center; padding-top: 2rem; margin-top: 2rem; border-top: 1px dashed var(--border-light); }
+    .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px dashed var(--border-light); }
 
-    /* responsive */
     @media (max-width: 800px) {
       #nav-menu { display: none; }
       .mobile-menu-toggle { display: block; }
-      .hero-about { flex-direction: column; align-items: start; gap: 2rem; }
-      .hero-stats { width: 100%; justify-content: space-around; }
       .footer-content { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 500px) {
-      .footer-content { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <!-- reading progress bar -->
   <div class="progress-bar" id="progressBar"></div>
 
   <header>
@@ -449,6 +437,7 @@
         <span class="logo-text">SupremeMotive</span>
       </div>
 
+      <!-- DESKTOP MENU (fully working links) -->
       <ul id="nav-menu">
         <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
         <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
@@ -459,42 +448,52 @@
 
       <div class="nav-buttons">
         <button class="theme-toggle" id="themeToggle" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
-        <button class="mobile-menu-toggle" title="Menu"><i class="fas fa-bars"></i></button>
+        <button class="mobile-menu-toggle" id="mobileToggle" title="Menu"><i class="fas fa-bars"></i></button>
       </div>
     </nav>
+
+    <!-- MOBILE MENU (hidden by default, opens with button) -->
+    <div class="mobile-menu" id="mobileMenu">
+      <ul>
+        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+        <li><a href="donation.html"><i class="fas fa-mug-hot"></i> Buy a Coffee</a></li>
+      </ul>
+    </div>
   </header>
 
   <main>
     <div class="container">
-      <!-- HERO section with animated counters (stats) -->
-      <div class="hero-about">
-        <div class="hero-text">
-          <h1>About SupremeMotive</h1>
-          <p>We don't just report — we connect. A new standard of digital storytelling.</p>
+      <!-- STATS (optional) -->
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-number" id="stat1">8</span><div class="stat-label">years</div></div>
+        <div class="stat-item"><span class="stat-number" id="stat2">150</span><div class="stat-label">contributors</div></div>
+        <div class="stat-item"><span class="stat-number" id="stat3">24</span><div class="stat-label">topics</div></div>
+      </div>
+
+      <!-- FOUNDER IMAGE & QUOTE (exactly as requested) -->
+      <div class="founder-section">
+        <div class="founder-image">
+          <!-- founder image (modern abstract placeholder, but you can replace src) -->
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop" alt="Founder Alex Chen">
         </div>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <div class="stat-number" id="stat1" data-target="8">0</div>
-            <div class="stat-label">years of voice</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" id="stat2" data-target="150">0</div>
-            <div class="stat-label">contributors</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" id="stat3" data-target="24">0</div>
-            <div class="stat-label">topics</div>
-          </div>
+        <div class="founder-quote">
+          <h3>Alex Chen</h3>
+          <div class="role"><i class="fas fa-crown"></i> Founder & Editor-in-Chief</div>
+          <p>“We started SupremeMotive to build a home for curious minds — where depth isn’t sacrificed for speed, and every story carries purpose.”</p>
+          <div class="signature"><i class="fas fa-feather"></i> — Alex, 2018</div>
         </div>
       </div>
 
-      <!-- MISSION with big quote effect -->
+      <!-- MISSION -->
       <div class="mission-block">
         <h2>Our Mission</h2>
         <p>SupremeMotive Network delivers high‑quality, insightful content that informs, inspires, and engages our audience through well‑crafted articles and thought‑provoking stories.</p>
       </div>
 
-      <!-- WHAT WE DO - modern pill list with icons -->
+      <!-- WHAT WE DO -->
       <h2>What We Do</h2>
       <div class="pill-grid">
         <span class="pill-item"><i class="fas fa-newspaper"></i> Breaking News</span>
@@ -503,11 +502,9 @@
         <span class="pill-item"><i class="fas fa-star"></i> Inspiring Stories</span>
         <span class="pill-item"><i class="fas fa-chart-line"></i> Analysis</span>
         <span class="pill-item"><i class="fas fa-video"></i> Multimedia</span>
-        <span class="pill-item"><i class="fas fa-podcast"></i> Podcasts</span>
-        <span class="pill-item"><i class="fas fa-globe"></i> Global Affairs</span>
       </div>
 
-      <!-- OUR VALUES (enhanced with icons + gradient) -->
+      <!-- VALUES -->
       <h2>Our Values</h2>
       <div class="grid-values">
         <div class="value-card"><h3><i class="fas fa-medal" style="color:#2563eb;"></i> Excellence</h3><p>Uncompromising quality in every story.</p></div>
@@ -518,20 +515,16 @@
         <div class="value-card"><h3><i class="fas fa-comments" style="color:#ec4899;"></i> Engagement</h3><p>Community driven.</p></div>
       </div>
 
-      <!-- OUR STORY with signature element -->
+      <!-- STORY -->
       <h2>Our Story</h2>
       <div class="story-block">
-        <p><i class="fas fa-quote-left" style="color: var(--accent-primary); opacity: 0.5; font-size: 1.5rem;"></i> SupremeMotive Network was founded with a simple vision: to create a space where quality journalism and engaging storytelling thrive. In an era of information overload, we believe there's a need for a platform that prioritizes thoughtful, well-researched content.</p>
+        <p><i class="fas fa-quote-left" style="color: var(--accent-primary);"></i> SupremeMotive Network was founded with a simple vision: to create a space where quality journalism and engaging storytelling thrive. In an era of information overload, we believe there's a need for a platform that prioritizes thoughtful, well-researched content.</p>
         <p>Our team is composed of passionate journalists, content creators, and developers who are committed to delivering the best possible experience for our readers.</p>
-        <div class="signature-line">
-          <i class="fas fa-feather"></i> <span>— founders since 2018</span>
-        </div>
       </div>
 
-      <!-- GET IN TOUCH with stronger CTA -->
+      <!-- CTA -->
       <section style="margin-top: 2rem;">
         <h2>Let's Connect</h2>
-        <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 2rem;">Got an idea, a tip, or just want to say hi? We’re all ears.</p>
         <div class="cta-group">
           <a href="contact.html" class="cta-modern"><i class="fas fa-paper-plane"></i> Contact us</a>
           <a href="donation.html" class="cta-modern secondary"><i class="fas fa-heart"></i> Buy a coffee</a>
@@ -540,51 +533,24 @@
     </div>
   </main>
 
-  <!-- FOOTER with icons -->
   <footer>
     <div class="footer-content">
-      <div class="footer-section">
-        <h4><i class="fas fa-crown"></i> SupremeMotive</h4>
-        <p>Professional media platform for insightful content and stories.</p>
-      </div>
-      <div class="footer-section">
-        <h4>Quick</h4>
-        <div class="footer-links">
-          <a href="/"><i class="fas fa-chevron-right"></i> Home</a>
-          <a href="about.html"><i class="fas fa-chevron-right"></i> About</a>
-          <a href="privacy.html"><i class="fas fa-chevron-right"></i> Privacy</a>
-        </div>
-      </div>
-      <div class="footer-section">
-        <h4>Connect</h4>
-        <div class="footer-links">
-          <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
-          <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-        </div>
-      </div>
-      <div class="footer-section">
-        <h4>Support</h4>
-        <div class="footer-links">
-          <a href="tel:+2347031924052"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-          <a href="mailto:suprememotive43@gmail.com"><i class="far fa-envelope"></i> Email</a>
-        </div>
-      </div>
+      <div class="footer-section"><h4><i class="fas fa-crown"></i> SupremeMotive</h4><p>Professional media platform.</p></div>
+      <div class="footer-section"><h4>Quick</h4><div class="footer-links"><a href="/"><i class="fas fa-chevron-right"></i> Home</a><a href="about.html">About</a></div></div>
+      <div class="footer-section"><h4>Connect</h4><div class="footer-links"><a href="#"><i class="fab fa-twitter"></i> Twitter</a><a href="#"><i class="fab fa-instagram"></i> Instagram</a></div></div>
+      <div class="footer-section"><h4>Support</h4><div class="footer-links"><a href="tel:+2347031924052"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="mailto:suprememotive43@gmail.com"><i class="far fa-envelope"></i> Email</a></div></div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 SupremeMotive Network. All rights reserved. | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p>
-    </div>
+    <div class="footer-bottom"><p>&copy; 2025 SupremeMotive Network. All rights reserved.</p></div>
   </footer>
 
-  <!-- enhanced interaction: progress bar, animated counters, theme toggle, mobile stub -->
   <script>
     (function() {
-      // theme toggle + icon swap
+      // ----- THEME TOGGLE (fully functional) -----
       const toggle = document.getElementById('themeToggle');
       const root = document.documentElement;
       const moonIcon = '<i class="fas fa-moon"></i>';
       const sunIcon = '<i class="fas fa-sun"></i>';
       toggle.innerHTML = root.getAttribute('data-theme') === 'light' ? moonIcon : sunIcon;
-
       toggle.addEventListener('click', () => {
         const current = root.getAttribute('data-theme');
         const newTheme = current === 'light' ? 'dark' : 'light';
@@ -592,7 +558,27 @@
         toggle.innerHTML = newTheme === 'light' ? moonIcon : sunIcon;
       });
 
-      // reading progress bar
+      // ----- MOBILE MENU (fully working) -----
+      const mobileToggle = document.getElementById('mobileToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileMenu.classList.toggle('open');
+      });
+      // close menu when clicking a link (optional)
+      document.querySelectorAll('.mobile-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+        });
+      });
+      // click outside to close? (optional but good)
+      document.addEventListener('click', (event) => {
+        if (!mobileMenu.contains(event.target) && !mobileToggle.contains(event.target)) {
+          mobileMenu.classList.remove('open');
+        }
+      });
+
+      // ----- PROGRESS BAR -----
       const progressBar = document.getElementById('progressBar');
       window.addEventListener('scroll', () => {
         const winScroll = document.documentElement.scrollTop;
@@ -601,34 +587,8 @@
         progressBar.style.width = scrolled + '%';
       });
 
-      // animated counters (simple incremental)
-      function animateCounter(el, target) {
-        let current = 0;
-        const increment = target / 50;
-        const timer = setInterval(() => {
-          current += increment;
-          if (current >= target) {
-            el.innerText = target;
-            clearInterval(timer);
-          } else {
-            el.innerText = Math.floor(current);
-          }
-        }, 20);
-      }
-
-      const stat1 = document.getElementById('stat1');
-      const stat2 = document.getElementById('stat2');
-      const stat3 = document.getElementById('stat3');
-      if (stat1) animateCounter(stat1, 8);
-      if (stat2) animateCounter(stat2, 150);
-      if (stat3) animateCounter(stat3, 24);
-
-      // mobile menu stub
-      document.querySelector('.mobile-menu-toggle')?.addEventListener('click', ()=>{
-        alert('📱 mobile menu would open – fully responsive layout active');
-      });
+      // (optional counters just for show, they're static now, but numbers are visible)
     })();
   </script>
-  <!-- optionally include external js if needed -->
 </body>
 </html>
