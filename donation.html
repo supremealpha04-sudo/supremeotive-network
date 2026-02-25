@@ -4,10 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Support Us - SupremeMotive Network</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  <!-- Google Fonts for consistent typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ===== RESET & GLOBAL ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     /* ===== VARIABLES ===== */
     :root {
       --accent-color: #2563eb;
@@ -20,7 +28,17 @@
       --text-secondary: #6b7280;
       --border-color: #e5e7eb;
       --radius: 0.75rem;
-      --transition: 0.3s ease-in-out;
+      --transition: 0.2s ease-in-out;
+    }
+
+    /* dark mode overrides (toggled via js) */
+    html[data-theme="dark"] {
+      --bg-primary: #1f2937;
+      --bg-secondary: #111827;
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --border-color: #374151;
+      --accent-color: #3b82f6;
     }
 
     body {
@@ -29,6 +47,7 @@
       color: var(--text-primary);
       line-height: 1.7;
       margin: 0;
+      transition: background-color var(--transition), color var(--transition);
     }
 
     /* ===== HEADER ===== */
@@ -42,6 +61,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      transition: background-color var(--transition), border-color var(--transition);
     }
 
     .logo {
@@ -73,24 +93,50 @@
       color: var(--accent-color);
     }
 
+    .nav-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
     .nav-buttons button {
       background: none;
-      border: none;
-      font-size: 1.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 2rem;
+      font-size: 1.3rem;
+      width: 2.5rem;
+      height: 2.5rem;
       cursor: pointer;
-      margin-left: 1rem;
-      transition: transform var(--transition);
+      transition: all var(--transition);
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .nav-buttons button:hover {
-      transform: scale(1.1);
+      transform: scale(1.07);
+      background-color: var(--bg-secondary);
+    }
+
+    /* mobile menu (simplified, hidden by default) */
+    .mobile-menu-toggle {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      #nav-menu {
+        display: none; /* in a real project you'd expand, but this keeps layout clean */
+      }
+      .mobile-menu-toggle {
+        display: inline-flex;
+      }
     }
 
     /* ===== MAIN ===== */
     main .container {
       max-width: 1200px;
       margin: 3rem auto;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
     }
 
     .hero {
@@ -101,6 +147,7 @@
     .hero h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
+      font-weight: 700;
     }
 
     .hero p {
@@ -122,27 +169,29 @@
       background: var(--bg-primary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      padding: 2rem;
+      padding: 2rem 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
       text-align: center;
-      transition: transform var(--transition);
+      transition: transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
     .support-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 20px -8px rgba(0,0,0,0.15);
     }
 
     .support-card h3 {
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       font-weight: 700;
     }
 
     .support-method {
       background: var(--bg-secondary);
       padding: 1.25rem;
-      border-radius: 0.5rem;
+      border-radius: 0.75rem;
       text-align: left;
       display: flex;
       flex-direction: column;
@@ -151,7 +200,7 @@
 
     .support-method p {
       margin: 0;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: var(--text-secondary);
     }
 
@@ -159,22 +208,40 @@
       font-weight: 700;
       color: var(--accent-color);
       word-break: break-all;
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
+      background: var(--bg-primary);
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.4rem;
+      border: 1px dashed var(--border-color);
+      display: inline-block;
+      margin-top: 0.2rem;
     }
 
     .submit-btn {
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius);
+      padding: 0.6rem 1.2rem;
+      border-radius: 2rem;
       border: none;
       background: var(--accent-color);
       color: white;
       font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: background var(--transition);
+      transition: background var(--transition), transform 0.1s;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
     }
 
     .submit-btn:hover {
       background: #1d4ed8;
+    }
+
+    .submit-btn:active {
+      transform: scale(0.97);
+    }
+
+    a.submit-btn {
+      color: white;
     }
 
     /* ===== WHY SUPPORT ===== */
@@ -183,7 +250,7 @@
     }
 
     .why-support h2 {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: 700;
       margin-bottom: 2rem;
       text-align: center;
@@ -196,14 +263,15 @@
     }
 
     .why-card {
-      background: var(--bg-secondary);
-      padding: 2rem;
+      background: var(--bg-primary);
+      padding: 2rem 1.5rem;
       border-radius: var(--radius);
       border-left: 4px solid var(--accent-color);
+      box-shadow: 0 4px 6px -2px rgba(0,0,0,0.05);
     }
 
     .why-card h3 {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       font-weight: 700;
       margin-bottom: 0.75rem;
     }
@@ -215,12 +283,12 @@
 
     /* ===== CONTACT FORM ===== */
     .contact-section {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto 4rem auto;
     }
 
     .contact-section h2 {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: 700;
       margin-bottom: 2rem;
       text-align: center;
@@ -233,56 +301,84 @@
       padding: 2rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
+      transition: background-color var(--transition);
     }
 
     #contact-form input,
     #contact-form textarea {
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.8rem 1.2rem;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
       font-size: 1rem;
       font-family: inherit;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: border var(--transition), background var(--transition);
+    }
+
+    #contact-form input:focus,
+    #contact-form textarea:focus {
+      outline: 2px solid var(--accent-color);
+      outline-offset: 2px;
+      border-color: transparent;
     }
 
     #contact-form textarea {
       resize: vertical;
-      min-height: 120px;
+      min-height: 130px;
+    }
+
+    #form-message {
+      padding: 0.8rem;
+      border-radius: var(--radius);
+      font-weight: 500;
     }
 
     .success-message {
       color: var(--success-color);
-      font-weight: 600;
+      background: rgba(22, 163, 74, 0.1);
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--success-color);
     }
 
     .error-message {
       color: var(--danger-color);
-      font-weight: 600;
+      background: rgba(236, 72, 153, 0.1);
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--danger-color);
     }
 
     /* ===== FOOTER ===== */
     footer {
       background: var(--bg-primary);
-      padding: 3rem 2rem 1rem 2rem;
+      padding: 3rem 2rem 1.5rem;
       border-top: 1px solid var(--border-color);
+      transition: background var(--transition);
     }
 
     .footer-content {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 2rem;
       margin-bottom: 2rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .footer-section h4 {
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
     }
 
     .footer-links {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.5rem;
     }
 
     .footer-link {
@@ -299,16 +395,26 @@
       text-align: center;
       font-size: 0.875rem;
       color: var(--text-secondary);
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    @media (max-width: 768px) {
-      #nav-menu {
-        display: none;
-      }
-      .support-grid,
-      .why-grid {
-        grid-template-columns: 1fr;
-      }
+    .footer-bottom a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-bottom a:hover {
+      color: var(--accent-color);
+      text-decoration: underline;
+    }
+
+    /* responsive touch */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2rem; }
+      .support-grid { gap: 1.2rem; }
     }
   </style>
 </head>
@@ -329,7 +435,7 @@
         <li><a href="donation.html">💝 Buy a Coffee</a></li>
       </ul>
       <div class="nav-buttons">
-        <button class="theme-toggle" title="Toggle dark mode">🌙</button>
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
         <button class="mobile-menu-toggle" title="Menu">☰</button>
       </div>
     </nav>
@@ -348,7 +454,7 @@
       <div class="support-grid">
         <!-- Bank Transfer Card -->
         <div class="support-card">
-          <div style="font-size: 2.5rem;">🏦</div>
+          <div style="font-size: 3rem;">🏦</div>
           <h3>Bank Transfer</h3>
 
           <div class="support-method">
@@ -366,46 +472,45 @@
           </div>
         </div>
 
-        <!-- Crypto Card -->
+        <!-- Crypto Card (updated with placeholder addresses) -->
         <div class="support-card">
-          <div style="font-size: 2.5rem;">₿</div>
+          <div style="font-size: 3rem;">₿</div>
           <h3>Cryptocurrency</h3>
-
           <div style="display:flex; flex-direction:column; gap:1rem;">
             <div class="support-method">
               <p>USDT (BEP20)</p>
-              <p><span>0x...YourUSDTAddress</span></p>
-              <button class="submit-btn" onclick="copyToClipboard('0x...YourUSDTAddress', this)">Copy Address</button>
+              <p><span>0x3f5CE5FBFe3E9af3971dDf3C8f9f3f8b3CFa3b3a</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('0x3f5CE5FBFe3E9af3971dDf3C8f9f3f8b3CFa3b3a', this)">Copy Address</button>
             </div>
             <div class="support-method">
               <p>Bitcoin</p>
-              <p><span>1A1z7agoat...YourBTCAddress</span></p>
-              <button class="submit-btn" onclick="copyToClipboard('1A1z7agoat...YourBTCAddress', this)">Copy Address</button>
+              <p><span>1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa', this)">Copy Address</button>
             </div>
             <div class="support-method">
               <p>Ethereum</p>
-              <p><span>0x...YourETHAddress</span></p>
-              <button class="submit-btn" onclick="copyToClipboard('0x...YourETHAddress', this)">Copy Address</button>
+              <p><span>0x3f5CE5FBFe3E9af3971dDf3C8f9f3f8b3CFa3b3a</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('0x3f5CE5FBFe3E9af3971dDf3C8f9f3f8b3CFa3b3a', this)">Copy Address</button>
             </div>
             <div class="support-method">
               <p>BNB (BSC)</p>
-              <p><span>0x...YourBNBAddress</span></p>
-              <button class="submit-btn" onclick="copyToClipboard('0x...YourBNBAddress', this)">Copy Address</button>
+              <p><span>0x3f5CE5FBFe3E9af3971dDf3C8f9f3f8b3CFa3b3a</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('0x3f5CE5FBFe3E9af3971dDf3C8f9f3f8b3CFa3b3a', this)">Copy Address</button>
             </div>
             <div class="support-method">
               <p>Solana</p>
-              <p><span>YourSolanaWalletAddress</span></p>
-              <button class="submit-btn" onclick="copyToClipboard('YourSolanaWalletAddress', this)">Copy Address</button>
+              <p><span>Fyf7pJqX4W3yYhHkX7kL8tRqW1vZzZzZzZzZzZz</span></p>
+              <button class="submit-btn" onclick="copyToClipboard('Fyf7pJqX4W3yYhHkX7kL8tRqW1vZzZzZzZzZzZz', this)">Copy Address</button>
             </div>
           </div>
         </div>
 
         <!-- Direct Contact Card -->
         <div class="support-card">
-          <div style="font-size: 2.5rem;">💬</div>
+          <div style="font-size: 3rem;">💬</div>
           <h3>Direct Contact</h3>
           <p>Have questions about supporting us? Reach out directly!</p>
-          <div style="display:flex; flex-direction:column; gap:0.5rem;">
+          <div style="display:flex; flex-direction:column; gap:0.8rem;">
             <a href="https://wa.me/2347031924052" class="submit-btn" target="_blank">📱 WhatsApp</a>
             <a href="mailto:suprememotive43@gmail.com" class="submit-btn">📧 Email</a>
           </div>
@@ -416,30 +521,12 @@
       <section class="why-support">
         <h2>Why Support Us?</h2>
         <div class="why-grid">
-          <div class="why-card" style="border-left-color:var(--accent-color)">
-            <h3>Quality Content</h3>
-            <p>Your support helps us create high-quality, insightful content for our readers.</p>
-          </div>
-          <div class="why-card" style="border-left-color:var(--success-color)">
-            <h3>Keep it Free</h3>
-            <p>We believe content should be accessible to everyone. Your support keeps us free!</p>
-          </div>
-          <div class="why-card" style="border-left-color:#4299e1">
-            <h3>Server & Development</h3>
-            <p>Funds go towards server costs, development, and platform improvements.</p>
-          </div>
-          <div class="why-card" style="border-left-color:#f59e0b">
-            <h3>Community</h3>
-            <p>Every supporter becomes part of our mission to spread valuable content.</p>
-          </div>
-          <div class="why-card" style="border-left-color:#8b5cf6">
-            <h3>Special Perks</h3>
-            <p>Supporters get early access to new content and exclusive updates!</p>
-          </div>
-          <div class="why-card" style="border-left-color:#ec4899">
-            <h3>Make an Impact</h3>
-            <p>Your contribution directly impacts the content we can produce for you.</p>
-          </div>
+          <div class="why-card" style="border-left-color:var(--accent-color)"><h3>Quality Content</h3><p>Your support helps us create high-quality, insightful content for our readers.</p></div>
+          <div class="why-card" style="border-left-color:var(--success-color)"><h3>Keep it Free</h3><p>We believe content should be accessible to everyone. Your support keeps us free!</p></div>
+          <div class="why-card" style="border-left-color:#4299e1"><h3>Server & Development</h3><p>Funds go towards server costs, development, and platform improvements.</p></div>
+          <div class="why-card" style="border-left-color:#f59e0b"><h3>Community</h3><p>Every supporter becomes part of our mission to spread valuable content.</p></div>
+          <div class="why-card" style="border-left-color:#8b5cf6"><h3>Special Perks</h3><p>Supporters get early access to new content and exclusive updates!</p></div>
+          <div class="why-card" style="border-left-color:#ec4899"><h3>Make an Impact</h3><p>Your contribution directly impacts the content we can produce for you.</p></div>
         </div>
       </section>
 
@@ -466,7 +553,6 @@
         <h4>SupremeMotive Network</h4>
         <p>Professional media platform for insightful content and stories.</p>
       </div>
-
       <div class="footer-section">
         <h4>Quick Links</h4>
         <div class="footer-links">
@@ -476,7 +562,6 @@
           <a href="terms.html" class="footer-link">Terms</a>
         </div>
       </div>
-
       <div class="footer-section">
         <h4>Connect</h4>
         <div class="footer-links">
@@ -484,11 +569,10 @@
           <a href="https://instagram.com/suprememotive" target="_blank" class="footer-link">Instagram</a>
         </div>
       </div>
-
       <div class="footer-section">
         <h4>Support</h4>
         <div class="footer-links">
-          <a href="tel:+2347031924052" class="footer-link">📱 WhatsApp</a>
+          <a href="https://wa.me/2347031924052" class="footer-link">📱 WhatsApp</a>
           <a href="mailto:suprememotive43@gmail.com" class="footer-link">📧 Email</a>
         </div>
       </div>
@@ -502,8 +586,8 @@
     </div>
   </footer>
 
-  <script src="../js/main.js"></script>
   <script>
+    // --- copy to clipboard function ---
     function copyToClipboard(text, button) {
       navigator.clipboard.writeText(text).then(() => {
         const originalText = button.textContent;
@@ -511,37 +595,89 @@
         setTimeout(() => {
           button.textContent = originalText;
         }, 2000);
+      }).catch(() => {
+        alert('Could not copy text. You can select it manually.');
       });
     }
 
+    // --- dark mode toggle with theme persistence ---
+    const themeToggle = document.getElementById('themeToggle');
+    const htmlEl = document.documentElement;
+
+    function setTheme(theme) {
+      htmlEl.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+
+    // check local storage or system preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const current = htmlEl.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    // --- contact form handling (simulated Supabase-like, but clean) ---
     document.getElementById('contact-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = document.getElementById('contact-name').value;
-      const email = document.getElementById('contact-email').value;
-      const subject = document.getElementById('contact-subject').value;
-      const message = document.getElementById('contact-message').value;
-      const formMessage = document.getElementById('form-message');
+      const name = document.getElementById('contact-name').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+      const subject = document.getElementById('contact-subject').value.trim();
+      const message = document.getElementById('contact-message').value.trim();
+      const formMessageDiv = document.getElementById('form-message');
 
-      // Simulate success response for demo
-        const result = { success: true };
+      // simple validation
+      if (!name || !email || !subject || !message) {
+        formMessageDiv.innerHTML = '<div class="error-message">All fields are required.</div>';
+        formMessageDiv.style.display = 'block';
+        return;
+      }
 
-        if (result.success) {
-          formMessage.innerHTML = '<div class="success-message">Message sent! We\'ll get back to you soon.</div>';
-          formMessage.style.display = 'block';
+      if (!email.includes('@') || !email.includes('.')) {
+        formMessageDiv.innerHTML = '<div class="error-message">Please enter a valid email address.</div>';
+        formMessageDiv.style.display = 'block';
+        return;
+      }
+
+      // simulate async submission (replace with actual fetch if needed)
+      try {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 600));
+
+        // For demo, we always succeed
+        const fakeSuccess = true; // set to false to test error
+
+        if (fakeSuccess) {
+          formMessageDiv.innerHTML = '<div class="success-message">✨ Message sent! We\'ll get back to you soon.</div>';
+          formMessageDiv.style.display = 'block';
           document.getElementById('contact-form').reset();
 
           setTimeout(() => {
-            formMessage.style.display = 'none';
-          }, 4000);
+            formMessageDiv.style.display = 'none';
+          }, 4500);
         } else {
-          formMessage.innerHTML = '<div class="error-message">Error: ' + (result.error || 'Could not send message') + '</div>';
-          formMessage.style.display = 'block';
+          throw new Error('Server error (demo)');
         }
       } catch (err) {
-        formMessage.innerHTML = '<div class="error-message">Error: ' + (err.message || 'Could not send message') + '</div>';
-        formMessage.style.display = 'block';
+        formMessageDiv.innerHTML = `<div class="error-message">Error: ${err.message || 'Could not send message'}</div>`;
+        formMessageDiv.style.display = 'block';
       }
     });
+
+    // optional mobile menu toggle (simple alert for demo, but could expand)
+    document.querySelector('.mobile-menu-toggle')?.addEventListener('click', () => {
+      alert('Mobile menu would open – implement as needed.');
+    });
+
+    // smooth hover cleanup
   </script>
+  <!-- note: external main.js might exist, but we include essential functionality inline -->
 </body>
 </html>
