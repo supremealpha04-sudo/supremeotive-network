@@ -1,254 +1,213 @@
-// Admin Logic
-
-let adminPosts = [];
-let adminEbooks = [];
-let pendingRequests = [];
-let allUnlocks = [];
-let allUsers = [];
-
-function showAdmin() {
-    setContentScreen('admin-screen');
-    loadAdminData();
+/* Admin Screen */
+.admin-tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    background: var(--surface);
+    border-bottom: 1px solid var(--surface-light);
+    overflow-x: auto;
 }
 
-async function loadAdminData() {
-    if (canManagePosts(currentProfile.role)) {
-        await loadAdminPosts();
-    }
-    if (canManageEbooks(currentProfile.role)) {
-        await loadAdminEbooks();
-    }
-    if (canManageUnlocks(currentProfile.role)) {
-        await loadUnlockRequests();
-    }
-    if (canManageUsers(currentProfile.role)) {
-        await loadAllUsers();
-    }
+.admin-tab {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
 }
 
-function showAdminTab(tab) {
-    // Update tabs
-    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    // Update panels
-    document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(`admin-${tab}`).classList.add('active');
+.admin-tab:hover {
+    background: var(--surface-light);
+    color: var(--text-primary);
 }
 
-// Posts Admin
-async function loadAdminPosts() {
-    try {
-        adminPosts = await db.getPosts();
-        const container = document.getElementById('admin-posts-list');
-        
-        container.innerHTML = adminPosts.map(post => `
-            <div class="admin-item">
-                <div class="admin-item-info">
-                    <div class="admin-item-title">${escapeHtml(post.title)}</div>
-                    <div class="admin-item-subtitle">${utils.timeAgo(post.created_at)} • ${post.likes_count} likes</div>
-                </div>
-                <div class="admin-item-actions">
-                    <button class="btn btn-icon" onclick="editPost('${post.id}')">✏️</button>
-                    <button class="btn btn-icon" onclick="deleteAdminPost('${post.id}')" style="color: var(--error)">🗑️</button>
-                </div>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Failed to load admin posts', error);
-    }
+.admin-tab.active {
+    background: var(--accent);
+    color: #000;
 }
 
-function editPost(postId) {
-    const post = adminPosts.find(p => p.id === postId);
-    if (post) {
-        showCreatePost(post);
-    }
+.admin-panel {
+    display: none;
+    padding: var(--spacing-lg);
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-async function deleteAdminPost(postId) {
-    if (!confirm('Delete this post?')) return;
-    
-    try {
-        await db.deletePost(postId);
-        await loadAdminPosts();
-        await loadPosts();
-        showToast('Post deleted', 'success');
-    } catch (error) {
-        showToast('Failed to delete post', 'error');
-    }
+.admin-panel.active {
+    display: block;
 }
 
-// eBooks Admin
-async function loadAdminEbooks() {
-    try {
-        adminEbooks = await db.getEbooks();
-        const container = document.getElementById('admin-ebooks-list');
-        
-        container.innerHTML = adminEbooks.map(ebook => `
-            <div class="admin-item">
-                <img src="${ebook.cover_url}" alt="">
-                <div class="admin-item-info">
-                    <div class="admin-item-title">${escapeHtml(ebook.title)}</div>
-                    <div class="admin-item-subtitle">${ebook.category} • ${utils.formatPrice(ebook.price, ebook.currency)}</div>
-                </div>
-                <div class="admin-item-actions">
-                    <button class="btn btn-icon" onclick="deleteAdminEbook('${ebook.id}')" style="color: var(--error)">🗑️</button>
-                </div>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Failed to load admin ebooks', error);
-    }
+.admin-list {
+    margin-top: var(--spacing-lg);
 }
 
-async function deleteAdminEbook(ebookId) {
-    if (!confirm('Delete this eBook?')) return;
-    
-    try {
-        await db.deleteEbook(ebookId);
-        await loadAdminEbooks();
-        await loadEbooks();
-        showToast('eBook deleted', 'success');
-    } catch (error) {
-        showToast('Failed to delete eBook', 'error');
-    }
+.admin-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
 }
 
-// Unlocks Admin
-function showUnlockTab(tab) {
-    document.querySelectorAll('.unlock-tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    document.querySelectorAll('.unlock-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(`unlock-${tab}`).classList.add('active');
+.admin-item img {
+    width: 50px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
 }
 
-async function loadUnlockRequests() {
-    try {
-        pendingRequests = await db.getPendingRequests();
-        renderPendingRequests();
-        
-        allUnlocks = await db.getAllUnlocks();
-        renderAllUnlocks();
-    } catch (error) {
-        console.error('Failed to load unlocks', error);
-    }
+.admin-item-info {
+    flex: 1;
 }
 
-function renderPendingRequests() {
-    const container = document.getElementById('unlock-pending');
-    
-    if (pendingRequests.length === 0) {
-        container.innerHTML = '<p class="empty-state">No pending requests</p>';
-        return;
-    }
-
-    container.innerHTML = pendingRequests.map(req => `
-        <div class="unlock-request">
-            <div class="unlock-request-header">
-                <div class="unlock-request-info">
-                    <h4>${escapeHtml(req.ebooks?.title || 'Unknown')}</h4>
-                    <p>By: ${req.profiles?.name || 'Unknown'} (${req.profiles?.email})</p>
-                </div>
-                <span class="unlock-request-price">${utils.formatPrice(req.ebooks?.price || 0, '₦')}</span>
-            </div>
-            <div class="unlock-request-actions">
-                <button class="btn btn-secondary" onclick="rejectUnlock('${req.user_id}', '${req.ebook_id}')">Reject</button>
-                <button class="btn btn-primary" onclick="approveUnlock('${req.user_id}', '${req.ebook_id}')">Approve</button>
-            </div>
-        </div>
-    `).join('');
+.admin-item-title {
+    font-weight: 600;
+    margin-bottom: 2px;
 }
 
-function renderAllUnlocks() {
-    const container = document.getElementById('unlock-all');
-    
-    container.innerHTML = allUnlocks.map(unlock => `
-        <div class="admin-item">
-            <div class="admin-item-info">
-                <div class="admin-item-title">${escapeHtml(unlock.ebooks?.title || 'Unknown')}</div>
-                <div class="admin-item-subtitle">User: ${unlock.profiles?.name || 'Unknown'}</div>
-            </div>
-            <button class="btn btn-icon" onclick="revokeUnlock('${unlock.user_id}', '${unlock.ebook_id}')" style="color: var(--error)">
-                🚫
-            </button>
-        </div>
-    `).join('');
+.admin-item-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
 }
 
-async function approveUnlock(userId, ebookId) {
-    try {
-        await db.approveUnlock(userId, ebookId);
-        await loadUnlockRequests();
-        showToast('Unlock approved', 'success');
-    } catch (error) {
-        showToast('Failed to approve', 'error');
-    }
+.admin-item-actions {
+    display: flex;
+    gap: var(--spacing-sm);
 }
 
-async function rejectUnlock(userId, ebookId) {
-    try {
-        await db.rejectUnlock(userId, ebookId);
-        await loadUnlockRequests();
-        showToast('Request rejected', 'success');
-    } catch (error) {
-        showToast('Failed to reject', 'error');
-    }
+/* Unlock Admin */
+.unlock-tabs {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
-async function revokeUnlock(userId, ebookId) {
-    if (!confirm('Revoke this access?')) return;
-    
-    try {
-        await db.revokeUnlock(userId, ebookId);
-        await loadUnlockRequests();
-        showToast('Access revoked', 'success');
-    } catch (error) {
-        showToast('Failed to revoke', 'error');
-    }
+.unlock-tab {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
 }
 
-// Users Admin (Super Admin only)
-async function loadAllUsers() {
-    try {
-        allUsers = await db.getAllProfiles();
-        const container = document.getElementById('admin-users-list');
-        
-        container.innerHTML = allUsers.map(user => `
-            <div class="user-item">
-                <div class="user-avatar">${user.name[0]}</div>
-                <div class="user-info">
-                    <div class="user-name">${escapeHtml(user.name)}</div>
-                    <div class="user-email">${user.email}</div>
-                </div>
-                <span class="user-role ${user.role}">${user.role}</span>
-                <select class="role-selector" onchange="changeUserRole('${user.id}', this.value)">
-                    ${Object.values(ROLES).map(role => `
-                        <option value="${role}" ${user.role === role ? 'selected' : ''}>
-                            ${role}
-                        </option>
-                    `).join('')}
-                </select>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.error('Failed to load users', error);
-    }
+.unlock-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
 }
 
-async function changeUserRole(userId, newRole) {
-    try {
-        await db.updateProfile(userId, { role: newRole });
-        await loadAllUsers();
-        showToast('Role updated', 'success');
-    } catch (error) {
-        showToast('Failed to update role', 'error');
-    }
+.unlock-panel {
+    display: none;
 }
 
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+.unlock-panel.active {
+    display: block;
+}
+
+.unlock-request {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.unlock-request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.unlock-request-info h4 {
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.unlock-request-info p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.unlock-request-price {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--warning);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+}
+
+.unlock-request-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.unlock-request-actions button {
+    flex: 1;
+}
+
+/* User Management */
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #000;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.user-email {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.user-role {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+}
+
+.user-role.user { background: var(--text-muted); }
+.user-role.postAdmin { background: #3B82F6; }
+.user-role.ebookAdmin { background: var(--success); }
+.user-role.unlockAdmin { background: var(--warning); }
+.user-role.superAdmin { background: #8B5CF6; }
+
+.role-selector {
+    background: var(--surface-light);
+    color: var(--text-primary);
+    border: 1px solid var(--surface-lighter);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-md);
+    cursor: pointer;
 }
