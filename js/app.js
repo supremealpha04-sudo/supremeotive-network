@@ -1,12 +1,17 @@
 // Main Application Entry Point
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Show splash screen
+    // Show splash screen first
     showSplash();
     
-    // Initialize auth after splash
+    // Wait for splash, then initialize
     setTimeout(async () => {
-        await initAuth();
+        try {
+            await initAuth();
+        } catch (error) {
+            console.error('Failed to initialize auth:', error);
+            showToast('Failed to initialize app', 'error');
+        }
     }, 2000);
 });
 
