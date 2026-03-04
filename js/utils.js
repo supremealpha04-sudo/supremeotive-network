@@ -1,7 +1,6 @@
-// Utility Functions
+// Utility Functions (same as before)
 
 const utils = {
-    // Date formatting
     timeAgo(date) {
         const now = new Date();
         const diff = now - new Date(date);
@@ -28,7 +27,6 @@ const utils = {
         });
     },
 
-    // Generate UUID
     generateId() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
             const r = Math.random() * 16 | 0;
@@ -37,7 +35,6 @@ const utils = {
         });
     },
 
-    // File handling
     async fileToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -47,7 +44,6 @@ const utils = {
         });
     },
 
-    // Validation
     validateEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     },
@@ -56,7 +52,6 @@ const utils = {
         return password.length >= 6;
     },
 
-    // Format currency
     formatPrice(price, currency) {
         return `${currency}${parseFloat(price).toFixed(0)}`;
     }
@@ -100,7 +95,6 @@ function setContentScreen(screenId) {
     document.querySelectorAll('.content-screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     
-    // Update nav links
     document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
     const navMap = {
         'feed-screen': 0,
@@ -114,12 +108,10 @@ function setContentScreen(screenId) {
     }
 }
 
-// Modal Helpers
 function openModal(modalId) {
     const overlay = document.getElementById('modal-overlay');
     const modal = document.getElementById(modalId);
     
-    // Hide all modals first
     document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
     
     modal.classList.remove('hidden');
@@ -156,14 +148,6 @@ function previewImage(event, previewId) {
 }
 
 // Role Helpers
-const ROLES = {
-    USER: 'user',
-    POST_ADMIN: 'postAdmin',
-    EBOOK_ADMIN: 'ebookAdmin',
-    UNLOCK_ADMIN: 'unlockAdmin',
-    SUPER_ADMIN: 'superAdmin'
-};
-
 function canManagePosts(role) {
     return role === ROLES.POST_ADMIN || role === ROLES.SUPER_ADMIN;
 }
