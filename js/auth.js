@@ -1,12 +1,45 @@
-// Authentication Logic
+// Authentication Logic - NOW USES GLOBAL supabaseClient
 
-let currentUser = null;
-let currentProfile = null;
+const authAPI = {
+    async signUp(email, password, userData) {
+        const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+                data: userData
+            }
+        });
+        if (error) throw error;
+        return data;
+    },
 
-// Initialize Auth
+    async signIn(email, password) {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
+        if (error) throw error;
+        return data;
+    },
+
+    async signOut() {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) throw error;
+    },
+
+    async getUser() {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        return user;
+    },
+
+    onAuthStateChange(callback) {
+        return supabaseClient.auth.onAuthStateChange(callback);
+    }
+};
+
+// Auth state management functions
 async function initAuth() {
-    // Check for existing session
-    const user = await auth.getUser();
+    const user = await authAPI.getUser();
     if (user) {
         await loadUserProfile(user.id);
         showMainApp();
@@ -14,8 +47,7 @@ async function initAuth() {
         showAuth();
     }
 
-    // Listen for auth changes
-    auth.onAuthStateChange(async (event, session) => {
+    authAPI.onAuthStateChange(async (event, session) => {
         if (event === 'SIGNED_IN' && session) {
             await loadUserProfile(session.user.id);
             showMainApp();
@@ -40,20 +72,17 @@ async function loadUserProfile(userId) {
 function updateUIForRole() {
     if (!currentProfile) return;
 
-    // Show admin link if applicable
     const adminLink = document.querySelector('.admin-link');
     if (currentProfile.role !== ROLES.USER) {
         adminLink.classList.remove('hidden');
     }
 
-    // Show super admin only elements
     if (currentProfile.role === ROLES.SUPER_ADMIN) {
         document.querySelectorAll('.super-admin-only').forEach(el => {
             el.classList.remove('hidden');
         });
     }
 
-    // Show create buttons based on role
     if (canManagePosts(currentProfile.role)) {
         document.getElementById('create-post-btn').classList.remove('hidden');
     }
@@ -62,7 +91,7 @@ function updateUIForRole() {
     }
 }
 
-// Screen Navigation
+// Screen navigation
 function showSplash() {
     setScreen('splash-screen');
 }
@@ -87,60 +116,70 @@ function showMainApp() {
     showFeed();
 }
 
-// Event Handlers
-document.getElementById('login-form-element').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    showLoading(btn);
-
-    try {
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        
-        await auth.signIn(email, password);
-        showToast('Welcome back!', 'success');
-    } catch (error) {
-        showToast(error.message, 'error');
-    } finally {
-        hideLoading(btn);
-    }
-});
-
-document.getElementById('signup-form-element').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    showLoading(btn);
-
-    try {
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        const name = document.getElementById('signup-name').value;
-        const age = parseInt(document.getElementById('signup-age').value);
-        const country = document.getElementById('signup-country').value;
-        const bio = document.getElementById('signup-bio').value;
-
-        await auth.signUp(email, password, {
-            name,
-            age,
-            country,
-            bio: bio || null,
-            role: ROLES.USER
-        });
-
-        showToast('Account created! Please check your email.', 'success');
-        showLogin();
-    } catch (error) {
-        showToast(error.message, 'error');
-    } finally {
-        hideLoading(btn);
-    }
-});
-
 async function logout() {
     try {
-        await auth.signOut();
+        await authAPI.signOut();
         showToast('Logged out successfully', 'success');
     } catch (error) {
         showToast(error.message, 'error');
     }
 }
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Login form
+    const loginForm = document.getElementById('login-form-element');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            showLoading(btn);
+
+            try {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                await authAPI.signIn(email, password);
+                showToast('Welcome back!', 'success');
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading(btn);
+            }
+        });
+    }
+
+    // Signup form
+    const signupForm = document.getElementById('signup-form-element');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            showLoading(btn);
+
+            try {
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const name = document.getElementById('signup-name').value;
+                const age = parseInt(document.getElementById('signup-age').value);
+                const country = document.getElementById('signup-country').value;
+                const bio = document.getElementById('signup-bio').value;
+
+                await authAPI.signUp(email, password, {
+                    name,
+                    age,
+                    country,
+                    bio: bio || null,
+                    role: ROLES.USER
+                });
+
+                showToast('Account created! Please check your email.', 'success');
+                showLogin();
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading(btn);
+            }
+        });
+    }
+});
