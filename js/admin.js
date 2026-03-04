@@ -27,16 +27,13 @@ async function loadAdminData() {
 }
 
 function showAdminTab(tab) {
-    // Update tabs
     document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
     event.target.classList.add('active');
     
-    // Update panels
     document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
     document.getElementById(`admin-${tab}`).classList.add('active');
 }
 
-// Posts Admin
 async function loadAdminPosts() {
     try {
         adminPosts = await db.getPosts();
@@ -79,7 +76,6 @@ async function deleteAdminPost(postId) {
     }
 }
 
-// eBooks Admin
 async function loadAdminEbooks() {
     try {
         adminEbooks = await db.getEbooks();
@@ -115,7 +111,6 @@ async function deleteAdminEbook(ebookId) {
     }
 }
 
-// Unlocks Admin
 function showUnlockTab(tab) {
     document.querySelectorAll('.unlock-tab').forEach(t => t.classList.remove('active'));
     event.target.classList.add('active');
@@ -209,7 +204,6 @@ async function revokeUnlock(userId, ebookId) {
     }
 }
 
-// Users Admin (Super Admin only)
 async function loadAllUsers() {
     try {
         allUsers = await db.getAllProfiles();
