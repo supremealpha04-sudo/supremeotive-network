@@ -89,7 +89,6 @@ function showUnlockModal(ebook) {
     openModal('whatsapp-modal');
 }
 
-// Create eBook
 function showCreateEbook() {
     document.getElementById('create-ebook-form').reset();
     document.getElementById('ebook-cover-preview').classList.add('hidden');
@@ -97,60 +96,73 @@ function showCreateEbook() {
     openModal('create-ebook-modal');
 }
 
-document.getElementById('ebook-pdf').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        document.getElementById('ebook-pdf-name').textContent = file.name;
-    }
-});
-
-document.getElementById('create-ebook-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    showLoading(btn);
-
-    try {
-        const title = document.getElementById('ebook-title').value;
-        const description = document.getElementById('ebook-description').value;
-        const price = parseFloat(document.getElementById('ebook-price').value) || 0;
-        const currency = document.getElementById('ebook-currency').value;
-        const category = document.getElementById('ebook-category').value;
-        const coverFile = document.getElementById('ebook-cover').files[0];
-        const pdfFile = document.getElementById('ebook-pdf').files[0];
-
-        if (!coverFile || !pdfFile) {
-            throw new Error('Please select both cover and PDF files');
-        }
-
-        // Upload cover
-        const coverExt = coverFile.name.split('.').pop();
-        const coverPath = `ebooks/covers/${utils.generateId()}.${coverExt}`;
-        await storage.uploadFile('images', coverPath, coverFile);
-        const coverUrl = await storage.getPublicUrl('images', coverPath);
-
-        // Upload PDF
-        const pdfExt = pdfFile.name.split('.').pop();
-        const pdfPath = `ebooks/pdfs/${utils.generateId()}.${pdfExt}`;
-        await storage.uploadFile('documents', pdfPath, pdfFile);
-        const pdfUrl = await storage.getPublicUrl('documents', pdfPath);
-
-        await db.createEbook({
-            title,
-            description,
-            cover_url: coverUrl,
-            pdf_url: pdfUrl,
-            price,
-            currency,
-            category,
-            created_by: currentUser.id
+// eBook form handlers
+document.addEventListener('DOMContentLoaded', () => {
+    const pdfInput = document.getElementById('ebook-pdf');
+    if (pdfInput) {
+        pdfInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('ebook-pdf-name').textContent = file.name;
+            }
         });
+    }
 
-        closeModal();
-        await loadEbooks();
-        showToast('eBook added successfully', 'success');
-    } catch (error) {
-        showToast(error.message, 'error');
-    } finally {
-        hideLoading(btn);
+    const createEbookForm = document.getElementById('create-ebook-form');
+    if (createEbookForm) {
+        createEbookForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            showLoading(btn);
+
+            try {
+                const title = document.getElementById('ebook-title').value;
+                const description = document.getElementById('ebook-description').value;
+                const price = parseFloat(document.getElementById('ebook-price').value) || 0;
+                const currency = document.getElementById('ebook-currency').value;
+                const category = document.getElementById('ebook-category').value;
+                const coverFile = document.getElementById('ebook-cover').files[0];
+                const pdfFile = document.getElementById('ebook-pdf').files[0];
+
+                if (!coverFile || !pdfFile) {
+                    throw new Error('Please select both cover and PDF files');
+                }
+
+                const coverExt = coverFile.name.split('.').pop();
+                const coverPath = `ebooks/covers/${utils.generateId()}.${coverExt}`;
+                await storage.uploadFile('images', coverPath, coverFile);
+                const coverUrl = await storage.getPublicUrl('images', coverPath);
+
+                const pdfExt = pdfFile.name.split('.').pop();
+                const pdfPath = `ebooks/pdfs/${utils.generateId()}.${pdfExt}`;
+                await storage.uploadFile('documents', pdfPath, pdfFile);
+                const pdfUrl = await storage.getPublicUrl('documents', pdfPath);
+
+                await db.createEbook({
+                    title,
+                    description,
+                    cover_url: coverUrl,
+                    pdf_url: pdfUrl,
+                    price,
+                    currency,
+                    category,
+                    created_by: currentUser.id
+                });
+
+                closeModal();
+                await loadEbooks();
+                showToast('eBook added successfully', 'success');
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading(btn);
+            }
+        });
     }
 });
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
