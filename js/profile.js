@@ -59,21 +59,27 @@ function showEditProfile() {
     setContentScreen('edit-profile-screen');
 }
 
-document.getElementById('edit-profile-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    try {
-        const name = document.getElementById('edit-name').value;
-        const bio = document.getElementById('edit-bio').value;
-        
-        await db.updateProfile(currentUser.id, { name, bio: bio || null });
-        currentProfile.name = name;
-        currentProfile.bio = bio;
-        
-        await loadProfile();
-        showProfile();
-        showToast('Profile updated', 'success');
-    } catch (error) {
-        showToast('Failed to update profile', 'error');
+// Edit profile form handler
+document.addEventListener('DOMContentLoaded', () => {
+    const editProfileForm = document.getElementById('edit-profile-form');
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                const name = document.getElementById('edit-name').value;
+                const bio = document.getElementById('edit-bio').value;
+                
+                await db.updateProfile(currentUser.id, { name, bio: bio || null });
+                currentProfile.name = name;
+                currentProfile.bio = bio;
+                
+                await loadProfile();
+                showProfile();
+                showToast('Profile updated', 'success');
+            } catch (error) {
+                showToast('Failed to update profile', 'error');
+            }
+        });
     }
 });
