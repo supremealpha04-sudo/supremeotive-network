@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Elevate Your Mind</title>
+    <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -18,22 +19,28 @@
     <!-- Splash Screen -->
     <div id="splash-screen" class="screen active">
         <div class="splash-content">
-            <div class="splash-icon">📚</div>
+            <div class="logo-container">
+                <div class="logo-glow"></div>
+                <img src="assets/images/logo.svg" alt="SupremeMotive Network" class="splash-logo">
+                <div class="logo-pulse"></div>
+            </div>
             <h1 class="splash-title">SupremeMotive</h1>
-            <p class="splash-tagline">Elevate Your Mind</p>
+            <p class="splash-tagline">Inspire. Lead. Achieve.</p>
             <div class="loading-spinner"></div>
+            <p id="init-status" class="init-status">Loading...</p>
         </div>
     </div>
 
     <!-- Auth Screens -->
     <div id="auth-screen" class="screen">
         <div class="auth-container">
-            <!-- Login Form -->
             <div id="login-form" class="auth-form active">
                 <div class="auth-header">
-                    <div class="auth-icon">📚</div>
+                    <div class="logo-small">
+                        <img src="assets/images/logo.svg" alt="SupremeMotive Network">
+                    </div>
                     <h2>SupremeMotive</h2>
-                    <p>Elevate Your Mind</p>
+                    <p>Inspire. Lead. Achieve.</p>
                 </div>
                 <form id="login-form-element">
                     <div class="input-group">
@@ -55,7 +62,6 @@
                 </p>
             </div>
 
-            <!-- Signup Form -->
             <div id="signup-form" class="auth-form">
                 <div class="auth-header">
                     <h2>Create Account</h2>
@@ -117,8 +123,13 @@
         <!-- Navigation -->
         <nav class="navbar">
             <div class="nav-brand">
-                <span class="nav-icon">📚</span>
-                <span class="nav-title">SupremeMotive</span>
+                <div class="nav-logo">
+                    <img src="assets/images/logo.svg" alt="SupremeMotive">
+                    <div class="nav-logo-text">
+                        <span class="nav-logo-title">SupremeMotive</span>
+                        <span class="nav-logo-subtitle">Network</span>
+                    </div>
+                </div>
             </div>
             <div class="nav-links">
                 <a href="#" class="nav-link active" onclick="showFeed()">
@@ -158,7 +169,7 @@
             </div>
         </div>
 
-        <!-- eBook Library Screen -->
+        <!-- eBooks Screen -->
         <div id="ebooks-screen" class="content-screen">
             <div class="screen-header">
                 <h1>eBook Library</h1>
@@ -242,19 +253,16 @@
                 <button class="admin-tab super-admin-only hidden" onclick="showAdminTab('users')">Users</button>
             </div>
             
-            <!-- Posts Admin -->
             <div id="admin-posts" class="admin-panel active">
                 <button class="btn btn-primary" onclick="showCreatePost()">+ Create Post</button>
                 <div id="admin-posts-list" class="admin-list"></div>
             </div>
 
-            <!-- eBooks Admin -->
             <div id="admin-ebooks" class="admin-panel">
                 <button class="btn btn-primary" onclick="showCreateEbook()">+ Add eBook</button>
                 <div id="admin-ebooks-list" class="admin-list"></div>
             </div>
 
-            <!-- Unlocks Admin -->
             <div id="admin-unlocks" class="admin-panel">
                 <div class="unlock-tabs">
                     <button class="unlock-tab active" onclick="showUnlockTab('pending')">Pending</button>
@@ -264,7 +272,6 @@
                 <div id="unlock-all" class="unlock-panel"></div>
             </div>
 
-            <!-- Users Admin (Super Admin Only) -->
             <div id="admin-users" class="admin-panel">
                 <div id="admin-users-list" class="admin-list"></div>
             </div>
@@ -376,15 +383,36 @@
     <!-- Toast Notifications -->
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js"></script>
+    <!-- ========================================== -->
+    <!-- SCRIPTS - ONLY LOAD ONCE, CORRECT ORDER -->
+    <!-- ========================================== -->
+    
+    <!-- 1. Supabase CDN (ONLY ONCE) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0/dist/umd/supabase.min.js"></script>
+    
+    <!-- 2. Your Config -->
+    <script src="js/config.js"></script>
+    
+    <!-- 3. Initialize Supabase Client -->
+    <script src="js/supabase-client.js"></script>
+    
+    <!-- 4. Database & Storage -->
+    <script src="js/database.js"></script>
+    <script src="js/storage.js"></script>
+    
+    <!-- 5. Utilities -->
     <script src="js/utils.js"></script>
+    
+    <!-- 6. Auth -->
     <script src="js/auth.js"></script>
+    
+    <!-- 7. Feature Modules -->
     <script src="js/feed.js"></script>
     <script src="js/ebooks.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/admin.js"></script>
+    
+    <!-- 8. App Entry -->
     <script src="js/app.js"></script>
 </body>
 </html>
