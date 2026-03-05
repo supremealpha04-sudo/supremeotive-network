@@ -1,10 +1,18 @@
-/* Auth Screen */
+/* ============================================
+   AUTH SCREEN - FIXED LAYOUT
+   ============================================ */
+
 #auth-screen {
     background: linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-lg);
+    padding: 1.5rem;
+}
+
+#auth-screen.active {
+    display: flex !important;
 }
 
 .auth-container {
@@ -12,13 +20,14 @@
     max-width: 420px;
 }
 
+/* Auth Forms - Only show active one */
 .auth-form {
     display: none;
     animation: slideUp 0.4s ease;
 }
 
 .auth-form.active {
-    display: block;
+    display: block !important;
 }
 
 @keyframes slideUp {
@@ -34,13 +43,20 @@
 
 .auth-header {
     text-align: center;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: 2rem;
 }
 
-.auth-icon {
-    font-size: 4rem;
-    margin-bottom: var(--spacing-md);
-    display: block;
+.logo-small {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+}
+
+.logo-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(212, 175, 55, 0.3));
 }
 
 .auth-header h2 {
@@ -50,7 +66,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: 0.5rem;
 }
 
 .auth-header p {
@@ -60,7 +76,7 @@
 
 .auth-switch {
     text-align: center;
-    margin-top: var(--spacing-lg);
+    margin-top: 1.5rem;
     color: var(--text-secondary);
     font-size: 0.875rem;
 }
@@ -73,53 +89,4 @@
 
 .auth-switch a:hover {
     text-decoration: underline;
-}
-
-/* Splash Screen */
-#splash-screen {
-    background: linear-gradient(180deg, var(--surface) 0%, var(--background) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.splash-content {
-    text-align: center;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
-}
-
-.splash-icon {
-    font-size: 5rem;
-    margin-bottom: var(--spacing-lg);
-}
-
-.splash-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--accent), var(--accent-blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: var(--spacing-sm);
-}
-
-.splash-tagline {
-    color: var(--text-secondary);
-    font-size: 1.125rem;
-    margin-bottom: var(--spacing-xl);
-}
-
-.loading-spinner {
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 3px solid var(--surface-light);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
 }
