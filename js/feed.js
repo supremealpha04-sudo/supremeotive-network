@@ -1,4 +1,4 @@
-// Feed Logic
+// Feed Logic - Uses global db, currentUser, currentProfile
 
 let posts = [];
 let currentPostId = null;
@@ -93,7 +93,6 @@ async function toggleLike(postId) {
 
 function showPostMenu(postId, event) {
     event.stopPropagation();
-    // Simple confirm for delete, could be a dropdown menu
     if (confirm('Delete this post?')) {
         deletePost(postId);
     }
@@ -110,7 +109,6 @@ async function deletePost(postId) {
     }
 }
 
-// Create Post
 function showCreatePost(post = null) {
     document.getElementById('create-post-form').reset();
     document.getElementById('post-image-preview').classList.add('hidden');
@@ -132,42 +130,48 @@ function showCreatePost(post = null) {
     openModal('create-post-modal');
 }
 
-document.getElementById('create-post-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    showLoading(btn);
+// Create post form handler
+document.addEventListener('DOMContentLoaded', () => {
+    const createPostForm = document.getElementById('create-post-form');
+    if (createPostForm) {
+        createPostForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            showLoading(btn);
 
-    try {
-        const title = document.getElementById('post-title').value;
-        const content = document.getElementById('post-content').value;
-        const imageFile = document.getElementById('post-image').files[0];
-        
-        let imageUrl = null;
-        if (imageFile) {
-            const path = `posts/${utils.generateId()}.${imageFile.name.split('.').pop()}`;
-            await storage.uploadFile('images', path, imageFile);
-            imageUrl = await storage.getPublicUrl('images', path);
-        }
+            try {
+                const title = document.getElementById('post-title').value;
+                const content = document.getElementById('post-content').value;
+                const imageFile = document.getElementById('post-image').files[0];
+                
+                let imageUrl = null;
+                if (imageFile) {
+                    const path = `posts/${utils.generateId()}.${imageFile.name.split('.').pop()}`;
+                    await storage.uploadFile('images', path, imageFile);
+                    imageUrl = await storage.getPublicUrl('images', path);
+                }
 
-        if (currentPostId) {
-            await db.updatePost(currentPostId, { title, content, image_url: imageUrl });
-            showToast('Post updated', 'success');
-        } else {
-            await db.createPost({
-                title,
-                content,
-                image_url: imageUrl,
-                created_by: currentUser.id
-            });
-            showToast('Post created', 'success');
-        }
+                if (currentPostId) {
+                    await db.updatePost(currentPostId, { title, content, image_url: imageUrl });
+                    showToast('Post updated', 'success');
+                } else {
+                    await db.createPost({
+                        title,
+                        content,
+                        image_url: imageUrl,
+                        created_by: currentUser.id
+                    });
+                    showToast('Post created', 'success');
+                }
 
-        closeModal();
-        await loadPosts();
-    } catch (error) {
-        showToast(error.message, 'error');
-    } finally {
-        hideLoading(btn);
+                closeModal();
+                await loadPosts();
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                hideLoading(btn);
+            }
+        });
     }
 });
 
@@ -237,29 +241,33 @@ function replyTo(commentId) {
     input.focus();
 }
 
-document.getElementById('add-comment-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const input = document.getElementById('comment-input');
-    const content = input.value.trim();
-    if (!content) return;
+// Comment form handler
+document.addEventListener('DOMContentLoaded', () => {
+    const commentForm = document.getElementById('add-comment-form');
+    if (commentForm) {
+        commentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('comment-input');
+            const content = input.value.trim();
+            if (!content) return;
 
-    try {
-        await db.addComment({
-            post_id: currentPostId,
-            content,
-            parent_comment_id: replyingTo,
-            user_id: currentUser.id
+            try {
+                await db.addComment({
+                    post_id: currentPostId,
+                    content,
+                    parent_comment_id: replyingTo,
+                    user_id: currentUser.id
+                });
+
+                input.value = '';
+                replyingTo = null;
+                input.placeholder = 'Write a comment...';
+                await loadComments(currentPostId);
+                await loadPosts();
+            } catch (error) {
+                showToast('Failed to add comment', 'error');
+            }
         });
-
-        input.value = '';
-        replyingTo = null;
-        input.placeholder = 'Write a comment...';
-        await loadComments(currentPostId);
-        
-        // Update comment count in feed
-        await loadPosts();
-    } catch (error) {
-        showToast('Failed to add comment', 'error');
     }
 });
 
