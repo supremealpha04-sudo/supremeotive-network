@@ -180,3 +180,263 @@ input:focus, textarea:focus, select:focus {
     padding: 16px;
   }
 }
+
+/* Add these styles to the existing style.css */
+
+/* Loading States */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid var(--light-gray);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Alerts and Notifications */
+.alert {
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-success {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+.alert-error {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+}
+
+.alert-warning {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid var(--warning);
+  color: var(--warning);
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-gold {
+  background: rgba(255, 215, 0, 0.2);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+
+.badge-blue {
+  background: rgba(0, 240, 255, 0.2);
+  color: var(--electric-blue);
+  border: 1px solid var(--electric-blue);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.page-item {
+  list-style: none;
+}
+
+.page-link {
+  display: block;
+  padding: 8px 16px;
+  background: var(--dark-gray);
+  border: 1px solid var(--light-gray);
+  border-radius: 6px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.page-link:hover,
+.page-link.active {
+  background: var(--gold);
+  color: var(--primary-black);
+  border-color: var(--gold);
+}
+
+/* Tooltips */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  background: var(--gold);
+  color: var(--primary-black);
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 8px;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: var(--dark-gray);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--gold);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--light-gray);
+}
+
+.modal-header h2 {
+  color: var(--gold);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: var(--gold);
+}
+
+/* Responsive Tables */
+@media (max-width: 768px) {
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .admin-table td,
+  .admin-table th {
+    min-width: 120px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .navbar,
+  .admin-sidebar,
+  .btn,
+  .post-actions {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .post-card,
+  .profile-card {
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: none;
+  }
+}
+
+/* Animation Classes */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+.slide-enter {
+  transform: translateY(-100%);
+}
+
+.slide-enter-active {
+  transform: translateY(0);
+  transition: transform 300ms ease-out;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-gray);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--electric-blue);
+}
