@@ -1,165 +1,115 @@
-// Utility Functions (same as before)
+// Format date
+export function formatDate(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) {
+    return 'Today';
+  } else if (diffDays === 1) {
+    return 'Yesterday';
+  } else if (diffDays < 7) {
+    return `${diffDays} days ago`;
+  } else if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7);
+    return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
+  } else {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+}
 
-const utils = {
-    timeAgo(date) {
-        const now = new Date();
-        const diff = now - new Date(date);
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-        const months = Math.floor(days / 30);
-        const years = Math.floor(days / 365);
+// Truncate text
+export function truncateText(text, maxLength = 100) {
+  if (text.length <= maxLength) return text;
+  return text.substr(0, maxLength) + '...';
+}
 
-        if (years > 0) return `${years}y ago`;
-        if (months > 0) return `${months}mo ago`;
-        if (days > 0) return `${days}d ago`;
-        if (hours > 0) return `${hours}h ago`;
-        if (minutes > 0) return `${minutes}m ago`;
-        return 'Just now';
-    },
+// Validate email
+export function isValidEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
 
-    formatDate(date) {
-        return new Date(date).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
-    },
+// Generate random color
+export function getRandomColor() {
+  const colors = ['#FFD700', '#00F0FF', '#4CAF50', '#F44336', '#FFC107'];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
 
-    generateId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
-    },
+// Debounce function
+export function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
 
-    async fileToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-    },
-
-    validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    },
-
-    validatePassword(password) {
-        return password.length >= 6;
-    },
-
-    formatPrice(price, currency) {
-        return `${currency}${parseFloat(price).toFixed(0)}`;
+// Local storage helpers
+export const storage = {
+  set: (key, value) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) {
+      console.error('Error saving to localStorage', e);
     }
+  },
+  
+  get: (key) => {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : null;
+    } catch (e) {
+      console.error('Error reading from localStorage', e);
+      return null;
+    }
+  },
+  
+  remove: (key) => {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      console.error('Error removing from localStorage', e);
+    }
+  }
 };
 
-// UI Helpers
-function showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = message;
-    container.appendChild(toast);
-
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
+// Copy to clipboard
+export async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return { success: true };
+  } catch (err) {
+    console.error('Failed to copy: ', err);
+    return { success: false, error: err };
+  }
 }
 
-function showLoading(button) {
-    const text = button.querySelector('.btn-text');
-    const loader = button.querySelector('.btn-loader');
-    if (text) text.classList.add('hidden');
-    if (loader) loader.classList.remove('hidden');
-    button.disabled = true;
-}
-
-function hideLoading(button) {
-    const text = button.querySelector('.btn-text');
-    const loader = button.querySelector('.btn-loader');
-    if (text) text.classList.remove('hidden');
-    if (loader) loader.classList.add('hidden');
-    button.disabled = false;
-}
-
-function setScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
-}
-
-function setContentScreen(screenId) {
-    document.querySelectorAll('.content-screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
-    
-    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-    const navMap = {
-        'feed-screen': 0,
-        'ebooks-screen': 1,
-        'profile-screen': 2,
-        'admin-screen': 3
-    };
-    const navIndex = navMap[screenId];
-    if (navIndex !== undefined) {
-        document.querySelectorAll('.nav-link')[navIndex]?.classList.add('active');
+// Share via Web Share API
+export async function shareContent(title, text, url) {
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title,
+        text,
+        url
+      });
+      return { success: true };
+    } catch (err) {
+      console.error('Error sharing:', err);
+      return { success: false, error: err };
     }
-}
-
-function openModal(modalId) {
-    const overlay = document.getElementById('modal-overlay');
-    const modal = document.getElementById(modalId);
-    
-    document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-    
-    modal.classList.remove('hidden');
-    overlay.classList.remove('hidden');
-    
-    setTimeout(() => {
-        overlay.classList.add('active');
-    }, 10);
-}
-
-function closeModal(event) {
-    if (event && event.target !== event.currentTarget) return;
-    
-    const overlay = document.getElementById('modal-overlay');
-    overlay.classList.remove('active');
-    
-    setTimeout(() => {
-        overlay.classList.add('hidden');
-        document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-    }, 300);
-}
-
-function previewImage(event, previewId) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const preview = document.getElementById(previewId);
-        preview.src = e.target.result;
-        preview.classList.remove('hidden');
-    };
-    reader.readAsDataURL(file);
-}
-
-// Role Helpers
-function canManagePosts(role) {
-    return role === ROLES.POST_ADMIN || role === ROLES.SUPER_ADMIN;
-}
-
-function canManageEbooks(role) {
-    return role === ROLES.EBOOK_ADMIN || role === ROLES.SUPER_ADMIN;
-}
-
-function canManageUnlocks(role) {
-    return role === ROLES.UNLOCK_ADMIN || role === ROLES.SUPER_ADMIN;
-}
-
-function canManageUsers(role) {
-    return role === ROLES.SUPER_ADMIN;
+  } else {
+    // Fallback to copy link
+    return await copyToClipboard(url);
+  }
 }
