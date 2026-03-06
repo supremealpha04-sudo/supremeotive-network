@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive - Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="admin-dashboard">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <h2>SupremeMotive</h2>
+            <h3>Admin Panel</h3>
+            <ul class="admin-nav">
+                <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="post-admin.html">Post Management</a></li>
+                <li><a href="ebook-admin.html">Ebook Management</a></li>
+                <li><a href="unlock-admin.html">Unlock Requests</a></li>
+                <li><a href="../index.html">View Site</a></li>
+                <li><a href="#" id="logout-link">Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div id="admin-info" style="color: var(--gold);"></div>
+            </div>
+
+            <div id="dashboard-container">
+                <!-- Stats will be loaded here -->
+                <div class="loading">Loading dashboard...</div>
+            </div>
+            
+            <div id="users-container" style="margin-top: 32px;">
+                <h2 style="color: var(--gold); margin-bottom: 16px;">Users by Country</h2>
+                <div id="country-stats" class="country-stats"></div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { supabase } from '../config/supabase.js';
+        import { getCurrentUser, logoutUser, isAdmin } from '../js/auth.js';
+
+        // Get dashboard stats
+        async function getDashboardStats() {
+            try {
+                // Total users
+                const { count: totalUsers } = await supabase
+                    .from('profiles')
+                    .select('*', { count: 'exact', head: true });
+
+                // Total posts
+                const { count: totalPosts } = await supabase
+                    .from('posts')
+                    .select('*', { count: 'exact', head: true });
+
+                // Total ebooks
+                const { count: totalEbooks } = await supabase
+                    .from('ebooks')
+                    .select('*', { count: 'exact', head: true });
+
+                // Pending unlocks
+                const { count: pendingUnlocks } = await supabase
+                    .from('unlocks')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'pending');
+
+                // Users by country
+                const { data: profiles } = await supabase
+                    .from('profiles')
+                    .select('country');
+                
+                const countryCounts = {};
+                profiles?.forEach(profile => {
+                    const country = profile.country || 'Not specified';
+                    countryCounts[country] = (countryCounts[country] || 0) + 1;
+                });
+
+                return {
+                    success: true,
+                    stats: {
+                        totalUsers: totalUsers || 0,
+                        totalPosts: totalPosts || 0,
+                        totalEbooks: totalEbooks || 0,
+                        pendingUnlocks: pendingUnlocks || 0,
+                        usersByCountry: countryCounts || {}
+                    }
+                };
+            } catch (error) {
+                console.error('Get dashboard stats error:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Render dashboard
+        function renderDashboard(stats) {
+            const container = document.getElementById('dashboard-container');
+            
+            container.innerHTML = `
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalUsers}</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalPosts}</div>
+                        <div class="stat-label">Total Posts</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalEbooks}</div>
+                        <div class="stat-label">Total Ebooks</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.pendingUnlocks}</div>
+                        <div class="stat-label">Pending Unlocks</div>
+                    </div>
+                </div>
+            `;
+
+            // Render country stats
+            const countryContainer = document.getElementById('country-stats');
+            const sortedCountries = Object.entries(stats.usersByCountry)
+                .sort((a, b) => b[1] - a[1]);
+            
+            countryContainer.innerHTML = `
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Users</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sortedCountries.map(([country, count]) => `
+                            <tr>
+                                <td>${country}</td>
+                                <td>${count}</td>
+                                <td>${((count / stats.totalUsers) * 100).toFixed(1)}%</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Check admin access and load dashboard
+        async function init() {
+            const admin = await isAdmin();
+            if (!admin) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const { user, profile } = await getCurrentUser();
+            document.getElementById('admin-info').innerHTML = `
+                Welcome, <strong>${profile?.name || user?.email}</strong> 
+                <span style="color: var(--electric-blue);">(${profile?.role?.replace('_', ' ')})</span>
+            `;
+
+            const result = await getDashboardStats();
+            if (result.success) {
+                renderDashboard(result.stats);
+            } else {
+                document.getElementById('dashboard-container').innerHTML = 
+                    '<div class="error">Error loading dashboard</div>';
+            }
+        }
+
+        // Logout handler
+        document.getElementById('logout-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await logoutUser();
+            window.location.href = '../index.html';
+        });
+
+        init();
+    </script>
+</body>
+</html>
