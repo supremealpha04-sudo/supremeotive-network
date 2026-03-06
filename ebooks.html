@@ -268,11 +268,63 @@
             };
         }
 
+// Check if ebook is unlocked for current user
+async function checkEbookUnlock(ebookId, userId) {
+    if (!userId) return false;
+    
+    try {
+        const { data, error } = await supabase
+            .from('unlocks')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('ebook_id', ebookId)
+            .eq('status', 'approved')
+            .maybeSingle();
+
+        if (error) throw error;
+        return !!data;
+    } catch (error) {
+        console.error('Error checking unlock:', error);
+        return false;
+    }
+}
+
+// Fetch ebooks with unlock status
+async function fetchEbooksWithStatus() {
+    try {
+        const { data: ebooks, error } = await supabase
+            .from('ebooks')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const { user } = await getCurrentUser();
+        
+        // Check unlock status for each ebook if user is logged in
+        const ebooksWithStatus = await Promise.all(ebooks.map(async (ebook) => {
+            let isUnlocked = false;
+            if (user) {
+                isUnlocked = await checkEbookUnlock(ebook.id, user.id);
+            }
+            return {
+                ...ebook,
+                is_unlocked: isUnlocked
+            };
+        }));
+
+        return { success: true, ebooks: ebooksWithStatus };
+    } catch (error) {
+        console.error('Fetch ebooks error:', error);
+        return { success: false, error: error.message };
+    }
+}
         // Initialize
         async function init() {
             await updateNavigation();
             await loadEbooks();
         }
+
 
         init();
     </script>
