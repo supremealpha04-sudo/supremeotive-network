@@ -6,60 +6,294 @@
     <title>SupremeMotive - Daily Motivation</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/feed.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">SupremeMotive</div>
-        <div class="nav-links">
+        <div class="nav-links" id="nav-links">
             <a href="index.html" class="active">Home</a>
             <a href="ebooks.html">Ebooks</a>
             <a href="profile.html" id="profile-link">Profile</a>
-            <a href="login.html" id="auth-link">Login</a>
+            <a href="#" id="admin-link" style="display: none;">Admin</a>
+            <a href="#" id="auth-link">Login</a>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="container">
+        <div id="welcome-message" class="welcome-message" style="margin-bottom: 24px; color: var(--gold);"></div>
+        
         <div class="feed-container" id="feed-container">
             <!-- Posts will be loaded here -->
+            <div class="loading">Loading motivational posts...</div>
         </div>
     </main>
 
-    <!-- Scripts -->
     <script type="module">
-        import { fetchPosts, renderFeed, toggleLike } from './js/feed.js';
-        import { getCurrentUser } from './js/auth.js';
-        import { addComment } from './js/comments.js';
+        import { supabase } from './config/supabase.js';
+        import { getCurrentUser, logoutUser, isAdmin } from './js/auth.js';
 
-        // Global functions for inline handlers
-        window.handleLike = async (postId) => {
-            const result = await toggleLike(postId);
-            if (result.success) {
+        // Fetch all posts
+        async function fetchPosts() {
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:created_by (name, profile_image_url)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Get like counts and check if user liked
+                const { user } = await getCurrentUser();
+                
+                const postsWithDetails = await Promise.all(data.map(async (post) => {
+                    // Get likes count
+                    const { count: likesCount } = await supabase
+                        .from('post_likes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('post_id', post.id);
+
+                    // Get comments count
+                    const { count: commentsCount } = await supabase
+                        .from('comments')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('post_id', post.id);
+
+                    // Check if user liked this post
+                    let userLiked = false;
+                    if (user) {
+                        const { data: like } = await supabase
+                            .from('post_likes')
+                            .select('*')
+                            .eq('post_id', post.id)
+                            .eq('user_id', user.id)
+                            .maybeSingle();
+                        userLiked = !!like;
+                    }
+
+                    return {
+                        ...post,
+                        likes_count: likesCount || 0,
+                        comments_count: commentsCount || 0,
+                        user_liked: userLiked
+                    };
+                }));
+
+                return { success: true, posts: postsWithDetails };
+            } catch (error) {
+                console.error('Fetch posts error:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Toggle like
+        window.toggleLike = async (postId) => {
+            const { user } = await getCurrentUser();
+            
+            if (!user) {
+                if (confirm('Please login to like posts. Go to login page?')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                // Check if already liked
+                const { data: existingLike } = await supabase
+                    .from('post_likes')
+                    .select('*')
+                    .eq('post_id', postId)
+                    .eq('user_id', user.id)
+                    .maybeSingle();
+
+                if (existingLike) {
+                    // Unlike
+                    await supabase
+                        .from('post_likes')
+                        .delete()
+                        .eq('post_id', postId)
+                        .eq('user_id', user.id);
+                } else {
+                    // Like
+                    await supabase
+                        .from('post_likes')
+                        .insert([
+                            {
+                                post_id: postId,
+                                user_id: user.id
+                            }
+                        ]);
+                }
+                
+                // Refresh feed
                 loadFeed();
+            } catch (error) {
+                console.error('Toggle like error:', error);
+                alert('Error updating like');
             }
         };
 
+        // Toggle comments
         window.toggleComments = async (postId) => {
             const commentsSection = document.getElementById(`comments-${postId}`);
             if (commentsSection.classList.contains('hidden')) {
-                const { comments } = await fetchComments(postId);
-                renderComments(comments, `comments-${postId}`, postId);
+                await loadComments(postId);
+                commentsSection.classList.remove('hidden');
             } else {
                 commentsSection.classList.add('hidden');
             }
         };
 
-        window.handleAddComment = async (postId) => {
+        // Load comments for a post
+        async function loadComments(postId) {
+            try {
+                const { data, error } = await supabase
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (name, profile_image_url)
+                    `)
+                    .eq('post_id', postId)
+                    .is('parent_comment_id', null)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                renderComments(data, postId);
+            } catch (error) {
+                console.error('Load comments error:', error);
+            }
+        }
+
+        // Render comments
+        function renderComments(comments, postId) {
+            const container = document.getElementById(`comments-${postId}`);
+            
+            container.innerHTML = `
+                <div class="add-comment">
+                    <input type="text" id="comment-input-${postId}" 
+                           placeholder="Add a comment..." 
+                           class="comment-input">
+                    <button class="btn btn-primary" 
+                            onclick="addComment('${postId}')">
+                        Post
+                    </button>
+                </div>
+                
+                <div class="comments-list">
+                    ${comments.map(comment => `
+                        <div class="comment" data-comment-id="${comment.id}">
+                            <div class="comment-header">
+                                <img src="${comment.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
+                                     alt="${comment.profiles?.name}" 
+                                     class="comment-avatar">
+                                <span class="comment-author">${comment.profiles?.name}</span>
+                                <span class="comment-date">
+                                    ${new Date(comment.created_at).toLocaleDateString()}
+                                </span>
+                            </div>
+                            
+                            <div class="comment-content">${comment.content}</div>
+                            
+                            <button class="btn btn-secondary btn-small" 
+                                    onclick="showReplyForm('${comment.id}')">
+                                Reply
+                            </button>
+                            
+                            <div id="reply-form-${comment.id}" class="reply-form hidden">
+                                <input type="text" id="reply-input-${comment.id}" 
+                                       placeholder="Write a reply...">
+                                <button class="btn btn-primary btn-small" 
+                                        onclick="addReply('${comment.id}', '${postId}')">
+                                    Reply
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Add comment
+        window.addComment = async (postId) => {
+            const { user } = await getCurrentUser();
+            
+            if (!user) {
+                alert('Please login to comment');
+                return;
+            }
+
             const input = document.getElementById(`comment-input-${postId}`);
             const content = input.value.trim();
             
-            if (content) {
-                const result = await addComment(postId, content);
-                if (result.success) {
-                    input.value = '';
-                    toggleComments(postId);
-                }
+            if (!content) return;
+
+            try {
+                await supabase
+                    .from('comments')
+                    .insert([
+                        {
+                            post_id: postId,
+                            user_id: user.id,
+                            content: content
+                        }
+                    ]);
+
+                input.value = '';
+                await loadComments(postId);
+            } catch (error) {
+                console.error('Add comment error:', error);
+                alert('Error adding comment');
+            }
+        };
+
+        window.showReplyForm = (commentId) => {
+            const form = document.getElementById(`reply-form-${commentId}`);
+            form.classList.toggle('hidden');
+        };
+
+        window.addReply = async (commentId, postId) => {
+            const { user } = await getCurrentUser();
+            
+            if (!user) {
+                alert('Please login to reply');
+                return;
+            }
+
+            const input = document.getElementById(`reply-input-${commentId}`);
+            const content = input.value.trim();
+            
+            if (!content) return;
+
+            try {
+                await supabase
+                    .from('comments')
+                    .insert([
+                        {
+                            post_id: postId,
+                            user_id: user.id,
+                            content: content,
+                            parent_comment_id: commentId
+                        }
+                    ]);
+
+                input.value = '';
+                document.getElementById(`reply-form-${commentId}`).classList.add('hidden');
+                await loadComments(postId);
+            } catch (error) {
+                console.error('Add reply error:', error);
+                alert('Error adding reply');
             }
         };
 
@@ -69,39 +303,119 @@
             alert('Link copied to clipboard!');
         };
 
+        // Render feed
+        function renderFeed(posts) {
+            const container = document.getElementById('feed-container');
+            
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="text-center">No posts yet. Check back soon!</div>';
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
+                <div class="post-card" data-post-id="${post.id}">
+                    <div class="post-header">
+                        <img src="${post.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
+                             alt="${post.profiles?.name}" 
+                             class="post-author-avatar">
+                        <div class="post-author-info">
+                            <h3>${post.profiles?.name || 'Admin'}</h3>
+                            <span class="post-date">${new Date(post.created_at).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    
+                    <h2 class="post-title">${post.title}</h2>
+                    <div class="post-content">${post.content}</div>
+                    
+                    ${post.image_url ? `
+                        <img src="${post.image_url}" alt="Post image" class="post-image">
+                    ` : ''}
+                    
+                    <div class="post-actions">
+                        <button class="action-btn like-btn ${post.user_liked ? 'liked' : ''}" 
+                                onclick="toggleLike('${post.id}')">
+                            <span>❤️</span>
+                            <span class="like-count">${post.likes_count}</span>
+                        </button>
+                        
+                        <button class="action-btn comment-btn" 
+                                onclick="toggleComments('${post.id}')">
+                            <span>💬</span>
+                            <span>${post.comments_count}</span>
+                        </button>
+                        
+                        <button class="action-btn share-btn" 
+                                onclick="sharePost('${post.id}')">
+                            <span>📤</span>
+                            <span>Share</span>
+                        </button>
+                    </div>
+                    
+                    <div id="comments-${post.id}" class="comments-section hidden"></div>
+                </div>
+            `).join('');
+        }
+
         // Load feed
         async function loadFeed() {
             const result = await fetchPosts();
             if (result.success) {
-                renderFeed(result.posts, 'feed-container');
+                renderFeed(result.posts);
+            } else {
+                document.getElementById('feed-container').innerHTML = 
+                    '<div class="error">Error loading posts. Please refresh.</div>';
             }
         }
 
-        // Check authentication
-        async function checkAuth() {
+        // Update navigation based on auth
+        async function updateNavigation() {
             const { user } = await getCurrentUser();
             const authLink = document.getElementById('auth-link');
             const profileLink = document.getElementById('profile-link');
+            const adminLink = document.getElementById('admin-link');
+            const welcomeDiv = document.getElementById('welcome-message');
             
             if (user) {
+                // Update auth link
                 authLink.textContent = 'Logout';
                 authLink.href = '#';
                 authLink.onclick = async (e) => {
                     e.preventDefault();
-                    const { logoutUser } = await import('./js/auth.js');
                     await logoutUser();
                     window.location.reload();
                 };
+                
+                // Update profile link
+                profileLink.style.display = 'inline';
+                
+                // Show welcome message
+                welcomeDiv.innerHTML = `Welcome back, <strong>${user.name}</strong>! 🔥`;
+                
+                // Check if admin
+                const admin = await isAdmin();
+                if (admin) {
+                    adminLink.style.display = 'inline';
+                    adminLink.href = 'admin/admin-dashboard.html';
+                } else {
+                    adminLink.style.display = 'none';
+                }
             } else {
                 authLink.textContent = 'Login';
                 authLink.href = 'login.html';
                 authLink.onclick = null;
+                profileLink.style.display = 'inline';
+                adminLink.style.display = 'none';
+                welcomeDiv.innerHTML = 'Welcome to SupremeMotive! Start your journey today. 💪';
             }
         }
 
         // Initialize
-        loadFeed();
-        checkAuth();
+        async function init() {
+            await updateNavigation();
+            await loadFeed();
+        }
+
+        init();
     </script>
 </body>
 </html>
