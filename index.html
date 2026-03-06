@@ -413,6 +413,54 @@
         async function init() {
             await updateNavigation();
             await loadFeed();
+
+// Update navigation based on auth
+async function updateNavigation() {
+    const { user } = await getCurrentUser();
+    const authLink = document.getElementById('auth-link');
+    const profileLink = document.getElementById('profile-link');
+    const adminLink = document.getElementById('admin-link');
+    const welcomeDiv = document.getElementById('welcome-message');
+    
+    if (user) {
+        // Update auth link to logout
+        authLink.textContent = 'Logout';
+        authLink.href = '#';
+        authLink.onclick = async (e) => {
+            e.preventDefault();
+            const result = await logoutUser();
+            if (result.success) {
+                window.location.reload();
+            } else {
+                alert('Error logging out: ' + result.error);
+            }
+        };
+        
+        // Update profile link
+        profileLink.style.display = 'inline';
+        profileLink.href = 'profile.html';
+        
+        // Show welcome message
+        welcomeDiv.innerHTML = `Welcome back, <strong>${user.name}</strong>! 🔥`;
+        
+        // Check if user is admin
+        const admin = await isAdmin();
+        if (admin) {
+            adminLink.style.display = 'inline';
+            adminLink.href = 'admin/admin-dashboard.html';
+        } else {
+            adminLink.style.display = 'none';
+        }
+    } else {
+        authLink.textContent = 'Login';
+        authLink.href = 'login.html';
+        authLink.onclick = null;
+        profileLink.style.display = 'inline';
+        profileLink.href = 'profile.html';
+        adminLink.style.display = 'none';
+        welcomeDiv.innerHTML = 'Welcome to SupremeMotive! Start your journey today. 💪';
+    }
+}
         }
 
         init();
