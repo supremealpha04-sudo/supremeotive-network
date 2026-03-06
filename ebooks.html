@@ -6,6 +6,13 @@
     <title>SupremeMotive - Ebook Library</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ebook.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -15,35 +22,76 @@
             <a href="index.html">Home</a>
             <a href="ebooks.html" class="active">Ebooks</a>
             <a href="profile.html">Profile</a>
+            <a href="#" id="admin-link" style="display: none;">Admin</a>
             <a href="#" id="auth-link">Login</a>
         </div>
     </nav>
 
     <!-- Ebook Library -->
     <main class="container">
-        <h1 style="color: var(--gold); margin-bottom: 32px;">Ebook Library</h1>
+        <h1 style="color: var(--gold); margin-bottom: 16px;">Ebook Library</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 32px;">Expand your mind with our collection of motivational ebooks</p>
         
         <!-- Filters -->
-        <div class="filters" style="margin-bottom: 24px;">
-            <select id="category-filter" class="filter-select">
+        <div class="filters" style="margin-bottom: 24px; display: flex; gap: 16px; align-items: center;">
+            <select id="category-filter" class="filter-select" style="padding: 10px; background: var(--dark-gray); color: white; border: 1px solid var(--gold); border-radius: 6px;">
                 <option value="all">All Ebooks</option>
                 <option value="free">Free Only</option>
                 <option value="paid">Paid Only</option>
             </select>
+            
+            <input type="text" id="search-ebooks" placeholder="Search ebooks..." 
+                   style="flex: 1; padding: 10px; background: var(--dark-gray); color: white; border: 1px solid var(--light-gray); border-radius: 6px;">
         </div>
         
         <!-- Ebook Grid -->
         <div class="ebook-library" id="ebooks-container">
-            <!-- Ebooks will be loaded here -->
+            <div class="loading">Loading ebooks...</div>
         </div>
     </main>
 
     <script type="module">
-        import { fetchEbooks, renderEbooks, requestUnlock } from './js/ebooks.js';
-        import { getCurrentUser } from './js/auth.js';
+        import { supabase } from './config/supabase.js';
+        import { getCurrentUser, logoutUser, isAdmin } from './js/auth.js';
 
-        // Global functions
-        window.handleUnlock = async (ebookId) => {
+        // Fetch all ebooks
+        async function fetchEbooks() {
+            try {
+                const { data, error } = await supabase
+                    .from('ebooks')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Check unlocked status for each ebook
+                const { user } = await getCurrentUser();
+                
+                let unlockedIds = new Set();
+                if (user) {
+                    const { data: unlocks } = await supabase
+                        .from('unlocks')
+                        .select('ebook_id')
+                        .eq('user_id', user.id)
+                        .eq('status', 'approved');
+
+                    unlockedIds = new Set(unlocks?.map(u => u.ebook_id) || []);
+                }
+
+                const ebooksWithStatus = data.map(ebook => ({
+                    ...ebook,
+                    is_unlocked: !ebook.is_paid || unlockedIds.has(ebook.id)
+                }));
+
+                return { success: true, ebooks: ebooksWithStatus };
+            } catch (error) {
+                console.error('Fetch ebooks error:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Request unlock via WhatsApp
+        window.requestUnlock = async (ebookId) => {
             const { user } = await getCurrentUser();
             
             if (!user) {
@@ -52,52 +100,143 @@
                 }
                 return;
             }
-            
-            const result = await requestUnlock(ebookId);
-            if (result.success) {
-                alert('WhatsApp opened. Please complete payment to unlock.');
-            } else {
-                alert('Error: ' + result.error);
+
+            try {
+                // Get ebook details
+                const { data: ebook } = await supabase
+                    .from('ebooks')
+                    .select('title, price')
+                    .eq('id', ebookId)
+                    .single();
+
+                // Create unlock request
+                await supabase
+                    .from('unlock_requests')
+                    .insert([
+                        {
+                            user_id: user.id,
+                            ebook_id: ebookId,
+                            status: 'pending'
+                        }
+                    ]);
+
+                // Create WhatsApp message
+                const message = encodeURIComponent(
+                    `*Unlock Request - SupremeMotive*\n\n` +
+                    `*User:* ${user.name}\n` +
+                    `*Email:* ${user.email}\n` +
+                    `*User ID:* ${user.id}\n` +
+                    `*Ebook:* ${ebook.title}\n` +
+                    `*Price:* $${ebook.price}\n\n` +
+                    `Please process this unlock request.`
+                );
+
+                // Open WhatsApp (replace with admin number)
+                window.open(`https://wa.me/1234567890?text=${message}`, '_blank');
+                
+                alert('Unlock request sent! Please complete payment via WhatsApp.');
+            } catch (error) {
+                console.error('Request unlock error:', error);
+                alert('Error requesting unlock: ' + error.message);
             }
         };
 
+        // Read ebook
         window.readEbook = (ebookId) => {
             window.location.href = `ebook-reader.html?id=${ebookId}`;
         };
 
-        async function loadEbooks() {
+        // Render ebooks
+        function renderEbooks(ebooks) {
+            const container = document.getElementById('ebooks-container');
+            
+            if (ebooks.length === 0) {
+                container.innerHTML = '<div class="text-center">No ebooks available yet.</div>';
+                return;
+            }
+
+            container.innerHTML = ebooks.map(ebook => `
+                <div class="ebook-card" data-ebook-id="${ebook.id}">
+                    <img src="${ebook.cover_url}" alt="${ebook.title}" class="ebook-cover"
+                         onerror="this.src='assets/images/placeholder-ebook.jpg'">
+                    
+                    <div class="ebook-info">
+                        <span class="ebook-badge ${ebook.is_paid ? 'paid' : 'free'}">
+                            ${ebook.is_paid ? 'PAID' : 'FREE'}
+                        </span>
+                        
+                        <h3 class="ebook-title">${ebook.title}</h3>
+                        <p class="ebook-description">${ebook.description.substring(0, 100)}${ebook.description.length > 100 ? '...' : ''}</p>
+                        
+                        <div class="ebook-price ${ebook.is_paid ? '' : 'free'}">
+                            ${ebook.is_paid ? `$${ebook.price}` : 'FREE'}
+                        </div>
+                        
+                        <div class="ebook-actions">
+                            ${ebook.is_paid && !ebook.is_unlocked ? `
+                                <button class="btn btn-primary unlock-btn" 
+                                        onclick="requestUnlock('${ebook.id}')">
+                                    Unlock via WhatsApp
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary read-btn" 
+                                        onclick="readEbook('${ebook.id}')">
+                                    Read Now
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load ebooks with filters
+        async function loadEbooks(filter = 'all', search = '') {
             const result = await fetchEbooks();
             
             if (result.success) {
-                renderEbooks(result.ebooks, 'ebooks-container');
+                let filtered = result.ebooks;
+                
+                // Apply category filter
+                if (filter !== 'all') {
+                    filtered = filtered.filter(ebook => 
+                        filter === 'free' ? !ebook.is_paid : ebook.is_paid
+                    );
+                }
+                
+                // Apply search filter
+                if (search) {
+                    const searchLower = search.toLowerCase();
+                    filtered = filtered.filter(ebook => 
+                        ebook.title.toLowerCase().includes(searchLower) ||
+                        ebook.description.toLowerCase().includes(searchLower)
+                    );
+                }
+                
+                renderEbooks(filtered);
             }
         }
 
-        // Filter handler
-        document.getElementById('category-filter').addEventListener('change', async (e) => {
-            const result = await fetchEbooks();
-            if (result.success) {
-                const filtered = e.target.value === 'all' 
-                    ? result.ebooks 
-                    : result.ebooks.filter(ebook => ebook.category === e.target.value);
-                renderEbooks(filtered, 'ebooks-container');
-            }
-        });
-
-        // Check authentication for nav
-        async function checkAuth() {
+        // Update navigation based on auth
+        async function updateNavigation() {
             const { user } = await getCurrentUser();
             const authLink = document.getElementById('auth-link');
+            const adminLink = document.getElementById('admin-link');
             
             if (user) {
                 authLink.textContent = 'Logout';
                 authLink.href = '#';
                 authLink.onclick = async (e) => {
                     e.preventDefault();
-                    const { logoutUser } = await import('./js/auth.js');
                     await logoutUser();
                     window.location.reload();
                 };
+                
+                const admin = await isAdmin();
+                if (admin) {
+                    adminLink.style.display = 'inline';
+                    adminLink.href = 'admin/admin-dashboard.html';
+                }
             } else {
                 authLink.textContent = 'Login';
                 authLink.href = 'login.html';
@@ -105,9 +244,37 @@
             }
         }
 
+        // Event listeners
+        document.getElementById('category-filter').addEventListener('change', (e) => {
+            const search = document.getElementById('search-ebooks').value;
+            loadEbooks(e.target.value, search);
+        });
+
+        document.getElementById('search-ebooks').addEventListener('input', debounce((e) => {
+            const filter = document.getElementById('category-filter').value;
+            loadEbooks(filter, e.target.value);
+        }, 300));
+
+        // Debounce helper
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         // Initialize
-        loadEbooks();
-        checkAuth();
+        async function init() {
+            await updateNavigation();
+            await loadEbooks();
+        }
+
+        init();
     </script>
 </body>
 </html>
