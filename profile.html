@@ -6,6 +6,13 @@
     <title>SupremeMotive - Profile</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/profile.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -15,6 +22,7 @@
             <a href="index.html">Home</a>
             <a href="ebooks.html">Ebooks</a>
             <a href="profile.html" class="active">Profile</a>
+            <a href="#" id="admin-link" style="display: none;">Admin</a>
             <a href="#" id="logout-link">Logout</a>
         </div>
     </nav>
@@ -22,7 +30,7 @@
     <!-- Profile Content -->
     <main class="container">
         <div id="profile-container">
-            <!-- Profile will be loaded here -->
+            <div class="loading">Loading profile...</div>
         </div>
         
         <div id="edit-profile-container" class="hidden">
@@ -31,8 +39,8 @@
     </main>
 
     <script type="module">
-        import { getCurrentUser, logoutUser } from './js/auth.js';
-        import { getUserProfile, renderProfile, renderEditProfile, editProfile } from './js/profile.js';
+        import { supabase } from './config/supabase.js';
+        import { getCurrentUser, logoutUser, updateProfile, uploadProfileImage, isAdmin } from './js/auth.js';
 
         // Global functions
         window.showEditProfile = () => {
@@ -50,15 +58,26 @@
             event.preventDefault();
             
             const formData = {
-                name: document.getElementById('name').value,
-                bio: document.getElementById('bio').value,
-                country: document.getElementById('country').value,
-                age: parseInt(document.getElementById('age').value)
+                name: document.getElementById('edit-name').value,
+                bio: document.getElementById('edit-bio').value,
+                country: document.getElementById('edit-country').value,
+                age: parseInt(document.getElementById('edit-age').value)
             };
             
-            const imageFile = document.getElementById('profile-image').files[0];
+            const imageFile = document.getElementById('edit-profile-image').files[0];
             
-            const result = await editProfile(formData, imageFile);
+            let profileImageUrl = null;
+            if (imageFile) {
+                const { user } = await getCurrentUser();
+                const uploadResult = await uploadProfileImage(imageFile, user.id);
+                if (uploadResult.success) {
+                    profileImageUrl = uploadResult.url;
+                    formData.profile_image_url = profileImageUrl;
+                }
+            }
+            
+            const { user } = await getCurrentUser();
+            const result = await updateProfile(user.id, formData);
             
             if (result.success) {
                 alert('Profile updated successfully!');
@@ -68,6 +87,7 @@
             }
         };
 
+        // Load user profile
         async function loadProfile() {
             const { user, profile } = await getCurrentUser();
             
@@ -80,15 +100,189 @@
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get('id') || user.id;
             
-            const result = await getUserProfile(userId);
+            let profileData = profile;
+            if (userId !== user.id) {
+                const { data } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+                profileData = data;
+            }
             
-            if (result.success) {
-                const isOwnProfile = userId === user.id;
-                renderProfile(result.profile, 'profile-container', isOwnProfile);
-                
-                if (isOwnProfile) {
-                    renderEditProfile(result.profile, 'edit-profile-container');
-                }
+            if (profileData) {
+                renderProfile(profileData, userId === user.id);
+            }
+        }
+
+        // Render profile
+        function renderProfile(profile, isOwnProfile) {
+            const container = document.getElementById('profile-container');
+            
+            container.innerHTML = `
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <img src="${profile.profile_image_url || 'assets/images/default-avatar.png'}" 
+                             alt="${profile.name}" 
+                             class="profile-avatar"
+                             onerror="this.src='assets/images/default-avatar.png'">
+                        
+                        <div class="profile-info">
+                            <h1 class="profile-name">${profile.name}</h1>
+                            
+                            <div class="profile-meta">
+                                <span>📍 ${profile.country || 'Not specified'}</span>
+                                <span>🎂 ${profile.age || 'Not specified'} years</span>
+                                ${profile.role !== 'user' ? `
+                                    <span class="badge badge-gold">${profile.role.replace('_', ' ').toUpperCase()}</span>
+                                ` : ''}
+                            </div>
+                            
+                            ${profile.bio ? `
+                                <div class="profile-bio">${profile.bio}</div>
+                            ` : ''}
+                            
+                            <p class="profile-joined">
+                                Joined ${new Date(profile.created_at).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </p>
+                        </div>
+                        
+                        ${isOwnProfile ? `
+                            <button class="btn btn-primary" onclick="showEditProfile()">
+                                Edit Profile
+                            </button>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="profile-stats" id="profile-stats">
+                        <!-- Stats will be loaded here -->
+                    </div>
+                </div>
+            `;
+
+            if (isOwnProfile) {
+                renderEditForm(profile);
+            }
+            
+            loadUserStats(profile.id);
+        }
+
+        // Load user stats
+        async function loadUserStats(userId) {
+            try {
+                // Get posts count
+                const { count: postsCount } = await supabase
+                    .from('posts')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('created_by', userId);
+
+                // Get comments count
+                const { count: commentsCount } = await supabase
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', userId);
+
+                // Get unlocks count
+                const { count: unlocksCount } = await supabase
+                    .from('unlocks')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', userId)
+                    .eq('status', 'approved');
+
+                const statsContainer = document.getElementById('profile-stats');
+                statsContainer.innerHTML = `
+                    <div class="stat-item">
+                        <span class="stat-value">${postsCount || 0}</span>
+                        <span class="stat-label">Posts</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${commentsCount || 0}</span>
+                        <span class="stat-label">Comments</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">${unlocksCount || 0}</span>
+                        <span class="stat-label">Ebooks</span>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Render edit form
+        function renderEditForm(profile) {
+            const container = document.getElementById('edit-profile-container');
+            
+            const countries = [
+                'United States', 'United Kingdom', 'Canada', 'Australia',
+                'Germany', 'France', 'Spain', 'Italy', 'Japan', 'China',
+                'India', 'Brazil', 'Mexico', 'South Africa', 'Nigeria',
+                'Egypt', 'Saudi Arabia', 'UAE', 'Singapore', 'Malaysia'
+            ];
+            
+            const countryOptions = countries.map(country => 
+                `<option value="${country}" ${country === profile.country ? 'selected' : ''}>${country}</option>`
+            ).join('');
+            
+            container.innerHTML = `
+                <div class="edit-profile-form">
+                    <h2>Edit Profile</h2>
+                    
+                    <form onsubmit="handleProfileUpdate(event)">
+                        <div class="form-group">
+                            <label for="edit-name">Name *</label>
+                            <input type="text" id="edit-name" name="name" 
+                                   value="${profile.name || ''}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-bio">Bio</label>
+                            <textarea id="edit-bio" name="bio" rows="4">${profile.bio || ''}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-country">Country *</label>
+                            <select id="edit-country" name="country" required>
+                                <option value="">Select your country</option>
+                                ${countryOptions}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-age">Age *</label>
+                            <input type="number" id="edit-age" name="age" 
+                                   value="${profile.age || 18}" min="13" max="120" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="edit-profile-image">Profile Image</label>
+                            <input type="file" id="edit-profile-image" name="profile-image" 
+                                   accept="image/*">
+                            <small>Leave empty to keep current image</small>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        // Check admin status for nav
+        async function checkAdminStatus() {
+            const admin = await isAdmin();
+            const adminLink = document.getElementById('admin-link');
+            if (admin) {
+                adminLink.style.display = 'inline';
+                adminLink.href = 'admin/admin-dashboard.html';
             }
         }
 
@@ -100,7 +294,12 @@
         });
 
         // Initialize
-        loadProfile();
+        async function init() {
+            await checkAdminStatus();
+            await loadProfile();
+        }
+
+        init();
     </script>
 </body>
 </html>
