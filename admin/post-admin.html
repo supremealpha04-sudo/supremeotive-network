@@ -6,6 +6,13 @@
     <title>SupremeMotive - Post Management</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="admin-dashboard">
@@ -19,6 +26,7 @@
                 <li><a href="ebook-admin.html">Ebook Management</a></li>
                 <li><a href="unlock-admin.html">Unlock Requests</a></li>
                 <li><a href="../index.html">View Site</a></li>
+                <li><a href="#" id="logout-link">Logout</a></li>
             </ul>
         </aside>
 
@@ -31,11 +39,15 @@
                 </button>
             </div>
 
-            <!-- Create Post Form (Hidden by default) -->
-            <div id="create-post-form" class="card hidden" style="margin-bottom: 32px;">
-                <h2 style="color: var(--gold); margin-bottom: 16px;">Create New Post</h2>
+            <div id="message-container"></div>
+
+            <!-- Create/Edit Post Form -->
+            <div id="post-form-container" class="card hidden" style="margin-bottom: 32px;">
+                <h2 id="form-title" style="color: var(--gold); margin-bottom: 16px;">Create New Post</h2>
                 
                 <form id="post-form">
+                    <input type="hidden" id="post-id" name="post-id">
+                    
                     <div class="form-group">
                         <label for="post-title">Title</label>
                         <input type="text" id="post-title" name="title" required>
@@ -49,11 +61,15 @@
                     <div class="form-group">
                         <label for="post-image">Image (Optional)</label>
                         <input type="file" id="post-image" name="image" accept="image/*">
+                        <div id="current-image-container" class="hidden">
+                            <p>Current image:</p>
+                            <img id="current-image" src="" alt="Current post image" style="max-width: 200px; margin-top: 10px;">
+                        </div>
                     </div>
                     
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Publish Post</button>
-                        <button type="button" class="btn btn-secondary" onclick="hideCreatePost()">
+                        <button type="submit" class="btn btn-primary" id="form-submit-btn">Publish Post</button>
+                        <button type="button" class="btn btn-secondary" onclick="hidePostForm()">
                             Cancel
                         </button>
                     </div>
@@ -66,6 +82,8 @@
                     <thead>
                         <tr>
                             <th>Title</th>
+                            <th>Content</th>
+                            <th>Image</th>
                             <th>Date</th>
                             <th>Likes</th>
                             <th>Comments</th>
@@ -73,7 +91,9 @@
                         </tr>
                     </thead>
                     <tbody id="posts-list">
-                        <!-- Posts will be loaded here -->
+                        <tr>
+                            <td colspan="7" class="text-center">Loading posts...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -82,36 +102,70 @@
 
     <script type="module">
         import { supabase } from '../config/supabase.js';
-        import { getCurrentUser, isAdmin } from '../js/auth.js';
-        import { createPost, uploadPostImage } from '../js/feed.js';
+        import { getCurrentUser, logoutUser, isAdmin } from '../js/auth.js';
+        import { uploadPostImage } from '../js/upload.js';
 
         // Global functions
         window.showCreatePost = () => {
-            document.getElementById('create-post-form').classList.remove('hidden');
-        };
-
-        window.hideCreatePost = () => {
-            document.getElementById('create-post-form').classList.add('hidden');
             document.getElementById('post-form').reset();
+            document.getElementById('post-id').value = '';
+            document.getElementById('form-title').textContent = 'Create New Post';
+            document.getElementById('form-submit-btn').textContent = 'Publish Post';
+            document.getElementById('current-image-container').classList.add('hidden');
+            document.getElementById('post-form-container').classList.remove('hidden');
         };
 
-        window.editPost = (postId) => {
-            // Implement edit functionality
-            alert('Edit functionality coming soon');
+        window.hidePostForm = () => {
+            document.getElementById('post-form-container').classList.add('hidden');
+            document.getElementById('message-container').innerHTML = '';
+        };
+
+        window.editPost = async (postId) => {
+            try {
+                const { data: post, error } = await supabase
+                    .from('posts')
+                    .select('*')
+                    .eq('id', postId)
+                    .single();
+
+                if (error) throw error;
+
+                document.getElementById('post-id').value = post.id;
+                document.getElementById('post-title').value = post.title;
+                document.getElementById('post-content').value = post.content;
+                
+                if (post.image_url) {
+                    document.getElementById('current-image').src = post.image_url;
+                    document.getElementById('current-image-container').classList.remove('hidden');
+                } else {
+                    document.getElementById('current-image-container').classList.add('hidden');
+                }
+
+                document.getElementById('form-title').textContent = 'Edit Post';
+                document.getElementById('form-submit-btn').textContent = 'Update Post';
+                document.getElementById('post-form-container').classList.remove('hidden');
+            } catch (error) {
+                showMessage('Error loading post: ' + error.message, 'error');
+            }
         };
 
         window.deletePost = async (postId) => {
-            if (confirm('Are you sure you want to delete this post?')) {
+            if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
                 const { error } = await supabase
                     .from('posts')
                     .delete()
                     .eq('id', postId);
 
-                if (!error) {
-                    loadPosts();
-                } else {
-                    alert('Error deleting post: ' + error.message);
-                }
+                if (error) throw error;
+
+                showMessage('Post deleted successfully!', 'success');
+                loadPosts();
+            } catch (error) {
+                showMessage('Error deleting post: ' + error.message, 'error');
             }
         };
 
@@ -119,77 +173,149 @@
         document.getElementById('post-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const title = document.getElementById('post-title').value;
-            const content = document.getElementById('post-content').value;
-            const imageFile = document.getElementById('post-image').files[0];
-            
-            let imageUrl = null;
-            
-            if (imageFile) {
-                const uploadResult = await uploadPostImage(imageFile);
-                if (uploadResult.success) {
-                    imageUrl = uploadResult.url;
+            const submitBtn = document.getElementById('form-submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+
+            try {
+                const postId = document.getElementById('post-id').value;
+                const title = document.getElementById('post-title').value;
+                const content = document.getElementById('post-content').value;
+                const imageFile = document.getElementById('post-image').files[0];
+                
+                const { user } = await getCurrentUser();
+                let imageUrl = null;
+
+                // Upload new image if provided
+                if (imageFile) {
+                    const uploadResult = await uploadPostImage(imageFile, user.id);
+                    if (uploadResult.success) {
+                        imageUrl = uploadResult.url;
+                    } else {
+                        throw new Error(uploadResult.error);
+                    }
                 }
-            }
-            
-            const result = await createPost({ title, content, imageUrl });
-            
-            if (result.success) {
-                alert('Post created successfully!');
-                hideCreatePost();
+
+                if (postId) {
+                    // Update existing post
+                    const updates = { title, content };
+                    if (imageUrl) updates.image_url = imageUrl;
+
+                    const { error } = await supabase
+                        .from('posts')
+                        .update(updates)
+                        .eq('id', postId);
+
+                    if (error) throw error;
+                    showMessage('Post updated successfully!', 'success');
+                } else {
+                    // Create new post
+                    const { error } = await supabase
+                        .from('posts')
+                        .insert([
+                            {
+                                title,
+                                content,
+                                image_url: imageUrl,
+                                created_by: user.id
+                            }
+                        ]);
+
+                    if (error) throw error;
+                    showMessage('Post created successfully!', 'success');
+                }
+
+                hidePostForm();
                 loadPosts();
-            } else {
-                alert('Error: ' + result.error);
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
             }
         });
 
+        // Load posts
         async function loadPosts() {
-            // Check admin access
+            try {
+                const { data: posts, error } = await supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        post_likes (count),
+                        comments (count)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('posts-list');
+                
+                if (posts.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No posts yet</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = posts.map(post => `
+                    <tr>
+                        <td><strong>${post.title}</strong></td>
+                        <td>${post.content.substring(0, 50)}${post.content.length > 50 ? '...' : ''}</td>
+                        <td>
+                            ${post.image_url ? 
+                                `<img src="${post.image_url}" alt="Post image" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : 
+                                'No image'}
+                        </td>
+                        <td>${new Date(post.created_at).toLocaleDateString()}</td>
+                        <td>${post.post_likes?.length || 0}</td>
+                        <td>${post.comments?.length || 0}</td>
+                        <td>
+                            <div class="admin-actions">
+                                <button class="admin-btn admin-btn-edit" 
+                                        onclick="editPost('${post.id}')">
+                                    Edit
+                                </button>
+                                <button class="admin-btn admin-btn-delete" 
+                                        onclick="deletePost('${post.id}')">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                showMessage('Error loading posts: ' + error.message, 'error');
+            }
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Check admin access
+        async function init() {
             const admin = await isAdmin('post_admin');
             if (!admin) {
                 window.location.href = '../index.html';
                 return;
             }
 
-            const { data: posts, error } = await supabase
-                .from('posts')
-                .select(`
-                    *,
-                    post_likes (count),
-                    comments (count)
-                `)
-                .order('created_at', { ascending: false });
-
-            if (error) {
-                console.error('Error loading posts:', error);
-                return;
-            }
-
-            const tbody = document.getElementById('posts-list');
-            tbody.innerHTML = posts.map(post => `
-                <tr>
-                    <td>${post.title}</td>
-                    <td>${new Date(post.created_at).toLocaleDateString()}</td>
-                    <td>${post.post_likes?.length || 0}</td>
-                    <td>${post.comments?.length || 0}</td>
-                    <td>
-                        <div class="admin-actions">
-                            <button class="admin-btn admin-btn-edit" 
-                                    onclick="editPost('${post.id}')">
-                                Edit
-                            </button>
-                            <button class="admin-btn admin-btn-delete" 
-                                    onclick="deletePost('${post.id}')">
-                                Delete
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+            await loadPosts();
         }
 
-        // Initialize
-        loadPosts();
+        // Logout handler
+        document.getElementById('logout-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await logoutUser();
+            window.location.href = '../index.html';
+        });
+
+        init();
     </script>
 </body>
 </html>
