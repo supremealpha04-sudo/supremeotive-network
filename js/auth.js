@@ -1,3 +1,4 @@
+// js/auth.js
 import { supabase } from '../config/supabase.js';
 
 // User registration
@@ -10,6 +11,10 @@ export async function registerUser(userData) {
     });
 
     if (authError) throw authError;
+
+    if (!authData.user) {
+      throw new Error('User creation failed');
+    }
 
     // Create profile
     const { error: profileError } = await supabase
@@ -46,7 +51,18 @@ export async function loginUser(email, password) {
 
     if (error) throw error;
 
-    return { success: true, user: data.user };
+    // Get user profile
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', data.user.id)
+      .single();
+
+    if (profileError && profileError.code !== 'PGRST116') {
+      console.error('Profile fetch error:', profileError);
+    }
+
+    return { success: true, user: data.user, profile };
   } catch (error) {
     console.error('Login error:', error);
     return { success: false, error: error.message };
@@ -58,6 +74,10 @@ export async function logoutUser() {
   try {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+    
+    // Clear session storage
+    sessionStorage.removeItem('user');
+    
     return { success: true };
   } catch (error) {
     console.error('Logout error:', error);
@@ -72,13 +92,17 @@ export async function getCurrentUser() {
     if (error) throw error;
     
     if (user) {
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
       
-      return { user, profile };
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error('Profile fetch error:', profileError);
+      }
+      
+      return { user, profile: profile || null };
     }
     
     return { user: null, profile: null };
@@ -165,7 +189,6 @@ async function compressImage(file) {
         let width = img.width;
         let height = img.height;
         
-        // Max dimensions
         const MAX_WIDTH = 800;
         const MAX_HEIGHT = 800;
         
