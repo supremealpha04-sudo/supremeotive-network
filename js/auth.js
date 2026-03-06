@@ -1,185 +1,197 @@
-// Authentication Logic - NOW USES GLOBAL supabaseClient
+import { supabase } from '../config/supabase.js';
 
-const authAPI = {
-    async signUp(email, password, userData) {
-        const { data, error } = await supabaseClient.auth.signUp({
-            email,
-            password,
-            options: {
-                data: userData
-            }
-        });
-        if (error) throw error;
-        return data;
-    },
-
-    async signIn(email, password) {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-        });
-        if (error) throw error;
-        return data;
-    },
-
-    async signOut() {
-        const { error } = await supabaseClient.auth.signOut();
-        if (error) throw error;
-    },
-
-    async getUser() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        return user;
-    },
-
-    onAuthStateChange(callback) {
-        return supabaseClient.auth.onAuthStateChange(callback);
-    }
-};
-
-// Auth state management functions
-async function initAuth() {
-    const user = await authAPI.getUser();
-    if (user) {
-        await loadUserProfile(user.id);
-        showMainApp();
-    } else {
-        showAuth();
-    }
-
-    authAPI.onAuthStateChange(async (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-            await loadUserProfile(session.user.id);
-            showMainApp();
-        } else if (event === 'SIGNED_OUT') {
-            currentUser = null;
-            currentProfile = null;
-            showAuth();
-        }
+// User registration
+export async function registerUser(userData) {
+  try {
+    // Create auth user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: userData.email,
+      password: userData.password,
     });
+
+    if (authError) throw authError;
+
+    // Create profile
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert([
+        {
+          id: authData.user.id,
+          name: userData.name,
+          email: userData.email,
+          country: userData.country,
+          age: userData.age,
+          bio: userData.bio || '',
+          profile_image_url: userData.profileImageUrl || null,
+          role: 'user'
+        }
+      ]);
+
+    if (profileError) throw profileError;
+
+    return { success: true, user: authData.user };
+  } catch (error) {
+    console.error('Registration error:', error);
+    return { success: false, error: error.message };
+  }
 }
 
-async function loadUserProfile(userId) {
-    try {
-        currentProfile = await db.getProfile(userId);
-        currentUser = { id: userId, ...currentProfile };
-        updateUIForRole();
-    } catch (error) {
-        showToast('Error loading profile', 'error');
+// User login
+export async function loginUser(email, password) {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+
+    return { success: true, user: data.user };
+  } catch (error) {
+    console.error('Login error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// User logout
+export async function logoutUser() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    return { success: true };
+  } catch (error) {
+    console.error('Logout error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Get current user
+export async function getCurrentUser() {
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) throw error;
+    
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      return { user, profile };
     }
+    
+    return { user: null, profile: null };
+  } catch (error) {
+    console.error('Get current user error:', error);
+    return { user: null, profile: null };
+  }
 }
 
-function updateUIForRole() {
-    if (!currentProfile) return;
-
-    const adminLink = document.querySelector('.admin-link');
-    if (currentProfile.role !== ROLES.USER) {
-        adminLink.classList.remove('hidden');
-    }
-
-    if (currentProfile.role === ROLES.SUPER_ADMIN) {
-        document.querySelectorAll('.super-admin-only').forEach(el => {
-            el.classList.remove('hidden');
-        });
-    }
-
-    if (canManagePosts(currentProfile.role)) {
-        document.getElementById('create-post-btn').classList.remove('hidden');
-    }
-    if (canManageEbooks(currentProfile.role)) {
-        document.getElementById('create-ebook-btn').classList.remove('hidden');
-    }
+// Check if user is admin
+export async function isAdmin(requiredRole = null) {
+  try {
+    const { user, profile } = await getCurrentUser();
+    
+    if (!user || !profile) return false;
+    
+    if (profile.role === 'super_admin') return true;
+    
+    if (requiredRole && profile.role === requiredRole) return true;
+    
+    if (!requiredRole && profile.role !== 'user') return true;
+    
+    return false;
+  } catch (error) {
+    console.error('Check admin error:', error);
+    return false;
+  }
 }
 
-// Screen navigation
-function showSplash() {
-    setScreen('splash-screen');
+// Update user profile
+export async function updateProfile(userId, updates) {
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', userId);
+
+    if (error) throw error;
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Update profile error:', error);
+    return { success: false, error: error.message };
+  }
 }
 
-function showAuth() {
-    setScreen('auth-screen');
-    showLogin();
+// Upload profile image
+export async function uploadProfileImage(file, userId) {
+  try {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${userId}-${Date.now()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    // Compress image before upload
+    const compressedFile = await compressImage(file);
+
+    const { error: uploadError } = await supabase.storage
+      .from('profile-images')
+      .upload(filePath, compressedFile);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('profile-images')
+      .getPublicUrl(filePath);
+
+    return { success: true, url: publicUrl };
+  } catch (error) {
+    console.error('Upload image error:', error);
+    return { success: false, error: error.message };
+  }
 }
 
-function showLogin() {
-    document.getElementById('login-form').classList.add('active');
-    document.getElementById('signup-form').classList.remove('active');
+// Compress image helper
+async function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        // Max dimensions
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/jpeg', 0.8);
+      };
+    };
+    reader.onerror = reject;
+  });
 }
-
-function showSignup() {
-    document.getElementById('signup-form').classList.add('active');
-    document.getElementById('login-form').classList.remove('active');
-}
-
-function showMainApp() {
-    setScreen('main-app');
-    showFeed();
-}
-
-async function logout() {
-    try {
-        await authAPI.signOut();
-        showToast('Logged out successfully', 'success');
-    } catch (error) {
-        showToast(error.message, 'error');
-    }
-}
-
-// Event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Login form
-    const loginForm = document.getElementById('login-form-element');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            showLoading(btn);
-
-            try {
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                
-                await authAPI.signIn(email, password);
-                showToast('Welcome back!', 'success');
-            } catch (error) {
-                showToast(error.message, 'error');
-            } finally {
-                hideLoading(btn);
-            }
-        });
-    }
-
-    // Signup form
-    const signupForm = document.getElementById('signup-form-element');
-    if (signupForm) {
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            showLoading(btn);
-
-            try {
-                const email = document.getElementById('signup-email').value;
-                const password = document.getElementById('signup-password').value;
-                const name = document.getElementById('signup-name').value;
-                const age = parseInt(document.getElementById('signup-age').value);
-                const country = document.getElementById('signup-country').value;
-                const bio = document.getElementById('signup-bio').value;
-
-                await authAPI.signUp(email, password, {
-                    name,
-                    age,
-                    country,
-                    bio: bio || null,
-                    role: ROLES.USER
-                });
-
-                showToast('Account created! Please check your email.', 'success');
-                showLogin();
-            } catch (error) {
-                showToast(error.message, 'error');
-            } finally {
-                hideLoading(btn);
-            }
-        });
-    }
-});
