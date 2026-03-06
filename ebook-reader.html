@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive - Read Ebook</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ebook.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">SupremeMotive</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="ebooks.html">Ebooks</a>
+            <a href="profile.html">Profile</a>
+            <a href="#" id="auth-link">Login</a>
+        </div>
+    </nav>
+
+    <!-- Ebook Reader -->
+    <main class="container">
+        <div class="ebook-reader" id="reader-container">
+            <!-- Ebook content will be loaded here -->
+        </div>
+    </main>
+
+    <script type="module">
+        import { supabase } from './config/supabase.js';
+        import { getCurrentUser } from './js/auth.js';
+        import { isEbookUnlocked } from './js/ebooks.js';
+
+        async function loadEbook() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ebookId = urlParams.get('id');
+            
+            if (!ebookId) {
+                window.location.href = 'ebooks.html';
+                return;
+            }
+
+            const { user } = await getCurrentUser();
+            
+            // Fetch ebook details
+            const { data: ebook, error } = await supabase
+                .from('ebooks')
+                .select('*')
+                .eq('id', ebookId)
+                .single();
+
+            if (error || !ebook) {
+                window.location.href = 'ebooks.html';
+                return;
+            }
+
+            // Check access
+            let canAccess = !ebook.is_paid;
+            
+            if (ebook.is_paid && user) {
+                const unlockCheck = await isEbookUnlocked(ebookId, user.id);
+                canAccess = unlockCheck.unlocked;
+            }
+
+            if (!canAccess) {
+                alert('This ebook is locked. Please unlock it first.');
+                window.location.href = 'ebooks.html';
+                return;
+            }
+
+            // Render ebook reader
+            renderReader(ebook);
+        }
+
+        function renderReader(ebook) {
+            const container = document.getElementById('reader-container');
+            
+            container.innerHTML = `
+                <div class="ebook-reader-header">
+                    <h1 class="ebook-reader-title">${ebook.title}</h1>
+                    <button class="btn btn-secondary" onclick="window.location.href='ebooks.html'">
+                        Back to Library
+                    </button>
+                </div>
+                
+                <div class="ebook-reader-content">
+                    <iframe 
+                        src="${ebook.pdf_url}" 
+                        class="pdf-viewer"
+                        title="${ebook.title}"
+                    >
+                        This browser does not support PDF viewing.
+                        <a href="${ebook.pdf_url}" download>Download PDF</a>
+                    </iframe>
+                </div>
+            `;
+        }
+
+        // Check authentication for nav
+        async function checkAuth() {
+            const { user } = await getCurrentUser();
+            const authLink = document.getElementById('auth-link');
+            
+            if (user) {
+                authLink.textContent = 'Logout';
+                authLink.href = '#';
+                authLink.onclick = async (e) => {
+                    e.preventDefault();
+                    const { logoutUser } = await import('./js/auth.js');
+                    await logoutUser();
+                    window.location.reload();
+                };
+            } else {
+                authLink.textContent = 'Login';
+                authLink.href = 'login.html';
+                authLink.onclick = null;
+            }
+        }
+
+        // Initialize
+        loadEbook();
+        checkAuth();
+    </script>
+</body>
+</html>
