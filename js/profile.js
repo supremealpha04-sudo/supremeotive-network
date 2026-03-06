@@ -1,85 +1,210 @@
-// Profile Logic
+import { supabase } from '../config/supabase.js';
+import { getCurrentUser, updateProfile, uploadProfileImage } from './auth.js';
 
-async function showProfile() {
-    setContentScreen('profile-screen');
-    await loadProfile();
+// Get user profile
+export async function getUserProfile(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error) throw error;
+
+    // Get user stats
+    const { count: postsCount } = await supabase
+      .from('posts')
+      .select('*', { count: 'exact', head: true })
+      .eq('created_by', userId);
+
+    const { count: commentsCount } = await supabase
+      .from('comments')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId);
+
+    const { count: unlocksCount } = await supabase
+      .from('unlocks')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('status', 'approved');
+
+    return {
+      success: true,
+      profile: {
+        ...data,
+        stats: {
+          posts: postsCount || 0,
+          comments: commentsCount || 0,
+          unlocks: unlocksCount || 0
+        }
+      }
+    };
+  } catch (error) {
+    console.error('Get profile error:', error);
+    return { success: false, error: error.message };
+  }
 }
 
-async function loadProfile() {
-    if (!currentProfile) return;
+// Edit profile
+export async function editProfile(updates, imageFile = null) {
+  try {
+    const { user } = await getCurrentUser();
+    
+    if (!user) throw new Error('Not authenticated');
 
-    document.getElementById('profile-name').textContent = currentProfile.name;
-    document.getElementById('profile-role').textContent = currentProfile.role;
-    document.getElementById('profile-email').textContent = currentProfile.email;
-    document.getElementById('profile-country').textContent = currentProfile.country;
-    document.getElementById('profile-age').textContent = `${currentProfile.age} years old`;
-    document.getElementById('profile-joined').textContent = `Joined ${utils.formatDate(currentProfile.created_at)}`;
+    let profileImageUrl = updates.profile_image_url;
 
-    if (currentProfile.profile_image_url) {
-        document.getElementById('profile-image').src = currentProfile.profile_image_url;
-        document.getElementById('profile-image').classList.remove('hidden');
-        document.getElementById('profile-avatar-placeholder').classList.add('hidden');
-    } else {
-        document.getElementById('profile-image').classList.add('hidden');
-        document.getElementById('profile-avatar-placeholder').classList.remove('hidden');
+    if (imageFile) {
+      const uploadResult = await uploadProfileImage(imageFile, user.id);
+      if (uploadResult.success) {
+        profileImageUrl = uploadResult.url;
+      }
     }
 
-    if (currentProfile.bio) {
-        document.getElementById('profile-bio').textContent = currentProfile.bio;
-        document.getElementById('profile-bio-container').classList.remove('hidden');
-    } else {
-        document.getElementById('profile-bio-container').classList.add('hidden');
-    }
+    const updateResult = await updateProfile(user.id, {
+      ...updates,
+      profile_image_url: profileImageUrl
+    });
+
+    if (!updateResult.success) throw new Error(updateResult.error);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Edit profile error:', error);
+    return { success: false, error: error.message };
+  }
 }
 
-async function handleAvatarUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+// Get users by country (for admin)
+export async function getUsersByCountry() {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('country, count')
+      .group('country');
 
-    try {
-        const ext = file.name.split('.').pop();
-        const path = `profiles/${currentUser.id}/${utils.generateId()}.${ext}`;
+    if (error) throw error;
+
+    return { success: true, countries: data };
+  } catch (error) {
+    console.error('Get users by country error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Render profile
+export function renderProfile(profile, containerId, isOwnProfile = false) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="profile-card">
+      <div class="profile-header">
+        <img src="${profile.profile_image_url || 'assets/images/default-avatar.png'}" 
+             alt="${profile.name}" 
+             class="profile-avatar">
         
-        await storage.uploadFile('images', path, file);
-        const url = await storage.getPublicUrl('images', path);
+        <div class="profile-info">
+          <h1 class="profile-name">${profile.name}</h1>
+          <p class="profile-meta">
+            <span>📍 ${profile.country}</span>
+            <span>🎂 ${profile.age} years</span>
+          </p>
+          <p class="profile-bio">${profile.bio || 'No bio yet.'}</p>
+          <p class="profile-joined">
+            Joined ${new Date(profile.created_at).toLocaleDateString()}
+          </p>
+        </div>
         
-        await db.updateProfile(currentUser.id, { profile_image_url: url });
-        currentProfile.profile_image_url = url;
-        
-        await loadProfile();
-        showToast('Profile picture updated', 'success');
-    } catch (error) {
-        showToast('Failed to upload image', 'error');
-    }
+        ${isOwnProfile ? `
+          <button class="btn btn-primary" onclick="showEditProfile()">
+            Edit Profile
+          </button>
+        ` : ''}
+      </div>
+      
+      <div class="profile-stats">
+        <div class="stat-item">
+          <span class="stat-value">${profile.stats.posts}</span>
+          <span class="stat-label">Posts</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">${profile.stats.comments}</span>
+          <span class="stat-label">Comments</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">${profile.stats.unlocks}</span>
+          <span class="stat-label">Ebooks</span>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
-function showEditProfile() {
-    document.getElementById('edit-name').value = currentProfile.name;
-    document.getElementById('edit-bio').value = currentProfile.bio || '';
-    setContentScreen('edit-profile-screen');
+// Render edit profile form
+export function renderEditProfile(profile, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="edit-profile-form">
+      <h2>Edit Profile</h2>
+      
+      <form onsubmit="handleProfileUpdate(event)">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" 
+                 value="${profile.name}" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" rows="4">${profile.bio || ''}</textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="country">Country</label>
+          <select id="country" name="country" required>
+            ${generateCountryOptions(profile.country)}
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age" 
+                 value="${profile.age}" min="13" max="120" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="profile-image">Profile Image</label>
+          <input type="file" id="profile-image" name="profile-image" 
+                 accept="image/*">
+          <small>Leave empty to keep current image</small>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-secondary" 
+                  onclick="cancelEdit()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  `;
 }
 
-// Edit profile form handler
-document.addEventListener('DOMContentLoaded', () => {
-    const editProfileForm = document.getElementById('edit-profile-form');
-    if (editProfileForm) {
-        editProfileForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            try {
-                const name = document.getElementById('edit-name').value;
-                const bio = document.getElementById('edit-bio').value;
-                
-                await db.updateProfile(currentUser.id, { name, bio: bio || null });
-                currentProfile.name = name;
-                currentProfile.bio = bio;
-                
-                await loadProfile();
-                showProfile();
-                showToast('Profile updated', 'success');
-            } catch (error) {
-                showToast('Failed to update profile', 'error');
-            }
-        });
-    }
-});
+// Generate country options
+function generateCountryOptions(selectedCountry) {
+  const countries = [
+    'United States', 'United Kingdom', 'Canada', 'Australia',
+    'Germany', 'France', 'Spain', 'Italy', 'Japan', 'China',
+    'India', 'Brazil', 'Mexico', 'South Africa', 'Nigeria',
+    'Egypt', 'Saudi Arabia', 'UAE', 'Singapore', 'Malaysia'
+  ];
+  
+  return countries.map(country => `
+    <option value="${country}" ${country === selectedCountry ? 'selected' : ''}>
+      ${country}
+    </option>
+  `).join('');
+}
