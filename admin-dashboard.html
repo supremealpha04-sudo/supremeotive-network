@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive - Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+    <div class="admin-dashboard">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <h2>SupremeMotive</h2>
+            <h3>Admin Panel</h3>
+            <ul class="admin-nav">
+                <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+                <li><a href="post-admin.html">Post Management</a></li>
+                <li><a href="ebook-admin.html">Ebook Management</a></li>
+                <li><a href="unlock-admin.html">Unlock Requests</a></li>
+                <li><a href="../index.html">View Site</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div id="admin-info"></div>
+            </div>
+
+            <div id="dashboard-container">
+                <!-- Stats will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { getDashboardStats, renderAdminDashboard } from '../js/admin.js';
+        import { getCurrentUser, isAdmin } from '../js/auth.js';
+
+        async function loadDashboard() {
+            // Check admin access
+            const admin = await isAdmin();
+            if (!admin) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const { user, profile } = await getCurrentUser();
+            document.getElementById('admin-info').innerHTML = `
+                <span>Welcome, ${profile.name} (${profile.role})</span>
+            `;
+
+            const result = await getDashboardStats();
+            if (result.success) {
+                renderAdminDashboard(result.stats, 'dashboard-container');
+            }
+        }
+
+        loadDashboard();
+    </script>
+</body>
+</html>
