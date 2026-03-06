@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive - Post</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/feed.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">SupremeMotive</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="ebooks.html">Ebooks</a>
+            <a href="profile.html">Profile</a>
+            <a href="#" id="auth-link">Login</a>
+        </div>
+    </nav>
+
+    <!-- Post Content -->
+    <main class="container">
+        <div class="feed-container" style="max-width: 800px; margin: 0 auto;">
+            <div id="post-container">
+                <!-- Post will be loaded here -->
+            </div>
+            
+            <div class="comments-section" id="comments-section">
+                <h3 style="color: var(--gold); margin-bottom: 16px;">Comments</h3>
+                <div id="comments-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { supabase } from './config/supabase.js';
+        import { getCurrentUser } from './js/auth.js';
+        import { fetchComments, addComment, renderComments } from './js/comments.js';
+        import { toggleLike } from './js/feed.js';
+
+        // Global functions
+        window.handleLike = async (postId) => {
+            const result = await toggleLike(postId);
+            if (result.success) {
+                loadPost();
+            }
+        };
+
+        window.handleAddComment = async (postId) => {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+            
+            if (content) {
+                const result = await addComment(postId, content);
+                if (result.success) {
+                    input.value = '';
+                    loadComments(postId);
+                }
+            }
+        };
+
+        window.showReplyForm = (commentId) => {
+            const form = document.getElementById(`reply-form-${commentId}`);
+            form.classList.toggle('hidden');
+        };
+
+        window.handleAddReply = async (commentId, postId) => {
+            const input = document.getElementById(`reply-input-${commentId}`);
+            const content = input.value.trim();
+            
+            if (content) {
+                const result = await addComment(postId, content, commentId);
+                if (result.success) {
+                    input.value = '';
+                    document.getElementById(`reply-form-${commentId}`).classList.add('hidden');
+                    loadComments(postId);
+                }
+            }
+        };
+
+        window.sharePost = (postId) => {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url);
+            alert('Link copied to clipboard!');
+        };
+
+        async function loadPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+            
+            if (!postId) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Fetch post
+            const { data: post, error } = await supabase
+                .from('posts')
+                .select(`
+                    *,
+                    profiles:created_by (name, profile_image_url)
+                `)
+                .eq('id', postId)
+                .single();
+
+            if (error || !post) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Get like count
+            const { count: likesCount } = await supabase
+                .from('post_likes')
+                .select('*', { count: 'exact', head: true })
+                .eq('post_id', postId);
+
+            // Check if user liked
+            const { user } = await getCurrentUser();
+            let userLiked = false;
+            
+            if (user) {
+                const { data: like } = await supabase
+                    .from('post_likes')
+                    .select('*')
+                    .eq('post_id', postId)
+                    .eq('user_id', user.id)
+                    .single();
+                userLiked = !!like;
+            }
+
+            renderPost({ ...post, likes_count: likesCount, user_liked: userLiked });
+            loadComments(postId);
+        }
+
+        function renderPost(post) {
+            const container = document.getElementById('post-container');
+            
+            container.innerHTML = `
+                <div class="post-card" data-post-id="${post.id}">
+                    <div class="post-header">
+                        <img src="${post.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
+                             alt="${post.profiles?.name}" 
+                             class="post-author-avatar">
+                        <div class="post-author-info">
+                            <h3>${post.profiles?.name || 'Unknown User'}</h3>
+                            <span class="post-date">${new Date(post.created_at).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    
+                    <h2 class="post-title">${post.title}</h2>
+                    <div class="post-content">${post.content}</div>
+                    
+                    ${post.image_url ? `
+                        <img src="${post.image_url}" alt="Post image" class="post-image">
+                    ` : ''}
+                    
+                    <div class="post-actions">
+                        <button class="action-btn like-btn ${post.user_liked ? 'liked' : ''}" 
+                                onclick="handleLike('${post.id}')">
+                            <span>❤️</span>
+                            <span class="like-count">${post.likes_count || 0}</span>
+                        </button>
+                        
+                        <button class="action-btn share-btn" 
+                                onclick="sharePost('${post.id}')">
+                            <span>📤</span>
+                            <span>Share</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadComments(postId) {
+            const result = await fetchComments(postId);
+            if (result.success) {
+                renderComments(result.comments, 'comments-container', postId);
+            }
+        }
+
+        // Check authentication for nav
+        async function checkAuth() {
+            const { user } = await getCurrentUser();
+            const authLink = document.getElementById('auth-link');
+            
+            if (user) {
+                authLink.textContent = 'Logout';
+                authLink.href = '#';
+                authLink.onclick = async (e) => {
+                    e.preventDefault();
+                    const { logoutUser } = await import('./js/auth.js');
+                    await logoutUser();
+                    window.location.href = 'index.html';
+                };
+            } else {
+                authLink.textContent = 'Login';
+                authLink.href = 'login.html';
+                authLink.onclick = null;
+            }
+        }
+
+        // Initialize
+        loadPost();
+        checkAuth();
+    </script>
+</body>
+</html>
