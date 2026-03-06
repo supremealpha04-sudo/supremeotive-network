@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Register</title>
     <link rel="stylesheet" href="css/style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -39,6 +46,7 @@
                     <label for="password">Password *</label>
                     <input type="password" id="password" name="password" 
                            minlength="6" required>
+                    <small>Minimum 6 characters</small>
                 </div>
                 
                 <div class="form-group">
@@ -91,9 +99,10 @@
                            accept="image/*">
                 </div>
                 
-                <div id="error-message" class="error-message" style="color: var(--error); margin-bottom: 16px;"></div>
+                <div id="error-message" class="error-message" style="color: var(--error); margin-bottom: 16px; display: none;"></div>
+                <div id="loading-message" class="loading-message" style="color: var(--electric-blue); margin-bottom: 16px; display: none;">Creating your account...</div>
                 
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <button type="submit" class="btn btn-primary" style="width: 100%;" id="register-button">
                     Create Account
                 </button>
             </form>
@@ -106,13 +115,135 @@
     </main>
 
     <script type="module">
-        import { registerUser, uploadProfileImage } from './js/auth.js';
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 
+        // Initialize Supabase
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Image compression function
+        async function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        const MAX_WIDTH = 800;
+                        const MAX_HEIGHT = 800;
+                        
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        canvas.toBlob((blob) => {
+                            resolve(blob);
+                        }, 'image/jpeg', 0.8);
+                    };
+                };
+                reader.onerror = reject;
+            });
+        }
+
+        // Upload profile image
+        async function uploadProfileImage(file, userId) {
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${userId}-${Date.now()}.${fileExt}`;
+                const filePath = `${fileName}`;
+
+                // Compress image before upload
+                const compressedFile = await compressImage(file);
+
+                const { error: uploadError } = await supabase.storage
+                    .from('profile-images')
+                    .upload(filePath, compressedFile);
+
+                if (uploadError) throw uploadError;
+
+                const { data: { publicUrl } } = supabase.storage
+                    .from('profile-images')
+                    .getPublicUrl(filePath);
+
+                return { success: true, url: publicUrl };
+            } catch (error) {
+                console.error('Upload image error:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Registration function
+        async function registerUser(userData) {
+            try {
+                // Create auth user
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email: userData.email,
+                    password: userData.password,
+                });
+
+                if (authError) throw authError;
+
+                if (!authData.user) {
+                    throw new Error('User creation failed');
+                }
+
+                // Create profile
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .insert([
+                        {
+                            id: authData.user.id,
+                            name: userData.name,
+                            email: userData.email,
+                            country: userData.country,
+                            age: userData.age,
+                            bio: userData.bio || '',
+                            profile_image_url: userData.profileImageUrl || null,
+                            role: 'user'
+                        }
+                    ]);
+
+                if (profileError) throw profileError;
+
+                return { success: true, user: authData.user };
+            } catch (error) {
+                console.error('Registration error:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Handle form submission
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const errorDiv = document.getElementById('error-message');
-            errorDiv.textContent = '';
+            const loadingDiv = document.getElementById('loading-message');
+            const registerButton = document.getElementById('register-button');
+            
+            errorDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            registerButton.disabled = true;
             
             // Validate passwords match
             const password = document.getElementById('password').value;
@@ -120,6 +251,18 @@
             
             if (password !== confirmPassword) {
                 errorDiv.textContent = 'Passwords do not match';
+                errorDiv.style.display = 'block';
+                loadingDiv.style.display = 'none';
+                registerButton.disabled = false;
+                return;
+            }
+            
+            // Validate password length
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters';
+                errorDiv.style.display = 'block';
+                loadingDiv.style.display = 'none';
+                registerButton.disabled = false;
                 return;
             }
             
@@ -133,34 +276,44 @@
                 bio: document.getElementById('bio').value
             };
             
-            // Handle profile image if provided
-            const imageFile = document.getElementById('profile-image').files[0];
-            if (imageFile) {
-                // We'll upload after registration since we need user ID
-                // Store temporarily
-                sessionStorage.setItem('tempProfileImage', JSON.stringify({
-                    name: imageFile.name,
-                    type: imageFile.type,
-                    size: imageFile.size
-                }));
+            // Validate all required fields
+            if (!formData.name || !formData.email || !formData.country || !formData.age) {
+                errorDiv.textContent = 'Please fill in all required fields';
+                errorDiv.style.display = 'block';
+                loadingDiv.style.display = 'none';
+                registerButton.disabled = false;
+                return;
             }
             
             // Register user
             const result = await registerUser(formData);
             
             if (result.success) {
-                // Upload profile image if exists
+                // Handle profile image if provided
+                const imageFile = document.getElementById('profile-image').files[0];
                 if (imageFile) {
                     await uploadProfileImage(imageFile, result.user.id);
-                    sessionStorage.removeItem('tempProfileImage');
                 }
                 
                 alert('Registration successful! Please check your email for confirmation.');
                 window.location.href = 'login.html';
             } else {
-                errorDiv.textContent = result.error;
+                errorDiv.textContent = result.error || 'Registration failed. Please try again.';
+                errorDiv.style.display = 'block';
+                loadingDiv.style.display = 'none';
+                registerButton.disabled = false;
             }
         });
+
+        // Check if already logged in
+        async function checkExistingSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        checkExistingSession();
     </script>
 </body>
 </html>
