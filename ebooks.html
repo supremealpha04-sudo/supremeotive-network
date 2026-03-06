@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive - Ebook Library</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ebook.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">SupremeMotive</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="ebooks.html" class="active">Ebooks</a>
+            <a href="profile.html">Profile</a>
+            <a href="#" id="auth-link">Login</a>
+        </div>
+    </nav>
+
+    <!-- Ebook Library -->
+    <main class="container">
+        <h1 style="color: var(--gold); margin-bottom: 32px;">Ebook Library</h1>
+        
+        <!-- Filters -->
+        <div class="filters" style="margin-bottom: 24px;">
+            <select id="category-filter" class="filter-select">
+                <option value="all">All Ebooks</option>
+                <option value="free">Free Only</option>
+                <option value="paid">Paid Only</option>
+            </select>
+        </div>
+        
+        <!-- Ebook Grid -->
+        <div class="ebook-library" id="ebooks-container">
+            <!-- Ebooks will be loaded here -->
+        </div>
+    </main>
+
+    <script type="module">
+        import { fetchEbooks, renderEbooks, requestUnlock } from './js/ebooks.js';
+        import { getCurrentUser } from './js/auth.js';
+
+        // Global functions
+        window.handleUnlock = async (ebookId) => {
+            const { user } = await getCurrentUser();
+            
+            if (!user) {
+                if (confirm('Please login to unlock ebooks. Go to login page?')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+            
+            const result = await requestUnlock(ebookId);
+            if (result.success) {
+                alert('WhatsApp opened. Please complete payment to unlock.');
+            } else {
+                alert('Error: ' + result.error);
+            }
+        };
+
+        window.readEbook = (ebookId) => {
+            window.location.href = `ebook-reader.html?id=${ebookId}`;
+        };
+
+        async function loadEbooks() {
+            const result = await fetchEbooks();
+            
+            if (result.success) {
+                renderEbooks(result.ebooks, 'ebooks-container');
+            }
+        }
+
+        // Filter handler
+        document.getElementById('category-filter').addEventListener('change', async (e) => {
+            const result = await fetchEbooks();
+            if (result.success) {
+                const filtered = e.target.value === 'all' 
+                    ? result.ebooks 
+                    : result.ebooks.filter(ebook => ebook.category === e.target.value);
+                renderEbooks(filtered, 'ebooks-container');
+            }
+        });
+
+        // Check authentication for nav
+        async function checkAuth() {
+            const { user } = await getCurrentUser();
+            const authLink = document.getElementById('auth-link');
+            
+            if (user) {
+                authLink.textContent = 'Logout';
+                authLink.href = '#';
+                authLink.onclick = async (e) => {
+                    e.preventDefault();
+                    const { logoutUser } = await import('./js/auth.js');
+                    await logoutUser();
+                    window.location.reload();
+                };
+            } else {
+                authLink.textContent = 'Login';
+                authLink.href = 'login.html';
+                authLink.onclick = null;
+            }
+        }
+
+        // Initialize
+        loadEbooks();
+        checkAuth();
+    </script>
+</body>
+</html>
