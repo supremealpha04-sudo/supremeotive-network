@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">SupremeMotive</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="ebooks.html">Ebooks</a>
+            <a href="register.html">Register</a>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <main class="container">
+        <div class="card" style="max-width: 400px; margin: 60px auto;">
+            <h1 class="text-center" style="color: var(--gold); margin-bottom: 32px;">
+                Welcome Back
+            </h1>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <div id="error-message" class="error-message" style="color: var(--error); margin-bottom: 16px;"></div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Login
+                </button>
+            </form>
+            
+            <p class="text-center mt-20">
+                Don't have an account? 
+                <a href="register.html">Register here</a>
+            </p>
+            
+            <p class="text-center mt-10">
+                <a href="#" id="forgot-password">Forgot Password?</a>
+            </p>
+        </div>
+    </main>
+
+    <script type="module">
+        import { loginUser } from './js/auth.js';
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = '';
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const result = await loginUser(email, password);
+            
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                errorDiv.textContent = result.error;
+            }
+        });
+
+        document.getElementById('forgot-password').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = prompt('Enter your email address:');
+            if (email) {
+                const { supabase } = await import('./config/supabase.js');
+                const { error } = await supabase.auth.resetPasswordForEmail(email);
+                if (error) {
+                    alert('Error: ' + error.message);
+                } else {
+                    alert('Password reset email sent! Check your inbox.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
