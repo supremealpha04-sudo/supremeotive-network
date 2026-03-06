@@ -1,4 +1,5 @@
 // js/auth.js
+import {uploadProfileImage } from './upload.js';
 import { supabase, isAdminEmail } from '../config/supabase.js';
 
 // User registration
@@ -226,7 +227,7 @@ export async function updateProfile(userId, updates) {
 
 // Upload profile image
 export async function uploadProfileImage(file, userId) {
-  try {
+  return uuploadfile(file,STORAGE_PATHS.PROFILE_IMAGES, userId, true);
     const fileExt = file.name.split('.').pop();
     const fileName = `${userId}-${Date.now()}.${fileExt}`;
     const filePath = `${fileName}`;
