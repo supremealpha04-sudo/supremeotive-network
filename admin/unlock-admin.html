@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive - Unlock Requests</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="admin-dashboard">
+        <aside class="admin-sidebar">
+            <div class="logo">
+                <img src="../assets/images/logo.svg" alt="SupremeMotive">
+                <span class="logo-text">SupremeMotive</span>
+            </div>
+            <h3>Admin Panel</h3>
+            <div id="admin-role-badge" class="role-badge">Loading...</div>
+            <ul class="admin-nav">
+                <li><a href="admin-dashboard.html">Dashboard</a></li>
+                <li id="post-admin-link" style="display: none;"><a href="post-admin.html">📝 Post Management</a></li>
+                <li id="ebook-admin-link" style="display: none;"><a href="ebook-admin.html">📚 Ebook Management</a></li>
+                <li id="unlock-admin-link" style="display: block;"><a href="unlock-admin.html" class="active">🔓 Unlock Requests</a></li>
+                <li class="divider"></li>
+                <li><a href="../index.html">🏠 View Site</a></li>
+                <li><a href="#" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Unlock Requests</h1>
+                <div id="admin-info" class="admin-info"></div>
+            </div>
+
+            <div id="message-container"></div>
+
+            <div id="unlocks-container">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading unlock requests...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { supabase } from '../config/supabase.js';
+        import { getCurrentUser, logoutUser, isAdmin } from '../js/auth.js';
+
+        // Global functions
+        window.approveUnlock = async (unlockId, userId, ebookId) => {
+            if (!confirm('Approve this unlock request?')) return;
+
+            try {
+                // Update unlock status
+                const { error } = await supabase
+                    .from('unlocks')
+                    .update({ 
+                        status: 'approved',
+                        admin_notes: 'Approved by admin',
+                        updated_at: new Date()
+                    })
+                    .eq('id', unlockId);
+
+                if (error) throw error;
+
+                showMessage('Unlock approved successfully!', 'success');
+                loadUnlockRequests();
+            } catch (error) {
+                showMessage('Error approving unlock: ' + error.message, 'error');
+            }
+        };
+
+        window.rejectUnlock = async (unlockId) => {
+            const reason = prompt('Enter rejection reason (optional):');
+            if (reason === null) return;
+
+            try {
+                const { error } = await supabase
+                    .from('unlocks')
+                    .update({ 
+                        status: 'rejected',
+                        admin_notes: reason || 'Rejected by admin',
+                        updated_at: new Date()
+                    })
+                    .eq('id', unlockId);
+
+                if (error) throw error;
+
+                showMessage('Unlock rejected', 'warning');
+                loadUnlockRequests();
+            } catch (error) {
+                showMessage('Error rejecting unlock: ' + error.message, 'error');
+            }
+        };
+
+        // Load unlock requests
+        async function loadUnlockRequests() {
+            try {
+                const { data: unlocks, error } = await supabase
+                    .from('unlocks')
+                    .select(`
+                        *,
+                        profiles:user_id (id, name, email),
+                        ebooks:ebook_id (id, title, price)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                renderUnlockRequests(unlocks);
+            } catch (error) {
+                showMessage('Error loading unlocks: ' + error.message, 'error');
+            }
+        }
+
+        // Render unlock requests
+        function renderUnlockRequests(unlocks) {
+            const container = document.getElementById('unlocks-container');
+            
+            if (unlocks.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No unlock requests found</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Ebook</th>
+                            <th>Price</th>
+                            <th>Request Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${unlocks.map(unlock => `
+                            <tr>
+                                <td><strong>${unlock.profiles?.name || 'Unknown'}</strong></td>
+                                <td>${unlock.profiles?.email || 'N/A'}</td>
+                                <td>${unlock.ebooks?.title || 'Unknown'}</td>
+                                <td>$${unlock.ebooks?.price || '0.00'}</td>
+                                <td>${new Date(unlock.created_at).toLocaleDateString()}</td>
+                                <td>
+                                    <span class="status-badge status-${unlock.status}">
+                                        ${unlock.status}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="admin-actions">
+                                        ${unlock.status === 'pending' ? `
+                                            <button class="admin-btn admin-btn-approve" 
+                                                    onclick="approveUnlock('${unlock.id}', '${unlock.user_id}', '${unlock.ebook_id}')">
+                                                Approve
+                                            </button>
+                                            <button class="admin-btn admin-btn-reject" 
+                                                    onclick="rejectUnlock('${unlock.id}')">
+                                                Reject
+                                            </button>
+                                        ` : `
+                                            <span class="status-text">${unlock.status === 'approved' ? '✓ Approved' : '✗ Rejected'}</span>
+                                        `}
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+
+        // Show role-specific menu
+        async function showRoleSpecificMenu() {
+            const { user } = await getCurrentUser();
+            const roleBadge = document.getElementById('admin-role-badge');
+            
+            if (roleBadge && user) {
+                roleBadge.textContent = `👑 ${user.role.replace('_', ' ').toUpperCase()}`;
+            }
+
+            // Show/hide menu items
+            document.getElementById('post-admin-link').style.display = 
+                (user?.role === 'super_admin' || user?.role === 'post_admin') ? 'block' : 'none';
+            document.getElementById('ebook-admin-link').style.display = 
+                (user?.role === 'super_admin' || user?.role === 'ebook_admin') ? 'block' : 'none';
+            document.getElementById('unlock-admin-link').style.display = 
+                (user?.role === 'super_admin' || user?.role === 'unlock_admin') ? 'block' : 'none';
+        }
+
+        // Initialize
+        async function init() {
+            const admin = await isAdmin('unlock_admin');
+            if (!admin) {
+                window.location.href = '../index.html';
+                return;
+            }
+
+            const { user } = await getCurrentUser();
+            document.getElementById('admin-info').innerHTML = `Welcome, <strong>${user?.name}</strong>`;
+            
+            await showRoleSpecificMenu();
+            await loadUnlockRequests();
+        }
+
+        // Logout
+        document.getElementById('logout-link').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await logoutUser();
+            window.location.href = '../index.html';
+        });
+
+        init();
+    </script>
+</body>
+</html>
