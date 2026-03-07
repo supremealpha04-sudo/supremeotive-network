@@ -16,20 +16,22 @@
 </head>
 <body>
     <div class="admin-dashboard">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <h2>SupremeMotive</h2>
-            <h3>Admin Panel</h3>
-            <ul class="admin-nav">
-                <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
-                <li><a href="post-admin.html">Post Management</a></li>
-                <li><a href="ebook-admin.html">Ebook Management</a></li>
-                <li><a href="unlock-admin.html">Unlock Requests</a></li>
-                <li><a href="../index.html">View Site</a></li>
-                <li><a href="#" id="logout-link">Logout</a></li>
-            </ul>
-        </aside>
-
+        
+<!-- Sidebar - Update based on user role -->
+<aside class="admin-sidebar">
+    <h2>SupremeMotive</h2>
+    <h3 id="admin-role-title">Admin Panel</h3>
+    <ul class="admin-nav" id="admin-nav">
+        <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+        <li id="nav-posts" style="display: none;"><a href="post-admin.html">Post Management</a></li>
+        <li id="nav-ebooks" style="display: none;"><a href="ebook-admin.html">Ebook Management</a></li>
+        <li id="nav-unlocks" style="display: none;"><a href="unlock-admin.html">Unlock Requests</a></li>
+        <li id="nav-users" style="display: none;"><a href="users-admin.html">User Management</a></li>
+        <li id="nav-settings" style="display: none;"><a href="settings.html">Settings</a></li>
+        <li><a href="../index.html">View Site</a></li>
+        <li><a href="#" id="logout-link">Logout</a></li>
+    </ul>
+</aside>
         <!-- Main Content -->
         <main class="admin-content">
             <div class="admin-header">
