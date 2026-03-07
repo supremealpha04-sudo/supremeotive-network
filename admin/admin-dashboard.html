@@ -6,6 +6,7 @@
     <title>SupremeMotive - Admin Dashboard</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
     <script type="importmap">
         {
             "imports": {
@@ -16,36 +17,43 @@
 </head>
 <body>
     <div class="admin-dashboard">
-        
-<!-- Sidebar - Update based on user role -->
-<aside class="admin-sidebar">
-    <h2>SupremeMotive</h2>
-    <h3 id="admin-role-title">Admin Panel</h3>
-    <ul class="admin-nav" id="admin-nav">
-        <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
-        <li id="nav-posts" style="display: none;"><a href="post-admin.html">Post Management</a></li>
-        <li id="nav-ebooks" style="display: none;"><a href="ebook-admin.html">Ebook Management</a></li>
-        <li id="nav-unlocks" style="display: none;"><a href="unlock-admin.html">Unlock Requests</a></li>
-        <li id="nav-users" style="display: none;"><a href="users-admin.html">User Management</a></li>
-        <li id="nav-settings" style="display: none;"><a href="settings.html">Settings</a></li>
-        <li><a href="../index.html">View Site</a></li>
-        <li><a href="#" id="logout-link">Logout</a></li>
-    </ul>
-</aside>
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="logo">
+                <img src="../assets/images/logo.svg" alt="SupremeMotive" onerror="this.style.display='none'">
+                <span class="logo-text">SupremeMotive</span>
+            </div>
+            <h3>Admin Panel</h3>
+            <div id="admin-role-badge" class="role-badge">Loading role...</div>
+            <ul class="admin-nav" id="admin-nav">
+                <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
+                <li id="post-admin-link" style="display: none;"><a href="post-admin.html">📝 Post Management</a></li>
+                <li id="ebook-admin-link" style="display: none;"><a href="ebook-admin.html">📚 Ebook Management</a></li>
+                <li id="unlock-admin-link" style="display: none;"><a href="unlock-admin.html">🔓 Unlock Requests</a></li>
+                <li class="divider"></li>
+                <li><a href="../index.html">🏠 View Site</a></li>
+                <li><a href="#" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </aside>
+
         <!-- Main Content -->
         <main class="admin-content">
             <div class="admin-header">
                 <h1>Dashboard</h1>
-                <div id="admin-info" style="color: var(--gold);"></div>
+                <div id="admin-info" class="admin-info"></div>
             </div>
 
+            <div id="message-container"></div>
+
             <div id="dashboard-container">
-                <!-- Stats will be loaded here -->
-                <div class="loading">Loading dashboard...</div>
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading dashboard...</p>
+                </div>
             </div>
             
             <div id="users-container" style="margin-top: 32px;">
-                <h2 style="color: var(--gold); margin-bottom: 16px;">Users by Country</h2>
+                <h2 style="color: var(--gold); margin-bottom: 16px;">🌍 Users by Country</h2>
                 <div id="country-stats" class="country-stats"></div>
             </div>
         </main>
@@ -53,7 +61,7 @@
 
     <script type="module">
         import { supabase } from '../config/supabase.js';
-        import { getCurrentUser, logoutUser, isAdmin } from '../js/auth.js';
+        import { getCurrentUser, logoutUser, isAdmin, getUserRole } from '../js/auth.js';
 
         // Get dashboard stats
         async function getDashboardStats() {
@@ -136,9 +144,16 @@
 
             // Render country stats
             const countryContainer = document.getElementById('country-stats');
+            if (!countryContainer) return;
+            
             const sortedCountries = Object.entries(stats.usersByCountry)
                 .sort((a, b) => b[1] - a[1]);
             
+            if (sortedCountries.length === 0) {
+                countryContainer.innerHTML = '<p class="no-data">No user data available</p>';
+                return;
+            }
+
             countryContainer.innerHTML = `
                 <table class="admin-table">
                     <thead>
@@ -161,65 +176,103 @@
             `;
         }
 
-        // Check admin access and load dashboard
-        async function init() {
-            const admin = await isAdmin();
-            if (!admin) {
-                window.location.href = '../index.html';
-                return;
+        // Show role-specific menu items
+        async function showRoleSpecificMenu() {
+            const { user } = await getCurrentUser();
+            const roleBadge = document.getElementById('admin-role-badge');
+            
+            if (roleBadge && user) {
+                const roleDisplay = user.role.replace('_', ' ').toUpperCase();
+                roleBadge.textContent = `👑 ${roleDisplay}`;
+                
+                // Add role-specific color
+                if (user.role === 'super_admin') {
+                    roleBadge.style.background = 'linear-gradient(135deg, #FFD700, #FF4500)';
+                } else if (user.role === 'post_admin') {
+                    roleBadge.style.background = 'linear-gradient(135deg, #4CAF50, #8BC34A)';
+                } else if (user.role === 'ebook_admin') {
+                    roleBadge.style.background = 'linear-gradient(135deg, #2196F3, #03A9F4)';
+                } else if (user.role === 'unlock_admin') {
+                    roleBadge.style.background = 'linear-gradient(135deg, #9C27B0, #E1BEE7)';
+                }
             }
-
-            const { user, profile } = await getCurrentUser();
-            document.getElementById('admin-info').innerHTML = `
-                Welcome, <strong>${profile?.name || user?.email}</strong> 
-                <span style="color: var(--electric-blue);">(${profile?.role?.replace('_', ' ')})</span>
-            `;
-
-            const result = await getDashboardStats();
-            if (result.success) {
-                renderDashboard(result.stats);
-            } else {
-                document.getElementById('dashboard-container').innerHTML = 
-                    '<div class="error">Error loading dashboard</div>';
+            
+            // Show/hide menu items based on role
+            const postLink = document.getElementById('post-admin-link');
+            const ebookLink = document.getElementById('ebook-admin-link');
+            const unlockLink = document.getElementById('unlock-admin-link');
+            
+            if (user) {
+                if (user.role === 'super_admin') {
+                    if (postLink) postLink.style.display = 'block';
+                    if (ebookLink) ebookLink.style.display = 'block';
+                    if (unlockLink) unlockLink.style.display = 'block';
+                } else {
+                    if (postLink) postLink.style.display = user.role === 'post_admin' ? 'block' : 'none';
+                    if (ebookLink) ebookLink.style.display = user.role === 'ebook_admin' ? 'block' : 'none';
+                    if (unlockLink) unlockLink.style.display = user.role === 'unlock_admin' ? 'block' : 'none';
+                }
             }
         }
-// Update navigation based on user role
-function updateNavigationBasedOnRole(role) {
-    // Show/hide navigation items based on role
-    switch(role) {
-        case 'super_admin':
-            document.getElementById('nav-posts').style.display = 'block';
-            document.getElementById('nav-ebooks').style.display = 'block';
-            document.getElementById('nav-unlocks').style.display = 'block';
-            document.getElementById('nav-users').style.display = 'block';
-            document.getElementById('nav-settings').style.display = 'block';
-            document.getElementById('admin-role-title').innerHTML = 'Super Admin <span style="color: var(--gold);">(Full Access)</span>';
-            break;
+
+        // Show message
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            if (!container) return;
             
-        case 'post_admin':
-            document.getElementById('nav-posts').style.display = 'block';
-            document.getElementById('admin-role-title').innerHTML = 'Post Admin <span style="color: var(--electric-blue);">(Manage Posts)</span>';
-            break;
-            
-        case 'ebook_admin':
-            document.getElementById('nav-ebooks').style.display = 'block';
-            document.getElementById('admin-role-title').innerHTML = 'Ebook Admin <span style="color: var(--electric-blue);">(Manage Ebooks)</span>';
-            break;
-            
-        case 'unlock_admin':
-            document.getElementById('nav-unlocks').style.display = 'block';
-            document.getElementById('admin-role-title').innerHTML = 'Unlock Admin <span style="color: var(--electric-blue);">(Approve Unlocks)</span>';
-            break;
-    }
-}
+            container.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Check admin access and load dashboard
+        async function init() {
+            try {
+                // Check if user is admin
+                const admin = await isAdmin();
+                if (!admin) {
+                    window.location.href = '../index.html';
+                    return;
+                }
+
+                // Get user info
+                const { user, profile } = await getCurrentUser();
+                const adminInfo = document.getElementById('admin-info');
+                if (adminInfo) {
+                    adminInfo.innerHTML = `
+                        <span>Welcome, <strong>${profile?.name || user?.email}</strong></span>
+                    `;
+                }
+
+                // Show role-specific menu
+                await showRoleSpecificMenu();
+
+                // Load dashboard stats
+                const result = await getDashboardStats();
+                if (result.success) {
+                    renderDashboard(result.stats);
+                } else {
+                    showMessage('Error loading dashboard: ' + result.error, 'error');
+                }
+            } catch (error) {
+                console.error('Init error:', error);
+                showMessage('Error initializing dashboard', 'error');
+            }
+        }
 
         // Logout handler
-        document.getElementById('logout-link').addEventListener('click', async (e) => {
+        document.getElementById('logout-link')?.addEventListener('click', async (e) => {
             e.preventDefault();
-            await logoutUser();
-            window.location.href = '../index.html';
+            const result = await logoutUser();
+            if (result.success) {
+                window.location.href = '../index.html';
+            } else {
+                showMessage('Error logging out: ' + result.error, 'error');
+            }
         });
 
+        // Initialize
         init();
     </script>
 </body>
