@@ -7,274 +7,1247 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/feed.css">
     <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
-    <script type="importmap">
-        {
-            "imports": {
-                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --bg-hover: #222222;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-gold: #ffd700;
+            --accent-blue: #00f0ff;
+            --accent-purple: #9d4edd;
+            --success: #4caf50;
+            --error: #f44336;
+            --warning: #ff9800;
+            --border: #2a2a2a;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 15px 40px rgba(255, 215, 0, 0.15);
+            --gradient-gold: linear-gradient(135deg, #ffd700, #ffb347);
+            --gradient-blue: linear-gradient(135deg, #00f0ff, #0099ff);
+            --gradient-purple: linear-gradient(135deg, #9d4edd, #7b2cbf);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(0, 240, 255, 0.05) 0%, transparent 30%),
+                repeating-linear-gradient(45deg, rgba(255, 215, 0, 0.02) 0px, rgba(255, 215, 0, 0.02) 1px, transparent 1px, transparent 10px);
+            pointer-events: none;
+            z-index: -1;
+            animation: backgroundShift 20s ease infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Modern Navbar */
+        .navbar {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(90deg, var(--accent-gold), var(--accent-blue)) 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(45deg);
+            animation: logoSpin 10s linear infinite;
+        }
+
+        .logo-icon span {
+            transform: rotate(-45deg);
+            font-size: 1.5rem;
+        }
+
+        @keyframes logoSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-blue));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--accent-gold);
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 0.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            position: relative;
+        }
+
+        .theme-toggle span {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .theme-toggle .active {
+            background: var(--gradient-gold);
+            color: var(--bg-primary);
+        }
+
+        .theme-toggle-bg {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--gradient-gold);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            animation: slideInDown 0.5s ease;
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-blue));
+        }
+
+        .welcome-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .welcome-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue)) border-box;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: xor;
+            padding: 3px;
+        }
+
+        .welcome-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .welcome-text {
+            flex: 1;
+        }
+
+        .welcome-text h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-text p {
+            color: var(--text-secondary);
+        }
+
+        .welcome-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Feed */
+        .feed {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Post Card */
+        .post-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            animation: slideInUp 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue));
+            transition: height 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: transparent;
+        }
+
+        .post-card:hover::before {
+            height: 100%;
+        }
+
+        /* Post Header */
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .post-author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+            padding: 2px;
+            background: var(--bg-card);
+        }
+
+        .post-author-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-author-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .post-date {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .post-date i {
+            color: var(--accent-gold);
+        }
+
+        /* Post Content */
+        .post-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .post-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .post-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* Post Actions */
+        .post-actions {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .action-btn:hover {
+            color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.liked {
+            color: #ff4d4d;
+        }
+
+        .action-btn.saved {
+            color: var(--accent-gold);
+        }
+
+        .action-btn i {
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-count {
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            animation: slideInDown 0.3s ease;
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .comment-btn {
+            padding: 0.5rem 1.5rem;
+            background: var(--gradient-gold);
+            border: none;
+            border-radius: 30px;
+            color: var(--bg-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Comment */
+        .comment {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-gold);
+            animation: slideInRight 0.3s ease;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .comment-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-blue);
+        }
+
+        .comment-info {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-size: 0.95rem;
+        }
+
+        .comment-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .comment-content {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .reply-btn {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: color 0.3s ease;
+        }
+
+        .reply-btn:hover {
+            color: var(--accent-gold);
+        }
+
+        .comment-reply {
+            margin-left: 2.5rem;
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border-left: 2px solid var(--accent-blue);
+        }
+
+        .reply-form {
+            margin-left: 2.5rem;
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .reply-form input {
+            flex: 1;
+            padding: 0.8rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-primary);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent-gold);
+            border-right-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+        }
+
+        .loading p {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 2px dashed var(--border);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+        }
+
+        /* Error State */
+        .error-state {
+            text-align: center;
+            padding: 4rem;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--error);
+        }
+
+        .error-state i {
+            font-size: 4rem;
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            background: var(--bg-card);
+            border-left: 4px solid var(--accent-gold);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        }
+
+        .notification.success {
+            border-left-color: var(--success);
+        }
+
+        .notification.error {
+            border-left-color: var(--error);
+        }
+
+        .notification.warning {
+            border-left-color: var(--warning);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-    </script>
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .welcome-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .welcome-stats {
+                justify-content: center;
+            }
+
+            .post-actions {
+                justify-content: center;
+            }
+
+            .action-btn span:not(.action-count) {
+                display: none;
+            }
+
+            .comment-reply {
+                margin-left: 1rem;
+            }
+
+            .reply-form {
+                margin-left: 1rem;
+                flex-direction: column;
+            }
+        }
+
+        /* Image Modal */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 10px;
+            border: 3px solid var(--accent-gold);
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-modal-close:hover {
+            background: var(--error);
+            transform: rotate(90deg);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-gold);
+            border: none;
+            border-radius: 50%;
+            color: var(--bg-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: none;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(360deg);
+        }
+
+        .fab.visible {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">
-            <img src="assets/images/logo.svg" alt="SupremeMotive" onerror="this.style.display='none'">
+            <div class="logo-icon">
+                <span>⚡</span>
+            </div>
             <span class="logo-text">SupremeMotive</span>
         </div>
+        
         <div class="nav-links">
-            <a href="index.html" class="active">Home</a>
-            <a href="ebooks.html">Ebooks</a>
-            <a href="profile.html" id="profile-link">Profile</a>
-            <a href="#" id="admin-link" style="display: none;">Admin</a>
-            <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode">🌙</button>
-            <a href="#" id="auth-link">Login</a>
+            <a href="index.html" class="nav-link active">Home</a>
+            <a href="ebooks.html" class="nav-link">Ebooks</a>
+            <a href="profile.html" class="nav-link" id="profile-link">Profile</a>
+            <a href="#" class="nav-link" id="admin-link" style="display: none;">Admin</a>
+            
+            <div class="theme-toggle" id="theme-toggle">
+                <span class="theme-toggle-bg" id="theme-bg"></span>
+                <span id="theme-icon-light">☀️</span>
+                <span id="theme-icon-dark">🌙</span>
+            </div>
+            
+            <a href="#" class="nav-link" id="auth-link">Login</a>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="container">
-        <div id="welcome-message" class="welcome-message"></div>
-        
-        <div class="feed-container" id="feed-container">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <p>Loading motivational posts...</p>
+        <!-- Welcome Section -->
+        <div class="welcome-section" id="welcome-section">
+            <div class="welcome-content">
+                <div class="welcome-avatar" id="welcome-avatar">
+                    <img src="assets/images/default-avatar.png" alt="Avatar">
+                </div>
+                <div class="welcome-text">
+                    <h1 id="welcome-title">Welcome to SupremeMotive!</h1>
+                    <p id="welcome-message">Your daily dose of motivation and inspiration</p>
+                </div>
+                <div class="welcome-stats" id="welcome-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-posts">0</div>
+                        <div class="stat-label">Posts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-comments">0</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-ebooks">0</div>
+                        <div class="stat-label">Ebooks</div>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- Feed Container -->
+        <div class="feed" id="feed">
+            <!-- Posts will be loaded here -->
         </div>
     </main>
 
+    <!-- Floating Action Button -->
+    <button class="fab" id="fab" onclick="scrollToTop()">↑</button>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="image-modal" style="display: none;" onclick="closeImageModal()">
+        <span class="image-modal-close">&times;</span>
+        <img id="modal-image" src="" alt="">
+    </div>
+
     <script type="module">
-        import { supabase } from './config/supabase.js';
-        import { getCurrentUser, logoutUser, isAdmin } from './js/auth.js';
-        import { shareContent, showShareNotification, formatDate, toggleSavePost, DARK_MODE_KEY } from './js/utils.js';
+        import { supabase } from './config/supabase.js'
+        import { getCurrentUser, logoutUser, isAdmin } from './js/auth.js'
+        import { formatDate, showNotification, toggleLike, toggleSave, toggleComment } from './js/utils.js'
 
-        // Dark mode functionality
-        function initDarkMode() {
-            const toggle = document.getElementById('dark-mode-toggle');
-            const savedMode = localStorage.getItem(DARK_MODE_KEY);
-            
-            if (savedMode === 'light') {
-                document.body.classList.remove('dark-mode');
-                toggle.textContent = '☀️';
-            } else {
-                document.body.classList.add('dark-mode');
-                toggle.textContent = '🌙';
-            }
+        // ============================================
+        // GLOBAL VARIABLES
+        // ============================================
+        let currentUser = null
+        let posts = []
+        let savedPosts = new Set()
+        let likedPosts = new Set()
 
-            toggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                const isDark = document.body.classList.contains('dark-mode');
-                localStorage.setItem(DARK_MODE_KEY, isDark ? 'dark' : 'light');
-                toggle.textContent = isDark ? '🌙' : '☀️';
-            });
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        async function init() {
+            await checkAuth()
+            await loadUserStats()
+            await loadPosts()
+            initTheme()
+            initScrollEvents()
         }
 
-        // Global functions
-        window.toggleLike = async (postId) => {
-            const { user } = await getCurrentUser();
-            if (!user) {
-                if (confirm('Please login to like posts. Go to login page?')) {
-                    window.location.href = 'login.html';
-                }
-                return;
-            }
+        // ============================================
+        // AUTHENTICATION
+        // ============================================
+        async function checkAuth() {
+            const { user } = await getCurrentUser()
+            currentUser = user
+            
+            const authLink = document.getElementById('auth-link')
+            const adminLink = document.getElementById('admin-link')
+            const welcomeTitle = document.getElementById('welcome-title')
+            const welcomeMessage = document.getElementById('welcome-message')
+            const welcomeAvatar = document.querySelector('#welcome-avatar img')
 
-            try {
-                const { data: existingLike } = await supabase
-                    .from('post_likes')
-                    .select('*')
-                    .eq('post_id', postId)
-                    .eq('user_id', user.id)
-                    .maybeSingle();
-
-                if (existingLike) {
-                    await supabase
-                        .from('post_likes')
-                        .delete()
-                        .eq('post_id', postId)
-                        .eq('user_id', user.id);
-                } else {
-                    await supabase
-                        .from('post_likes')
-                        .insert([{ post_id: postId, user_id: user.id }]);
+            if (user) {
+                authLink.textContent = 'Logout'
+                authLink.onclick = async (e) => {
+                    e.preventDefault()
+                    await logoutUser()
+                    window.location.reload()
                 }
+
+                welcomeTitle.textContent = `Welcome back, ${user.name}!`
+                welcomeMessage.textContent = 'Keep pushing forward! 🔥'
                 
-                loadFeed();
-            } catch (error) {
-                console.error('Toggle like error:', error);
-                alert('Error updating like');
-            }
-        };
-
-        window.toggleSave = async (postId) => {
-            const { user } = await getCurrentUser();
-            if (!user) {
-                if (confirm('Please login to save posts. Go to login page?')) {
-                    window.location.href = 'login.html';
+                if (user.profile_image) {
+                    welcomeAvatar.src = user.profile_image
                 }
-                return;
-            }
 
-            const result = await toggleSavePost(postId, user.id);
-            if (result.success) {
-                showShareNotification('clipboard', result.action === 'saved' ? 'Post saved!' : 'Post removed');
-                loadFeed();
-            }
-        };
-
-        window.toggleComments = async (postId) => {
-            const section = document.getElementById(`comments-${postId}`);
-            if (section) {
-                if (section.classList.contains('hidden')) {
-                    await loadComments(postId);
-                    section.classList.remove('hidden');
-                } else {
-                    section.classList.add('hidden');
+                // Check if admin
+                const admin = await isAdmin()
+                if (admin) {
+                    adminLink.style.display = 'inline'
+                    adminLink.href = 'admin/admin-dashboard.html'
                 }
-            }
-        };
 
-        window.addComment = async (postId) => {
-            const { user } = await getCurrentUser();
-            if (!user) {
-                alert('Please login to comment');
-                return;
+                // Load saved and liked posts
+                await loadUserInteractions()
+            } else {
+                authLink.textContent = 'Login'
+                authLink.href = 'login.html'
+                authLink.onclick = null
+                
+                welcomeTitle.textContent = 'Welcome to SupremeMotive!'
+                welcomeMessage.textContent = 'Login to start your journey'
             }
+        }
 
-            const input = document.getElementById(`comment-input-${postId}`);
-            if (!input) return;
-            
-            const content = input.value.trim();
-            if (!content) return;
+        // ============================================
+        // LOAD USER INTERACTIONS
+        // ============================================
+        async function loadUserInteractions() {
+            if (!currentUser) return
 
             try {
-                await supabase
-                    .from('comments')
-                    .insert([{
-                        post_id: postId,
-                        user_id: user.id,
-                        content: content
-                    }]);
+                // Load saved posts
+                const { data: saved } = await supabase
+                    .from('saved_posts')
+                    .select('post_id')
+                    .eq('user_id', currentUser.id)
+                
+                savedPosts = new Set(saved?.map(s => s.post_id) || [])
 
-                input.value = '';
-                await loadComments(postId);
+                // Load liked posts
+                const { data: liked } = await supabase
+                    .from('post_likes')
+                    .select('post_id')
+                    .eq('user_id', currentUser.id)
+                
+                likedPosts = new Set(liked?.map(l => l.post_id) || [])
             } catch (error) {
-                console.error('Add comment error:', error);
-                alert('Error adding comment');
+                console.error('Error loading interactions:', error)
             }
-        };
+        }
 
-        window.addReply = async (commentId, postId) => {
-            const { user } = await getCurrentUser();
-            if (!user) {
-                alert('Please login to reply');
-                return;
-            }
-
-            const input = document.getElementById(`reply-input-${commentId}`);
-            if (!input) return;
-            
-            const content = input.value.trim();
-            if (!content) return;
+        // ============================================
+        // LOAD USER STATS
+        // ============================================
+        async function loadUserStats() {
+            if (!currentUser) return
 
             try {
-                await supabase
-                    .from('comments')
-                    .insert([{
-                        post_id: postId,
-                        user_id: user.id,
-                        content: content,
-                        parent_comment_id: commentId
-                    }]);
+                const { data: stats } = await supabase
+                    .rpc('get_user_stats', { user_id: currentUser.id })
 
-                input.value = '';
-                document.getElementById(`reply-form-${commentId}`)?.classList.add('hidden');
-                await loadComments(postId);
+                if (stats) {
+                    document.getElementById('stat-posts').textContent = stats.posts || 0
+                    document.getElementById('stat-comments').textContent = stats.comments || 0
+                    document.getElementById('stat-ebooks').textContent = stats.unlocks || 0
+                }
             } catch (error) {
-                console.error('Add reply error:', error);
-                alert('Error adding reply');
+                console.error('Error loading stats:', error)
             }
-        };
+        }
 
-        window.showReplyForm = (commentId) => {
-            const form = document.getElementById(`reply-form-${commentId}`);
-            if (form) form.classList.toggle('hidden');
-        };
+        // ============================================
+        // LOAD POSTS
+        // ============================================
+        async function loadPosts() {
+            const feed = document.getElementById('feed')
+            feed.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Loading motivational posts...</p>
+                </div>
+            `
 
-        window.sharePost = async (postId, postTitle) => {
-            const url = `${window.location.origin}/post.html?id=${postId}`;
-            const result = await shareContent('SupremeMotive', postTitle, url);
-            showShareNotification(result.method);
-        };
-
-        // Fetch posts
-        async function fetchPosts() {
             try {
                 const { data, error } = await supabase
                     .from('posts')
                     .select(`
                         *,
-                        profiles:created_by (id, name, profile_image_url)
+                        profiles:created_by (id, name, profile_image_url),
+                        post_likes (count),
+                        comments (count)
                     `)
-                    .order('created_at', { ascending: false });
+                    .order('created_at', { ascending: false })
 
-                if (error) throw error;
+                if (error) throw error
 
-                const { user } = await getCurrentUser();
+                posts = data || []
                 
-                const postsWithDetails = await Promise.all(data.map(async (post) => {
+                // Get counts for each post
+                const postsWithCounts = await Promise.all(posts.map(async (post) => {
                     const { count: likesCount } = await supabase
                         .from('post_likes')
                         .select('*', { count: 'exact', head: true })
-                        .eq('post_id', post.id);
+                        .eq('post_id', post.id)
 
                     const { count: commentsCount } = await supabase
                         .from('comments')
                         .select('*', { count: 'exact', head: true })
-                        .eq('post_id', post.id);
-
-                    let userLiked = false;
-                    let userSaved = false;
-                    
-                    if (user) {
-                        const { data: like } = await supabase
-                            .from('post_likes')
-                            .select('*')
-                            .eq('post_id', post.id)
-                            .eq('user_id', user.id)
-                            .maybeSingle();
-                        userLiked = !!like;
-
-                        const { data: save } = await supabase
-                            .from('saved_posts')
-                            .select('*')
-                            .eq('post_id', post.id)
-                            .eq('user_id', user.id)
-                            .maybeSingle();
-                        userSaved = !!save;
-                    }
+                        .eq('post_id', post.id)
 
                     return {
                         ...post,
                         likes_count: likesCount || 0,
                         comments_count: commentsCount || 0,
-                        user_liked: userLiked,
-                        user_saved: userSaved
-                    };
-                }));
+                        user_liked: likedPosts.has(post.id),
+                        user_saved: savedPosts.has(post.id)
+                    }
+                }))
 
-                return { success: true, posts: postsWithDetails };
+                renderPosts(postsWithCounts)
             } catch (error) {
-                console.error('Fetch posts error:', error);
-                return { success: false, error: error.message };
+                console.error('Error loading posts:', error)
+                feed.innerHTML = `
+                    <div class="error-state">
+                        <i>⚠️</i>
+                        <h3>Oops! Something went wrong</h3>
+                        <p>${error.message}</p>
+                        <button class="comment-btn" onclick="loadPosts()" style="margin-top: 1rem;">Try Again</button>
+                    </div>
+                `
             }
         }
 
-        // Load comments
+        // ============================================
+        // RENDER POSTS
+        // ============================================
+        function renderPosts(posts) {
+            const feed = document.getElementById('feed')
+
+            if (!posts || posts.length === 0) {
+                feed.innerHTML = `
+                    <div class="empty-state">
+                        <i>📝</i>
+                        <h3>No Posts Yet</h3>
+                        <p>Check back soon for motivational content!</p>
+                    </div>
+                `
+                return
+            }
+
+            feed.innerHTML = posts.map(post => `
+                <div class="post-card" data-post-id="${post.id}">
+                    <div class="post-header">
+                        <div class="post-author-avatar">
+                            <img src="${post.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
+                                 alt="${post.profiles?.name || 'Admin'}"
+                                 onerror="this.src='assets/images/default-avatar.png'">
+                        </div>
+                        <div class="post-author-info">
+                            <h3>${post.profiles?.name || 'SupremeMotive Admin'}</h3>
+                            <div class="post-date">
+                                <i>📅</i>
+                                <span>${formatDate(post.created_at)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 class="post-title">${escapeHtml(post.title)}</h2>
+                    
+                    <div class="post-content">
+                        ${escapeHtml(post.content).replace(/\n/g, '<br>')}
+                    </div>
+
+                    ${post.image_url ? `
+                        <img src="${post.image_url}" 
+                             alt="Post image" 
+                             class="post-image"
+                             onclick="openImageModal('${post.image_url}')">
+                    ` : ''}
+
+                    <div class="post-actions">
+                        <button class="action-btn ${post.user_liked ? 'liked' : ''}" 
+                                onclick="handleLike('${post.id}')">
+                            <i>❤️</i>
+                            <span class="action-count">${post.likes_count}</span>
+                        </button>
+
+                        <button class="action-btn" 
+                                onclick="toggleComments('${post.id}')">
+                            <i>💬</i>
+                            <span class="action-count">${post.comments_count}</span>
+                        </button>
+
+                        <button class="action-btn ${post.user_saved ? 'saved' : ''}" 
+                                onclick="handleSave('${post.id}')">
+                            <i>🔖</i>
+                            <span>Save</span>
+                        </button>
+
+                        <button class="action-btn" 
+                                onclick="sharePost('${post.id}', '${escapeHtml(post.title)}')">
+                            <i>📤</i>
+                            <span>Share</span>
+                        </button>
+                    </div>
+
+                    <div id="comments-${post.id}" class="comments-section" style="display: none;">
+                        <!-- Comments will be loaded here -->
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        // ============================================
+        // POST INTERACTIONS
+        // ============================================
+        window.handleLike = async (postId) => {
+            if (!currentUser) {
+                showNotification('Please login to like posts', 'warning')
+                setTimeout(() => window.location.href = 'login.html', 2000)
+                return
+            }
+
+            const result = await toggleLike(postId, currentUser.id)
+            if (result.success) {
+                if (result.action === 'liked') {
+                    likedPosts.add(postId)
+                } else {
+                    likedPosts.delete(postId)
+                }
+                await loadPosts() // Reload to update counts
+                showNotification(result.action === 'liked' ? 'Post liked!' : 'Post unliked', 'success')
+            }
+        }
+
+        window.handleSave = async (postId) => {
+            if (!currentUser) {
+                showNotification('Please login to save posts', 'warning')
+                setTimeout(() => window.location.href = 'login.html', 2000)
+                return
+            }
+
+            const result = await toggleSave(postId, currentUser.id)
+            if (result.success) {
+                if (result.action === 'saved') {
+                    savedPosts.add(postId)
+                } else {
+                    savedPosts.delete(postId)
+                }
+                await loadPosts() // Reload to update UI
+                showNotification(result.action === 'saved' ? 'Post saved!' : 'Post removed', 'success')
+            }
+        }
+
+        window.toggleComments = async (postId) => {
+            const commentsSection = document.getElementById(`comments-${postId}`)
+            
+            if (commentsSection.style.display === 'none') {
+                commentsSection.style.display = 'block'
+                await loadComments(postId)
+            } else {
+                commentsSection.style.display = 'none'
+            }
+        }
+
+        // ============================================
+        // LOAD COMMENTS
+        // ============================================
         async function loadComments(postId) {
+            const commentsSection = document.getElementById(`comments-${postId}`)
+            commentsSection.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                </div>
+            `
+
             try {
-                const { data, error } = await supabase
+                const { data: comments, error } = await supabase
                     .from('comments')
                     .select(`
                         *,
@@ -282,11 +1255,12 @@
                     `)
                     .eq('post_id', postId)
                     .is('parent_comment_id', null)
-                    .order('created_at', { ascending: true });
+                    .order('created_at', { ascending: true })
 
-                if (error) throw error;
+                if (error) throw error
 
-                const commentsWithReplies = await Promise.all(data.map(async (comment) => {
+                // Get replies for each comment
+                const commentsWithReplies = await Promise.all(comments.map(async (comment) => {
                     const { data: replies } = await supabase
                         .from('comments')
                         .select(`
@@ -294,176 +1268,280 @@
                             profiles:user_id (id, name, profile_image_url)
                         `)
                         .eq('parent_comment_id', comment.id)
-                        .order('created_at', { ascending: true });
+                        .order('created_at', { ascending: true })
 
-                    return { ...comment, replies: replies || [] };
-                }));
+                    return { ...comment, replies: replies || [] }
+                }))
 
-                renderComments(commentsWithReplies, postId);
+                renderComments(commentsWithReplies, postId)
             } catch (error) {
-                console.error('Load comments error:', error);
+                console.error('Error loading comments:', error)
+                commentsSection.innerHTML = '<div class="error">Error loading comments</div>'
             }
         }
 
-        // Render comments
+        // ============================================
+        // RENDER COMMENTS
+        // ============================================
         function renderComments(comments, postId) {
-            const container = document.getElementById(`comments-${postId}`);
-            if (!container) return;
+            const commentsSection = document.getElementById(`comments-${postId}`)
             
-            container.innerHTML = `
+            commentsSection.innerHTML = `
                 <div class="add-comment">
-                    <input type="text" id="comment-input-${postId}" placeholder="Add a comment..." class="comment-input">
-                    <button class="btn btn-primary btn-small" onclick="addComment('${postId}')">Post</button>
+                    <input type="text" 
+                           class="comment-input" 
+                           id="comment-input-${postId}"
+                           placeholder="Add a comment..." 
+                           ${!currentUser ? 'disabled' : ''}>
+                    <button class="comment-btn" 
+                            onclick="addComment('${postId}')"
+                            ${!currentUser ? 'disabled' : ''}>
+                        Post
+                    </button>
                 </div>
+
                 <div class="comments-list">
-                    ${comments.length === 0 ? '<p class="no-comments">No comments yet. Be the first!</p>' : ''}
-                    ${comments.map(comment => `
-                        <div class="comment">
-                            <div class="comment-header">
-                                <img src="${comment.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
-                                     alt="${comment.profiles?.name}" class="comment-avatar"
-                                     onerror="this.src='assets/images/default-avatar.png'">
-                                <div class="comment-info">
-                                    <span class="comment-author">${comment.profiles?.name || 'User'}</span>
-                                    <span class="comment-date">${formatDate(comment.created_at)}</span>
-                                </div>
-                            </div>
-                            <div class="comment-content">${escapeHtml(comment.content)}</div>
-                            <button class="btn btn-secondary btn-small reply-btn" onclick="showReplyForm('${comment.id}')">Reply</button>
-                            <div id="reply-form-${comment.id}" class="reply-form hidden">
-                                <input type="text" id="reply-input-${comment.id}" placeholder="Write a reply...">
-                                <button class="btn btn-primary btn-small" onclick="addReply('${comment.id}', '${postId}')">Reply</button>
-                            </div>
-                            ${comment.replies?.map(reply => `
-                                <div class="comment-reply">
-                                    <div class="comment-header">
-                                        <img src="${reply.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
-                                             alt="${reply.profiles?.name}" class="comment-avatar"
-                                             onerror="this.src='assets/images/default-avatar.png'">
-                                        <div class="comment-info">
-                                            <span class="comment-author">${reply.profiles?.name || 'User'}</span>
-                                            <span class="comment-date">${formatDate(reply.created_at)}</span>
-                                        </div>
+                    ${comments.length === 0 ? 
+                        '<p style="text-align: center; color: var(--text-secondary);">No comments yet. Be the first!</p>' : 
+                        comments.map(comment => `
+                            <div class="comment">
+                                <div class="comment-header">
+                                    <img src="${comment.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
+                                         alt="${comment.profiles?.name}" 
+                                         class="comment-avatar"
+                                         onerror="this.src='assets/images/default-avatar.png'">
+                                    <div class="comment-info">
+                                        <div class="comment-author">${comment.profiles?.name || 'Anonymous'}</div>
+                                        <div class="comment-date">${formatDate(comment.created_at)}</div>
                                     </div>
-                                    <div class="comment-content">${escapeHtml(reply.content)}</div>
                                 </div>
-                            `).join('')}
-                        </div>
-                    `).join('')}
+                                <div class="comment-content">${escapeHtml(comment.content)}</div>
+                                
+                                <button class="reply-btn" onclick="showReplyForm('${comment.id}')">
+                                    <i>↩️</i> Reply
+                                </button>
+
+                                <div id="reply-form-${comment.id}" class="reply-form" style="display: none;">
+                                    <input type="text" 
+                                           id="reply-input-${comment.id}" 
+                                           placeholder="Write a reply..."
+                                           ${!currentUser ? 'disabled' : ''}>
+                                    <button class="comment-btn" 
+                                            onclick="addReply('${comment.id}', '${postId}')"
+                                            ${!currentUser ? 'disabled' : ''}>
+                                        Reply
+                                    </button>
+                                </div>
+
+                                ${comment.replies?.map(reply => `
+                                    <div class="comment-reply">
+                                        <div class="comment-header">
+                                            <img src="${reply.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
+                                                 alt="${reply.profiles?.name}" 
+                                                 class="comment-avatar"
+                                                 onerror="this.src='assets/images/default-avatar.png'">
+                                            <div class="comment-info">
+                                                <div class="comment-author">${reply.profiles?.name || 'Anonymous'}</div>
+                                                <div class="comment-date">${formatDate(reply.created_at)}</div>
+                                            </div>
+                                        </div>
+                                        <div class="comment-content">${escapeHtml(reply.content)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('')}
                 </div>
-            `;
+            `
         }
 
-        // Escape HTML
+        // ============================================
+        // COMMENT ACTIONS
+        // ============================================
+        window.addComment = async (postId) => {
+            if (!currentUser) {
+                showNotification('Please login to comment', 'warning')
+                return
+            }
+
+            const input = document.getElementById(`comment-input-${postId}`)
+            const content = input.value.trim()
+            
+            if (!content) return
+
+            try {
+                const { error } = await supabase
+                    .from('comments')
+                    .insert([{
+                        post_id: postId,
+                        user_id: currentUser.id,
+                        content: content
+                    }])
+
+                if (error) throw error
+
+                input.value = ''
+                await loadComments(postId)
+                showNotification('Comment added!', 'success')
+            } catch (error) {
+                console.error('Error adding comment:', error)
+                showNotification('Error adding comment', 'error')
+            }
+        }
+
+        window.showReplyForm = (commentId) => {
+            const form = document.getElementById(`reply-form-${commentId}`)
+            form.style.display = form.style.display === 'none' ? 'flex' : 'none'
+        }
+
+        window.addReply = async (commentId, postId) => {
+            if (!currentUser) {
+                showNotification('Please login to reply', 'warning')
+                return
+            }
+
+            const input = document.getElementById(`reply-input-${commentId}`)
+            const content = input.value.trim()
+            
+            if (!content) return
+
+            try {
+                const { error } = await supabase
+                    .from('comments')
+                    .insert([{
+                        post_id: postId,
+                        user_id: currentUser.id,
+                        content: content,
+                        parent_comment_id: commentId
+                    }])
+
+                if (error) throw error
+
+                input.value = ''
+                document.getElementById(`reply-form-${commentId}`).style.display = 'none'
+                await loadComments(postId)
+                showNotification('Reply added!', 'success')
+            } catch (error) {
+                console.error('Error adding reply:', error)
+                showNotification('Error adding reply', 'error')
+            }
+        }
+
+        // ============================================
+        // SHARE POST
+        // ============================================
+        window.sharePost = async (postId, title) => {
+            const url = `${window.location.origin}/post.html?id=${postId}`
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'SupremeMotive',
+                        text: title,
+                        url: url
+                    })
+                    showNotification('Shared successfully!', 'success')
+                } catch (error) {
+                    if (error.name !== 'AbortError') {
+                        copyToClipboard(url)
+                    }
+                }
+            } else {
+                copyToClipboard(url)
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+            showNotification('Link copied to clipboard!', 'success')
+        }
+
+        // ============================================
+        // IMAGE MODAL
+        // ============================================
+        window.openImageModal = (imageUrl) => {
+            const modal = document.getElementById('image-modal')
+            const modalImg = document.getElementById('modal-image')
+            modalImg.src = imageUrl
+            modal.style.display = 'flex'
+        }
+
+        window.closeImageModal = () => {
+            document.getElementById('image-modal').style.display = 'none'
+        }
+
+        // ============================================
+        // SCROLL TO TOP
+        // ============================================
+        window.scrollToTop = () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+
+        function initScrollEvents() {
+            const fab = document.getElementById('fab')
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 500) {
+                    fab.classList.add('visible')
+                } else {
+                    fab.classList.remove('visible')
+                }
+            })
+        }
+
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        function initTheme() {
+            const toggle = document.getElementById('theme-toggle')
+            const bg = document.getElementById('theme-bg')
+            const savedTheme = localStorage.getItem('theme') || 'dark'
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode')
+                bg.style.transform = 'translateX(30px)'
+            }
+
+            toggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-mode')
+                const isLight = document.body.classList.contains('light-mode')
+                
+                if (isLight) {
+                    localStorage.setItem('theme', 'light')
+                    bg.style.transform = 'translateX(30px)'
+                } else {
+                    localStorage.setItem('theme', 'dark')
+                    bg.style.transform = 'translateX(0)'
+                }
+            })
+        }
+
+        // ============================================
+        // UTILITIES
+        // ============================================
         function escapeHtml(unsafe) {
-            if (!unsafe) return '';
+            if (!unsafe) return ''
             return unsafe
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
+                .replace(/'/g, '&#039;')
         }
 
-        // Render feed
-        function renderFeed(posts) {
-            const container = document.getElementById('feed-container');
-            if (!container) return;
-            
-            if (posts.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>No posts yet. Check back soon!</p></div>';
-                return;
-            }
-
-            container.innerHTML = posts.map(post => `
-                <div class="post-card">
-                    <div class="post-header">
-                        <img src="${post.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
-                             alt="${post.profiles?.name || 'Admin'}" class="post-author-avatar"
-                             onerror="this.src='assets/images/default-avatar.png'">
-                        <div class="post-author-info">
-                            <h3>${post.profiles?.name || 'SupremeMotive Admin'}</h3>
-                            <span class="post-date">${formatDate(post.created_at)}</span>
-                        </div>
-                    </div>
-                    <h2 class="post-title">${escapeHtml(post.title)}</h2>
-                    <div class="post-content">${escapeHtml(post.content).replace(/\n/g, '<br>')}</div>
-                    ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-image" onerror="this.style.display='none'">` : ''}
-                    <div class="post-actions">
-                        <button class="action-btn like-btn ${post.user_liked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
-                            <span>❤️</span><span class="like-count">${post.likes_count}</span>
-                        </button>
-                        <button class="action-btn comment-btn" onclick="toggleComments('${post.id}')">
-                            <span>💬</span><span>${post.comments_count}</span>
-                        </button>
-                        <button class="action-btn save-btn ${post.user_saved ? 'saved' : ''}" onclick="toggleSave('${post.id}')">
-                            <span>🔖</span><span>Save</span>
-                        </button>
-                        <button class="action-btn share-btn" onclick="sharePost('${post.id}', '${escapeHtml(post.title).replace(/'/g, "\\'")}')">
-                            <span>📤</span><span>Share</span>
-                        </button>
-                    </div>
-                    <div id="comments-${post.id}" class="comments-section hidden"></div>
-                </div>
-            `).join('');
+        window.showNotification = (message, type = 'success') => {
+            const notification = document.createElement('div')
+            notification.className = `notification ${type}`
+            notification.innerHTML = `
+                <i>${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</i>
+                <span>${message}</span>
+            `
+            document.body.appendChild(notification)
+            setTimeout(() => notification.remove(), 3000)
         }
 
-        // Load feed
-        async function loadFeed() {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Loading posts...</p></div>';
-            
-            const result = await fetchPosts();
-            if (result.success) {
-                renderFeed(result.posts);
-            } else {
-                container.innerHTML = '<div class="error-state"><p>Error loading posts. Please refresh.</p></div>';
-            }
-        }
-
-        // Update navigation
-        async function updateNavigation() {
-            const { user } = await getCurrentUser();
-            const authLink = document.getElementById('auth-link');
-            const profileLink = document.getElementById('profile-link');
-            const adminLink = document.getElementById('admin-link');
-            const welcomeDiv = document.getElementById('welcome-message');
-            
-            if (user) {
-                authLink.textContent = 'Logout';
-                authLink.href = '#';
-                authLink.onclick = async (e) => {
-                    e.preventDefault();
-                    await logoutUser();
-                    window.location.reload();
-                };
-                
-                welcomeDiv.innerHTML = `Welcome back, <strong>${escapeHtml(user.name)}</strong>! 🔥`;
-                
-                const admin = await isAdmin();
-                if (admin) {
-                    adminLink.style.display = 'inline';
-                    adminLink.href = 'admin/admin-dashboard.html';
-                } else {
-                    adminLink.style.display = 'none';
-                }
-            } else {
-                authLink.textContent = 'Login';
-                authLink.href = 'login.html';
-                authLink.onclick = null;
-                welcomeDiv.innerHTML = 'Welcome to SupremeMotive! Start your journey today. 💪';
-                adminLink.style.display = 'none';
-            }
-        }
-
-        // Initialize
-        async function init() {
-            initDarkMode();
-            await updateNavigation();
-            await loadFeed();
-        }
-
-        init();
+        // ============================================
+        // START APPLICATION
+        // ============================================
+        init()
     </script>
 </body>
 </html>
