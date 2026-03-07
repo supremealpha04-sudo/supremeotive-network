@@ -183,6 +183,35 @@
                     '<div class="error">Error loading dashboard</div>';
             }
         }
+// Update navigation based on user role
+function updateNavigationBasedOnRole(role) {
+    // Show/hide navigation items based on role
+    switch(role) {
+        case 'super_admin':
+            document.getElementById('nav-posts').style.display = 'block';
+            document.getElementById('nav-ebooks').style.display = 'block';
+            document.getElementById('nav-unlocks').style.display = 'block';
+            document.getElementById('nav-users').style.display = 'block';
+            document.getElementById('nav-settings').style.display = 'block';
+            document.getElementById('admin-role-title').innerHTML = 'Super Admin <span style="color: var(--gold);">(Full Access)</span>';
+            break;
+            
+        case 'post_admin':
+            document.getElementById('nav-posts').style.display = 'block';
+            document.getElementById('admin-role-title').innerHTML = 'Post Admin <span style="color: var(--electric-blue);">(Manage Posts)</span>';
+            break;
+            
+        case 'ebook_admin':
+            document.getElementById('nav-ebooks').style.display = 'block';
+            document.getElementById('admin-role-title').innerHTML = 'Ebook Admin <span style="color: var(--electric-blue);">(Manage Ebooks)</span>';
+            break;
+            
+        case 'unlock_admin':
+            document.getElementById('nav-unlocks').style.display = 'block';
+            document.getElementById('admin-role-title').innerHTML = 'Unlock Admin <span style="color: var(--electric-blue);">(Approve Unlocks)</span>';
+            break;
+    }
+}
 
         // Logout handler
         document.getElementById('logout-link').addEventListener('click', async (e) => {
