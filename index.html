@@ -22,11 +22,12 @@
             <img src="assets/images/logo.svg" alt="SupremeMotive" onerror="this.style.display='none'">
             <span class="logo-text">SupremeMotive</span>
         </div>
-        <div class="nav-links" id="nav-links">
+        <div class="nav-links">
             <a href="index.html" class="active">Home</a>
             <a href="ebooks.html">Ebooks</a>
             <a href="profile.html" id="profile-link">Profile</a>
             <a href="#" id="admin-link" style="display: none;">Admin</a>
+            <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode">🌙</button>
             <a href="#" id="auth-link">Login</a>
         </div>
     </nav>
@@ -46,14 +47,32 @@
     <script type="module">
         import { supabase } from './config/supabase.js';
         import { getCurrentUser, logoutUser, isAdmin } from './js/auth.js';
-        import { shareContent, showShareNotification, formatDate, toggleSavePost, handleImageError } from './js/utils.js';
+        import { shareContent, showShareNotification, formatDate, toggleSavePost, DARK_MODE_KEY } from './js/utils.js';
 
-        // ==================== GLOBAL FUNCTIONS ====================
+        // Dark mode functionality
+        function initDarkMode() {
+            const toggle = document.getElementById('dark-mode-toggle');
+            const savedMode = localStorage.getItem(DARK_MODE_KEY);
+            
+            if (savedMode === 'light') {
+                document.body.classList.remove('dark-mode');
+                toggle.textContent = '☀️';
+            } else {
+                document.body.classList.add('dark-mode');
+                toggle.textContent = '🌙';
+            }
 
-        // Toggle like on post
+            toggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem(DARK_MODE_KEY, isDark ? 'dark' : 'light');
+                toggle.textContent = isDark ? '🌙' : '☀️';
+            });
+        }
+
+        // Global functions
         window.toggleLike = async (postId) => {
             const { user } = await getCurrentUser();
-            
             if (!user) {
                 if (confirm('Please login to like posts. Go to login page?')) {
                     window.location.href = 'login.html';
@@ -62,51 +81,34 @@
             }
 
             try {
-                // Check if already liked
-                const { data: existingLike, error: checkError } = await supabase
+                const { data: existingLike } = await supabase
                     .from('post_likes')
                     .select('*')
                     .eq('post_id', postId)
                     .eq('user_id', user.id)
                     .maybeSingle();
 
-                if (checkError) throw checkError;
-
                 if (existingLike) {
-                    // Unlike
-                    const { error } = await supabase
+                    await supabase
                         .from('post_likes')
                         .delete()
                         .eq('post_id', postId)
                         .eq('user_id', user.id);
-
-                    if (error) throw error;
                 } else {
-                    // Like
-                    const { error } = await supabase
+                    await supabase
                         .from('post_likes')
-                        .insert([
-                            {
-                                post_id: postId,
-                                user_id: user.id
-                            }
-                        ]);
-
-                    if (error) throw error;
+                        .insert([{ post_id: postId, user_id: user.id }]);
                 }
                 
-                // Refresh feed
-                await loadFeed();
+                loadFeed();
             } catch (error) {
                 console.error('Toggle like error:', error);
-                alert('Error updating like. Please try again.');
+                alert('Error updating like');
             }
         };
 
-        // Toggle save/bookmark post
         window.toggleSave = async (postId) => {
             const { user } = await getCurrentUser();
-            
             if (!user) {
                 if (confirm('Please login to save posts. Go to login page?')) {
                     window.location.href = 'login.html';
@@ -114,76 +116,27 @@
                 return;
             }
 
-            try {
-                // Check if already saved
-                const { data: existingSave, error: checkError } = await supabase
-                    .from('saved_posts')
-                    .select('*')
-                    .eq('post_id', postId)
-                    .eq('user_id', user.id)
-                    .maybeSingle();
-
-                if (checkError) throw checkError;
-
-                if (existingSave) {
-                    // Unsave
-                    const { error } = await supabase
-                        .from('saved_posts')
-                        .delete()
-                        .eq('post_id', postId)
-                        .eq('user_id', user.id);
-
-                    if (error) throw error;
-                    
-                    // Update button state
-                    const saveBtn = document.querySelector(`.save-btn[data-post-id="${postId}"]`);
-                    if (saveBtn) {
-                        saveBtn.classList.remove('saved');
-                        saveBtn.querySelector('span:last-child').textContent = 'Save';
-                    }
-                    showShareNotification('clipboard', '📌 Post removed from saved');
-                } else {
-                    // Save
-                    const { error } = await supabase
-                        .from('saved_posts')
-                        .insert([{ 
-                            post_id: postId, 
-                            user_id: user.id 
-                        }]);
-
-                    if (error) throw error;
-                    
-                    // Update button state
-                    const saveBtn = document.querySelector(`.save-btn[data-post-id="${postId}"]`);
-                    if (saveBtn) {
-                        saveBtn.classList.add('saved');
-                        saveBtn.querySelector('span:last-child').textContent = 'Saved';
-                    }
-                    showShareNotification('clipboard', '🔖 Post saved!');
-                }
-            } catch (error) {
-                console.error('Toggle save error:', error);
-                alert('Error saving post. Please try again.');
+            const result = await toggleSavePost(postId, user.id);
+            if (result.success) {
+                showShareNotification('clipboard', result.action === 'saved' ? 'Post saved!' : 'Post removed');
+                loadFeed();
             }
         };
 
-        // Toggle comments section
         window.toggleComments = async (postId) => {
-            const commentsSection = document.getElementById(`comments-${postId}`);
-            if (commentsSection) {
-                if (commentsSection.classList.contains('hidden')) {
+            const section = document.getElementById(`comments-${postId}`);
+            if (section) {
+                if (section.classList.contains('hidden')) {
                     await loadComments(postId);
-                    commentsSection.classList.remove('hidden');
+                    section.classList.remove('hidden');
                 } else {
-                    commentsSection.classList.add('hidden');
+                    section.classList.add('hidden');
                 }
             }
         };
 
-        // Add comment to post
         window.addComment = async (postId) => {
             const { user } = await getCurrentUser();
-            
             if (!user) {
                 alert('Please login to comment');
                 return;
@@ -193,50 +146,27 @@
             if (!input) return;
             
             const content = input.value.trim();
-            
             if (!content) return;
 
             try {
-                const { error } = await supabase
+                await supabase
                     .from('comments')
-                    .insert([
-                        {
-                            post_id: postId,
-                            user_id: user.id,
-                            content: content
-                        }
-                    ]);
-
-                if (error) throw error;
+                    .insert([{
+                        post_id: postId,
+                        user_id: user.id,
+                        content: content
+                    }]);
 
                 input.value = '';
                 await loadComments(postId);
-                
-                // Update comment count
-                const commentBtn = document.querySelector(`.comment-btn[onclick*="${postId}"]`);
-                if (commentBtn) {
-                    const countSpan = commentBtn.querySelector('span:last-child');
-                    const currentCount = parseInt(countSpan.textContent) || 0;
-                    countSpan.textContent = currentCount + 1;
-                }
             } catch (error) {
                 console.error('Add comment error:', error);
-                alert('Error adding comment. Please try again.');
+                alert('Error adding comment');
             }
         };
 
-        // Show reply form
-        window.showReplyForm = (commentId) => {
-            const form = document.getElementById(`reply-form-${commentId}`);
-            if (form) {
-                form.classList.toggle('hidden');
-            }
-        };
-
-        // Add reply to comment
         window.addReply = async (commentId, postId) => {
             const { user } = await getCurrentUser();
-            
             if (!user) {
                 alert('Please login to reply');
                 return;
@@ -246,56 +176,39 @@
             if (!input) return;
             
             const content = input.value.trim();
-            
             if (!content) return;
 
             try {
-                const { error } = await supabase
+                await supabase
                     .from('comments')
-                    .insert([
-                        {
-                            post_id: postId,
-                            user_id: user.id,
-                            content: content,
-                            parent_comment_id: commentId
-                        }
-                    ]);
-
-                if (error) throw error;
+                    .insert([{
+                        post_id: postId,
+                        user_id: user.id,
+                        content: content,
+                        parent_comment_id: commentId
+                    }]);
 
                 input.value = '';
                 document.getElementById(`reply-form-${commentId}`)?.classList.add('hidden');
                 await loadComments(postId);
             } catch (error) {
                 console.error('Add reply error:', error);
-                alert('Error adding reply. Please try again.');
+                alert('Error adding reply');
             }
         };
 
-        // Share post
-        window.sharePost = async (postId, postTitle) => {
-            const url = `/post.html?id=${postId}`;
-            const title = 'SupremeMotive - Daily Motivation';
-            const text = postTitle || 'Check out this motivational post!';
-            
-            const result = await shareContent(title, text, url);
-            showShareNotification(result.method, result.method === 'share' ? '✅ Shared!' : '📋 Link copied!');
+        window.showReplyForm = (commentId) => {
+            const form = document.getElementById(`reply-form-${commentId}`);
+            if (form) form.classList.toggle('hidden');
         };
 
-        // ==================== HELPER FUNCTIONS ====================
+        window.sharePost = async (postId, postTitle) => {
+            const url = `${window.location.origin}/post.html?id=${postId}`;
+            const result = await shareContent('SupremeMotive', postTitle, url);
+            showShareNotification(result.method);
+        };
 
-        // Escape HTML to prevent XSS
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return unsafe
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
-        // Fetch all posts with details
+        // Fetch posts
         async function fetchPosts() {
             try {
                 const { data, error } = await supabase
@@ -308,35 +221,22 @@
 
                 if (error) throw error;
 
-                // Get current user
                 const { user } = await getCurrentUser();
                 
-                // Get all saved posts for user
-                let savedPosts = new Set();
-                if (user) {
-                    const { data: saved } = await supabase
-                        .from('saved_posts')
-                        .select('post_id')
-                        .eq('user_id', user.id);
-                    savedPosts = new Set(saved?.map(s => s.post_id) || []);
-                }
-                
-                // Get details for each post
                 const postsWithDetails = await Promise.all(data.map(async (post) => {
-                    // Get likes count
                     const { count: likesCount } = await supabase
                         .from('post_likes')
                         .select('*', { count: 'exact', head: true })
                         .eq('post_id', post.id);
 
-                    // Get comments count
                     const { count: commentsCount } = await supabase
                         .from('comments')
                         .select('*', { count: 'exact', head: true })
                         .eq('post_id', post.id);
 
-                    // Check if user liked this post
                     let userLiked = false;
+                    let userSaved = false;
+                    
                     if (user) {
                         const { data: like } = await supabase
                             .from('post_likes')
@@ -345,6 +245,14 @@
                             .eq('user_id', user.id)
                             .maybeSingle();
                         userLiked = !!like;
+
+                        const { data: save } = await supabase
+                            .from('saved_posts')
+                            .select('*')
+                            .eq('post_id', post.id)
+                            .eq('user_id', user.id)
+                            .maybeSingle();
+                        userSaved = !!save;
                     }
 
                     return {
@@ -352,7 +260,7 @@
                         likes_count: likesCount || 0,
                         comments_count: commentsCount || 0,
                         user_liked: userLiked,
-                        user_saved: savedPosts.has(post.id)
+                        user_saved: userSaved
                     };
                 }));
 
@@ -363,7 +271,7 @@
             }
         }
 
-        // Load comments for a post
+        // Load comments
         async function loadComments(postId) {
             try {
                 const { data, error } = await supabase
@@ -378,7 +286,6 @@
 
                 if (error) throw error;
 
-                // Get replies for each comment
                 const commentsWithReplies = await Promise.all(data.map(async (comment) => {
                     const { data: replies } = await supabase
                         .from('comments')
@@ -389,10 +296,7 @@
                         .eq('parent_comment_id', comment.id)
                         .order('created_at', { ascending: true });
 
-                    return {
-                        ...comment,
-                        replies: replies || []
-                    };
+                    return { ...comment, replies: replies || [] };
                 }));
 
                 renderComments(commentsWithReplies, postId);
@@ -401,63 +305,43 @@
             }
         }
 
-        // Render comments section
+        // Render comments
         function renderComments(comments, postId) {
             const container = document.getElementById(`comments-${postId}`);
             if (!container) return;
             
             container.innerHTML = `
                 <div class="add-comment">
-                    <input type="text" id="comment-input-${postId}" 
-                           placeholder="Add a comment..." 
-                           class="comment-input">
-                    <button class="btn btn-primary btn-small" 
-                            onclick="addComment('${postId}')">
-                        Post
-                    </button>
+                    <input type="text" id="comment-input-${postId}" placeholder="Add a comment..." class="comment-input">
+                    <button class="btn btn-primary btn-small" onclick="addComment('${postId}')">Post</button>
                 </div>
-                
                 <div class="comments-list">
-                    ${comments.length === 0 ? '<p class="no-comments">No comments yet. Be the first to comment!</p>' : ''}
-                    
+                    ${comments.length === 0 ? '<p class="no-comments">No comments yet. Be the first!</p>' : ''}
                     ${comments.map(comment => `
-                        <div class="comment" data-comment-id="${comment.id}">
+                        <div class="comment">
                             <div class="comment-header">
                                 <img src="${comment.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
-                                     alt="${comment.profiles?.name || 'User'}" 
-                                     class="comment-avatar"
+                                     alt="${comment.profiles?.name}" class="comment-avatar"
                                      onerror="this.src='assets/images/default-avatar.png'">
                                 <div class="comment-info">
-                                    <span class="comment-author">${escapeHtml(comment.profiles?.name || 'Anonymous')}</span>
+                                    <span class="comment-author">${comment.profiles?.name || 'User'}</span>
                                     <span class="comment-date">${formatDate(comment.created_at)}</span>
                                 </div>
                             </div>
-                            
                             <div class="comment-content">${escapeHtml(comment.content)}</div>
-                            
-                            <button class="btn btn-secondary btn-small reply-btn" 
-                                    onclick="showReplyForm('${comment.id}')">
-                                Reply
-                            </button>
-                            
+                            <button class="btn btn-secondary btn-small reply-btn" onclick="showReplyForm('${comment.id}')">Reply</button>
                             <div id="reply-form-${comment.id}" class="reply-form hidden">
-                                <input type="text" id="reply-input-${comment.id}" 
-                                       placeholder="Write a reply...">
-                                <button class="btn btn-primary btn-small" 
-                                        onclick="addReply('${comment.id}', '${postId}')">
-                                    Reply
-                                </button>
+                                <input type="text" id="reply-input-${comment.id}" placeholder="Write a reply...">
+                                <button class="btn btn-primary btn-small" onclick="addReply('${comment.id}', '${postId}')">Reply</button>
                             </div>
-                            
                             ${comment.replies?.map(reply => `
                                 <div class="comment-reply">
                                     <div class="comment-header">
                                         <img src="${reply.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
-                                             alt="${reply.profiles?.name || 'User'}" 
-                                             class="comment-avatar"
+                                             alt="${reply.profiles?.name}" class="comment-avatar"
                                              onerror="this.src='assets/images/default-avatar.png'">
                                         <div class="comment-info">
-                                            <span class="comment-author">${escapeHtml(reply.profiles?.name || 'Anonymous')}</span>
+                                            <span class="comment-author">${reply.profiles?.name || 'User'}</span>
                                             <span class="comment-date">${formatDate(reply.created_at)}</span>
                                         </div>
                                     </div>
@@ -470,69 +354,55 @@
             `;
         }
 
+        // Escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // Render feed
         function renderFeed(posts) {
             const container = document.getElementById('feed-container');
-            
             if (!container) return;
             
             if (posts.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>No posts yet. Check back soon for motivation!</p></div>';
+                container.innerHTML = '<div class="empty-state"><p>No posts yet. Check back soon!</p></div>';
                 return;
             }
 
             container.innerHTML = posts.map(post => `
-                <div class="post-card" data-post-id="${post.id}">
+                <div class="post-card">
                     <div class="post-header">
                         <img src="${post.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
-                             alt="${post.profiles?.name || 'Admin'}" 
-                             class="post-author-avatar"
+                             alt="${post.profiles?.name || 'Admin'}" class="post-author-avatar"
                              onerror="this.src='assets/images/default-avatar.png'">
                         <div class="post-author-info">
-                            <h3>${escapeHtml(post.profiles?.name || 'SupremeMotive Admin')}</h3>
+                            <h3>${post.profiles?.name || 'SupremeMotive Admin'}</h3>
                             <span class="post-date">${formatDate(post.created_at)}</span>
                         </div>
                     </div>
-                    
                     <h2 class="post-title">${escapeHtml(post.title)}</h2>
                     <div class="post-content">${escapeHtml(post.content).replace(/\n/g, '<br>')}</div>
-                    
-                    ${post.image_url ? `
-                        <img src="${post.image_url}" alt="Post image" class="post-image"
-                             onerror="this.style.display='none'">
-                    ` : ''}
-                    
+                    ${post.image_url ? `<img src="${post.image_url}" alt="Post image" class="post-image" onerror="this.style.display='none'">` : ''}
                     <div class="post-actions">
-                        <button class="action-btn like-btn ${post.user_liked ? 'liked' : ''}" 
-                                onclick="toggleLike('${post.id}')"
-                                title="Like">
-                            <span>❤️</span>
-                            <span class="like-count">${post.likes_count}</span>
+                        <button class="action-btn like-btn ${post.user_liked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">
+                            <span>❤️</span><span class="like-count">${post.likes_count}</span>
                         </button>
-                        
-                        <button class="action-btn comment-btn" 
-                                onclick="toggleComments('${post.id}')"
-                                title="Comments">
-                            <span>💬</span>
-                            <span>${post.comments_count}</span>
+                        <button class="action-btn comment-btn" onclick="toggleComments('${post.id}')">
+                            <span>💬</span><span>${post.comments_count}</span>
                         </button>
-                        
-                        <button class="action-btn save-btn ${post.user_saved ? 'saved' : ''}" 
-                                data-post-id="${post.id}"
-                                onclick="toggleSave('${post.id}')"
-                                title="Save">
-                            <span>🔖</span>
-                            <span>${post.user_saved ? 'Saved' : 'Save'}</span>
+                        <button class="action-btn save-btn ${post.user_saved ? 'saved' : ''}" onclick="toggleSave('${post.id}')">
+                            <span>🔖</span><span>Save</span>
                         </button>
-                        
-                        <button class="action-btn share-btn" 
-                                onclick="sharePost('${post.id}', '${escapeHtml(post.title).replace(/'/g, "\\'")}')"
-                                title="Share">
-                            <span>📤</span>
-                            <span>Share</span>
+                        <button class="action-btn share-btn" onclick="sharePost('${post.id}', '${escapeHtml(post.title).replace(/'/g, "\\'")}')">
+                            <span>📤</span><span>Share</span>
                         </button>
                     </div>
-                    
                     <div id="comments-${post.id}" class="comments-section hidden"></div>
                 </div>
             `).join('');
@@ -541,21 +411,17 @@
         // Load feed
         async function loadFeed() {
             const container = document.getElementById('feed-container');
-            if (container) {
-                container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Loading motivational posts...</p></div>';
-            }
+            container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Loading posts...</p></div>';
             
             const result = await fetchPosts();
             if (result.success) {
                 renderFeed(result.posts);
             } else {
-                if (container) {
-                    container.innerHTML = '<div class="error-state"><p>Error loading posts. Please refresh the page.</p></div>';
-                }
+                container.innerHTML = '<div class="error-state"><p>Error loading posts. Please refresh.</p></div>';
             }
         }
 
-        // Update navigation based on auth
+        // Update navigation
         async function updateNavigation() {
             const { user } = await getCurrentUser();
             const authLink = document.getElementById('auth-link');
@@ -564,94 +430,40 @@
             const welcomeDiv = document.getElementById('welcome-message');
             
             if (user) {
-                // Update auth link to logout
-                if (authLink) {
-                    authLink.textContent = 'Logout';
-                    authLink.href = '#';
-                    authLink.onclick = async (e) => {
-                        e.preventDefault();
-                        const result = await logoutUser();
-                        if (result.success) {
-                            window.location.reload();
-                        } else {
-                            alert('Error logging out: ' + result.error);
-                        }
-                    };
-                }
+                authLink.textContent = 'Logout';
+                authLink.href = '#';
+                authLink.onclick = async (e) => {
+                    e.preventDefault();
+                    await logoutUser();
+                    window.location.reload();
+                };
                 
-                // Update profile link
-                if (profileLink) {
-                    profileLink.style.display = 'inline';
-                    profileLink.href = 'profile.html';
-                }
+                welcomeDiv.innerHTML = `Welcome back, <strong>${escapeHtml(user.name)}</strong>! 🔥`;
                 
-                // Show welcome message
-                if (welcomeDiv) {
-                    const roleDisplay = user.role !== 'user' ? ` (${user.role.replace('_', ' ')})` : '';
-                    welcomeDiv.innerHTML = `Welcome back, <strong>${escapeHtml(user.name)}</strong>${roleDisplay}! 🔥`;
-                }
-                
-                // Check if user is admin
                 const admin = await isAdmin();
-                if (admin && adminLink) {
+                if (admin) {
                     adminLink.style.display = 'inline';
                     adminLink.href = 'admin/admin-dashboard.html';
-                    adminLink.setAttribute('title', `Role: ${user.role.replace('_', ' ')}`);
-                } else if (adminLink) {
+                } else {
                     adminLink.style.display = 'none';
                 }
             } else {
-                if (authLink) {
-                    authLink.textContent = 'Login';
-                    authLink.href = 'login.html';
-                    authLink.onclick = null;
-                }
-                if (profileLink) {
-                    profileLink.style.display = 'inline';
-                    profileLink.href = 'profile.html';
-                }
-                if (adminLink) {
-                    adminLink.style.display = 'none';
-                }
-                if (welcomeDiv) {
-                    welcomeDiv.innerHTML = 'Welcome to SupremeMotive! Start your journey today. 💪';
-                }
+                authLink.textContent = 'Login';
+                authLink.href = 'login.html';
+                authLink.onclick = null;
+                welcomeDiv.innerHTML = 'Welcome to SupremeMotive! Start your journey today. 💪';
+                adminLink.style.display = 'none';
             }
         }
 
-        // Initialize the app
+        // Initialize
         async function init() {
-            try {
-                await updateNavigation();
-                await loadFeed();
-                
-                // Add global error handler for images
-                window.handleImageError = function(img) {
-                    img.onerror = null;
-                    img.src = 'assets/images/default-avatar.png';
-                };
-            } catch (error) {
-                console.error('Init error:', error);
-                const container = document.getElementById('feed-container');
-                if (container) {
-                    container.innerHTML = '<div class="error-state"><p>Failed to initialize. Please refresh the page.</p></div>';
-                }
-            }
+            initDarkMode();
+            await updateNavigation();
+            await loadFeed();
         }
 
-        // Start the app
         init();
-
-        // Handle offline/online events
-        window.addEventListener('online', () => {
-            showShareNotification('clipboard', '📶 You are back online!');
-            loadFeed();
-        });
-
-        window.addEventListener('offline', () => {
-            showShareNotification('error', '📴 You are offline. Some features may not work.');
-        });
-
     </script>
 </body>
 </html>
