@@ -1,5 +1,5 @@
 // js/auth.js
-import { supabase, isAdminEmail, STORAGE_PATHS } from '../config/supabase.js';
+import { supabase, isAdminEmail, getAdminRole, STORAGE_PATHS, ADMINS } from '../config/supabase.js';
 import { uploadFile } from './upload.js';
 
 // User registration
@@ -53,17 +53,21 @@ export async function loginUser(email, password) {
       console.error('Profile fetch error:', profileError);
     }
 
+    // Get role from database or determine from email
+    const role = profile?.role || getAdminRole(email) || 'user';
+
     // Create user data object
     const userData = {
       id: data.user.id,
       email: data.user.email,
-      role: profile?.role || (isAdminEmail(email) ? 'super_admin' : 'user'),
+      role: role,
       name: profile?.name || data.user.email.split('@')[0],
       profile_image: profile?.profile_image_url,
       country: profile?.country,
       age: profile?.age,
       bio: profile?.bio,
-      created_at: profile?.created_at
+      created_at: profile?.created_at,
+      permissions: getPermissionsForRole(role)
     };
 
     // Store in both localStorage and sessionStorage for persistence
@@ -74,6 +78,38 @@ export async function loginUser(email, password) {
   } catch (error) {
     console.error('Login error:', error);
     return { success: false, error: error.message };
+  }
+}
+
+// Get permissions for a role
+function getPermissionsForRole(role) {
+  switch(role) {
+    case 'super_admin':
+      return [
+        'manage_all',
+        'manage_posts',
+        'manage_ebooks',
+        'manage_unlocks',
+        'manage_admins',
+        'view_analytics'
+      ];
+    case 'post_admin':
+      return [
+        'manage_posts',
+        'view_analytics'
+      ];
+    case 'ebook_admin':
+      return [
+        'manage_ebooks',
+        'view_analytics'
+      ];
+    case 'unlock_admin':
+      return [
+        'manage_unlocks',
+        'view_analytics'
+      ];
+    default:
+      return [];
   }
 }
 
@@ -133,17 +169,21 @@ export async function getCurrentUser() {
       console.error('Profile fetch error:', profileError);
     }
 
+    // Get role from profile or determine from email
+    const role = profile?.role || getAdminRole(user.email) || 'user';
+
     // Create user data object
     const userData = {
       id: user.id,
       email: user.email,
-      role: profile?.role || (isAdminEmail(user.email) ? 'super_admin' : 'user'),
+      role: role,
       name: profile?.name || user.email.split('@')[0],
       profile_image: profile?.profile_image_url,
       country: profile?.country,
       age: profile?.age,
       bio: profile?.bio,
-      created_at: profile?.created_at
+      created_at: profile?.created_at,
+      permissions: getPermissionsForRole(role)
     };
 
     // Cache in localStorage
@@ -156,7 +196,25 @@ export async function getCurrentUser() {
   }
 }
 
-// Check if user is admin
+// Check if user has specific permission
+export async function hasPermission(permission) {
+  try {
+    const { user } = await getCurrentUser();
+    
+    if (!user) return false;
+    
+    // Super admin has all permissions
+    if (user.role === 'super_admin') return true;
+    
+    // Check if user has the specific permission
+    return user.permissions?.includes(permission) || false;
+  } catch (error) {
+    console.error('Check permission error:', error);
+    return false;
+  }
+}
+
+// Check if user is admin with specific role
 export async function isAdmin(requiredRole = null) {
   try {
     const { user } = await getCurrentUser();
@@ -176,6 +234,38 @@ export async function isAdmin(requiredRole = null) {
   } catch (error) {
     console.error('Check admin error:', error);
     return false;
+  }
+}
+
+// Get admin dashboard based on role
+export function getAdminDashboardForRole(role) {
+  switch(role) {
+    case 'super_admin':
+      return {
+        home: 'admin/admin-dashboard.html',
+        posts: 'admin/post-admin.html',
+        ebooks: 'admin/ebook-admin.html',
+        unlocks: 'admin/unlock-admin.html',
+        users: 'admin/users-admin.html',
+        settings: 'admin/settings.html'
+      };
+    case 'post_admin':
+      return {
+        home: 'admin/admin-dashboard.html',
+        posts: 'admin/post-admin.html'
+      };
+    case 'ebook_admin':
+      return {
+        home: 'admin/admin-dashboard.html',
+        ebooks: 'admin/ebook-admin.html'
+      };
+    case 'unlock_admin':
+      return {
+        home: 'admin/admin-dashboard.html',
+        unlocks: 'admin/unlock-admin.html'
+      };
+    default:
+      return null;
   }
 }
 
