@@ -2,8 +2,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 
 // Replace with your actual Supabase credentials
-const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
@@ -24,17 +24,45 @@ export const STORAGE_PATHS = {
   EBOOK_PDFS: 'ebook-pdfs'
 };
 
-// Admin emails list
-export const ADMIN_EMAILS = [
-  'supremealpha04@gmail.com',
-  'suprememotive43@gmail.com',
-  'sandrakukk055@gmail.com',
-  'emmanuelamer6@gmail.com'
+// Admin emails with specific roles
+export const ADMINS = [
+  {
+    email: 'supremealpha04@gmail.com',
+    role: 'super_admin',
+    permissions: ['full_access']
+  },
+  {
+    email: 'suprememotive43@gmail.com',
+    role: 'post_admin',
+    permissions: ['manage_posts']
+  },
+  {
+    email: 'sandrakukk055@gmail.com',
+    role: 'ebook_admin',
+    permissions: ['manage_ebooks']
+  },
+  {
+    email: 'emmanuelamer6@gmail.com',
+    role: 'unlock_admin',
+    permissions: ['manage_unlocks']
+  }
 ];
+
+// Get admin role by email
+export function getAdminRole(email) {
+  const admin = ADMINS.find(a => a.email.toLowerCase() === email?.toLowerCase());
+  return admin ? admin.role : null;
+}
+
+// Check if user has specific permission
+export function hasPermission(email, permission) {
+  const admin = ADMINS.find(a => a.email.toLowerCase() === email?.toLowerCase());
+  return admin ? admin.permissions.includes(permission) : false;
+}
 
 // Check if user is admin by email
 export function isAdminEmail(email) {
-  return ADMIN_EMAILS.includes(email?.toLowerCase());
+  return ADMINS.some(a => a.email.toLowerCase() === email?.toLowerCase());
 }
 
 // Image optimization settings
