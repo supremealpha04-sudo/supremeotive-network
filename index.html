@@ -46,9 +46,11 @@
     <script type="module">
         import { supabase } from './config/supabase.js';
         import { getCurrentUser, logoutUser, isAdmin } from './js/auth.js';
-        import { shareContent, showShareNotification, formatDate, handleImageError } from './js/utils.js';
+        import { shareContent, showShareNotification, formatDate, toggleSavePost, handleImageError } from './js/utils.js';
 
-        // Global functions for inline event handlers
+        // ==================== GLOBAL FUNCTIONS ====================
+
+        // Toggle like on post
         window.toggleLike = async (postId) => {
             const { user } = await getCurrentUser();
             
@@ -94,13 +96,78 @@
                 }
                 
                 // Refresh feed
-                loadFeed();
+                await loadFeed();
             } catch (error) {
                 console.error('Toggle like error:', error);
                 alert('Error updating like. Please try again.');
             }
         };
 
+        // Toggle save/bookmark post
+        window.toggleSave = async (postId) => {
+            const { user } = await getCurrentUser();
+            
+            if (!user) {
+                if (confirm('Please login to save posts. Go to login page?')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                // Check if already saved
+                const { data: existingSave, error: checkError } = await supabase
+                    .from('saved_posts')
+                    .select('*')
+                    .eq('post_id', postId)
+                    .eq('user_id', user.id)
+                    .maybeSingle();
+
+                if (checkError) throw checkError;
+
+                if (existingSave) {
+                    // Unsave
+                    const { error } = await supabase
+                        .from('saved_posts')
+                        .delete()
+                        .eq('post_id', postId)
+                        .eq('user_id', user.id);
+
+                    if (error) throw error;
+                    
+                    // Update button state
+                    const saveBtn = document.querySelector(`.save-btn[data-post-id="${postId}"]`);
+                    if (saveBtn) {
+                        saveBtn.classList.remove('saved');
+                        saveBtn.querySelector('span:last-child').textContent = 'Save';
+                    }
+                    showShareNotification('clipboard', '📌 Post removed from saved');
+                } else {
+                    // Save
+                    const { error } = await supabase
+                        .from('saved_posts')
+                        .insert([{ 
+                            post_id: postId, 
+                            user_id: user.id 
+                        }]);
+
+                    if (error) throw error;
+                    
+                    // Update button state
+                    const saveBtn = document.querySelector(`.save-btn[data-post-id="${postId}"]`);
+                    if (saveBtn) {
+                        saveBtn.classList.add('saved');
+                        saveBtn.querySelector('span:last-child').textContent = 'Saved';
+                    }
+                    showShareNotification('clipboard', '🔖 Post saved!');
+                }
+            } catch (error) {
+                console.error('Toggle save error:', error);
+                alert('Error saving post. Please try again.');
+            }
+        };
+
+        // Toggle comments section
         window.toggleComments = async (postId) => {
             const commentsSection = document.getElementById(`comments-${postId}`);
             if (commentsSection) {
@@ -113,6 +180,7 @@
             }
         };
 
+        // Add comment to post
         window.addComment = async (postId) => {
             const { user } = await getCurrentUser();
             
@@ -143,12 +211,21 @@
 
                 input.value = '';
                 await loadComments(postId);
+                
+                // Update comment count
+                const commentBtn = document.querySelector(`.comment-btn[onclick*="${postId}"]`);
+                if (commentBtn) {
+                    const countSpan = commentBtn.querySelector('span:last-child');
+                    const currentCount = parseInt(countSpan.textContent) || 0;
+                    countSpan.textContent = currentCount + 1;
+                }
             } catch (error) {
                 console.error('Add comment error:', error);
                 alert('Error adding comment. Please try again.');
             }
         };
 
+        // Show reply form
         window.showReplyForm = (commentId) => {
             const form = document.getElementById(`reply-form-${commentId}`);
             if (form) {
@@ -156,6 +233,7 @@
             }
         };
 
+        // Add reply to comment
         window.addReply = async (commentId, postId) => {
             const { user } = await getCurrentUser();
             
@@ -194,16 +272,30 @@
             }
         };
 
+        // Share post
         window.sharePost = async (postId, postTitle) => {
-            const url = `${window.location.origin}/post.html?id=${postId}`;
+            const url = `/post.html?id=${postId}`;
             const title = 'SupremeMotive - Daily Motivation';
             const text = postTitle || 'Check out this motivational post!';
             
             const result = await shareContent(title, text, url);
-            showShareNotification(result.method);
+            showShareNotification(result.method, result.method === 'share' ? '✅ Shared!' : '📋 Link copied!');
         };
 
-        // Fetch all posts
+        // ==================== HELPER FUNCTIONS ====================
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Fetch all posts with details
         async function fetchPosts() {
             try {
                 const { data, error } = await supabase
@@ -216,9 +308,20 @@
 
                 if (error) throw error;
 
-                // Get like counts and check if user liked
+                // Get current user
                 const { user } = await getCurrentUser();
                 
+                // Get all saved posts for user
+                let savedPosts = new Set();
+                if (user) {
+                    const { data: saved } = await supabase
+                        .from('saved_posts')
+                        .select('post_id')
+                        .eq('user_id', user.id);
+                    savedPosts = new Set(saved?.map(s => s.post_id) || []);
+                }
+                
+                // Get details for each post
                 const postsWithDetails = await Promise.all(data.map(async (post) => {
                     // Get likes count
                     const { count: likesCount } = await supabase
@@ -248,7 +351,8 @@
                         ...post,
                         likes_count: likesCount || 0,
                         comments_count: commentsCount || 0,
-                        user_liked: userLiked
+                        user_liked: userLiked,
+                        user_saved: savedPosts.has(post.id)
                     };
                 }));
 
@@ -297,7 +401,7 @@
             }
         }
 
-        // Render comments
+        // Render comments section
         function renderComments(comments, postId) {
             const container = document.getElementById(`comments-${postId}`);
             if (!container) return;
@@ -322,9 +426,9 @@
                                 <img src="${comment.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
                                      alt="${comment.profiles?.name || 'User'}" 
                                      class="comment-avatar"
-                                     onerror="handleImageError(this)">
+                                     onerror="this.src='assets/images/default-avatar.png'">
                                 <div class="comment-info">
-                                    <span class="comment-author">${comment.profiles?.name || 'Anonymous'}</span>
+                                    <span class="comment-author">${escapeHtml(comment.profiles?.name || 'Anonymous')}</span>
                                     <span class="comment-date">${formatDate(comment.created_at)}</span>
                                 </div>
                             </div>
@@ -351,9 +455,9 @@
                                         <img src="${reply.profiles?.profile_image_url || 'assets/images/default-avatar.png'}" 
                                              alt="${reply.profiles?.name || 'User'}" 
                                              class="comment-avatar"
-                                             onerror="handleImageError(this)">
+                                             onerror="this.src='assets/images/default-avatar.png'">
                                         <div class="comment-info">
-                                            <span class="comment-author">${reply.profiles?.name || 'Anonymous'}</span>
+                                            <span class="comment-author">${escapeHtml(reply.profiles?.name || 'Anonymous')}</span>
                                             <span class="comment-date">${formatDate(reply.created_at)}</span>
                                         </div>
                                     </div>
@@ -364,17 +468,6 @@
                     `).join('')}
                 </div>
             `;
-        }
-
-        // Escape HTML helper
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return unsafe
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
         }
 
         // Render feed
@@ -396,7 +489,7 @@
                              class="post-author-avatar"
                              onerror="this.src='assets/images/default-avatar.png'">
                         <div class="post-author-info">
-                            <h3>${post.profiles?.name || 'SupremeMotive Admin'}</h3>
+                            <h3>${escapeHtml(post.profiles?.name || 'SupremeMotive Admin')}</h3>
                             <span class="post-date">${formatDate(post.created_at)}</span>
                         </div>
                     </div>
@@ -411,19 +504,30 @@
                     
                     <div class="post-actions">
                         <button class="action-btn like-btn ${post.user_liked ? 'liked' : ''}" 
-                                onclick="toggleLike('${post.id}')">
+                                onclick="toggleLike('${post.id}')"
+                                title="Like">
                             <span>❤️</span>
                             <span class="like-count">${post.likes_count}</span>
                         </button>
                         
                         <button class="action-btn comment-btn" 
-                                onclick="toggleComments('${post.id}')">
+                                onclick="toggleComments('${post.id}')"
+                                title="Comments">
                             <span>💬</span>
                             <span>${post.comments_count}</span>
                         </button>
                         
+                        <button class="action-btn save-btn ${post.user_saved ? 'saved' : ''}" 
+                                data-post-id="${post.id}"
+                                onclick="toggleSave('${post.id}')"
+                                title="Save">
+                            <span>🔖</span>
+                            <span>${post.user_saved ? 'Saved' : 'Save'}</span>
+                        </button>
+                        
                         <button class="action-btn share-btn" 
-                                onclick="sharePost('${post.id}', '${escapeHtml(post.title).replace(/'/g, "\\'")}')">
+                                onclick="sharePost('${post.id}', '${escapeHtml(post.title).replace(/'/g, "\\'")}')"
+                                title="Share">
                             <span>📤</span>
                             <span>Share</span>
                         </button>
@@ -483,7 +587,8 @@
                 
                 // Show welcome message
                 if (welcomeDiv) {
-                    welcomeDiv.innerHTML = `Welcome back, <strong>${escapeHtml(user.name)}</strong>! 🔥`;
+                    const roleDisplay = user.role !== 'user' ? ` (${user.role.replace('_', ' ')})` : '';
+                    welcomeDiv.innerHTML = `Welcome back, <strong>${escapeHtml(user.name)}</strong>${roleDisplay}! 🔥`;
                 }
                 
                 // Check if user is admin
@@ -491,6 +596,7 @@
                 if (admin && adminLink) {
                     adminLink.style.display = 'inline';
                     adminLink.href = 'admin/admin-dashboard.html';
+                    adminLink.setAttribute('title', `Role: ${user.role.replace('_', ' ')}`);
                 } else if (adminLink) {
                     adminLink.style.display = 'none';
                 }
@@ -513,17 +619,39 @@
             }
         }
 
-        // Initialize
+        // Initialize the app
         async function init() {
-            await updateNavigation();
-            await loadFeed();
-            
-            // Add global error handler for images
-            window.handleImageError = handleImageError;
+            try {
+                await updateNavigation();
+                await loadFeed();
+                
+                // Add global error handler for images
+                window.handleImageError = function(img) {
+                    img.onerror = null;
+                    img.src = 'assets/images/default-avatar.png';
+                };
+            } catch (error) {
+                console.error('Init error:', error);
+                const container = document.getElementById('feed-container');
+                if (container) {
+                    container.innerHTML = '<div class="error-state"><p>Failed to initialize. Please refresh the page.</p></div>';
+                }
+            }
         }
 
         // Start the app
         init();
+
+        // Handle offline/online events
+        window.addEventListener('online', () => {
+            showShareNotification('clipboard', '📶 You are back online!');
+            loadFeed();
+        });
+
+        window.addEventListener('offline', () => {
+            showShareNotification('error', '📴 You are offline. Some features may not work.');
+        });
+
     </script>
 </body>
 </html>
