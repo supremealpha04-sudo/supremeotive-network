@@ -706,8 +706,8 @@
 
         // Initialize Supabase
         const supabase = createClient(
-            'YOUR_SUPABASE_URL',
-            'YOUR_SUPABASE_ANON_KEY'
+            'https://dzcykpbfykajhoutzhpf.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
         )
 
         // Admin emails
@@ -907,4 +907,151 @@
                 if (error) throw error
 
                 showAlert('Post deleted successfully!', 'success')
-                await load
+                await loadPosts(searchInput.value)
+
+            } catch (error) {
+                showAlert('Error deleting post: ' + error.message, 'error')
+            }
+        }
+
+        // Handle image input change
+        imageInput.addEventListener('change', () => {
+            const file = imageInput.files[0]
+            if (file) {
+                fileNameSpan.textContent = file.name
+                
+                // Preview image
+                const reader = new FileReader()
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result
+                    imagePreview.classList.add('visible')
+                }
+                reader.readAsDataURL(file)
+            } else {
+                fileNameSpan.textContent = 'No file chosen'
+                imagePreview.classList.remove('visible')
+            }
+        })
+
+        // Handle form submission
+        document.getElementById('post-form-element').addEventListener('submit', async (e) => {
+            e.preventDefault()
+
+            try {
+                const title = titleInput.value.trim()
+                const content = contentInput.value.trim()
+                const imageFile = imageInput.files[0]
+                const postId = postIdInput.value
+
+                if (!title || !content) {
+                    showAlert('Please fill in all required fields', 'error')
+                    return
+                }
+
+                let imageUrl = null
+
+                // Upload new image if provided
+                if (imageFile) {
+                    const uploadResult = await uploadPostImage(imageFile, currentUser.id)
+                    if (uploadResult.success) {
+                        imageUrl = uploadResult.url
+                    } else {
+                        showAlert('Image upload failed: ' + uploadResult.error, 'error')
+                        return
+                    }
+                }
+
+                if (postId) {
+                    // Update existing post
+                    const updates = { title, content }
+                    if (imageUrl) updates.image_url = imageUrl
+
+                    const { error } = await supabase
+                        .from('posts')
+                        .update(updates)
+                        .eq('id', postId)
+
+                    if (error) throw error
+                    showAlert('Post updated successfully!', 'success')
+                } else {
+                    // Create new post
+                    const { error } = await supabase
+                        .from('posts')
+                        .insert([{
+                            title,
+                            content,
+                            image_url: imageUrl,
+                            created_by: currentUser.id
+                        }])
+
+                    if (error) throw error
+                    showAlert('Post created successfully!', 'success')
+                }
+
+                // Reset form and reload posts
+                resetForm()
+                await loadPosts(searchInput.value)
+
+            } catch (error) {
+                console.error('Save post error:', error)
+                showAlert('Error saving post: ' + error.message, 'error')
+            }
+        })
+
+        // Reset form
+        function resetForm() {
+            postForm.classList.remove('visible')
+            document.getElementById('post-form-element').reset()
+            postIdInput.value = ''
+            titleInput.value = ''
+            contentInput.value = ''
+            fileNameSpan.textContent = 'No file chosen'
+            imagePreview.classList.remove('visible')
+            formTitle.textContent = '📝 Create New Post'
+            saveBtn.textContent = '💾 Save Post'
+            editingPostId = null
+        }
+
+        // Show form
+        showFormBtn.addEventListener('click', () => {
+            resetForm()
+            postForm.classList.add('visible')
+        })
+
+        // Cancel form
+        cancelBtn.addEventListener('click', resetForm)
+
+        // Search
+        searchBtn.addEventListener('click', () => {
+            loadPosts(searchInput.value)
+        })
+
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                loadPosts(searchInput.value)
+            }
+        })
+
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                const { error } = await supabase.auth.signOut()
+                if (error) throw error
+                window.location.href = '../index.html'
+            } catch (error) {
+                showAlert('Error logging out: ' + error.message, 'error')
+            }
+        })
+
+        // Initialize
+        async function init() {
+            const isAuthenticated = await checkAuth()
+            if (isAuthenticated) {
+                await loadPosts()
+            }
+        }
+
+        init()
+    </script>
+</body>
+</html>
