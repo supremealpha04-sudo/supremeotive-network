@@ -4,8 +4,466 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Ebook Library</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/ebook.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-black: #0A0A0A;
+            --deep-navy: #0B1A33;
+            --gold: #FFD700;
+            --electric-blue: #00F0FF;
+            --dark-gray: #1A1A1A;
+            --medium-gray: #2A2A2A;
+            --light-gray: #3A3A3A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --success: #4CAF50;
+            --error: #F44336;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--primary-black) 0%, var(--deep-navy) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--dark-gray);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gold);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+        }
+
+        #logoutBtn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: var(--dark-gray);
+            border: 1px solid var(--light-gray);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--dark-gray);
+            border: 1px solid var(--light-gray);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--gold);
+            color: var(--primary-black);
+            border-color: var(--gold);
+        }
+
+        .ebooks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .ebook-card {
+            background: var(--dark-gray);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .ebook-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .ebook-cover {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .ebook-info {
+            padding: 1.5rem;
+        }
+
+        .ebook-title {
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .ebook-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .ebook-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--electric-blue);
+            margin-bottom: 1rem;
+        }
+
+        .ebook-price.free {
+            color: var(--success);
+        }
+
+        .ebook-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .badge-free {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .badge-paid {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+        }
+
+        .badge-unlocked {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--electric-blue);
+            border: 1px solid var(--electric-blue);
+        }
+
+        .ebook-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--primary-black);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark-gray);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--gold);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--gold);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: var(--error);
+        }
+
+        .whatsapp-info {
+            background: rgba(37, 211, 102, 0.1);
+            border: 1px solid #25D366;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .whatsapp-icon {
+            font-size: 2rem;
+        }
+
+        .whatsapp-text {
+            color: #25D366;
+            font-weight: 500;
+        }
+
+        .admin-number {
+            background: var(--medium-gray);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--light-gray);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .ebooks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
     <script type="importmap">
         {
             "imports": {
@@ -15,318 +473,437 @@
     </script>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">SupremeMotive</div>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="ebooks.html" class="active">Ebooks</a>
             <a href="profile.html">Profile</a>
-            <a href="#" id="admin-link" style="display: none;">Admin</a>
-            <a href="#" id="auth-link">Login</a>
+            <a href="#" id="adminLink" style="display: none;">Admin</a>
+            <button id="logoutBtn" style="display: none;">Logout</button>
+            <a href="login.html" id="loginLink">Login</a>
         </div>
     </nav>
 
-    <!-- Ebook Library -->
     <main class="container">
-        <h1 style="color: var(--gold); margin-bottom: 16px;">Ebook Library</h1>
-        <p style="color: var(--text-secondary); margin-bottom: 32px;">Expand your mind with our collection of motivational ebooks</p>
-        
-        <!-- Filters -->
-        <div class="filters" style="margin-bottom: 24px; display: flex; gap: 16px; align-items: center;">
-            <select id="category-filter" class="filter-select" style="padding: 10px; background: var(--dark-gray); color: white; border: 1px solid var(--gold); border-radius: 6px;">
-                <option value="all">All Ebooks</option>
-                <option value="free">Free Only</option>
-                <option value="paid">Paid Only</option>
-            </select>
-            
-            <input type="text" id="search-ebooks" placeholder="Search ebooks..." 
-                   style="flex: 1; padding: 10px; background: var(--dark-gray); color: white; border: 1px solid var(--light-gray); border-radius: 6px;">
+        <div class="header">
+            <h1>📚 Ebook Library</h1>
+            <p>Expand your mind with our collection of motivational ebooks</p>
         </div>
-        
-        <!-- Ebook Grid -->
-        <div class="ebook-library" id="ebooks-container">
-            <div class="loading">Loading ebooks...</div>
+
+        <div id="alertContainer"></div>
+
+        <div class="filters">
+            <div class="search-box">
+                <i>🔍</i>
+                <input type="text" id="searchInput" placeholder="Search ebooks by title or description...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="free">Free</button>
+                <button class="filter-btn" data-filter="paid">Paid</button>
+                <button class="filter-btn" data-filter="unlocked">Unlocked</button>
+            </div>
+        </div>
+
+        <div class="ebooks-grid" id="ebooksGrid">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading ebooks...</p>
+            </div>
+        </div>
+
+        <!-- Unlock Modal -->
+        <div class="modal" id="unlockModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔓 Unlock Ebook</h2>
+                    <button class="close-btn" id="closeModalBtn">&times;</button>
+                </div>
+                <div id="modalEbookInfo"></div>
+                <div class="whatsapp-info">
+                    <span class="whatsapp-icon">📱</span>
+                    <span class="whatsapp-text">Complete payment via WhatsApp</span>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Send the following information to our admin on WhatsApp:</p>
+                <div class="admin-number" id="whatsappMessage"></div>
+                <div class="whatsapp-info" style="margin-top: 1rem;">
+                    <span class="whatsapp-icon">⏳</span>
+                    <span class="whatsapp-text">After payment, admin will approve your access</span>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-success" id="sendWhatsAppBtn" style="flex: 2;">
+                        <i>📱</i>
+                        Open WhatsApp
+                    </button>
+                    <button class="btn btn-secondary" id="cancelModalBtn" style="flex: 1;">
+                        Cancel
+                    </button>
+                </div>
+            </div>
         </div>
     </main>
 
     <script type="module">
-        import { supabase } from './config/supabase.js';
-        import { getCurrentUser, logoutUser, isAdmin } from './js/auth.js';
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 
-        // Fetch all ebooks
-        async function fetchEbooks() {
+        const supabase = createClient(
+            'YOUR_SUPABASE_URL',
+            'YOUR_SUPABASE_ANON_KEY'
+        )
+
+        // Admin WhatsApp number (replace with actual admin number)
+        const ADMIN_WHATSAPP = '+1234567890'
+        
+        // Admin emails
+        const ADMIN_EMAILS = [
+            'supremealpha04@gmail.com',
+            'suprememotive43@gmail.com',
+            'sandrakukk055@gmail.com',
+            'emmanuelamer6@gmail.com'
+        ]
+
+        let currentUser = null
+        let allEbooks = []
+        let userUnlocks = []
+        let selectedEbook = null
+
+        // DOM Elements
+        const ebooksGrid = document.getElementById('ebooksGrid')
+        const searchInput = document.getElementById('searchInput')
+        const filterBtns = document.querySelectorAll('.filter-btn')
+        const logoutBtn = document.getElementById('logoutBtn')
+        const loginLink = document.getElementById('loginLink')
+        const adminLink = document.getElementById('adminLink')
+        const alertContainer = document.getElementById('alertContainer')
+        const unlockModal = document.getElementById('unlockModal')
+        const modalEbookInfo = document.getElementById('modalEbookInfo')
+        const whatsappMessage = document.getElementById('whatsappMessage')
+        const sendWhatsAppBtn = document.getElementById('sendWhatsAppBtn')
+        const closeModalBtn = document.getElementById('closeModalBtn')
+        const cancelModalBtn = document.getElementById('cancelModalBtn')
+
+        // Check auth status
+        async function checkAuth() {
+            const { data: { user } } = await supabase.auth.getUser()
+            currentUser = user
+
+            if (user) {
+                logoutBtn.style.display = 'block'
+                loginLink.style.display = 'none'
+                
+                if (ADMIN_EMAILS.includes(user.email)) {
+                    adminLink.style.display = 'block'
+                    adminLink.href = 'admin/admin-dashboard.html'
+                }
+
+                // Load user's unlocked ebooks
+                await loadUserUnlocks()
+            } else {
+                logoutBtn.style.display = 'none'
+                loginLink.style.display = 'block'
+                adminLink.style.display = 'none'
+            }
+        }
+
+        // Load user's unlocked ebooks
+        async function loadUserUnlocks() {
+            if (!currentUser) return
+
             try {
+                const { data, error } = await supabase
+                    .from('unlocks')
+                    .select('ebook_id')
+                    .eq('user_id', currentUser.id)
+                    .eq('status', 'approved')
+
+                if (error) throw error
+                userUnlocks = data.map(u => u.ebook_id) || []
+            } catch (error) {
+                console.error('Error loading unlocks:', error)
+            }
+        }
+
+        // Load ebooks
+        async function loadEbooks() {
+            try {
+                ebooksGrid.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading ebooks...</p>
+                    </div>
+                `
+
                 const { data, error } = await supabase
                     .from('ebooks')
                     .select('*')
-                    .order('created_at', { ascending: false });
+                    .order('created_at', { ascending: false })
 
-                if (error) throw error;
+                if (error) throw error
 
-                // Check unlocked status for each ebook
-                const { user } = await getCurrentUser();
-                
-                let unlockedIds = new Set();
-                if (user) {
-                    const { data: unlocks } = await supabase
-                        .from('unlocks')
-                        .select('ebook_id')
-                        .eq('user_id', user.id)
-                        .eq('status', 'approved');
+                allEbooks = data || []
+                renderEbooks(allEbooks)
 
-                    unlockedIds = new Set(unlocks?.map(u => u.ebook_id) || []);
-                }
-
-                const ebooksWithStatus = data.map(ebook => ({
-                    ...ebook,
-                    is_unlocked: !ebook.is_paid || unlockedIds.has(ebook.id)
-                }));
-
-                return { success: true, ebooks: ebooksWithStatus };
             } catch (error) {
-                console.error('Fetch ebooks error:', error);
-                return { success: false, error: error.message };
+                ebooksGrid.innerHTML = `
+                    <div class="loading">
+                        <p style="color: var(--error);">Error loading ebooks: ${error.message}</p>
+                    </div>
+                `
             }
         }
-
-        // Request unlock via WhatsApp
-        window.requestUnlock = async (ebookId) => {
-            const { user } = await getCurrentUser();
-            
-            if (!user) {
-                if (confirm('Please login to unlock ebooks. Go to login page?')) {
-                    window.location.href = 'login.html';
-                }
-                return;
-            }
-
-            try {
-                // Get ebook details
-                const { data: ebook } = await supabase
-                    .from('ebooks')
-                    .select('title, price')
-                    .eq('id', ebookId)
-                    .single();
-
-                // Create unlock request
-                await supabase
-                    .from('unlock_requests')
-                    .insert([
-                        {
-                            user_id: user.id,
-                            ebook_id: ebookId,
-                            status: 'pending'
-                        }
-                    ]);
-
-                // Create WhatsApp message
-                const message = encodeURIComponent(
-                    `*Unlock Request - SupremeMotive*\n\n` +
-                    `*User:* ${user.name}\n` +
-                    `*Email:* ${user.email}\n` +
-                    `*User ID:* ${user.id}\n` +
-                    `*Ebook:* ${ebook.title}\n` +
-                    `*Price:* $${ebook.price}\n\n` +
-                    `Please process this unlock request.`
-                );
-
-                // Open WhatsApp (replace with admin number)
-                window.open(`https://wa.me/1234567890?text=${message}`, '_blank');
-                
-                alert('Unlock request sent! Please complete payment via WhatsApp.');
-            } catch (error) {
-                console.error('Request unlock error:', error);
-                alert('Error requesting unlock: ' + error.message);
-            }
-        };
-
-        // Read ebook
-        window.readEbook = (ebookId) => {
-            window.location.href = `ebook-reader.html?id=${ebookId}`;
-        };
 
         // Render ebooks
         function renderEbooks(ebooks) {
-            const container = document.getElementById('ebooks-container');
-            
             if (ebooks.length === 0) {
-                container.innerHTML = '<div class="text-center">No ebooks available yet.</div>';
-                return;
+                ebooksGrid.innerHTML = `
+                    <div class="loading">
+                        <p>No ebooks found</p>
+                    </div>
+                `
+                return
             }
 
-            container.innerHTML = ebooks.map(ebook => `
-                <div class="ebook-card" data-ebook-id="${ebook.id}">
-                    <img src="${ebook.cover_url}" alt="${ebook.title}" class="ebook-cover"
-                         onerror="this.src='assets/images/placeholder-ebook.jpg'">
-                    
-                    <div class="ebook-info">
-                        <span class="ebook-badge ${ebook.is_paid ? 'paid' : 'free'}">
-                            ${ebook.is_paid ? 'PAID' : 'FREE'}
-                        </span>
+            ebooksGrid.innerHTML = ebooks.map(ebook => {
+                const isUnlocked = !ebook.is_paid || (currentUser && userUnlocks.includes(ebook.id))
+                const hasPendingRequest = false // You can check pending requests if needed
+
+                return `
+                    <div class="ebook-card" data-id="${ebook.id}">
+                        <img src="${ebook.cover_url}" alt="${escapeHtml(ebook.title)}" class="ebook-cover"
+                             onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'">
                         
-                        <h3 class="ebook-title">${ebook.title}</h3>
-                        <p class="ebook-description">${ebook.description.substring(0, 100)}${ebook.description.length > 100 ? '...' : ''}</p>
-                        
-                        <div class="ebook-price ${ebook.is_paid ? '' : 'free'}">
-                            ${ebook.is_paid ? `$${ebook.price}` : 'FREE'}
-                        </div>
-                        
-                        <div class="ebook-actions">
-                            ${ebook.is_paid && !ebook.is_unlocked ? `
-                                <button class="btn btn-primary unlock-btn" 
-                                        onclick="requestUnlock('${ebook.id}')">
-                                    Unlock via WhatsApp
+                        <div class="ebook-info">
+                            <span class="ebook-badge ${ebook.is_paid ? 'badge-paid' : 'badge-free'}">
+                                ${ebook.is_paid ? '💰 PAID' : '🎁 FREE'}
+                            </span>
+                            
+                            ${isUnlocked ? `
+                                <span class="ebook-badge badge-unlocked" style="margin-left: 0.5rem;">
+                                    🔓 UNLOCKED
+                                </span>
+                            ` : ''}
+                            
+                            <h3 class="ebook-title">${escapeHtml(ebook.title)}</h3>
+                            <p class="ebook-description">${escapeHtml(ebook.description.substring(0, 120))}...</p>
+                            
+                            <div class="ebook-price ${!ebook.is_paid ? 'free' : ''}">
+                                ${ebook.is_paid ? `$${ebook.price}` : 'FREE'}
+                            </div>
+
+                            <div class="ebook-actions">
+                                ${isUnlocked ? `
+                                    <button class="btn btn-success" onclick="readEbook('${ebook.id}')">
+                                        <i>📖</i>
+                                        Read Now
+                                    </button>
+                                ` : ebook.is_paid ? `
+                                    <button class="btn btn-primary" onclick="showUnlockModal('${ebook.id}')">
+                                        <i>🔓</i>
+                                        Unlock for $${ebook.price}
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-success" onclick="readEbook('${ebook.id}')">
+                                        <i>📖</i>
+                                        Read Now
+                                    </button>
+                                `}
+                                
+                                <button class="btn btn-secondary" onclick="viewDetails('${ebook.id}')">
+                                    <i>ℹ️</i>
+                                    Details
                                 </button>
-                            ` : `
-                                <button class="btn btn-primary read-btn" 
-                                        onclick="readEbook('${ebook.id}')">
-                                    Read Now
-                                </button>
-                            `}
+                            </div>
                         </div>
                     </div>
+                `
+            }).join('')
+        }
+
+        // Show unlock modal
+        window.showUnlockModal = async (ebookId) => {
+            if (!currentUser) {
+                if (confirm('Please login to unlock ebooks. Go to login page?')) {
+                    window.location.href = 'login.html'
+                }
+                return
+            }
+
+            const ebook = allEbooks.find(e => e.id === ebookId)
+            if (!ebook) return
+
+            selectedEbook = ebook
+
+            // Create unlock request in database
+            try {
+                await supabase
+                    .from('unlocks')
+                    .insert([{
+                        user_id: currentUser.id,
+                        ebook_id: ebookId,
+                        status: 'pending'
+                    }])
+            } catch (error) {
+                console.error('Error creating unlock request:', error)
+            }
+
+            // Prepare modal content
+            modalEbookInfo.innerHTML = `
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                    <img src="${ebook.cover_url}" alt="${escapeHtml(ebook.title)}" 
+                         style="width: 80px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gold);">
+                    <div>
+                        <h3 style="color: var(--gold); margin-bottom: 0.5rem;">${escapeHtml(ebook.title)}</h3>
+                        <p style="color: var(--electric-blue); font-weight: bold;">$${ebook.price}</p>
+                    </div>
                 </div>
-            `).join('');
+            `
+
+            const message = `*Unlock Request - SupremeMotive*\n\n` +
+                `*User:* ${currentUser.email}\n` +
+                `*User ID:* ${currentUser.id}\n` +
+                `*Ebook:* ${ebook.title}\n` +
+                `*Ebook ID:* ${ebook.id}\n` +
+                `*Price:* $${ebook.price}\n\n` +
+                `Please process this unlock request.`
+
+            whatsappMessage.textContent = message
+
+            unlockModal.classList.add('show')
         }
 
-        // Load ebooks with filters
-        async function loadEbooks(filter = 'all', search = '') {
-            const result = await fetchEbooks();
+        // Send WhatsApp message
+        sendWhatsAppBtn.addEventListener('click', () => {
+            if (!selectedEbook || !currentUser) return
+
+            const message = encodeURIComponent(
+                `*Unlock Request - SupremeMotive*\n\n` +
+                `*User:* ${currentUser.email}\n` +
+                `*User ID:* ${currentUser.id}\n` +
+                `*Ebook:* ${selectedEbook.title}\n` +
+                `*Ebook ID:* ${selectedEbook.id}\n` +
+                `*Price:* $${selectedEbook.price}\n\n` +
+                `Please process this unlock request.`
+            )
+
+            window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${message}`, '_blank')
             
-            if (result.success) {
-                let filtered = result.ebooks;
-                
-                // Apply category filter
-                if (filter !== 'all') {
-                    filtered = filtered.filter(ebook => 
-                        filter === 'free' ? !ebook.is_paid : ebook.is_paid
-                    );
-                }
-                
-                // Apply search filter
-                if (search) {
-                    const searchLower = search.toLowerCase();
-                    filtered = filtered.filter(ebook => 
-                        ebook.title.toLowerCase().includes(searchLower) ||
-                        ebook.description.toLowerCase().includes(searchLower)
-                    );
-                }
-                
-                renderEbooks(filtered);
-            }
-        }
-
-        // Update navigation based on auth
-        async function updateNavigation() {
-            const { user } = await getCurrentUser();
-            const authLink = document.getElementById('auth-link');
-            const adminLink = document.getElementById('admin-link');
+            showAlert('Request sent! Admin will approve your access after payment confirmation.', 'success')
             
-            if (user) {
-                authLink.textContent = 'Logout';
-                authLink.href = '#';
-                authLink.onclick = async (e) => {
-                    e.preventDefault();
-                    await logoutUser();
-                    window.location.reload();
-                };
-                
-                const admin = await isAdmin();
-                if (admin) {
-                    adminLink.style.display = 'inline';
-                    adminLink.href = 'admin/admin-dashboard.html';
-                }
-            } else {
-                authLink.textContent = 'Login';
-                authLink.href = 'login.html';
-                authLink.onclick = null;
-            }
+            setTimeout(() => {
+                unlockModal.classList.remove('show')
+            }, 2000)
+        })
+
+        // Read ebook
+        window.readEbook = (ebookId) => {
+            window.open(`ebook-reader.html?id=${ebookId}`, '_blank')
         }
 
-        // Event listeners
-        document.getElementById('category-filter').addEventListener('change', (e) => {
-            const search = document.getElementById('search-ebooks').value;
-            loadEbooks(e.target.value, search);
-        });
-
-        document.getElementById('search-ebooks').addEventListener('input', debounce((e) => {
-            const filter = document.getElementById('category-filter').value;
-            loadEbooks(filter, e.target.value);
-        }, 300));
-
-        // Debounce helper
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+        // View details
+        window.viewDetails = (ebookId) => {
+            window.open(`ebook-details.html?id=${ebookId}`, '_blank')
         }
 
-// Check if ebook is unlocked for current user
-async function checkEbookUnlock(ebookId, userId) {
-    if (!userId) return false;
-    
-    try {
-        const { data, error } = await supabase
-            .from('unlocks')
-            .select('*')
-            .eq('user_id', userId)
-            .eq('ebook_id', ebookId)
-            .eq('status', 'approved')
-            .maybeSingle();
+        // Filter ebooks
+        function filterEbooks(filter) {
+            let filtered = [...allEbooks]
 
-        if (error) throw error;
-        return !!data;
-    } catch (error) {
-        console.error('Error checking unlock:', error);
-        return false;
-    }
-}
-
-// Fetch ebooks with unlock status
-async function fetchEbooksWithStatus() {
-    try {
-        const { data: ebooks, error } = await supabase
-            .from('ebooks')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        const { user } = await getCurrentUser();
-        
-        // Check unlock status for each ebook if user is logged in
-        const ebooksWithStatus = await Promise.all(ebooks.map(async (ebook) => {
-            let isUnlocked = false;
-            if (user) {
-                isUnlocked = await checkEbookUnlock(ebook.id, user.id);
+            switch(filter) {
+                case 'free':
+                    filtered = filtered.filter(e => !e.is_paid)
+                    break
+                case 'paid':
+                    filtered = filtered.filter(e => e.is_paid)
+                    break
+                case 'unlocked':
+                    if (currentUser) {
+                        filtered = filtered.filter(e => !e.is_paid || userUnlocks.includes(e.id))
+                    } else {
+                        filtered = []
+                    }
+                    break
             }
-            return {
-                ...ebook,
-                is_unlocked: isUnlocked
-            };
-        }));
 
-        return { success: true, ebooks: ebooksWithStatus };
-    } catch (error) {
-        console.error('Fetch ebooks error:', error);
-        return { success: false, error: error.message };
-    }
-}
+            // Apply search
+            const searchTerm = searchInput.value.toLowerCase()
+            if (searchTerm) {
+                filtered = filtered.filter(e => 
+                    e.title.toLowerCase().includes(searchTerm) ||
+                    e.description.toLowerCase().includes(searchTerm)
+                )
+            }
+
+            renderEbooks(filtered)
+        }
+
+        // Search input
+        searchInput.addEventListener('input', () => {
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter
+            filterEbooks(activeFilter)
+        })
+
+        // Filter buttons
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'))
+                btn.classList.add('active')
+                filterEbooks(btn.dataset.filter)
+            })
+        })
+
+        // Modal close
+        closeModalBtn.addEventListener('click', () => {
+            unlockModal.classList.remove('show')
+        })
+
+        cancelModalBtn.addEventListener('click', () => {
+            unlockModal.classList.remove('show')
+        })
+
+        window.addEventListener('click', (e) => {
+            if (e.target === unlockModal) {
+                unlockModal.classList.remove('show')
+            }
+        })
+
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            await supabase.auth.signOut()
+            window.location.reload()
+        })
+
+        // Show alert
+        function showAlert(message, type) {
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i>${type === 'success' ? '✅' : '❌'}</i>
+                    <span>${message}</span>
+                </div>
+            `
+            setTimeout(() => {
+                alertContainer.innerHTML = ''
+            }, 3000)
+        }
+
+        // Escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return ''
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;')
+        }
+
         // Initialize
         async function init() {
-            await updateNavigation();
-            await loadEbooks();
+            await checkAuth()
+            await loadEbooks()
         }
 
-
-        init();
+        init()
     </script>
 </body>
 </html>
