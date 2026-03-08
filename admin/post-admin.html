@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Post Management</title>
+    <title>SupremeMotive - Manage Posts</title>
     <style>
         * {
             margin: 0;
@@ -33,99 +33,94 @@
             min-height: 100vh;
         }
 
-        /* Admin Layout */
-        .admin-container {
+        /* Layout */
+        .app {
             display: flex;
             min-height: 100vh;
         }
 
         /* Sidebar */
         .sidebar {
-            width: 280px;
+            width: 260px;
             background: var(--dark-gray);
-            border-right: 2px solid var(--gold);
-            padding: 2rem 1.5rem;
+            border-right: 1px solid var(--light-gray);
+            padding: 2rem 1rem;
             position: fixed;
             height: 100vh;
-            overflow-y: auto;
         }
 
         .sidebar-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
+            padding-bottom: 2rem;
             border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 2rem;
         }
 
-        .sidebar-logo {
+        .logo {
             font-size: 1.5rem;
-            font-weight: 800;
+            font-weight: bold;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
-        .role-badge {
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
+        .role-tag {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
             padding: 0.5rem 1rem;
             border-radius: 30px;
             font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
+            font-weight: 500;
             display: inline-block;
+            border: 1px solid var(--gold);
         }
 
-        .sidebar-nav {
+        .nav-menu {
             list-style: none;
-            margin-top: 2rem;
         }
 
-        .sidebar-nav li {
+        .nav-item {
             margin-bottom: 0.5rem;
         }
 
-        .sidebar-nav a {
+        .nav-link {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 1rem 1.5rem;
-            color: var(--text-primary);
+            padding: 0.9rem 1rem;
+            color: var(--text-secondary);
             text-decoration: none;
-            border-radius: 12px;
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
 
-        .sidebar-nav a:hover {
+        .nav-link:hover {
             background: var(--medium-gray);
-            transform: translateX(5px);
+            color: var(--text-primary);
         }
 
-        .sidebar-nav a.active {
+        .nav-link.active {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             color: var(--primary-black);
-            font-weight: 600;
+            font-weight: 500;
         }
 
-        .sidebar-footer {
-            position: absolute;
-            bottom: 2rem;
-            left: 1.5rem;
-            right: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--light-gray);
+        .nav-link i {
+            font-size: 1.2rem;
         }
 
         .logout-btn {
-            width: 100%;
+            position: absolute;
+            bottom: 2rem;
+            left: 1rem;
+            right: 1rem;
             padding: 1rem;
-            background: rgba(244, 67, 54, 0.1);
+            background: none;
             border: 1px solid var(--error);
             color: var(--error);
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -139,33 +134,33 @@
         }
 
         /* Main Content */
-        .main-content {
+        .main {
             flex: 1;
-            margin-left: 280px;
+            margin-left: 260px;
             padding: 2rem;
         }
 
         /* Header */
-        .content-header {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--light-gray);
         }
 
-        .content-header h1 {
-            color: var(--gold);
+        .header h1 {
             font-size: 2rem;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .create-btn {
+        .new-post-btn {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             color: var(--primary-black);
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -174,317 +169,31 @@
             transition: all 0.3s ease;
         }
 
-        .create-btn:hover {
+        .new-post-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
         }
 
-        /* Create Post Form */
-        .create-post-form {
-            background: var(--dark-gray);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--gold);
-            display: none;
+        /* Alert */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideIn 0.3s ease;
         }
 
-        .create-post-form.visible {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
+        @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-10px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        .form-title {
-            color: var(--gold);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 1rem;
-            background: var(--medium-gray);
-            border: 1px solid var(--light-gray);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 150px;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-
-        .file-input {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .file-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            background: var(--medium-gray);
-            border: 2px dashed var(--light-gray);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .file-label:hover {
-            border-color: var(--gold);
-            background: var(--dark-gray);
-        }
-
-        .file-name {
-            margin-top: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .image-preview {
-            margin-top: 1rem;
-            max-width: 200px;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .image-preview.visible {
-            display: block;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .save-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1;
-            transition: all 0.3s ease;
-        }
-
-        .save-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-        }
-
-        .cancel-btn {
-            background: var(--error);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1;
-            transition: all 0.3s ease;
-        }
-
-        .cancel-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-        }
-
-        /* Posts Table */
-        .posts-table-container {
-            background: var(--dark-gray);
-            border-radius: 20px;
-            padding: 1.5rem;
-            border: 1px solid var(--light-gray);
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .table-header h2 {
-            color: var(--gold);
-        }
-
-        .search-box {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .search-input {
-            padding: 0.75rem;
-            background: var(--medium-gray);
-            border: 1px solid var(--light-gray);
-            border-radius: 8px;
-            color: var(--text-primary);
-            width: 250px;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .posts-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .posts-table th {
-            text-align: left;
-            padding: 1rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-            border-bottom: 2px solid var(--light-gray);
-        }
-
-        .posts-table td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--light-gray);
-            color: var(--text-primary);
-        }
-
-        .posts-table tr:hover td {
-            background: var(--medium-gray);
-        }
-
-        .post-thumbnail {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid var(--light-gray);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .edit-btn {
-            background: var(--electric-blue);
-            color: var(--primary-black);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .edit-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        .delete-btn {
-            background: var(--error);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .delete-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        .view-btn {
-            background: var(--gold);
-            color: var(--primary-black);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .view-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 3rem;
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid var(--light-gray);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Alerts */
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            animation: slideDown 0.3s ease;
         }
 
         .alert-success {
@@ -499,68 +208,401 @@
             color: var(--error);
         }
 
-        .alert-warning {
-            background: rgba(255, 193, 7, 0.1);
-            border: 1px solid var(--warning);
-            color: var(--warning);
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        /* Hidden */
-        .hidden {
-            display: none !important;
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark-gray);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--gold);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--error);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--medium-gray);
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--light-gray);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .file-upload:hover {
+            border-color: var(--gold);
+            background: var(--medium-gray);
+        }
+
+        .file-upload input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+        }
+
+        .upload-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .file-preview {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .file-preview.show {
+            display: block;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 2px solid var(--gold);
+        }
+
+        .file-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .remove-file {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.3rem 1rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--primary-black);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: 1px solid var(--light-gray);
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .post-card {
+            background: var(--dark-gray);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            background: var(--medium-gray);
+        }
+
+        .post-title {
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .post-excerpt {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .post-actions button {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .view-post {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+        }
+
+        .view-post:hover {
+            background: var(--light-gray);
+        }
+
+        .edit-post {
+            background: var(--electric-blue);
+            color: var(--primary-black);
+        }
+
+        .edit-post:hover {
+            filter: brightness(1.1);
+        }
+
+        .delete-post {
+            background: var(--error);
+            color: white;
+        }
+
+        .delete-post:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--light-gray);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            grid-column: 1 / -1;
+            background: var(--dark-gray);
+            border-radius: 15px;
+            border: 1px dashed var(--light-gray);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
         }
 
         /* Responsive */
-        @media (max-width: 1024px) {
+        @media (max-width: 768px) {
             .sidebar {
-                width: 80px;
-                padding: 1rem;
+                width: 70px;
+                padding: 1rem 0.5rem;
             }
 
-            .sidebar-logo {
+            .sidebar-header {
+                text-align: center;
+            }
+
+            .logo {
                 font-size: 0;
             }
 
-            .sidebar-logo::before {
-                content: 'SM';
+            .logo::first-letter {
                 font-size: 1.5rem;
-                background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
             }
 
-            .role-badge,
-            .sidebar-nav a span {
+            .role-tag {
                 display: none;
             }
 
-            .sidebar-nav a {
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link {
                 justify-content: center;
+                padding: 0.9rem;
+            }
+
+            .main {
+                margin-left: 70px;
                 padding: 1rem;
             }
 
-            .main-content {
-                margin-left: 80px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .posts-table {
-                display: block;
-                overflow-x: auto;
-            }
-
-            .table-header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-
-            .search-input {
-                width: 100%;
+            .posts-grid {
+                grid-template-columns: 1fr;
             }
 
             .form-actions {
@@ -577,132 +619,110 @@
     </script>
 </head>
 <body>
-    <div class="admin-container">
+    <div class="app">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">SupremeMotive</div>
-                <div id="role-badge" class="role-badge">Post Admin</div>
+                <div class="logo">SupremeMotive</div>
+                <span class="role-tag">Post Admin</span>
             </div>
 
-            <ul class="sidebar-nav">
-                <li>
-                    <a href="admin-dashboard.html">
-                        <span>📊</span>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="admin-dashboard.html" class="nav-link">
+                        <i>📊</i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li>
-                    <a href="post-admin.html" class="active">
-                        <span>📝</span>
-                        <span>Post Management</span>
+                <li class="nav-item">
+                    <a href="post-admin.html" class="nav-link active">
+                        <i>📝</i>
+                        <span>Posts</span>
                     </a>
                 </li>
-                <li>
-                    <a href="../index.html">
-                        <span>🏠</span>
+                <li class="nav-item">
+                    <a href="../index.html" class="nav-link">
+                        <i>🏠</i>
                         <span>View Site</span>
                     </a>
                 </li>
             </ul>
 
-            <div class="sidebar-footer">
-                <button id="logout-btn" class="logout-btn">
-                    <span>🚪</span>
-                    <span>Logout</span>
-                </button>
-            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <i>🚪</i>
+                <span>Logout</span>
+            </button>
         </aside>
 
         <!-- Main Content -->
-        <main class="main-content">
-            <div class="content-header">
-                <h1>Post Management</h1>
-                <button id="show-form-btn" class="create-btn">
-                    <span>➕</span>
-                    <span>Create New Post</span>
+        <main class="main">
+            <div class="header">
+                <h1>📝 Manage Posts</h1>
+                <button class="new-post-btn" id="newPostBtn">
+                    <i>➕</i>
+                    <span>New Post</span>
                 </button>
             </div>
 
-            <div id="alert-container"></div>
+            <div id="alertContainer"></div>
 
-            <!-- Create/Edit Post Form -->
-            <div id="post-form" class="create-post-form">
-                <h2 class="form-title">
-                    <span id="form-title">📝 Create New Post</span>
-                </h2>
-                
-                <form id="post-form-element">
-                    <input type="hidden" id="post-id" value="">
-                    
+            <!-- Posts Grid -->
+            <div class="posts-grid" id="postsGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading posts...</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Post Modal -->
+        <div class="modal" id="postModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Create New Post</h2>
+                    <button class="close-btn" id="closeModalBtn">&times;</button>
+                </div>
+
+                <form id="postForm">
+                    <input type="hidden" id="postId">
+
                     <div class="form-group">
-                        <label for="post-title">Post Title</label>
-                        <input type="text" id="post-title" class="form-control" placeholder="Enter post title" required>
+                        <label for="title">Post Title</label>
+                        <input type="text" id="title" class="form-control" placeholder="Enter an inspiring title..." required>
                     </div>
 
                     <div class="form-group">
-                        <label for="post-content">Post Content</label>
-                        <textarea id="post-content" class="form-control" placeholder="Write your motivational post here..." required></textarea>
+                        <label for="content">Post Content</label>
+                        <textarea id="content" class="form-control" placeholder="Write your motivational message..." required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="post-image">Post Image (Optional)</label>
-                        <div class="file-input-wrapper">
-                            <input type="file" id="post-image" class="file-input" accept="image/*">
-                            <div class="file-label">
-                                <span>📷</span>
-                                <span>Choose an image</span>
-                            </div>
+                        <label>Featured Image (Optional)</label>
+                        <div class="file-upload" id="fileUploadArea">
+                            <input type="file" id="image" accept="image/*">
+                            <div class="upload-icon">📷</div>
+                            <div class="upload-text">Click or drag image to upload</div>
+                            <div class="upload-hint">Supports: JPG, PNG, GIF (max 5MB)</div>
                         </div>
-                        <div id="file-name" class="file-name">No file chosen</div>
-                        <img id="image-preview" class="image-preview" alt="Preview">
+
+                        <div class="file-preview" id="filePreview">
+                            <img id="previewImage" class="preview-image" src="#" alt="Preview">
+                            <div id="fileName" class="file-name"></div>
+                            <button type="button" class="remove-file" id="removeFileBtn">Remove</button>
+                        </div>
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" id="save-btn" class="save-btn">💾 Save Post</button>
-                        <button type="button" id="cancel-btn" class="cancel-btn">✖️ Cancel</button>
+                        <button type="submit" class="btn-primary" id="submitBtn">Publish Post</button>
+                        <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
                     </div>
                 </form>
             </div>
-
-            <!-- Posts List -->
-            <div class="posts-table-container">
-                <div class="table-header">
-                    <h2>📋 All Posts</h2>
-                    <div class="search-box">
-                        <input type="text" id="search-input" class="search-input" placeholder="Search posts...">
-                        <button id="search-btn" class="view-btn">🔍 Search</button>
-                    </div>
-                </div>
-
-                <table class="posts-table">
-                    <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Title</th>
-                            <th>Content</th>
-                            <th>Date</th>
-                            <th>Likes</th>
-                            <th>Comments</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="posts-table-body">
-                        <tr>
-                            <td colspan="7" class="loading">
-                                <div class="loading-spinner"></div>
-                                <p>Loading posts...</p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
+        </div>
     </div>
 
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
-        import { uploadPostImage, deleteFile } from '../js/upload.js'
 
         // Initialize Supabase
         const supabase = createClient(
@@ -716,46 +736,51 @@
             'suprememotive43@gmail.com'
         ]
 
+        // State
         let currentUser = null
-        let editingPostId = null
+        let posts = []
 
         // DOM Elements
-        const postForm = document.getElementById('post-form')
-        const showFormBtn = document.getElementById('show-form-btn')
-        const cancelBtn = document.getElementById('cancel-btn')
-        const logoutBtn = document.getElementById('logout-btn')
-        const alertContainer = document.getElementById('alert-container')
-        const formTitle = document.getElementById('form-title')
-        const saveBtn = document.getElementById('save-btn')
-        const postIdInput = document.getElementById('post-id')
-        const titleInput = document.getElementById('post-title')
-        const contentInput = document.getElementById('post-content')
-        const imageInput = document.getElementById('post-image')
-        const fileNameSpan = document.getElementById('file-name')
-        const imagePreview = document.getElementById('image-preview')
-        const searchInput = document.getElementById('search-input')
-        const searchBtn = document.getElementById('search-btn')
-        const postsTableBody = document.getElementById('posts-table-body')
+        const postsGrid = document.getElementById('postsGrid')
+        const modal = document.getElementById('postModal')
+        const modalTitle = document.getElementById('modalTitle')
+        const postForm = document.getElementById('postForm')
+        const postId = document.getElementById('postId')
+        const titleInput = document.getElementById('title')
+        const contentInput = document.getElementById('content')
+        const imageInput = document.getElementById('image')
+        const filePreview = document.getElementById('filePreview')
+        const previewImage = document.getElementById('previewImage')
+        const fileName = document.getElementById('fileName')
+        const removeFileBtn = document.getElementById('removeFileBtn')
+        const submitBtn = document.getElementById('submitBtn')
+        const alertContainer = document.getElementById('alertContainer')
+        const logoutBtn = document.getElementById('logoutBtn')
+        const newPostBtn = document.getElementById('newPostBtn')
+        const closeModalBtn = document.getElementById('closeModalBtn')
+        const cancelBtn = document.getElementById('cancelBtn')
+        const fileUploadArea = document.getElementById('fileUploadArea')
 
         // Show alert
         function showAlert(message, type) {
-            alertContainer.innerHTML = `<div class="alert alert-${type}">${type === 'success' ? '✅' : '❌'} ${message}</div>`
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i>${type === 'success' ? '✅' : '❌'}</i>
+                    <span>${message}</span>
+                </div>
+            `
             setTimeout(() => {
                 alertContainer.innerHTML = ''
             }, 3000)
         }
 
-        // Check authentication and admin status
+        // Check authentication
         async function checkAuth() {
             try {
                 const { data: { user }, error } = await supabase.auth.getUser()
                 
                 if (error) throw error
-
-                if (!user) {
-                    window.location.href = '../login.html'
-                    return false
-                }
+                if (!user) throw new Error('Not authenticated')
 
                 currentUser = user
 
@@ -774,18 +799,16 @@
         }
 
         // Load posts
-        async function loadPosts(searchTerm = '') {
+        async function loadPosts() {
             try {
-                postsTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="loading">
-                            <div class="loading-spinner"></div>
-                            <p>Loading posts...</p>
-                        </td>
-                    </tr>
+                postsGrid.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading posts...</p>
+                    </div>
                 `
 
-                let query = supabase
+                const { data, error } = await supabase
                     .from('posts')
                     .select(`
                         *,
@@ -794,45 +817,69 @@
                     `)
                     .order('created_at', { ascending: false })
 
-                if (searchTerm) {
-                    query = query.ilike('title', `%${searchTerm}%`)
-                }
-
-                const { data: posts, error } = await query
-
                 if (error) throw error
 
-                if (!posts || posts.length === 0) {
-                    postsTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No posts found</td></tr>'
+                posts = data || []
+
+                if (posts.length === 0) {
+                    postsGrid.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📝</div>
+                            <h3>No Posts Yet</h3>
+                            <p>Create your first motivational post to inspire others!</p>
+                        </div>
+                    `
                     return
                 }
 
-                postsTableBody.innerHTML = posts.map(post => `
-                    <tr>
-                        <td>
-                            ${post.image_url ? 
-                                `<img src="${post.image_url}" alt="Post image" class="post-thumbnail">` : 
-                                '<span style="color: var(--text-secondary);">No image</span>'}
-                        </td>
-                        <td><strong>${escapeHtml(post.title)}</strong></td>
-                        <td>${escapeHtml(post.content.substring(0, 50))}${post.content.length > 50 ? '...' : ''}</td>
-                        <td>${new Date(post.created_at).toLocaleDateString()}</td>
-                        <td>${post.post_likes?.[0]?.count || 0}</td>
-                        <td>${post.comments?.[0]?.count || 0}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="view-btn" onclick="viewPost('${post.id}')">👁️ View</button>
-                                <button class="edit-btn" onclick="editPost('${post.id}')">✏️ Edit</button>
-                                <button class="delete-btn" onclick="deletePost('${post.id}', '${post.image_url || ''}')">🗑️ Delete</button>
-                            </div>
-                        </td>
-                    </tr>
-                `).join('')
+                renderPosts(posts)
 
             } catch (error) {
                 console.error('Load posts error:', error)
-                postsTableBody.innerHTML = `<tr><td colspan="7" style="color: var(--error); text-align: center;">Error loading posts: ${error.message}</td></tr>`
+                postsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">❌</div>
+                        <h3>Error Loading Posts</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `
             }
+        }
+
+        // Render posts
+        function renderPosts(posts) {
+            postsGrid.innerHTML = posts.map(post => `
+                <div class="post-card" data-id="${post.id}">
+                    ${post.image_url ? 
+                        `<img src="${post.image_url}" alt="${escapeHtml(post.title)}" class="post-image">` : 
+                        `<div class="post-image" style="background: linear-gradient(135deg, var(--gold), var(--electric-blue)); display: flex; align-items: center; justify-content: center; color: var(--primary-black); font-size: 3rem;">📝</div>`
+                    }
+                    
+                    <h3 class="post-title">${escapeHtml(post.title)}</h3>
+                    
+                    <div class="post-excerpt">
+                        ${escapeHtml(post.content.substring(0, 100))}${post.content.length > 100 ? '...' : ''}
+                    </div>
+
+                    <div class="post-meta">
+                        <span>❤️ ${post.post_likes?.[0]?.count || 0}</span>
+                        <span>💬 ${post.comments?.[0]?.count || 0}</span>
+                        <span>📅 ${new Date(post.created_at).toLocaleDateString()}</span>
+                    </div>
+
+                    <div class="post-actions">
+                        <button class="view-post" onclick="viewPost('${post.id}')">
+                            <span>👁️</span> View
+                        </button>
+                        <button class="edit-post" onclick="editPost('${post.id}')">
+                            <span>✏️</span> Edit
+                        </button>
+                        <button class="delete-post" onclick="deletePost('${post.id}', '${post.image_url || ''}')">
+                            <span>🗑️</span> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('')
         }
 
         // Escape HTML
@@ -854,31 +901,23 @@
         // Edit post
         window.editPost = async (postId) => {
             try {
-                const { data: post, error } = await supabase
-                    .from('posts')
-                    .select('*')
-                    .eq('id', postId)
-                    .single()
-
-                if (error) throw error
+                const post = posts.find(p => p.id === postId)
+                if (!post) return
 
                 // Populate form
-                postIdInput.value = post.id
+                postId.value = post.id
                 titleInput.value = post.title
                 contentInput.value = post.content
-                
+
                 if (post.image_url) {
-                    imagePreview.src = post.image_url
-                    imagePreview.classList.add('visible')
+                    previewImage.src = post.image_url
+                    filePreview.classList.add('show')
+                    fileName.textContent = 'Current image'
                 }
 
-                formTitle.textContent = '✏️ Edit Post'
-                saveBtn.textContent = '📝 Update Post'
-                editingPostId = postId
-
-                // Show form
-                postForm.classList.add('visible')
-                postForm.scrollIntoView({ behavior: 'smooth' })
+                modalTitle.textContent = 'Edit Post'
+                submitBtn.textContent = 'Update Post'
+                modal.classList.add('show')
 
             } catch (error) {
                 showAlert('Error loading post: ' + error.message, 'error')
@@ -895,7 +934,9 @@
                 // Delete image if exists
                 if (imageUrl) {
                     const path = imageUrl.split('/').slice(-2).join('/')
-                    await deleteFile(path)
+                    await supabase.storage
+                        .from('suprememotive-assets')
+                        .remove([path])
                 }
 
                 // Delete post
@@ -907,61 +948,57 @@
                 if (error) throw error
 
                 showAlert('Post deleted successfully!', 'success')
-                await loadPosts(searchInput.value)
+                await loadPosts()
 
             } catch (error) {
                 showAlert('Error deleting post: ' + error.message, 'error')
             }
         }
 
-        // Handle image input change
-        imageInput.addEventListener('change', () => {
-            const file = imageInput.files[0]
-            if (file) {
-                fileNameSpan.textContent = file.name
-                
-                // Preview image
-                const reader = new FileReader()
-                reader.onload = (e) => {
-                    imagePreview.src = e.target.result
-                    imagePreview.classList.add('visible')
-                }
-                reader.readAsDataURL(file)
-            } else {
-                fileNameSpan.textContent = 'No file chosen'
-                imagePreview.classList.remove('visible')
-            }
-        })
+        // Upload image
+        async function uploadImage(file) {
+            if (!file) return null
+
+            const fileName = `${currentUser.id}-${Date.now()}-${file.name}`
+            const filePath = `post-images/${fileName}`
+
+            const { error: uploadError } = await supabase.storage
+                .from('suprememotive-assets')
+                .upload(filePath, file)
+
+            if (uploadError) throw uploadError
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('suprememotive-assets')
+                .getPublicUrl(filePath)
+
+            return publicUrl
+        }
 
         // Handle form submission
-        document.getElementById('post-form-element').addEventListener('submit', async (e) => {
+        postForm.addEventListener('submit', async (e) => {
             e.preventDefault()
 
             try {
                 const title = titleInput.value.trim()
                 const content = contentInput.value.trim()
+                const id = postId.value
                 const imageFile = imageInput.files[0]
-                const postId = postIdInput.value
 
                 if (!title || !content) {
                     showAlert('Please fill in all required fields', 'error')
                     return
                 }
 
-                let imageUrl = null
+                submitBtn.disabled = true
+                submitBtn.textContent = 'Saving...'
 
-                // Upload new image if provided
+                let imageUrl = null
                 if (imageFile) {
-                    const uploadResult = await uploadPostImage(imageFile, currentUser.id)
-                    if (uploadResult.success) {
-                        imageUrl = uploadResult.url
-                    } else {
-                        showAlert('Image upload failed: ' + uploadResult.error, 'error')
-                        return
-                    }
+                    imageUrl = await uploadImage(imageFile)
                 }
 
-                if (postId) {
+                if (id) {
                     // Update existing post
                     const updates = { title, content }
                     if (imageUrl) updates.image_url = imageUrl
@@ -969,7 +1006,7 @@
                     const { error } = await supabase
                         .from('posts')
                         .update(updates)
-                        .eq('id', postId)
+                        .eq('id', id)
 
                     if (error) throw error
                     showAlert('Post updated successfully!', 'success')
@@ -988,58 +1025,115 @@
                     showAlert('Post created successfully!', 'success')
                 }
 
-                // Reset form and reload posts
+                // Reset and close modal
                 resetForm()
-                await loadPosts(searchInput.value)
+                modal.classList.remove('show')
+                await loadPosts()
 
             } catch (error) {
-                console.error('Save post error:', error)
-                showAlert('Error saving post: ' + error.message, 'error')
+                showAlert('Error: ' + error.message, 'error')
+            } finally {
+                submitBtn.disabled = false
+                submitBtn.textContent = id ? 'Update Post' : 'Publish Post'
             }
         })
 
         // Reset form
         function resetForm() {
-            postForm.classList.remove('visible')
-            document.getElementById('post-form-element').reset()
-            postIdInput.value = ''
-            titleInput.value = ''
-            contentInput.value = ''
-            fileNameSpan.textContent = 'No file chosen'
-            imagePreview.classList.remove('visible')
-            formTitle.textContent = '📝 Create New Post'
-            saveBtn.textContent = '💾 Save Post'
-            editingPostId = null
+            postForm.reset()
+            postId.value = ''
+            filePreview.classList.remove('show')
+            previewImage.src = '#'
+            fileName.textContent = ''
+            modalTitle.textContent = 'Create New Post'
+            submitBtn.textContent = 'Publish Post'
         }
 
-        // Show form
-        showFormBtn.addEventListener('click', () => {
+        // File upload handling
+        imageInput.addEventListener('change', () => {
+            const file = imageInput.files[0]
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('File too large. Maximum size is 5MB', 'error')
+                    imageInput.value = ''
+                    return
+                }
+
+                const reader = new FileReader()
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result
+                    filePreview.classList.add('show')
+                    fileName.textContent = file.name
+                }
+                reader.readAsDataURL(file)
+            }
+        })
+
+        removeFileBtn.addEventListener('click', () => {
+            imageInput.value = ''
+            filePreview.classList.remove('show')
+            previewImage.src = '#'
+            fileName.textContent = ''
+        })
+
+        fileUploadArea.addEventListener('click', () => {
+            imageInput.click()
+        })
+
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault()
+            fileUploadArea.style.borderColor = 'var(--gold)'
+            fileUploadArea.style.background = 'var(--medium-gray)'
+        })
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.style.borderColor = 'var(--light-gray)'
+            fileUploadArea.style.background = 'none'
+        })
+
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault()
+            fileUploadArea.style.borderColor = 'var(--light-gray)'
+            fileUploadArea.style.background = 'none'
+            
+            const file = e.dataTransfer.files[0]
+            if (file && file.type.startsWith('image/')) {
+                imageInput.files = e.dataTransfer.files
+                const event = new Event('change')
+                imageInput.dispatchEvent(event)
+            }
+        })
+
+        // Modal controls
+        newPostBtn.addEventListener('click', () => {
             resetForm()
-            postForm.classList.add('visible')
+            modal.classList.add('show')
         })
 
-        // Cancel form
-        cancelBtn.addEventListener('click', resetForm)
-
-        // Search
-        searchBtn.addEventListener('click', () => {
-            loadPosts(searchInput.value)
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.remove('show')
+            resetForm()
         })
 
-        searchInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                loadPosts(searchInput.value)
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('show')
+            resetForm()
+        })
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show')
+                resetForm()
             }
         })
 
         // Logout
         logoutBtn.addEventListener('click', async () => {
             try {
-                const { error } = await supabase.auth.signOut()
-                if (error) throw error
+                await supabase.auth.signOut()
                 window.location.href = '../index.html'
             } catch (error) {
-                showAlert('Error logging out: ' + error.message, 'error')
+                showAlert('Error logging out', 'error')
             }
         })
 
