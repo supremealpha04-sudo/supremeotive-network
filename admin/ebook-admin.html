@@ -1051,12 +1051,15 @@
         let currentUser = null
         let allEbooks = []
         let selectedEbookId = null
-        let coverFile = null
-        let pdfFile = null
+        
+        // File state
+        let selectedCoverFile = null
+        let selectedPdfFile = null
+        let existingCoverUrl = null
+        let existingPdfUrl = null
 
         // DOM Elements
         const ebooksGrid = document.getElementById('ebooksGrid')
-        const statsGrid = document.getElementById('statsGrid')
         const totalEbooks = document.getElementById('totalEbooks')
         const freeEbooks = document.getElementById('freeEbooks')
         const paidEbooks = document.getElementById('paidEbooks')
@@ -1071,14 +1074,14 @@
         const ebookModal = document.getElementById('ebookModal')
         const modalTitle = document.getElementById('modalTitle')
         const ebookForm = document.getElementById('ebookForm')
-        const ebookId = document.getElementById('ebookId')
-        const title = document.getElementById('title')
-        const description = document.getElementById('description')
-        const price = document.getElementById('price')
-        const currency = document.getElementById('currency')
-        const isPaid = document.getElementById('isPaid')
-        const coverFile = document.getElementById('coverFile')
-        const pdfFile = document.getElementById('pdfFile')
+        const ebookIdInput = document.getElementById('ebookId')
+        const titleInput = document.getElementById('title')
+        const descriptionInput = document.getElementById('description')
+        const priceInput = document.getElementById('price')
+        const currencySelect = document.getElementById('currency')
+        const isPaidCheckbox = document.getElementById('isPaid')
+        const coverFileInput = document.getElementById('coverFile')
+        const pdfFileInput = document.getElementById('pdfFile')
         const coverPreview = document.getElementById('coverPreview')
         const pdfPreview = document.getElementById('pdfPreview')
         const coverPreviewImage = document.getElementById('coverPreviewImage')
@@ -1097,12 +1100,6 @@
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn')
         const cancelDeleteBtn = document.getElementById('cancelDeleteBtn')
         const closeDeleteModalBtn = document.getElementById('closeDeleteModalBtn')
-
-        // File state
-        let selectedCoverFile = null
-        let selectedPdfFile = null
-        let existingCoverUrl = null
-        let existingPdfUrl = null
 
         // Show alert
         function showAlert(message, type) {
@@ -1287,12 +1284,12 @@
             if (!ebook) return
 
             // Populate form
-            ebookId.value = ebook.id
-            title.value = ebook.title
-            description.value = ebook.description
-            price.value = ebook.price
-            currency.value = ebook.currency
-            isPaid.checked = ebook.is_paid
+            ebookIdInput.value = ebook.id
+            titleInput.value = ebook.title
+            descriptionInput.value = ebook.description
+            priceInput.value = ebook.price
+            currencySelect.value = ebook.currency
+            isPaidCheckbox.checked = ebook.is_paid
 
             existingCoverUrl = ebook.cover_url
             existingPdfUrl = ebook.pdf_url
@@ -1331,11 +1328,11 @@
                 submitBtn.textContent = 'Saving...'
 
                 const ebookData = {
-                    title: title.value.trim(),
-                    description: description.value.trim(),
-                    price: parseFloat(price.value),
-                    currency: currency.value,
-                    is_paid: isPaid.checked,
+                    title: titleInput.value.trim(),
+                    description: descriptionInput.value.trim(),
+                    price: parseFloat(priceInput.value),
+                    currency: currencySelect.value,
+                    is_paid: isPaidCheckbox.checked,
                     updated_at: new Date()
                 }
 
@@ -1359,7 +1356,7 @@
                     }
                 }
 
-                const id = ebookId.value
+                const id = ebookIdInput.value
 
                 if (id) {
                     // Update existing ebook
@@ -1398,7 +1395,7 @@
                 showAlert('Error: ' + error.message, 'error')
             } finally {
                 submitBtn.disabled = false
-                submitBtn.textContent = ebookId.value ? 'Update Ebook' : 'Save Ebook'
+                submitBtn.textContent = ebookIdInput.value ? 'Update Ebook' : 'Save Ebook'
             }
         })
 
@@ -1430,7 +1427,7 @@
         // Reset form
         function resetForm() {
             ebookForm.reset()
-            ebookId.value = ''
+            ebookIdInput.value = ''
             selectedCoverFile = null
             selectedPdfFile = null
             existingCoverUrl = null
@@ -1442,12 +1439,12 @@
         }
 
         // Cover file selection
-        coverFile.addEventListener('change', () => {
-            const file = coverFile.files[0]
+        coverFileInput.addEventListener('change', () => {
+            const file = coverFileInput.files[0]
             if (file) {
                 if (file.size > 5 * 1024 * 1024) {
                     showAlert('Cover image too large. Maximum size is 5MB', 'error')
-                    coverFile.value = ''
+                    coverFileInput.value = ''
                     return
                 }
 
@@ -1464,12 +1461,12 @@
         })
 
         // PDF file selection
-        pdfFile.addEventListener('change', () => {
-            const file = pdfFile.files[0]
+        pdfFileInput.addEventListener('change', () => {
+            const file = pdfFileInput.files[0]
             if (file) {
                 if (file.size > 20 * 1024 * 1024) {
                     showAlert('PDF too large. Maximum size is 20MB', 'error')
-                    pdfFile.value = ''
+                    pdfFileInput.value = ''
                     return
                 }
 
@@ -1482,14 +1479,14 @@
 
         // Remove cover
         removeCoverBtn.addEventListener('click', () => {
-            coverFile.value = ''
+            coverFileInput.value = ''
             selectedCoverFile = null
             coverPreview.classList.remove('show')
         })
 
         // Remove PDF
         removePdfBtn.addEventListener('click', () => {
-            pdfFile.value = ''
+            pdfFileInput.value = ''
             selectedPdfFile = null
             pdfPreview.classList.remove('show')
         })
