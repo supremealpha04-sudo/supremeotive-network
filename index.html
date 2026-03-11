@@ -24,8 +24,9 @@
             --success: #4CAF50;
             --error: #F44336;
             --warning: #FFC107;
-            --card-bg: rgba(26, 26, 26, 0.8);
-            --card-border: rgba(255, 215, 0, 0.2);
+            --card-bg: rgba(26, 26, 26, 0.95);
+            --card-border: rgba(255, 215, 0, 0.3);
+            --overlay: rgba(0, 0, 0, 0.7);
         }
 
         /* Light mode variables */
@@ -39,19 +40,20 @@
             --light-gray: #CCCCCC;
             --text-primary: #333333;
             --text-secondary: #666666;
-            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
             --card-border: rgba(212, 175, 55, 0.3);
+            --overlay: rgba(255, 255, 255, 0.7);
             background: #F5F5F5;
             color: #333333;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--primary-black);
+            background: linear-gradient(135deg, var(--primary-black) 0%, var(--deep-navy) 100%);
             color: var(--text-primary);
             min-height: 100vh;
             transition: background-color 0.3s ease, color 0.3s ease;
-            padding-bottom: 80px; /* Space for bottom navigation */
+            padding-bottom: 80px;
         }
 
         /* Top Navigation */
@@ -108,14 +110,13 @@
             font-size: 0.95rem;
             font-weight: 500;
             transition: color 0.3s ease;
-            padding: 0.5rem 0;
             position: relative;
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -5px;
             left: 0;
             width: 0;
             height: 2px;
@@ -128,11 +129,11 @@
             width: 100%;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover,
+        .nav-links a.active {
             color: var(--gold);
         }
 
-        /* Theme Toggle */
         .theme-toggle {
             background: none;
             border: none;
@@ -141,9 +142,6 @@
             padding: 0.5rem;
             border-radius: 50%;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .theme-toggle:hover {
@@ -181,22 +179,14 @@
             gap: 0.3rem;
         }
 
-        .nav-item:hover {
+        .nav-item:hover,
+        .nav-item.active {
             color: var(--gold);
             transform: translateY(-3px);
         }
 
-        .nav-item.active {
-            color: var(--gold);
-        }
-
-        .nav-item.active .nav-icon {
-            transform: scale(1.1);
-        }
-
         .nav-icon {
             font-size: 1.3rem;
-            transition: transform 0.3s ease;
         }
 
         .nav-label {
@@ -206,226 +196,250 @@
 
         /* Main Content */
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
         }
 
-        /* Welcome Card */
-        .welcome-card {
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .category-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--dark-gray);
+            border: 2px solid var(--light-gray);
+            border-radius: 50px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--primary-black);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Quotes Grid */
+        .quotes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Quote Card - Exactly like the sample */
+        .quote-card {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--card-border);
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .welcome-card h2 {
-            color: var(--gold);
-            margin-bottom: 0.5rem;
-            font-size: 1.8rem;
-        }
-
-        .welcome-card p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Posts Grid */
-        .posts-container {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        /* Post Card */
-        .post-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 1.5rem;
             border: 1px solid var(--card-border);
             transition: all 0.3s ease;
             position: relative;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
         }
 
-        .post-card:hover {
-            transform: translateY(-5px);
+        .quote-card:hover {
+            transform: translateY(-10px);
             border-color: var(--gold);
             box-shadow: 0 20px 40px rgba(255, 215, 0, 0.15);
         }
 
-        /* Post Background */
-        .post-background {
+        /* Quote Background Pattern */
+        .quote-card::before {
+            content: '"';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at top right, rgba(255, 215, 0, 0.05), transparent 70%);
-            border-radius: 20px;
-            pointer-events: none;
-            z-index: 0;
+            top: 10px;
+            left: 10px;
+            font-size: 8rem;
+            color: var(--gold);
+            opacity: 0.1;
+            font-family: serif;
+            line-height: 1;
         }
 
-        .post-content-wrapper {
+        .quote-card::after {
+            content: '"';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 8rem;
+            color: var(--gold);
+            opacity: 0.1;
+            font-family: serif;
+            line-height: 1;
+        }
+
+        /* Watermark (visible on card) */
+        .quote-card .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 2rem;
+            font-weight: bold;
+            color: rgba(255, 215, 0, 0.1);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        /* Quote Content */
+        .quote-content {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1.5rem;
+        }
+
+        .quote-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            font-style: italic;
+            margin-bottom: 1rem;
+            position: relative;
+            padding: 0 0.5rem;
+        }
+
+        .quote-text::before {
+            content: '"';
+            font-size: 2rem;
+            color: var(--gold);
+            opacity: 0.5;
+            position: absolute;
+            left: -10px;
+            top: -10px;
+        }
+
+        .quote-text::after {
+            content: '"';
+            font-size: 2rem;
+            color: var(--gold);
+            opacity: 0.5;
+            position: absolute;
+            right: -10px;
+            bottom: -20px;
+        }
+
+        .quote-author {
+            color: var(--gold);
+            font-weight: 600;
+            text-align: right;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            padding-right: 1rem;
+        }
+
+        .quote-author::before {
+            content: '— ';
+            color: var(--electric-blue);
+        }
+
+        .quote-category {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--gold);
+            border-radius: 30px;
+            color: var(--gold);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 1rem 0 0.5rem;
+            align-self: flex-start;
+        }
+
+        /* Quote Actions - Exactly like the sample */
+        .quote-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--light-gray);
             position: relative;
             z-index: 1;
         }
 
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .post-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 1rem;
-            object-fit: cover;
-            border: 2px solid var(--gold);
-        }
-
-        .post-author-info {
-            flex: 1;
-        }
-
-        .post-author {
-            color: var(--gold);
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-        }
-
-        .post-date {
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-
-        .post-image {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 15px;
-            margin: 1rem 0;
-            border: 1px solid var(--card-border);
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-        }
-
-        .post-image:hover {
-            opacity: 0.9;
-        }
-
-        .post-title {
-            font-size: 1.5rem;
-            color: var(--gold);
-            margin: 1rem 0;
-            line-height: 1.3;
-        }
-
-        .post-content {
-            color: var(--text-secondary);
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 1rem;
-            border-radius: 12px;
-            border-left: 3px solid var(--gold);
-            font-size: 1rem;
-            position: relative;
-        }
-
-        body.light-mode .post-content {
-            background: rgba(0, 0, 0, 0.02);
-        }
-
-        .post-content.collapsed {
-            display: -webkit-box;
-            -webkit-line-clamp: 5;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .read-more-btn {
-            background: none;
-            border: none;
-            color: var(--electric-blue);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin: 0.5rem 0 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-        }
-
-        .read-more-btn:hover {
-            background: var(--medium-gray);
-            color: var(--gold);
-        }
-
-        /* Post Stats */
-        .post-stats {
-            display: flex;
-            gap: 2rem;
-            margin: 1rem 0;
-            padding: 1rem 0;
-            border-top: 1px solid var(--card-border);
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-        }
-
-        .stat-item i {
-            color: var(--gold);
-        }
-
-        .stat-value {
-            color: var(--gold);
-            font-weight: 600;
-        }
-
-        /* Post Actions */
-        .post-actions {
-            display: flex;
-            gap: 0.8rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-
         .action-btn {
             flex: 1;
-            min-width: 100px;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s ease;
             background: var(--medium-gray);
             color: var(--text-primary);
-            border: 1px solid var(--light-gray);
+        }
+
+        .action-btn.like-btn {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
+        }
+
+        .action-btn.like-btn.liked {
+            background: var(--gold);
+            color: var(--primary-black);
+        }
+
+        .action-btn.save-btn {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--electric-blue);
+        }
+
+        .action-btn.save-btn.saved {
+            background: var(--electric-blue);
+            color: var(--primary-black);
+        }
+
+        .action-btn.copy-btn {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+        }
+
+        .action-btn.share-btn {
+            background: var(--medium-gray);
+            color: var(--text-primary);
         }
 
         .action-btn:hover {
@@ -433,145 +447,11 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .like-btn.liked {
-            background: rgba(255, 215, 0, 0.1);
-            color: var(--gold);
-            border-color: var(--gold);
-        }
-
-        .save-btn.saved {
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--electric-blue);
-            border-color: var(--electric-blue);
-        }
-
-        .share-btn {
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
-            border: none;
-        }
-
-        .download-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-        }
-
-        /* Comments Section */
-        .comments-section {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-        }
-
-        .comment-form {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .comment-form input {
-            flex: 1;
-            padding: 0.8rem 1rem;
-            background: var(--medium-gray);
-            border: 1px solid var(--light-gray);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-        }
-
-        .comment-form input:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .comment-submit {
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            border: none;
-            border-radius: 10px;
-            color: var(--primary-black);
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .comments-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .comment {
-            background: var(--medium-gray);
-            padding: 1rem;
-            border-radius: 12px;
-            border-left: 3px solid var(--gold);
-        }
-
-        .comment-header {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .comment-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .comment-author {
-            color: var(--gold);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .comment-date {
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            margin-left: auto;
-        }
-
-        .comment-content {
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-left: 2.8rem;
-        }
-
-        .reply-form {
-            margin-top: 0.5rem;
-            margin-left: 2.8rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .reply-form input {
-            flex: 1;
-            padding: 0.5rem;
-            background: var(--dark-gray);
-            border: 1px solid var(--light-gray);
-            border-radius: 6px;
-            color: var(--text-primary);
-        }
-
-        .reply-btn {
-            padding: 0.5rem 1rem;
-            background: var(--electric-blue);
-            border: none;
-            border-radius: 6px;
-            color: var(--primary-black);
-            font-weight: 600;
-            cursor: pointer;
-        }
-
         /* Loading */
         .loading {
             text-align: center;
             padding: 3rem;
+            grid-column: 1 / -1;
         }
 
         .spinner {
@@ -622,107 +502,19 @@
             color: var(--error);
         }
 
-        /* Share Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
+        .alert-info {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--electric-blue);
+            color: var(--electric-blue);
         }
 
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--dark-gray);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 400px;
-            width: 90%;
-            border: 1px solid var(--gold);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-header h3 {
-            color: var(--gold);
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .share-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .share-option {
-            padding: 1rem;
-            border: 1px solid var(--light-gray);
-            border-radius: 12px;
-            background: var(--medium-gray);
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* Footer */
+        .footer {
             text-align: center;
-        }
-
-        .share-option:hover {
-            transform: translateY(-3px);
-            border-color: var(--gold);
-        }
-
-        .share-option .icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .share-option .name {
-            font-size: 0.9rem;
+            padding: 2rem;
             color: var(--text-secondary);
-        }
-
-        .copy-link {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .copy-link input {
-            flex: 1;
-            padding: 0.8rem;
-            background: var(--medium-gray);
-            border: 1px solid var(--light-gray);
-            border-radius: 8px;
-            color: var(--text-primary);
-        }
-
-        .copy-link button {
-            padding: 0.8rem 1.5rem;
-            background: var(--gold);
-            border: none;
-            border-radius: 8px;
-            color: var(--primary-black);
-            font-weight: 600;
-            cursor: pointer;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 3rem;
         }
 
         /* Hidden */
@@ -749,31 +541,59 @@
                 transition: transform 0.3s ease;
                 z-index: 999;
                 border-bottom: 2px solid var(--gold);
-                backdrop-filter: blur(10px);
             }
 
             .nav-links.active {
                 transform: translateY(0);
             }
 
-            .post-actions {
-                flex-direction: column;
+            .header-title {
+                font-size: 2rem;
+            }
+
+            .quotes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quote-actions {
+                flex-wrap: wrap;
             }
 
             .action-btn {
-                width: 100%;
+                min-width: calc(50% - 0.5rem);
+            }
+        }
+
+        /* Print styles for downloaded quotes */
+        @media print {
+            body {
+                background: white;
+                color: black;
             }
 
-            .post-stats {
-                justify-content: space-around;
+            .top-nav,
+            .bottom-nav,
+            .categories,
+            .footer {
+                display: none !important;
             }
 
-            .comment-form {
-                flex-direction: column;
+            .quote-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                background: white;
+                border: 1px solid #000;
+                box-shadow: none;
+                position: relative;
             }
 
-            .share-options {
-                grid-template-columns: 1fr;
+            .quote-card .watermark {
+                color: rgba(0, 0, 0, 0.1);
+                font-size: 1.5rem;
+            }
+
+            .action-btn {
+                display: none;
             }
         }
     </style>
@@ -797,6 +617,7 @@
         </div>
 
         <div class="nav-links" id="navLinks">
+            <a href="index.html" class="active">Home</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
             <a href="privacy.html">Privacy</a>
@@ -809,15 +630,15 @@
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active" id="homeNav">
+        <a href="index.html" class="nav-item active">
             <span class="nav-icon">🏠</span>
             <span class="nav-label">Home</span>
         </a>
-        <a href="ebooks.html" class="nav-item" id="ebooksNav">
+        <a href="ebooks.html" class="nav-item">
             <span class="nav-icon">📚</span>
             <span class="nav-label">Ebooks</span>
         </a>
-        <a href="profile.html" class="nav-item" id="profileNav">
+        <a href="profile.html" class="nav-item">
             <span class="nav-icon">👤</span>
             <span class="nav-label">Profile</span>
         </a>
@@ -825,56 +646,38 @@
 
     <!-- Main Content -->
     <main class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="header-title">Daily Motivation</h1>
+            <p class="header-subtitle">Inspiring quotes to start your day with purpose</p>
+        </div>
+
+        <!-- Categories -->
+        <div class="categories" id="categories">
+            <button class="category-btn active" data-category="all">All Quotes</button>
+            <button class="category-btn" data-category="life">Life</button>
+            <button class="category-btn" data-category="success">Success</button>
+            <button class="category-btn" data-category="love">Love</button>
+            <button class="category-btn" data-category="happiness">Happiness</button>
+            <button class="category-btn" data-category="wisdom">Wisdom</button>
+            <button class="category-btn" data-category="motivation">Motivation</button>
+        </div>
+
         <div id="alertContainer"></div>
 
-        <!-- Welcome Card -->
-        <div class="welcome-card" id="welcomeCard">
-            <h2 id="welcomeTitle">Welcome to SupremeMotive! 💪</h2>
-            <p id="welcomeText">Start your journey with daily motivation and inspiration.</p>
-        </div>
-
-        <!-- Posts Container -->
-        <div class="posts-container" id="postsContainer">
+        <!-- Quotes Grid -->
+        <div class="quotes-grid" id="quotesGrid">
             <div class="loading">
                 <div class="spinner"></div>
-                <p>Loading motivational posts...</p>
+                <p>Loading inspirational quotes...</p>
             </div>
         </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 SupremeMotive. All rights reserved. | Share daily motivation with the world</p>
+        </footer>
     </main>
-
-    <!-- Share Modal -->
-    <div class="modal" id="shareModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Share Post</h3>
-                <button class="close-btn" id="closeShareModal">&times;</button>
-            </div>
-            
-            <div class="share-options">
-                <div class="share-option" onclick="shareVia('twitter')">
-                    <div class="icon">𝕏</div>
-                    <div class="name">Twitter</div>
-                </div>
-                <div class="share-option" onclick="shareVia('facebook')">
-                    <div class="icon">f</div>
-                    <div class="name">Facebook</div>
-                </div>
-                <div class="share-option" onclick="shareVia('linkedin')">
-                    <div class="icon">in</div>
-                    <div class="name">LinkedIn</div>
-                </div>
-                <div class="share-option" onclick="shareVia('whatsapp')">
-                    <div class="icon">📱</div>
-                    <div class="name">WhatsApp</div>
-                </div>
-            </div>
-
-            <div class="copy-link">
-                <input type="text" id="shareLink" readonly>
-                <button onclick="copyShareLink()">Copy</button>
-            </div>
-        </div>
-    </div>
 
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
@@ -895,21 +698,95 @@
 
         // State
         let currentUser = null
-        let currentPostId = null
-        let allPosts = []
+        let allQuotes = []
+        let currentCategory = 'all'
+        let userLikes = new Set()
+        let userSaves = new Set()
 
         // DOM Elements
-        const postsContainer = document.getElementById('postsContainer')
+        const quotesGrid = document.getElementById('quotesGrid')
         const alertContainer = document.getElementById('alertContainer')
-        const welcomeTitle = document.getElementById('welcomeTitle')
-        const welcomeText = document.getElementById('welcomeText')
+        const categories = document.querySelectorAll('.category-btn')
         const menuToggle = document.getElementById('menuToggle')
         const navLinks = document.getElementById('navLinks')
         const themeToggle = document.getElementById('themeToggle')
         const adminLink = document.getElementById('adminLink')
-        const shareModal = document.getElementById('shareModal')
-        const closeShareModal = document.getElementById('closeShareModal')
-        const shareLink = document.getElementById('shareLink')
+
+        // Sample quotes data (in a real app, this would come from Supabase)
+        const sampleQuotes = [
+            {
+                id: '1',
+                text: 'Actions lie just like words so if you don\'t mean it stop doing it.',
+                author: 'Unknown',
+                category: 'life',
+                likes: 1243,
+                saves: 567,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '2',
+                text: 'The only way to do great work is to love what you do.',
+                author: 'Steve Jobs',
+                category: 'success',
+                likes: 2341,
+                saves: 1234,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '3',
+                text: 'Life is what happens when you\'re busy making other plans.',
+                author: 'John Lennon',
+                category: 'life',
+                likes: 1892,
+                saves: 892,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '4',
+                text: 'The future belongs to those who believe in the beauty of their dreams.',
+                author: 'Eleanor Roosevelt',
+                category: 'motivation',
+                likes: 2156,
+                saves: 1456,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '5',
+                text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.',
+                author: 'Winston Churchill',
+                category: 'success',
+                likes: 3124,
+                saves: 2134,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '6',
+                text: 'The best way to predict the future is to create it.',
+                author: 'Peter Drucker',
+                category: 'wisdom',
+                likes: 1678,
+                saves: 978,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '7',
+                text: 'Happiness is not something ready made. It comes from your own actions.',
+                author: 'Dalai Lama',
+                category: 'happiness',
+                likes: 1987,
+                saves: 1087,
+                created_at: new Date().toISOString()
+            },
+            {
+                id: '8',
+                text: 'The greatest glory in living lies not in never falling, but in rising every time we fall.',
+                author: 'Nelson Mandela',
+                category: 'motivation',
+                likes: 2876,
+                saves: 1876,
+                created_at: new Date().toISOString()
+            }
+        ]
 
         // Theme handling
         function initTheme() {
@@ -930,15 +807,265 @@
             themeToggle.textContent = isLight ? '☀️' : '🌙'
         })
 
-        // Mobile menu toggle
+        // Mobile menu
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active')
         })
 
-        // Close mobile menu when clicking a link
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active')
+            })
+        })
+
+        // Check auth status
+        async function checkAuth() {
+            const { data: { user } } = await supabase.auth.getUser()
+            currentUser = user
+            
+            if (user && ADMIN_EMAILS.includes(user.email)) {
+                adminLink.style.display = 'block'
+                adminLink.href = 'admin/admin-dashboard.html'
+            }
+        }
+
+        // Load quotes (using sample data for now)
+        async function loadQuotes() {
+            try {
+                // In a real app, you would fetch from Supabase
+                // const { data, error } = await supabase.from('quotes').select('*')
+                // if (error) throw error
+                // allQuotes = data
+
+                // Using sample data for demonstration
+                allQuotes = sampleQuotes
+                
+                renderQuotes()
+
+            } catch (error) {
+                showAlert('Error loading quotes: ' + error.message, 'error')
+            }
+        }
+
+        // Render quotes
+        function renderQuotes() {
+            if (allQuotes.length === 0) {
+                quotesGrid.innerHTML = `
+                    <div class="loading">
+                        <p>No quotes available. Check back soon!</p>
+                    </div>
+                `
+                return
+            }
+
+            const filteredQuotes = currentCategory === 'all' 
+                ? allQuotes 
+                : allQuotes.filter(q => q.category === currentCategory)
+
+            if (filteredQuotes.length === 0) {
+                quotesGrid.innerHTML = `
+                    <div class="loading">
+                        <p>No quotes in this category yet.</p>
+                    </div>
+                `
+                return
+            }
+
+            quotesGrid.innerHTML = filteredQuotes.map(quote => `
+                <div class="quote-card" data-id="${quote.id}">
+                    <div class="watermark">SUPREME MOTIVE</div>
+                    
+                    <div class="quote-content">
+                        <div class="quote-text">${escapeHtml(quote.text)}</div>
+                        <div class="quote-author">${escapeHtml(quote.author)}</div>
+                        <span class="quote-category">#${quote.category}</span>
+                    </div>
+
+                    <div class="quote-actions">
+                        <button class="action-btn like-btn ${userLikes.has(quote.id) ? 'liked' : ''}" 
+                                onclick="handleLike('${quote.id}')">
+                            <span>❤️</span>
+                            <span>${quote.likes + (userLikes.has(quote.id) ? 1 : 0)}</span>
+                        </button>
+                        
+                        <button class="action-btn save-btn ${userSaves.has(quote.id) ? 'saved' : ''}" 
+                                onclick="handleSave('${quote.id}')">
+                            <span>🔖</span>
+                            <span>Save</span>
+                        </button>
+                        
+                        <button class="action-btn copy-btn" onclick="copyQuote('${quote.id}')">
+                            <span>📋</span>
+                            <span>Copy</span>
+                        </button>
+                        
+                        <button class="action-btn share-btn" onclick="shareQuote('${quote.id}')">
+                            <span>📤</span>
+                            <span>Share</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        // Handle like
+        window.handleLike = async (quoteId) => {
+            if (!currentUser) {
+                if (confirm('Please login to like quotes. Go to login page?')) {
+                    window.location.href = 'login.html'
+                }
+                return
+            }
+
+            if (userLikes.has(quoteId)) {
+                userLikes.delete(quoteId)
+            } else {
+                userLikes.add(quoteId)
+            }
+
+            // In a real app, you would update the database
+            // await supabase.from('quote_likes').upsert(...)
+            
+            renderQuotes()
+        }
+
+        // Handle save
+        window.handleSave = async (quoteId) => {
+            if (!currentUser) {
+                if (confirm('Please login to save quotes. Go to login page?')) {
+                    window.location.href = 'login.html'
+                }
+                return
+            }
+
+            if (userSaves.has(quoteId)) {
+                userSaves.delete(quoteId)
+                showAlert('Quote removed from saved', 'success')
+            } else {
+                userSaves.add(quoteId)
+                showAlert('Quote saved!', 'success')
+            }
+
+            renderQuotes()
+        }
+
+        // Copy quote
+        window.copyQuote = (quoteId) => {
+            const quote = allQuotes.find(q => q.id === quoteId)
+            if (!quote) return
+
+            const text = `"${quote.text}" — ${quote.author}\n\nShared from SupremeMotive`
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('Quote copied to clipboard!', 'success')
+            }).catch(() => {
+                showAlert('Failed to copy quote', 'error')
+            })
+        }
+
+        // Share quote
+        window.shareQuote = (quoteId) => {
+            const quote = allQuotes.find(q => q.id === quoteId)
+            if (!quote) return
+
+            const text = `"${quote.text}" — ${quote.author}`
+            const url = window.location.href
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'SupremeMotive Quote',
+                    text: text,
+                    url: url
+                }).catch(() => {
+                    copyQuote(quoteId)
+                })
+            } else {
+                copyQuote(quoteId)
+            }
+        }
+
+        // Download quote as image
+        window.downloadQuote = (quoteId) => {
+            const quote = allQuotes.find(q => q.id === quoteId)
+            if (!quote) return
+
+            // Create a canvas to generate the quote image
+            const canvas = document.createElement('canvas')
+            canvas.width = 800
+            canvas.height = 600
+            const ctx = canvas.getContext('2d')
+
+            // Background
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#F5F5F5' : '#1A1A1A'
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+            // Add watermark
+            ctx.save()
+            ctx.translate(400, 300)
+            ctx.rotate(-15 * Math.PI / 180)
+            ctx.font = 'bold 60px Arial'
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'
+            ctx.textAlign = 'center'
+            ctx.fillText('SUPREME MOTIVE', 0, 0)
+            ctx.restore()
+
+            // Add quote marks
+            ctx.font = '200px serif'
+            ctx.fillStyle = 'rgba(255,215,0,0.1)'
+            ctx.fillText('"', 50, 150)
+            ctx.fillText('"', canvas.width - 100, canvas.height - 100)
+
+            // Quote text
+            ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#333' : '#FFF'
+            ctx.textAlign = 'center'
+            wrapText(ctx, `"${quote.text}"`, 400, 250, 600, 40)
+
+            // Author
+            ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+            ctx.fillStyle = '#FFD700'
+            ctx.fillText(`— ${quote.author}`, 400, 450)
+
+            // Convert to image and download
+            const link = document.createElement('a')
+            link.download = `suprememotive-${quote.category}-quote.jpg`
+            link.href = canvas.toDataURL('image/jpeg', 0.9)
+            link.click()
+
+            showAlert('Quote downloaded with watermark!', 'success')
+        }
+
+        // Helper function to wrap text
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ')
+            let line = ''
+            let lines = []
+
+            for (let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' '
+                let metrics = ctx.measureText(testLine)
+                let testWidth = metrics.width
+                if (testWidth > maxWidth && n > 0) {
+                    lines.push(line)
+                    line = words[n] + ' '
+                } else {
+                    line = testLine
+                }
+            }
+            lines.push(line)
+
+            for (let i = 0; i < lines.length; i++) {
+                ctx.fillText(lines[i], x, y + (i * lineHeight))
+            }
+        }
+
+        // Category filtering
+        categories.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categories.forEach(b => b.classList.remove('active'))
+                btn.classList.add('active')
+                currentCategory = btn.dataset.category
+                renderQuotes()
             })
         })
 
@@ -946,532 +1073,13 @@
         function showAlert(message, type) {
             alertContainer.innerHTML = `
                 <div class="alert alert-${type}">
-                    <span>${type === 'success' ? '✅' : '❌'}</span>
+                    <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
                     <span>${message}</span>
                 </div>
             `
             setTimeout(() => {
                 alertContainer.innerHTML = ''
             }, 3000)
-        }
-
-        // Check auth status
-        async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser()
-            currentUser = user
-
-            // Update welcome message
-            if (user) {
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('name')
-                    .eq('id', user.id)
-                    .single()
-
-                welcomeTitle.textContent = `Welcome back, ${profile?.name || 'Motivated One'}! 🔥`
-                welcomeText.textContent = 'Ready for today\'s dose of inspiration?'
-                
-                if (ADMIN_EMAILS.includes(user.email)) {
-                    adminLink.style.display = 'block'
-                    adminLink.href = 'admin/admin-dashboard.html'
-                }
-            } else {
-                welcomeTitle.textContent = 'Welcome to SupremeMotive! 💪'
-                welcomeText.textContent = 'Start your journey with daily motivation and inspiration.'
-                adminLink.style.display = 'none'
-            }
-        }
-
-        // Load posts
-        async function loadPosts() {
-            try {
-                const { data: posts, error } = await supabase
-                    .from('posts')
-                    .select(`
-                        *,
-                        profiles:created_by (id, name, profile_image_url),
-                        post_likes(count),
-                        comments(count)
-                    `)
-                    .order('created_at', { ascending: false })
-
-                if (error) throw error
-
-                allPosts = posts || []
-                
-                // Get user interactions if logged in
-                let userLikes = new Set()
-                let userSaves = new Set()
-                
-                if (currentUser) {
-                    const { data: likes } = await supabase
-                        .from('post_likes')
-                        .select('post_id')
-                        .eq('user_id', currentUser.id)
-                    
-                    const { data: saves } = await supabase
-                        .from('saved_posts')
-                        .select('post_id')
-                        .eq('user_id', currentUser.id)
-
-                    userLikes = new Set(likes?.map(l => l.post_id) || [])
-                    userSaves = new Set(saves?.map(s => s.post_id) || [])
-                }
-
-                renderPosts(allPosts, userLikes, userSaves)
-
-            } catch (error) {
-                console.error('Error loading posts:', error)
-                postsContainer.innerHTML = `
-                    <div class="alert alert-error">
-                        <span>❌</span>
-                        <span>Error loading posts: ${error.message}</span>
-                    </div>
-                `
-            }
-        }
-
-        // Render posts
-        function renderPosts(posts, userLikes, userSaves) {
-            if (posts.length === 0) {
-                postsContainer.innerHTML = `
-                    <div class="welcome-card">
-                        <p style="color: var(--text-secondary);">No posts yet. Check back soon for motivation!</p>
-                    </div>
-                `
-                return
-            }
-
-            postsContainer.innerHTML = posts.map(post => {
-                const likesCount = post.post_likes?.[0]?.count || 0
-                const commentsCount = post.comments?.[0]?.count || 0
-                const userLiked = userLikes.has(post.id)
-                const userSaved = userSaves.has(post.id)
-
-                return `
-                    <div class="post-card" data-id="${post.id}">
-                        <div class="post-background"></div>
-                        
-                        <div class="post-content-wrapper">
-                            <div class="post-header">
-                                <img src="${post.profiles?.profile_image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.profiles?.name || 'Admin')}&background=FFD700&color=000&size=50`}" 
-                                     alt="${post.profiles?.name || 'Admin'}" 
-                                     class="post-avatar">
-                                <div class="post-author-info">
-                                    <div class="post-author">${post.profiles?.name || 'SupremeMotive Admin'}</div>
-                                    <div class="post-date">${formatDate(post.created_at)}</div>
-                                </div>
-                            </div>
-
-                            ${post.image_url ? `
-                                <img src="${post.image_url}" alt="Post image" class="post-image" 
-                                     onclick="viewImage('${post.image_url}')">
-                            ` : ''}
-
-                            <h3 class="post-title">${escapeHtml(post.title)}</h3>
-                            
-                            <div class="post-content collapsed" id="content-${post.id}">
-                                ${escapeHtml(post.content).replace(/\n/g, '<br>')}
-                            </div>
-                            
-                            <button class="read-more-btn" onclick="toggleReadMore('${post.id}')">
-                                <span>Read More</span>
-                                <span>▼</span>
-                            </button>
-
-                            <div class="post-stats">
-                                <div class="stat-item">
-                                    <i>❤️</i>
-                                    <span class="stat-value">${likesCount}</span>
-                                </div>
-                                <div class="stat-item">
-                                    <i>💬</i>
-                                    <span class="stat-value">${commentsCount}</span>
-                                </div>
-                            </div>
-
-                            <div class="post-actions">
-                                <button class="action-btn like-btn ${userLiked ? 'liked' : ''}" 
-                                        onclick="handleLike('${post.id}')">
-                                    <i>${userLiked ? '❤️' : '🤍'}</i>
-                                    <span>${userLiked ? 'Liked' : 'Like'}</span>
-                                </button>
-                                
-                                <button class="action-btn save-btn ${userSaved ? 'saved' : ''}" 
-                                        onclick="handleSave('${post.id}')">
-                                    <i>${userSaved ? '🔖' : '📑'}</i>
-                                    <span>${userSaved ? 'Saved' : 'Save'}</span>
-                                </button>
-                                
-                                <button class="action-btn share-btn" 
-                                        onclick="openShareModal('${post.id}')">
-                                    <i>📤</i>
-                                    <span>Share</span>
-                                </button>
-                                
-                                <button class="action-btn download-btn" 
-                                        onclick="downloadPost('${post.id}')">
-                                    <i>📥</i>
-                                    <span>Download</span>
-                                </button>
-                            </div>
-
-                            <!-- Comments Section -->
-                            <div class="comments-section" id="comments-${post.id}" style="display: none;">
-                                ${currentUser ? `
-                                    <div class="comment-form">
-                                        <input type="text" id="comment-${post.id}" placeholder="Write a comment...">
-                                        <button class="comment-submit" onclick="addComment('${post.id}')">Post</button>
-                                    </div>
-                                ` : `
-                                    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;">
-                                        <a href="login.html" style="color: var(--gold);">Login</a> to comment
-                                    </p>
-                                `}
-                                <div class="comments-list" id="comments-list-${post.id}"></div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            }).join('')
-
-            // Load comments for each post
-            posts.forEach(post => loadComments(post.id))
-        }
-
-        // Format date
-        function formatDate(dateString) {
-            const date = new Date(dateString)
-            const now = new Date()
-            const diffTime = Math.abs(now - date)
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-            
-            if (diffDays === 0) return 'Today'
-            if (diffDays === 1) return 'Yesterday'
-            if (diffDays < 7) return `${diffDays} days ago`
-            return date.toLocaleDateString()
-        }
-
-        // Toggle read more
-        window.toggleReadMore = (postId) => {
-            const content = document.getElementById(`content-${postId}`)
-            const btn = document.querySelector(`[onclick="toggleReadMore('${postId}')"]`)
-            
-            if (content.classList.contains('collapsed')) {
-                content.classList.remove('collapsed')
-                btn.innerHTML = '<span>Show Less</span> <span>▲</span>'
-            } else {
-                content.classList.add('collapsed')
-                btn.innerHTML = '<span>Read More</span> <span>▼</span>'
-            }
-        }
-
-        // Handle like
-        window.handleLike = async (postId) => {
-            if (!currentUser) {
-                if (confirm('Please login to like posts. Go to login page?')) {
-                    window.location.href = 'login.html'
-                }
-                return
-            }
-
-            try {
-                const { data: existingLike } = await supabase
-                    .from('post_likes')
-                    .select('*')
-                    .eq('post_id', postId)
-                    .eq('user_id', currentUser.id)
-                    .maybeSingle()
-
-                if (existingLike) {
-                    await supabase
-                        .from('post_likes')
-                        .delete()
-                        .eq('post_id', postId)
-                        .eq('user_id', currentUser.id)
-                } else {
-                    await supabase
-                        .from('post_likes')
-                        .insert([{ post_id: postId, user_id: currentUser.id }])
-                }
-
-                await loadPosts()
-
-            } catch (error) {
-                showAlert('Error updating like', 'error')
-            }
-        }
-
-        // Handle save
-        window.handleSave = async (postId) => {
-            if (!currentUser) {
-                if (confirm('Please login to save posts. Go to login page?')) {
-                    window.location.href = 'login.html'
-                }
-                return
-            }
-
-            try {
-                const { data: existingSave } = await supabase
-                    .from('saved_posts')
-                    .select('*')
-                    .eq('post_id', postId)
-                    .eq('user_id', currentUser.id)
-                    .maybeSingle()
-
-                if (existingSave) {
-                    await supabase
-                        .from('saved_posts')
-                        .delete()
-                        .eq('post_id', postId)
-                        .eq('user_id', currentUser.id)
-                    showAlert('Post removed from saved', 'success')
-                } else {
-                    await supabase
-                        .from('saved_posts')
-                        .insert([{ post_id: postId, user_id: currentUser.id }])
-                    showAlert('Post saved!', 'success')
-                }
-
-                await loadPosts()
-
-            } catch (error) {
-                showAlert('Error saving post', 'error')
-            }
-        }
-
-        // Download post
-        window.downloadPost = async (postId) => {
-            const post = allPosts.find(p => p.id === postId)
-            if (!post) return
-
-            const content = `
-                ${post.title}
-                
-                ${post.content}
-                
-                Shared from SupremeMotive - Daily Motivation
-                Download Date: ${new Date().toLocaleString()}
-            `
-
-            const blob = new Blob([content], { type: 'text/plain' })
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `suprememotive-${post.title.toLowerCase().replace(/\s+/g, '-')}.txt`
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
-            URL.revokeObjectURL(url)
-
-            showAlert('Post downloaded successfully!', 'success')
-        }
-
-        // View image
-        window.viewImage = (imageUrl) => {
-            window.open(imageUrl, '_blank')
-        }
-
-        // Share modal
-        window.openShareModal = (postId) => {
-            currentPostId = postId
-            const postUrl = `${window.location.origin}/post.html?id=${postId}`
-            shareLink.value = postUrl
-            shareModal.classList.add('show')
-        }
-
-        closeShareModal.addEventListener('click', () => {
-            shareModal.classList.remove('show')
-        })
-
-        window.addEventListener('click', (e) => {
-            if (e.target === shareModal) {
-                shareModal.classList.remove('show')
-            }
-        })
-
-        // Share via social media
-        window.shareVia = (platform) => {
-            const post = allPosts.find(p => p.id === currentPostId)
-            if (!post) return
-
-            const url = encodeURIComponent(`${window.location.origin}/post.html?id=${currentPostId}`)
-            const text = encodeURIComponent(post.title)
-            
-            let shareUrl = ''
-            
-            switch(platform) {
-                case 'twitter':
-                    shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`
-                    break
-                case 'facebook':
-                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`
-                    break
-                case 'linkedin':
-                    shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`
-                    break
-                case 'whatsapp':
-                    shareUrl = `https://wa.me/?text=${text}%20${url}`
-                    break
-            }
-            
-            window.open(shareUrl, '_blank', 'width=600,height=400')
-        }
-
-        // Copy share link
-        window.copyShareLink = () => {
-            shareLink.select()
-            document.execCommand('copy')
-            showAlert('Link copied to clipboard!', 'success')
-        }
-
-        // Load comments
-        async function loadComments(postId) {
-            try {
-                const { data: comments, error } = await supabase
-                    .from('comments')
-                    .select(`
-                        *,
-                        profiles:user_id (id, name, profile_image_url),
-                        replies:comments!parent_comment_id (
-                            *,
-                            profiles:user_id (id, name, profile_image_url)
-                        )
-                    `)
-                    .eq('post_id', postId)
-                    .is('parent_comment_id', null)
-                    .order('created_at', { ascending: true })
-
-                if (error) throw error
-
-                renderComments(comments, postId)
-
-            } catch (error) {
-                console.error('Error loading comments:', error)
-            }
-        }
-
-        // Render comments
-        function renderComments(comments, postId) {
-            const container = document.getElementById(`comments-list-${postId}`)
-            if (!container) return
-
-            if (comments.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">No comments yet. Be the first to comment!</p>'
-                return
-            }
-
-            container.innerHTML = comments.map(comment => `
-                <div class="comment">
-                    <div class="comment-header">
-                        <img src="${comment.profiles?.profile_image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.profiles?.name || 'User')}&background=FFD700&color=000&size=30`}" 
-                             alt="${comment.profiles?.name}" class="comment-avatar">
-                        <span class="comment-author">${comment.profiles?.name || 'User'}</span>
-                        <span class="comment-date">${formatDate(comment.created_at)}</span>
-                    </div>
-                    <div class="comment-content">${escapeHtml(comment.content)}</div>
-                    
-                    ${currentUser ? `
-                        <div class="reply-form">
-                            <input type="text" id="reply-${comment.id}" placeholder="Write a reply...">
-                            <button class="reply-btn" onclick="addReply('${comment.id}', '${postId}')">Reply</button>
-                        </div>
-                    ` : ''}
-
-                    ${comment.replies?.map(reply => `
-                        <div style="margin-left: 2rem; margin-top: 0.5rem; padding-left: 1rem; border-left: 2px solid var(--gold);">
-                            <div class="comment-header">
-                                <img src="${reply.profiles?.profile_image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(reply.profiles?.name || 'User')}&background=00F0FF&color=000&size=25`}" 
-                                     alt="${reply.profiles?.name}" class="comment-avatar" style="width: 25px; height: 25px;">
-                                <span class="comment-author" style="font-size: 0.85rem;">${reply.profiles?.name || 'User'}</span>
-                                <span class="comment-date">${formatDate(reply.created_at)}</span>
-                            </div>
-                            <div class="comment-content" style="font-size: 0.9rem;">${escapeHtml(reply.content)}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('')
-        }
-
-        // Add comment
-        window.addComment = async (postId) => {
-            if (!currentUser) {
-                showAlert('Please login to comment', 'error')
-                return
-            }
-
-            const input = document.getElementById(`comment-${postId}`)
-            const content = input.value.trim()
-
-            if (!content) {
-                showAlert('Please enter a comment', 'error')
-                return
-            }
-
-            try {
-                const { error } = await supabase
-                    .from('comments')
-                    .insert([{
-                        post_id: postId,
-                        user_id: currentUser.id,
-                        content: content
-                    }])
-
-                if (error) throw error
-
-                input.value = ''
-                await loadComments(postId)
-                showAlert('Comment posted!', 'success')
-
-            } catch (error) {
-                showAlert('Error posting comment: ' + error.message, 'error')
-            }
-        }
-
-        // Add reply
-        window.addReply = async (commentId, postId) => {
-            if (!currentUser) {
-                showAlert('Please login to reply', 'error')
-                return
-            }
-
-            const input = document.getElementById(`reply-${commentId}`)
-            const content = input.value.trim()
-
-            if (!content) {
-                showAlert('Please enter a reply', 'error')
-                return
-            }
-
-            try {
-                const { error } = await supabase
-                    .from('comments')
-                    .insert([{
-                        post_id: postId,
-                        user_id: currentUser.id,
-                        content: content,
-                        parent_comment_id: commentId
-                    }])
-
-                if (error) throw error
-
-                input.value = ''
-                await loadComments(postId)
-                showAlert('Reply posted!', 'success')
-
-            } catch (error) {
-                showAlert('Error posting reply: ' + error.message, 'error')
-            }
-        }
-
-        // Toggle comments section
-        window.toggleComments = (postId) => {
-            const section = document.getElementById(`comments-${postId}`)
-            if (section.style.display === 'none') {
-                section.style.display = 'block'
-            } else {
-                section.style.display = 'none'
-            }
         }
 
         // Escape HTML
@@ -1489,7 +1097,7 @@
         async function init() {
             initTheme()
             await checkAuth()
-            await loadPosts()
+            await loadQuotes()
         }
 
         init()
