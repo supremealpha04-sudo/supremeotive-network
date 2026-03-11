@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Daily Quotes</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
             margin: 0;
@@ -42,9 +43,17 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--gold);
+        }
+
+        .logo img {
+            height: 30px;
+            width: auto;
         }
 
         .menu-toggle {
@@ -176,6 +185,7 @@
             margin-bottom: 1.5rem;
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease;
+            position: relative;
         }
 
         .quote-card:hover {
@@ -184,53 +194,78 @@
         }
 
         .quote-text {
-            font-size: 1.2rem;
-            line-height: 1.5;
+            font-size: 1.3rem;
+            line-height: 1.6;
             margin-bottom: 1rem;
             color: var(--text-color);
+            font-style: italic;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .quote-text::before {
+            content: '"';
+            font-size: 3rem;
+            color: var(--gold);
+            opacity: 0.3;
+            position: absolute;
+            left: -0.5rem;
+            top: -1rem;
         }
 
         .quote-tag {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 1rem;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .quote-tag span {
             color: var(--gold);
-            margin-right: 0.3rem;
+            font-weight: bold;
         }
 
         .quote-actions {
             display: flex;
-            gap: 1.5rem;
-            padding-top: 0.5rem;
+            gap: 1rem;
+            padding-top: 1rem;
             border-top: 1px solid var(--border-color);
         }
 
         .action-btn {
+            flex: 1;
             background: none;
-            border: none;
+            border: 1px solid var(--border-color);
             color: var(--text-secondary);
             font-size: 0.95rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.3rem;
-            padding: 0.3rem 0;
-            transition: color 0.3s ease;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.6rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
         .action-btn:hover {
-            color: var(--gold);
+            background: var(--gold);
+            color: var(--bg-color);
+            border-color: var(--gold);
         }
 
         .action-btn.liked {
-            color: var(--gold);
+            background: var(--gold);
+            color: var(--bg-color);
+            border-color: var(--gold);
         }
 
         .action-btn.saved {
-            color: var(--electric-blue);
+            background: var(--electric-blue);
+            color: var(--bg-color);
+            border-color: var(--electric-blue);
         }
 
         .loading {
@@ -303,12 +338,11 @@
             }
 
             .quote-actions {
-                gap: 1rem;
-                justify-content: space-between;
+                flex-wrap: wrap;
             }
 
-            .action-btn span:last-child {
-                display: none;
+            .action-btn {
+                min-width: calc(50% - 0.5rem);
             }
         }
     </style>
@@ -316,7 +350,10 @@
 </head>
 <body>
     <nav class="top-nav">
-        <div class="logo">SupremeMotive</div>
+        <div class="logo">
+            <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
+            <span>SupremeMotive</span>
+        </div>
 
         <div class="menu-toggle" id="menuToggle">
             <span></span>
@@ -358,7 +395,7 @@
     <main class="container">
         <div class="header">
             <h1>Daily Motivation</h1>
-            <p>inspire your day</p>
+            <p>Inspire your day with powerful quotes</p>
         </div>
 
         <div class="categories" id="categories">
@@ -383,12 +420,11 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION - FIXED
+        // SUPABASE CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        // Use consistent variable name throughout
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
@@ -397,6 +433,55 @@
             'suprememotive43@gmail.com',
             'sandrakukk055@gmail.com',
             'emmanuelamer6@gmail.com'
+        ];
+
+        // Sample quotes (fallback if database is empty)
+        const sampleQuotes = [
+            {
+                id: '1',
+                text: 'Actions lie just like words so if you don\'t mean it stop doing it.',
+                author: 'Unknown',
+                category: 'life',
+                tag: 'Tr',
+                likes: 1243,
+                saves: 567
+            },
+            {
+                id: '2',
+                text: 'The only way to do great work is to love what you do.',
+                author: 'Steve Jobs',
+                category: 'success',
+                tag: 'St',
+                likes: 2341,
+                saves: 1234
+            },
+            {
+                id: '3',
+                text: 'Life is what happens when you\'re busy making other plans.',
+                author: 'John Lennon',
+                category: 'life',
+                tag: 'Lf',
+                likes: 1892,
+                saves: 892
+            },
+            {
+                id: '4',
+                text: 'The future belongs to those who believe in the beauty of their dreams.',
+                author: 'Eleanor Roosevelt',
+                category: 'motivation',
+                tag: 'Mv',
+                likes: 2156,
+                saves: 1456
+            },
+            {
+                id: '5',
+                text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.',
+                author: 'Winston Churchill',
+                category: 'success',
+                tag: 'Sc',
+                likes: 3124,
+                saves: 2134
+            }
         ];
 
         // State
@@ -415,7 +500,9 @@
         const adminLink = document.getElementById('adminLink');
         const categoryBtns = document.querySelectorAll('.category-btn');
 
-        // Theme toggle
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
@@ -456,7 +543,9 @@
             }
         });
 
-        // Mobile menu
+        // ============================================
+        // MOBILE MENU
+        // ============================================
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
@@ -467,7 +556,9 @@
             });
         });
 
-        // Show alert
+        // ============================================
+        // SHOW ALERT
+        // ============================================
         function showAlert(message) {
             alertContainer.innerHTML = `<div class="alert">${message}</div>`;
             setTimeout(() => {
@@ -475,7 +566,9 @@
             }, 2000);
         }
 
-        // Check auth - FIXED to use supabaseClient
+        // ============================================
+        // CHECK AUTH
+        // ============================================
         async function checkAuth() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
@@ -485,12 +578,19 @@
                     adminLink.style.display = 'block';
                     adminLink.href = 'admin/admin-dashboard.html';
                 }
+
+                // Load user interactions if logged in
+                if (user) {
+                    await loadUserInteractions();
+                }
             } catch (error) {
                 console.error('Auth error:', error);
             }
         }
 
-        // Load user interactions from database - FIXED to use supabaseClient
+        // ============================================
+        // LOAD USER INTERACTIONS
+        // ============================================
         async function loadUserInteractions() {
             if (!currentUser) return;
 
@@ -514,13 +614,14 @@
                 if (saves) {
                     userSaves = new Set(saves.map(s => s.quote_id));
                 }
-
             } catch (error) {
                 console.error('Error loading interactions:', error);
             }
         }
 
-        // Load quotes from database - FIXED to use supabaseClient
+        // ============================================
+        // LOAD QUOTES
+        // ============================================
         async function loadQuotes() {
             try {
                 const { data, error } = await supabaseClient
@@ -533,59 +634,21 @@
                 if (data && data.length > 0) {
                     quotes = data;
                 } else {
-                    // Fallback if no data
-                    quotes = [
-                        {
-                            id: '1',
-                            text: 'Actions lie just like words so if you don\'t mean it stop doing it.',
-                            author: 'Unknown',
-                            category: 'life',
-                            tag: 'Tr',
-                            likes: 1243,
-                            saves: 567
-                        },
-                        {
-                            id: '2',
-                            text: 'The only way to do great work is to love what you do.',
-                            author: 'Steve Jobs',
-                            category: 'success',
-                            tag: 'St',
-                            likes: 2341,
-                            saves: 1234
-                        }
-                    ];
+                    quotes = sampleQuotes;
                 }
 
                 renderQuotes();
 
             } catch (error) {
                 console.error('Error loading quotes:', error);
-                // Fallback quotes on error
-                quotes = [
-                    {
-                        id: '1',
-                        text: 'Actions lie just like words so if you don\'t mean it stop doing it.',
-                        author: 'Unknown',
-                        category: 'life',
-                        tag: 'Tr',
-                        likes: 1243,
-                        saves: 567
-                    },
-                    {
-                        id: '2',
-                        text: 'The only way to do great work is to love what you do.',
-                        author: 'Steve Jobs',
-                        category: 'success',
-                        tag: 'St',
-                        likes: 2341,
-                        saves: 1234
-                    }
-                ];
+                quotes = sampleQuotes;
                 renderQuotes();
             }
         }
 
-        // Render quotes
+        // ============================================
+        // RENDER QUOTES
+        // ============================================
         function renderQuotes() {
             let filteredQuotes = [...quotes];
 
@@ -605,10 +668,10 @@
             quotesContainer.innerHTML = filteredQuotes.map(quote => {
                 const isLiked = userLikes.has(quote.id);
                 const isSaved = userSaves.has(quote.id);
-                const likeCount = quote.likes + (isLiked ? 1 : 0);
+                const likeCount = (quote.likes || 0) + (isLiked ? 1 : 0);
 
                 return `
-                    <div class="quote-card">
+                    <div class="quote-card" data-id="${quote.id}">
                         <div class="quote-text">
                             ${quote.text}
                         </div>
@@ -640,7 +703,9 @@
             }).join('');
         }
 
-        // Handle like - FIXED to use supabaseClient
+        // ============================================
+        // HANDLE LIKE - FIXED
+        // ============================================
         window.handleLike = async (quoteId) => {
             if (!currentUser) {
                 if (confirm('Please login to like quotes')) {
@@ -662,11 +727,11 @@
 
                     await supabaseClient
                         .from('quotes')
-                        .update({ likes: quote.likes - 1 })
+                        .update({ likes: (quote.likes || 0) - 1 })
                         .eq('id', quoteId);
 
                     userLikes.delete(quoteId);
-                    quote.likes -= 1;
+                    quote.likes = (quote.likes || 0) - 1;
                 } else {
                     // Like
                     await supabaseClient
@@ -675,11 +740,11 @@
 
                     await supabaseClient
                         .from('quotes')
-                        .update({ likes: quote.likes + 1 })
+                        .update({ likes: (quote.likes || 0) + 1 })
                         .eq('id', quoteId);
 
                     userLikes.add(quoteId);
-                    quote.likes += 1;
+                    quote.likes = (quote.likes || 0) + 1;
                 }
 
                 renderQuotes();
@@ -690,7 +755,9 @@
             }
         };
 
-        // Handle save - FIXED to use supabaseClient
+        // ============================================
+        // HANDLE SAVE - FIXED
+        // ============================================
         window.handleSave = async (quoteId) => {
             if (!currentUser) {
                 if (confirm('Please login to save quotes')) {
@@ -712,11 +779,11 @@
 
                     await supabaseClient
                         .from('quotes')
-                        .update({ saves: quote.saves - 1 })
+                        .update({ saves: (quote.saves || 0) - 1 })
                         .eq('id', quoteId);
 
                     userSaves.delete(quoteId);
-                    quote.saves -= 1;
+                    quote.saves = (quote.saves || 0) - 1;
                     showAlert('Quote removed from saved');
                 } else {
                     // Save
@@ -726,11 +793,11 @@
 
                     await supabaseClient
                         .from('quotes')
-                        .update({ saves: quote.saves + 1 })
+                        .update({ saves: (quote.saves || 0) + 1 })
                         .eq('id', quoteId);
 
                     userSaves.add(quoteId);
-                    quote.saves += 1;
+                    quote.saves = (quote.saves || 0) + 1;
                     showAlert('Quote saved!');
                 }
 
@@ -742,31 +809,48 @@
             }
         };
 
-        // Download quote
+        // ============================================
+        // DOWNLOAD QUOTE - PERFECT MATCH TO YOUR IMAGE
+        // ============================================
         window.downloadQuote = (quoteId) => {
             const quote = quotes.find(q => q.id === quoteId);
-
+            
+            // Create canvas with exact dimensions
             const canvas = document.createElement('canvas');
             canvas.width = 800;
             canvas.height = 600;
             const ctx = canvas.getContext('2d');
 
+            // Background color - dark like your image
             ctx.fillStyle = '#1A1A1A';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
-            ctx.fillStyle = '#FFFFFF';
-            ctx.textAlign = 'left';
+            // Draw subtle border
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
 
+            // Draw large quote marks like your image
+            ctx.font = '120px Georgia, serif';
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.15)';
+            ctx.fillText('"', 50, 150);
+            ctx.fillText('"', canvas.width - 100, canvas.height - 100);
+
+            // Quote text - exactly like your image
+            ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            
+            // Word wrap for long quotes
             const words = quote.text.split(' ');
             let line = '';
             let lines = [];
-            let y = 150;
+            let y = 200;
 
             for (let n = 0; n < words.length; n++) {
                 let testLine = line + words[n] + ' ';
                 let metrics = ctx.measureText(testLine);
-                if (metrics.width > 700 && n > 0) {
+                if (metrics.width > 600 && n > 0) {
                     lines.push(line);
                     line = words[n] + ' ';
                 } else {
@@ -775,37 +859,66 @@
             }
             lines.push(line);
 
+            // Draw quote lines
             lines.forEach((line, index) => {
-                ctx.fillText(line, 50, y + (index * 50));
+                ctx.fillText(line, 400, y + (index * 50));
             });
 
-            ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            // Category line - exactly like your image "Life Quotes"
+            ctx.font = '28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
             ctx.fillStyle = '#B0B0B0';
-            ctx.fillText(`${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`, 50, 400);
+            ctx.fillText(`${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`, 400, 400);
 
-            ctx.save();
-            ctx.translate(400, 500);
-            ctx.rotate(-10 * Math.PI / 180);
-            ctx.font = 'bold 40px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
-            ctx.textAlign = 'center';
-            ctx.fillText('SUPREME MOTIVE', 0, 0);
-            ctx.restore();
-
-            ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
-            ctx.textAlign = 'right';
-            ctx.fillText('suprememotive.com', 750, 550);
-
-            const link = document.createElement('a');
-            link.download = `suprememotive-${quote.category}-quote.jpg`;
-            link.href = canvas.toDataURL('image/jpeg', 0.95);
-            link.click();
-
-            showAlert('Quote downloaded with Supreme Motive watermark!');
+            // Draw logo if available (but text watermark as fallback)
+            const logo = new Image();
+            logo.src = 'logo.png';
+            logo.onload = () => {
+                // Draw logo at bottom left
+                ctx.drawImage(logo, 50, 500, 60, 60);
+                
+                // Draw Supreme Motive text next to logo
+                ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.8)';
+                ctx.textAlign = 'left';
+                ctx.fillText('SupremeMotive', 120, 545);
+                
+                // Complete download after logo loads
+                completeDownload();
+            };
+            
+            logo.onerror = () => {
+                // Fallback to text watermark if logo doesn't load
+                ctx.save();
+                ctx.translate(400, 520);
+                ctx.rotate(-5 * Math.PI / 180);
+                ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';
+                ctx.textAlign = 'center';
+                ctx.fillText('SUPREME MOTIVE', 0, 0);
+                ctx.restore();
+                
+                // Add website
+                ctx.font = '18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
+                ctx.textAlign = 'right';
+                ctx.fillText('suprememotive.com', 750, 550);
+                
+                completeDownload();
+            };
+            
+            function completeDownload() {
+                // Download
+                const link = document.createElement('a');
+                link.download = `suprememotive-${quote.category}-quote.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+                showAlert('Quote downloaded!');
+            }
         };
 
-        // Share quote
+        // ============================================
+        // SHARE QUOTE
+        // ============================================
         window.shareQuote = (quoteId) => {
             const quote = quotes.find(q => q.id === quoteId);
             const text = `"${quote.text}" — ${quote.author}\n\nShared from SupremeMotive`;
@@ -822,7 +935,9 @@
             }
         };
 
-        // Category filtering
+        // ============================================
+        // CATEGORY FILTERING
+        // ============================================
         categoryBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 categoryBtns.forEach(b => b.classList.remove('active'));
@@ -832,12 +947,13 @@
             });
         });
 
-        // Initialize
+        // ============================================
+        // INITIALIZE
+        // ============================================
         async function init() {
             initTheme();
             await checkAuth();
             await loadQuotes();
-            await loadUserInteractions();
         }
 
         init();
