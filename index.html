@@ -29,7 +29,6 @@
             padding-bottom: 80px;
         }
 
-        /* Top Navigation */
         .top-nav {
             background: var(--card-bg);
             padding: 1rem 2rem;
@@ -89,7 +88,6 @@
             padding: 0.3rem;
         }
 
-        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -123,14 +121,12 @@
             margin-bottom: 0.2rem;
         }
 
-        /* Main Content */
         .container {
             max-width: 600px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
-        /* Header */
         .header {
             margin-bottom: 2rem;
             text-align: center;
@@ -147,7 +143,6 @@
             font-size: 0.95rem;
         }
 
-        /* Categories */
         .categories {
             display: flex;
             gap: 0.8rem;
@@ -174,7 +169,6 @@
             border-color: var(--gold);
         }
 
-        /* Quote Card */
         .quote-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -182,7 +176,6 @@
             margin-bottom: 1.5rem;
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease;
-            position: relative;
         }
 
         .quote-card:hover {
@@ -201,18 +194,16 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .quote-tag span {
             color: var(--gold);
+            margin-right: 0.3rem;
         }
 
         .quote-actions {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             padding-top: 0.5rem;
             border-top: 1px solid var(--border-color);
         }
@@ -225,14 +216,12 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.3rem 0.5rem;
-            transition: all 0.3s ease;
-            border-radius: 8px;
+            gap: 0.3rem;
+            padding: 0.3rem 0;
+            transition: color 0.3s ease;
         }
 
         .action-btn:hover {
-            background: var(--card-bg);
             color: var(--gold);
         }
 
@@ -244,7 +233,6 @@
             color: var(--electric-blue);
         }
 
-        /* Loading */
         .loading {
             text-align: center;
             padding: 2rem;
@@ -265,7 +253,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Alert */
         .alert {
             position: fixed;
             top: 80px;
@@ -291,34 +278,6 @@
             }
         }
 
-        /* Footer */
-        .footer {
-            margin-top: 3rem;
-            padding: 2rem;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        .footer a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer a:hover {
-            color: var(--gold);
-        }
-
-        /* Hidden */
-        .hidden {
-            display: none !important;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .menu-toggle {
                 display: flex;
@@ -344,29 +303,18 @@
             }
 
             .quote-actions {
-                gap: 0.5rem;
+                gap: 1rem;
                 justify-content: space-between;
             }
 
             .action-btn span:last-child {
                 display: none;
             }
-
-            .action-btn {
-                font-size: 1.2rem;
-            }
-
-            .footer {
-                flex-direction: column;
-                align-items: center;
-                gap: 1rem;
-            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- Top Navigation -->
     <nav class="top-nav">
         <div class="logo">SupremeMotive</div>
         
@@ -388,7 +336,6 @@
         </div>
     </nav>
 
-    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active">
             <span class="nav-icon">🏠</span>
@@ -402,16 +349,18 @@
             <span class="nav-icon">👤</span>
             <span>Profile</span>
         </a>
+        <a href="post.html" class="nav-item">
+            <span class="nav-icon">📰</span>
+            <span>Articles</span>
+        </a>
     </nav>
 
-    <!-- Main Content -->
     <main class="container">
         <div class="header">
             <h1>Daily Motivation</h1>
-            <p>Quotes to inspire your day</p>
+            <p>inspire your day</p>
         </div>
 
-        <!-- Categories -->
         <div class="categories" id="categories">
             <button class="category-btn active" data-category="all">All</button>
             <button class="category-btn" data-category="life">Life</button>
@@ -424,32 +373,22 @@
 
         <div id="alertContainer"></div>
 
-        <!-- Quotes Container -->
         <div id="quotesContainer">
             <div class="loading">
                 <div class="spinner"></div>
                 <p>Loading quotes...</p>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <a href="post.html">Daily Article</a>
-            <a href="about.html">About Us</a>
-            <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="terms.html">Terms</a>
-        </footer>
     </main>
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION - UPDATE THESE!
+        // SUPABASE CONFIGURATION - YOUR CREDENTIALS
         // ============================================
-        const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co'
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
+        const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
         const ADMIN_EMAILS = [
@@ -457,155 +396,143 @@
             'suprememotive43@gmail.com',
             'sandrakukk055@gmail.com',
             'emmanuelamer6@gmail.com'
-        ]
+        ];
 
         // State
-        let currentUser = null
-        let currentCategory = 'all'
-        let quotes = []
-        let userLikes = new Set()
-        let userSaves = new Set()
+        let currentUser = null;
+        let currentCategory = 'all';
+        let quotes = [];
+        let userLikes = new Set();
+        let userSaves = new Set();
 
         // DOM Elements
-        const quotesContainer = document.getElementById('quotesContainer')
-        const alertContainer = document.getElementById('alertContainer')
-        const menuToggle = document.getElementById('menuToggle')
-        const navLinks = document.getElementById('navLinks')
-        const themeToggle = document.getElementById('themeToggle')
-        const adminLink = document.getElementById('adminLink')
-        const categoryBtns = document.querySelectorAll('.category-btn')
+        const quotesContainer = document.getElementById('quotesContainer');
+        const alertContainer = document.getElementById('alertContainer');
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        const themeToggle = document.getElementById('themeToggle');
+        const adminLink = document.getElementById('adminLink');
+        const categoryBtns = document.querySelectorAll('.category-btn');
 
-        // ============================================
-        // THEME TOGGLE
-        // ============================================
+        // Theme toggle
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme')
+            const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
-                document.documentElement.style.setProperty('--bg-color', '#F5F5F5')
-                document.documentElement.style.setProperty('--card-bg', '#FFFFFF')
-                document.documentElement.style.setProperty('--text-color', '#333333')
-                document.documentElement.style.setProperty('--text-secondary', '#666666')
-                document.documentElement.style.setProperty('--border-color', '#DDDDDD')
-                themeToggle.textContent = '☀️'
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
             } else {
-                document.documentElement.style.setProperty('--bg-color', '#0A0A0A')
-                document.documentElement.style.setProperty('--card-bg', '#1A1A1A')
-                document.documentElement.style.setProperty('--text-color', '#FFFFFF')
-                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0')
-                document.documentElement.style.setProperty('--border-color', '#333333')
-                themeToggle.textContent = '🌙'
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
             }
         }
 
         themeToggle.addEventListener('click', () => {
-            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5'
+            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5';
             if (isLight) {
-                document.documentElement.style.setProperty('--bg-color', '#0A0A0A')
-                document.documentElement.style.setProperty('--card-bg', '#1A1A1A')
-                document.documentElement.style.setProperty('--text-color', '#FFFFFF')
-                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0')
-                document.documentElement.style.setProperty('--border-color', '#333333')
-                themeToggle.textContent = '🌙'
-                localStorage.setItem('theme', 'dark')
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
             } else {
-                document.documentElement.style.setProperty('--bg-color', '#F5F5F5')
-                document.documentElement.style.setProperty('--card-bg', '#FFFFFF')
-                document.documentElement.style.setProperty('--text-color', '#333333')
-                document.documentElement.style.setProperty('--text-secondary', '#666666')
-                document.documentElement.style.setProperty('--border-color', '#DDDDDD')
-                themeToggle.textContent = '☀️'
-                localStorage.setItem('theme', 'light')
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
             }
-        })
+        });
 
-        // ============================================
-        // MOBILE MENU
-        // ============================================
+        // Mobile menu
         menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active')
-        })
+            navLinks.classList.toggle('active');
+        });
 
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
-                navLinks.classList.remove('active')
-            })
-        })
+                navLinks.classList.remove('active');
+            });
+        });
 
-        // ============================================
-        // SHOW ALERT
-        // ============================================
+        // Show alert
         function showAlert(message) {
-            alertContainer.innerHTML = `<div class="alert">${message}</div>`
+            alertContainer.innerHTML = `<div class="alert">${message}</div>`;
             setTimeout(() => {
-                alertContainer.innerHTML = ''
-            }, 2000)
+                alertContainer.innerHTML = '';
+            }, 2000);
         }
 
-        // ============================================
-        // CHECK AUTH
-        // ============================================
+        // Check auth
         async function checkAuth() {
             try {
-                const { data: { user } } = await supabase.auth.getUser()
-                currentUser = user
+                const { data: { user } } = await supabase.auth.getUser();
+                currentUser = user;
                 
                 if (user && ADMIN_EMAILS.includes(user.email)) {
-                    adminLink.style.display = 'block'
-                    adminLink.href = 'admin/admin-dashboard.html'
+                    adminLink.style.display = 'block';
+                    adminLink.href = 'admin/admin-dashboard.html';
                 }
             } catch (error) {
-                console.error('Auth error:', error)
+                console.error('Auth error:', error);
             }
         }
 
-        // ============================================
-        // LOAD USER INTERACTIONS
-        // ============================================
+        // Load user interactions from database
         async function loadUserInteractions() {
-            if (!currentUser) return
+            if (!currentUser) return;
 
             try {
-                // Load user likes
+                // Load likes
                 const { data: likes } = await supabase
                     .from('quote_likes')
                     .select('quote_id')
-                    .eq('user_id', currentUser.id)
+                    .eq('user_id', currentUser.id);
 
                 if (likes) {
-                    userLikes = new Set(likes.map(l => l.quote_id))
+                    userLikes = new Set(likes.map(l => l.quote_id));
                 }
 
-                // Load user saves
+                // Load saves
                 const { data: saves } = await supabase
                     .from('quote_saves')
                     .select('quote_id')
-                    .eq('user_id', currentUser.id)
+                    .eq('user_id', currentUser.id);
 
                 if (saves) {
-                    userSaves = new Set(saves.map(s => s.quote_id))
+                    userSaves = new Set(saves.map(s => s.quote_id));
                 }
 
             } catch (error) {
-                console.error('Error loading interactions:', error)
+                console.error('Error loading interactions:', error);
             }
         }
 
-        // ============================================
-        // LOAD QUOTES
-        // ============================================
+        // Load quotes from database
         async function loadQuotes() {
             try {
                 const { data, error } = await supabase
                     .from('quotes')
                     .select('*')
-                    .order('created_at', { ascending: false })
+                    .order('created_at', { ascending: false });
 
-                if (error) throw error
+                if (error) throw error;
 
                 if (data && data.length > 0) {
-                    quotes = data
+                    quotes = data;
                 } else {
-                    // Use fallback quotes if database is empty
+                    // Fallback if no data
                     quotes = [
                         {
                             id: '1',
@@ -624,42 +551,15 @@
                             tag: 'St',
                             likes: 2341,
                             saves: 1234
-                        },
-                        {
-                            id: '3',
-                            text: 'Life is what happens when you\'re busy making other plans.',
-                            author: 'John Lennon',
-                            category: 'life',
-                            tag: 'Lf',
-                            likes: 1892,
-                            saves: 892
-                        },
-                        {
-                            id: '4',
-                            text: 'The future belongs to those who believe in the beauty of their dreams.',
-                            author: 'Eleanor Roosevelt',
-                            category: 'motivation',
-                            tag: 'Mv',
-                            likes: 2156,
-                            saves: 1456
-                        },
-                        {
-                            id: '5',
-                            text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.',
-                            author: 'Winston Churchill',
-                            category: 'success',
-                            tag: 'Sc',
-                            likes: 3124,
-                            saves: 2134
                         }
-                    ]
+                    ];
                 }
                 
-                renderQuotes()
+                renderQuotes();
 
             } catch (error) {
-                console.error('Error loading quotes:', error)
-                // Use fallback quotes on error
+                console.error('Error loading quotes:', error);
+                // Fallback quotes on error
                 quotes = [
                     {
                         id: '1',
@@ -679,20 +579,17 @@
                         likes: 2341,
                         saves: 1234
                     }
-                ]
-                renderQuotes()
+                ];
+                renderQuotes();
             }
         }
 
-        // ============================================
-        // RENDER QUOTES
-        // ============================================
+        // Render quotes
         function renderQuotes() {
-            let filteredQuotes = [...quotes]
+            let filteredQuotes = [...quotes];
 
-            // Filter by category
             if (currentCategory !== 'all') {
-                filteredQuotes = filteredQuotes.filter(q => q.category === currentCategory)
+                filteredQuotes = filteredQuotes.filter(q => q.category === currentCategory);
             }
 
             if (filteredQuotes.length === 0) {
@@ -700,19 +597,19 @@
                     <div class="loading">
                         <p>No quotes in this category</p>
                     </div>
-                `
-                return
+                `;
+                return;
             }
 
             quotesContainer.innerHTML = filteredQuotes.map(quote => {
-                const isLiked = userLikes.has(quote.id)
-                const isSaved = userSaves.has(quote.id)
-                const likeCount = quote.likes + (isLiked ? 1 : 0)
+                const isLiked = userLikes.has(quote.id);
+                const isSaved = userSaves.has(quote.id);
+                const likeCount = quote.likes + (isLiked ? 1 : 0);
                 
                 return `
                     <div class="quote-card">
                         <div class="quote-text">
-                            "${quote.text}"
+                            ${quote.text}
                         </div>
                         
                         <div class="quote-tag">
@@ -738,23 +635,21 @@
                             </button>
                         </div>
                     </div>
-                `
-            }).join('')
+                `;
+            }).join('');
         }
 
-        // ============================================
-        // HANDLE LIKE
-        // ============================================
+        // Handle like
         window.handleLike = async (quoteId) => {
             if (!currentUser) {
                 if (confirm('Please login to like quotes')) {
-                    window.location.href = 'login.html'
+                    window.location.href = 'login.html';
                 }
-                return
+                return;
             }
 
             try {
-                const quote = quotes.find(q => q.id === quoteId)
+                const quote = quotes.find(q => q.id === quoteId);
                 
                 if (userLikes.has(quoteId)) {
                     // Unlike
@@ -762,51 +657,49 @@
                         .from('quote_likes')
                         .delete()
                         .eq('quote_id', quoteId)
-                        .eq('user_id', currentUser.id)
+                        .eq('user_id', currentUser.id);
 
                     await supabase
                         .from('quotes')
                         .update({ likes: quote.likes - 1 })
-                        .eq('id', quoteId)
+                        .eq('id', quoteId);
 
-                    userLikes.delete(quoteId)
-                    quote.likes -= 1
+                    userLikes.delete(quoteId);
+                    quote.likes -= 1;
                 } else {
                     // Like
                     await supabase
                         .from('quote_likes')
-                        .insert([{ quote_id: quoteId, user_id: currentUser.id }])
+                        .insert([{ quote_id: quoteId, user_id: currentUser.id }]);
 
                     await supabase
                         .from('quotes')
                         .update({ likes: quote.likes + 1 })
-                        .eq('id', quoteId)
+                        .eq('id', quoteId);
 
-                    userLikes.add(quoteId)
-                    quote.likes += 1
+                    userLikes.add(quoteId);
+                    quote.likes += 1;
                 }
 
-                renderQuotes()
+                renderQuotes();
 
             } catch (error) {
-                console.error('Error liking quote:', error)
-                showAlert('Error updating like')
+                console.error('Error liking quote:', error);
+                showAlert('Error updating like');
             }
-        }
+        };
 
-        // ============================================
-        // HANDLE SAVE
-        // ============================================
+        // Handle save
         window.handleSave = async (quoteId) => {
             if (!currentUser) {
                 if (confirm('Please login to save quotes')) {
-                    window.location.href = 'login.html'
+                    window.location.href = 'login.html';
                 }
-                return
+                return;
             }
 
             try {
-                const quote = quotes.find(q => q.id === quoteId)
+                const quote = quotes.find(q => q.id === quoteId);
 
                 if (userSaves.has(quoteId)) {
                     // Unsave
@@ -814,138 +707,139 @@
                         .from('quote_saves')
                         .delete()
                         .eq('quote_id', quoteId)
-                        .eq('user_id', currentUser.id)
+                        .eq('user_id', currentUser.id);
 
                     await supabase
                         .from('quotes')
                         .update({ saves: quote.saves - 1 })
-                        .eq('id', quoteId)
+                        .eq('id', quoteId);
 
-                    userSaves.delete(quoteId)
-                    quote.saves -= 1
-                    showAlert('Quote removed from saved')
+                    userSaves.delete(quoteId);
+                    quote.saves -= 1;
+                    showAlert('Quote removed from saved');
                 } else {
                     // Save
                     await supabase
                         .from('quote_saves')
-                        .insert([{ quote_id: quoteId, user_id: currentUser.id }])
+                        .insert([{ quote_id: quoteId, user_id: currentUser.id }]);
 
                     await supabase
                         .from('quotes')
                         .update({ saves: quote.saves + 1 })
-                        .eq('id', quoteId)
+                        .eq('id', quoteId);
 
-                    userSaves.add(quoteId)
-                    quote.saves += 1
-                    showAlert('Quote saved!')
+                    userSaves.add(quoteId);
+                    quote.saves += 1;
+                    showAlert('Quote saved!');
                 }
 
-                renderQuotes()
+                renderQuotes();
 
             } catch (error) {
-                console.error('Error saving quote:', error)
-                showAlert('Error saving quote')
+                console.error('Error saving quote:', error);
+                showAlert('Error saving quote');
             }
-        }
+        };
 
-        // ============================================
-        // DOWNLOAD QUOTE
-        // ============================================
+        // Download quote
         window.downloadQuote = (quoteId) => {
-            const quote = quotes.find(q => q.id === quoteId)
+            const quote = quotes.find(q => q.id === quoteId);
             
-            // Create canvas
-            const canvas = document.createElement('canvas')
-            canvas.width = 800
-            canvas.height = 600
-            const ctx = canvas.getContext('2d')
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = 600;
+            const ctx = canvas.getContext('2d');
 
-            // Background
-            ctx.fillStyle = '#1A1A1A'
-            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            ctx.fillStyle = '#1A1A1A';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Border
-            ctx.strokeStyle = '#FFD700'
-            ctx.lineWidth = 4
-            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40)
-
-            // Watermark
-            ctx.save()
-            ctx.translate(400, 300)
-            ctx.rotate(-15 * Math.PI / 180)
-            ctx.font = 'bold 60px Arial'
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.15)'
-            ctx.textAlign = 'center'
-            ctx.fillText('SUPREME MOTIVE', 0, 0)
-            ctx.restore()
-
-            // Quote text
-            ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-            ctx.fillStyle = '#FFFFFF'
-            ctx.textAlign = 'center'
-            ctx.fillText(`"${quote.text}"`, 400, 200)
-
-            // Author
-            ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-            ctx.fillStyle = '#FFD700'
-            ctx.fillText(`— ${quote.author}`, 400, 300)
-
-            // Category tag
-            ctx.font = '18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-            ctx.fillStyle = '#00F0FF'
-            ctx.fillText(`${quote.tag} ${quote.category} Quotes`, 400, 350)
-
-            // Download
-            const link = document.createElement('a')
-            link.download = `suprememotive-${quote.category}-quote.jpg`
-            link.href = canvas.toDataURL('image/jpeg', 0.9)
-            link.click()
+            ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'left';
             
-            showAlert('Quote downloaded with watermark!')
-        }
+            const words = quote.text.split(' ');
+            let line = '';
+            let lines = [];
+            let y = 150;
 
-        // ============================================
-        // SHARE QUOTE
-        // ============================================
+            for (let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = ctx.measureText(testLine);
+                if (metrics.width > 700 && n > 0) {
+                    lines.push(line);
+                    line = words[n] + ' ';
+                } else {
+                    line = testLine;
+                }
+            }
+            lines.push(line);
+
+            lines.forEach((line, index) => {
+                ctx.fillText(line, 50, y + (index * 50));
+            });
+
+            ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            ctx.fillStyle = '#B0B0B0';
+            ctx.fillText(`${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`, 50, 400);
+
+            ctx.save();
+            ctx.translate(400, 500);
+            ctx.rotate(-10 * Math.PI / 180);
+            ctx.font = 'bold 40px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+            ctx.textAlign = 'center';
+            ctx.fillText('SUPREME MOTIVE', 0, 0);
+            ctx.restore();
+
+            ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
+            ctx.textAlign = 'right';
+            ctx.fillText('suprememotive.com', 750, 550);
+
+            const link = document.createElement('a');
+            link.download = `suprememotive-${quote.category}-quote.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.95);
+            link.click();
+            
+            showAlert('Quote downloaded with Supreme Motive watermark!');
+        };
+
+        // Share quote
         window.shareQuote = (quoteId) => {
-            const quote = quotes.find(q => q.id === quoteId)
-            const text = `"${quote.text}" — ${quote.author}\n\nShared from SupremeMotive`
+            const quote = quotes.find(q => q.id === quoteId);
+            const text = `"${quote.text}" — ${quote.author}\n\nShared from SupremeMotive`;
             
             if (navigator.share) {
                 navigator.share({
                     title: 'SupremeMotive Quote',
                     text: text,
                 }).catch(() => {
-                    downloadQuote(quoteId)
-                })
+                    downloadQuote(quoteId);
+                });
             } else {
-                downloadQuote(quoteId)
+                downloadQuote(quoteId);
             }
-        }
+        };
 
-        // ============================================
-        // CATEGORY FILTERING
-        // ============================================
+        // Category filtering
         categoryBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                categoryBtns.forEach(b => b.classList.remove('active'))
-                btn.classList.add('active')
-                currentCategory = btn.dataset.category
-                renderQuotes()
-            })
-        })
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                renderQuotes();
+            });
+        });
 
-        // ============================================
-        // INITIALIZE
-        // ============================================
+        // Initialize
         async function init() {
-            initTheme()
-            await checkAuth()
-            await loadQuotes()
-            await loadUserInteractions()
+            initTheme();
+            await checkAuth();
+            await loadQuotes();
+            await loadUserInteractions();
         }
 
-        init()
+        init();
     </script>
 </body>
 </html>
