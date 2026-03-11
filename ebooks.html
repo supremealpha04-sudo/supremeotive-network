@@ -697,12 +697,13 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - FIXED
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Use consistent variable name
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin WhatsApp number
         const ADMIN_WHATSAPP = '2349012345678';
@@ -856,12 +857,12 @@
             }, 2000);
         }
 
-        // Check auth
+        // Check auth - FIXED to use supabaseClient
         async function checkAuth() {
             try {
-                const { data: { user } } = await supabase.auth.getUser();
+                const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
-                
+
                 if (user && ADMIN_EMAILS.includes(user.email)) {
                     adminLink.style.display = 'block';
                     adminLink.href = 'admin/admin-dashboard.html';
@@ -871,12 +872,12 @@
             }
         }
 
-        // Load user unlocks
+        // Load user unlocks - FIXED to use supabaseClient
         async function loadUserUnlocks() {
             if (!currentUser) return;
 
             try {
-                const { data: unlocks } = await supabase
+                const { data: unlocks } = await supabaseClient
                     .from('unlocks')
                     .select('ebook_id')
                     .eq('user_id', currentUser.id)
@@ -890,10 +891,10 @@
             }
         }
 
-        // Load ebooks
+        // Load ebooks - FIXED to use supabaseClient
         async function loadEbooks() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('ebooks')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -1079,15 +1080,48 @@
             window.open(`ebook-reader.html?id=${ebookId}`, '_blank');
         };
 
-        // Save ebook
-        window.saveEbook = (ebookId) => {
+        // Save ebook - FIXED to use supabaseClient
+        window.saveEbook = async (ebookId) => {
             if (!currentUser) {
                 if (confirm('Please login to save ebooks')) {
                     window.location.href = 'login.html';
                 }
                 return;
             }
-            showAlert('Ebook saved to your library!');
+
+            try {
+                // Check if already saved
+                const { data: existing } = await supabaseClient
+                    .from('saved_ebooks')
+                    .select('*')
+                    .eq('ebook_id', ebookId)
+                    .eq('user_id', currentUser.id)
+                    .maybeSingle();
+
+                if (existing) {
+                    // Unsave
+                    await supabaseClient
+                        .from('saved_ebooks')
+                        .delete()
+                        .eq('ebook_id', ebookId)
+                        .eq('user_id', currentUser.id);
+
+                    showAlert('Ebook removed from your library');
+                } else {
+                    // Save
+                    await supabaseClient
+                        .from('saved_ebooks')
+                        .insert([{
+                            ebook_id: ebookId,
+                            user_id: currentUser.id
+                        }]);
+
+                    showAlert('Ebook saved to your library!');
+                }
+            } catch (error) {
+                console.error('Error saving ebook:', error);
+                showAlert('Error saving ebook');
+            }
         };
 
         // Category filtering
