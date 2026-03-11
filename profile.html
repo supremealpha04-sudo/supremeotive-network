@@ -623,7 +623,7 @@
 <body>
     <nav class="top-nav">
         <div class="logo">SupremeMotive</div>
-        
+
         <div class="menu-toggle" id="menuToggle">
             <span></span>
             <span></span>
@@ -737,12 +737,13 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - FIXED
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
-        
-        const supabase = window.supabaseClient.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Use a different variable name to avoid conflict with global supabase
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
         const ADMIN_EMAILS = [
@@ -828,12 +829,12 @@
             }, 2000);
         }
 
-        // Check auth
+        // Check auth - using supabaseClient
         async function checkAuth() {
             try {
-                const { data: { user } } = await supabase.auth.getUser();
+                const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
-                
+
                 if (!user) {
                     window.location.href = 'login.html';
                     return false;
@@ -852,10 +853,10 @@
             }
         }
 
-        // Load profile
+        // Load profile - using supabaseClient
         async function loadProfile() {
             try {
-                const { data: profile, error } = await supabase
+                const { data: profile, error } = await supabaseClient
                     .from('profiles')
                     .select('*')
                     .eq('id', currentUser.id)
@@ -863,7 +864,7 @@
 
                 if (error && error.code === 'PGRST116') {
                     // Profile doesn't exist, create one
-                    const { data: newProfile, error: insertError } = await supabase
+                    const { data: newProfile, error: insertError } = await supabaseClient
                         .from('profiles')
                         .insert([{
                             id: currentUser.id,
@@ -901,26 +902,26 @@
             }
         }
 
-        // Load user stats
+        // Load user stats - using supabaseClient
         async function loadUserStats() {
             try {
-                const { count: postsCount } = await supabase
+                const { count: postsCount } = await supabaseClient
                     .from('posts')
                     .select('*', { count: 'exact', head: true })
                     .eq('created_by', currentUser.id);
 
-                const { count: commentsCount } = await supabase
+                const { count: commentsCount } = await supabaseClient
                     .from('comments')
                     .select('*', { count: 'exact', head: true })
                     .eq('user_id', currentUser.id);
 
-                const { count: unlocksCount } = await supabase
+                const { count: unlocksCount } = await supabaseClient
                     .from('unlocks')
                     .select('*', { count: 'exact', head: true })
                     .eq('user_id', currentUser.id)
                     .eq('status', 'approved');
 
-                const { count: savedCount } = await supabase
+                const { count: savedCount } = await supabaseClient
                     .from('saved_posts')
                     .select('*', { count: 'exact', head: true })
                     .eq('user_id', currentUser.id);
@@ -1055,7 +1056,7 @@
             const file = e.target.files[0];
             if (file) {
                 fileName.textContent = file.name;
-                
+
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     imagePreview.src = e.target.result;
@@ -1068,7 +1069,7 @@
             }
         });
 
-        // Handle form submission
+        // Handle form submission - using supabaseClient
         document.getElementById('profileEditForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -1087,13 +1088,13 @@
                     const fileName = `${currentUser.id}-${Date.now()}.${fileExt}`;
                     const filePath = `profile-images/${fileName}`;
 
-                    const { error: uploadError } = await supabase.storage
+                    const { error: uploadError } = await supabaseClient.storage
                         .from('suprememotive-assets')
                         .upload(filePath, avatarFile);
 
                     if (uploadError) throw uploadError;
 
-                    const { data: { publicUrl } } = supabase.storage
+                    const { data: { publicUrl } } = supabaseClient.storage
                         .from('suprememotive-assets')
                         .getPublicUrl(filePath);
 
@@ -1101,7 +1102,7 @@
                 }
 
                 // Update profile
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('profiles')
                     .update({
                         name,
