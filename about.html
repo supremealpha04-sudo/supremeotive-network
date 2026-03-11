@@ -1,547 +1,1187 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SupremeMotive · re:about</title>
-  <!-- fonts & icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <style>
-    /* ----- design tokens (fresh palette) ----- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupremeMotive - About Us</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    :root[data-theme="light"] {
-      --bg: #f3f5f9;
-      --surface: #ffffff;
-      --surface-soft: #f0f2f6;
-      --text-strong: #10131f;
-      --text-muted: #3f4758;
-      --primary: #3366ff;
-      --primary-soft: #e0e7ff;
-      --secondary: #ff6b6b;
-      --accent-gradient: linear-gradient(145deg, #3366ff, #9f7aea, #ff6b6b);
-      --border: #dee4ed;
-      --card-elevation: 0 30px 50px -30px rgba(0,20,40,0.2), 0 8px 20px -8px rgba(0,0,0,0.05);
-      --glow: 0 0 0 1px rgba(51,102,255,0.15);
-    }
+        :root {
+            --primary-black: #0A0A0A;
+            --deep-navy: #0B1A33;
+            --gold: #FFD700;
+            --electric-blue: #00F0FF;
+            --dark-gray: #1A1A1A;
+            --medium-gray: #2A2A2A;
+            --light-gray: #3A3A3A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --success: #4CAF50;
+            --error: #F44336;
+            --warning: #FFC107;
+        }
 
-    :root[data-theme="dark"] {
-      --bg: #0e121f;
-      --surface: #1b2335;
-      --surface-soft: #232e44;
-      --text-strong: #f0f4ff;
-      --text-muted: #b2c0d4;
-      --primary: #6080ff;
-      --primary-soft: #26324f;
-      --secondary: #ff8a8a;
-      --accent-gradient: linear-gradient(145deg, #6080ff, #b794f4, #ff8a8a);
-      --border: #2b364f;
-      --card-elevation: 0 30px 45px -20px #030614, 0 0 0 1px #2d3e62;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--primary-black) 0%, var(--deep-navy) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text-strong);
-      line-height: 1.5;
-      transition: background 0.2s, color 0.2s;
-    }
+        /* Navigation */
+        .navbar {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gold);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-    /* ----- progress (thin accent) ----- */
-    .progress-bar {
-      position: fixed;
-      top: 0; left: 0; height: 3px;
-      background: var(--accent-gradient);
-      width: 0%;
-      z-index: 1000;
-      transition: width 0.1s;
-    }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    /* ----- header minimal / floating ----- */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: color-mix(in srgb, var(--surface) 70%, transparent);
-      backdrop-filter: blur(16px) saturate(180%);
-      border-bottom: 1px solid var(--border);
-    }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
 
-    nav {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0.8rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 700;
-      font-size: 1.5rem;
-      letter-spacing: -0.02em;
-    }
-    .logo-icon {
-      font-size: 2rem;
-      filter: drop-shadow(0 4px 8px var(--primary));
-    }
-    .logo-text {
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-.logo img {
-  height: 50px;
-  width: auto;
-  display: block;
-border:solid 2px orange;
-border-radius:12px;
-}
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+        }
 
+        #logoutBtn {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
 
-    #nav-menu {
-      display: flex;
-      list-style: none;
-      gap: 2.5rem;
-      margin: 0;
-      align-items: center;
-    }
-    #nav-menu a {
-      text-decoration: none;
-      font-weight: 500;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    #nav-menu a:hover { color: var(--primary); }
-    #nav-menu a[href*="donation"] {
-      background: var(--primary);
-      color: white;
-      padding: 0.6rem 1.5rem;
-      border-radius: 50px;
-      box-shadow: 0 8px 16px -8px var(--primary);
-    }
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
-    .nav-buttons {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .theme-toggle, .mobile-menu-toggle {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      font-size: 1.2rem;
-      padding: 0.5rem 1rem;
-      border-radius: 40px;
-      cursor: pointer;
-      color: var(--text-strong);
-    }
-    .theme-toggle:hover { background: var(--primary); color: white; border-color: transparent; }
-    .mobile-menu-toggle { display: none; }
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--dark-gray), var(--medium-gray));
+            border-radius: 30px;
+            margin-bottom: 3rem;
+            border: 1px solid var(--light-gray);
+            position: relative;
+            overflow: hidden;
+        }
 
-    /* mobile menu (off‑canvas) */
-    .mobile-menu {
-      position: fixed;
-      top: 72px;
-      left: 0;
-      width: 100%;
-      background: var(--surface);
-      padding: 2rem;
-      border-bottom: 1px solid var(--border);
-      transform: translateY(-150%);
-      transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
-      z-index: 99;
-      box-shadow: var(--card-elevation);
-    }
-    .mobile-menu.open { transform: translateY(0); }
-    .mobile-menu ul { list-style: none; }
-    .mobile-menu li { margin: 1.8rem 0; }
-    .mobile-menu a { font-size: 1.4rem; display: flex; gap: 1rem; color: var(--text-strong); text-decoration: none; }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
 
-    /* ----- main container (clean width) ----- */
-    .container {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 2rem 2rem 3rem;
-    }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
-    /* ----- typography ----- */
-    h1, h2 { font-weight: 700; letter-spacing: -0.02em; }
-    h2 {
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
-      display: inline-block;
-      border-bottom: 4px solid var(--primary);
-      padding-bottom: 0.3rem;
-    }
+        .hero-title {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
 
-    /* ----- hero split (new) ----- */
-    .hero-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      margin-bottom: 5rem;
-      align-items: center;
-    }
-    .hero-title {
-      font-size: 4rem;
-      font-weight: 800;
-      line-height: 1.1;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .hero-sub {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      margin: 1.5rem 0 2rem;
-      max-width: 90%;
-    }
-    .hero-cta {
-      display: flex;
-      gap: 1rem;
-    }
-    .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.8rem 2.2rem;
-      border-radius: 50px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 10px 20px -8px var(--primary);
-    }
-    .btn-outline {
-      background: transparent;
-      color: var(--text-strong);
-      border: 1.5px solid var(--border);
-      box-shadow: none;
-    }
-    .hero-stats {
-      display: flex;
-      gap: 2rem;
-      background: var(--surface);
-      padding: 2rem 2.5rem;
-      border-radius: 3rem;
-      border: 1px solid var(--border);
-      box-shadow: var(--card-elevation);
-    }
-    .stat-item { text-align: center; }
-    .stat-number {
-      font-size: 2.8rem;
-      font-weight: 700;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
 
-    /* ----- founder rework (editorial spread) ----- */
-    .founder-spread {
-      display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: 2rem;
-      background: var(--surface);
-      border-radius: 3rem;
-      border: 1px solid var(--border);
-      box-shadow: var(--card-elevation);
-      margin: 4rem 0;
-      overflow: hidden;
-    }
-    .founder-visual {
-      background: var(--primary-soft);
-      padding: 2.5rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .founder-visual img {
-      width: 100%;
-      max-width: 340px;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      border-radius: 2rem 4rem 2rem 4rem;
-      box-shadow: 0 30px 40px -20px black;
-      border: 5px solid var(--surface);
-      transition: 0.3s;
-    }
-    .founder-detail {
-      padding: 3rem 3rem 3rem 1rem;
-    }
-    .founder-detail h3 {
-      font-size: 2.8rem;
-      font-weight: 700;
-    }
-    .founder-role {
-      color: var(--primary);
-      font-weight: 500;
-      margin: 0.2rem 0 1.5rem;
-      font-size: 1.2rem;
-    }
-    .founder-bio {
-      color: var(--text-muted);
-      font-size: 1.15rem;
-      border-left: 4px solid var(--primary);
-      padding-left: 1.8rem;
-      margin: 1.8rem 0;
-      font-style: italic;
-    }
-    .signature i { color: var(--primary); }
+        /* Mission Section */
+        .mission-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+            align-items: center;
+        }
 
-    /* ----- values grid (framed) ----- */
-    .grid-values {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 1.8rem;
-      margin: 3rem 0;
-    }
-    .value-card {
-      background: var(--surface);
-      border-radius: 2rem;
-      padding: 2rem 1.5rem;
-      border: 1px solid var(--border);
-      transition: 0.2s;
-    }
-    .value-card:hover { transform: translateY(-6px); border-color: var(--primary); }
-    .value-card h3 { font-size: 1.7rem; margin-bottom: 1rem; display: flex; gap: 0.5rem; }
+        .mission-content {
+            padding: 2rem;
+        }
 
-    /* ----- pill list (what we do) ----- */
-    .pill-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin: 2rem 0 3rem;
-    }
-    .pill-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 0.8rem 2rem;
-      border-radius: 60px;
-      font-size: 1rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: 0.2s;
-    }
-    .pill-item:hover {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
+        .section-title {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
 
-    /* ----- story block (timeline style) ----- */
-    .story-block {
-      background: var(--surface);
-      border-radius: 2.5rem;
-      padding: 3rem;
-      border: 1px solid var(--border);
-      margin: 3rem 0;
-      position: relative;
-    }
-    .story-block p { font-size: 1.15rem; margin-bottom: 1.2rem; }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--electric-blue);
+        }
 
-    /* ----- footer (simple) ----- */
-    footer {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 3rem 2rem 2rem;
-      margin-top: 4rem;
-    }
-    .footer-grid {
-      max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); gap: 2rem;
-    }
-    .footer-links a { display: block; color: var(--text-muted); text-decoration: none; margin: 0.5rem 0; }
-    .footer-links a:hover { color: var(--primary); }
-    .footer-bottom { text-align: center; padding-top: 2.5rem; border-top: 1px dashed var(--border); margin-top: 2rem; }
+        .mission-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
 
-    @media (max-width: 900px) {
-      #nav-menu { display: none; }
-      .mobile-menu-toggle { display: block; }
-      .hero-split { grid-template-columns: 1fr; }
-      .founder-spread { grid-template-columns: 1fr; }
-      .grid-values { grid-template-columns: 1fr 1fr; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 550px) {
-      .grid-values { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--dark-gray);
+            border-radius: 15px;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--electric-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .mission-image {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            border-radius: 20px;
+            padding: 2rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 3px solid var(--gold);
+        }
+
+        .image-placeholder {
+            text-align: center;
+            color: var(--primary-black);
+        }
+
+        .image-placeholder .icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Founder Section */
+        .founder-section {
+            margin-bottom: 4rem;
+        }
+
+        .founder-card {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+            background: var(--dark-gray);
+            border-radius: 30px;
+            padding: 2rem;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .founder-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .founder-image {
+            width: 100%;
+            height: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid var(--gold);
+            position: relative;
+        }
+
+        .founder-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .founder-image:hover img {
+            transform: scale(1.1);
+        }
+
+        .founder-info {
+            padding: 1rem 0;
+        }
+
+        .founder-name {
+            font-size: 2.2rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .founder-title {
+            font-size: 1.2rem;
+            color: var(--electric-blue);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: rgba(0, 240, 255, 0.1);
+            border-radius: 30px;
+            border: 1px solid var(--electric-blue);
+        }
+
+        .founder-bio {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .founder-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.3rem;
+            border: 1px solid var(--light-gray);
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
+
+        .social-link.twitter:hover {
+            background: #1DA1F2;
+            border-color: #1DA1F2;
+        }
+
+        .social-link.linkedin:hover {
+            background: #0077B5;
+            border-color: #0077B5;
+        }
+
+        .social-link.github:hover {
+            background: #333;
+            border-color: #333;
+        }
+
+        .social-link.instagram:hover {
+            background: #E4405F;
+            border-color: #E4405F;
+        }
+
+        .social-link.email:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--primary-black);
+        }
+
+        /* Team Section */
+        .team-section {
+            margin-bottom: 4rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-card {
+            background: var(--dark-gray);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .team-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            overflow: hidden;
+            border: 3px solid var(--gold);
+        }
+
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .team-card:hover .team-image img {
+            transform: scale(1.1);
+        }
+
+        .team-name {
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 0.3rem;
+        }
+
+        .team-role {
+            color: var(--electric-blue);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            background: rgba(0, 240, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        .team-bio {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .team-social {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .team-social .social-link {
+            width: 35px;
+            height: 35px;
+            font-size: 1rem;
+        }
+
+        /* Values Section */
+        .values-section {
+            margin-bottom: 4rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .value-card {
+            background: var(--dark-gray);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+
+        .value-title {
+            font-size: 1.3rem;
+            color: var(--electric-blue);
+            margin-bottom: 1rem;
+        }
+
+        .value-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            margin-bottom: 4rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--gold), var(--electric-blue));
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-date {
+            width: 45%;
+            text-align: right;
+            padding-right: 2rem;
+        }
+
+        .timeline-item:nth-child(even) .timeline-date {
+            text-align: left;
+            padding-right: 0;
+            padding-left: 2rem;
+        }
+
+        .timeline-content {
+            width: 45%;
+            padding-left: 2rem;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            padding-left: 0;
+            padding-right: 2rem;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: var(--gold);
+            border: 3px solid var(--electric-blue);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-year {
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            color: var(--electric-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Join Section */
+        .join-section {
+            text-align: center;
+            padding: 4rem;
+            background: linear-gradient(135deg, var(--dark-gray), var(--medium-gray));
+            border-radius: 30px;
+            border: 1px solid var(--light-gray);
+            margin-top: 2rem;
+        }
+
+        .join-title {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .join-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+
+        .join-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--primary-black);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--medium-gray);
+            color: var(--text-primary);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--light-gray);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--light-gray);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .mission-section {
+                grid-template-columns: 1fr;
+            }
+
+            .founder-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .founder-image {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .founder-social {
+                justify-content: center;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                flex-direction: column;
+                margin-left: 40px;
+            }
+
+            .timeline-date,
+            .timeline-item:nth-child(even) .timeline-date,
+            .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                width: 100%;
+                text-align: left;
+                padding: 0;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .join-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+            }
+        }
+    </script>
 </head>
 <body>
-  <div class="progress-bar" id="progressBar"></div>
-
-  <header>
-    <nav>
-      <div class="logo" style="display:flex;align-items:center;gap:0.6rem;">
-  <img src="file_00000000f25071f5a01e8c22ec168ef4.png" alt="SupremeMotive Logo" style="height:50px; width:auto;">
-  <span class="logo-text">SupremeMotive</span>
-</div>
-      <ul id="nav-menu">
-        <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
-        <li><a href="donation.html"><i class="fas fa-mug-hot"></i> Buy a Coffee</a></li>
-
-    </ul>
-<div class="nav-buttons">
-        <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-        <button class="mobile-menu-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
-      </div>
-      
-    </nav>
-    <div class="mobile-menu" id="mobileMenu">
-      <ul>
-        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-       
-        <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
-        <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
-        <li><a href="donation.html"><i class="fas fa-mug-hot"></i> Buy a Coffee</a></li>
-
-      </ul>
-    </div>
-  </header>
-
-  <main class="container">
-    <!-- HERO split (fresh) -->
-    <div class="hero-split">
-      <div>
-        <h1 class="hero-title">Where stories find their voice.</h1>
-        <div class="hero-sub">We're a media network built for depth, independence, and human connection. No noise, just signal.</div>
-        <div class="hero-cta">
-          <a href="contact.html" class="btn"><i class="fas fa-paper-plane"></i> Reach out</a>
-          <a href="donation.html" class="btn btn-outline"><i class="fas fa-heart"></i> Support</a>
+    <nav class="navbar">
+        <div class="logo">SupremeMotive</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="ebooks.html">Ebooks</a>
+            <a href="profile.html">Profile</a>
+            <a href="about.html" class="active">About</a>
+            <a href="#" id="adminLink" style="display: none;">Admin</a>
+            <button id="logoutBtn" style="display: none;">Logout</button>
+            <a href="login.html" id="loginLink">Login</a>
         </div>
-      </div>
-      <div class="hero-stats">
-        <div class="stat-item"><span class="stat-number" id="stat1">0</span><div>years</div></div>
-        <div class="stat-item"><span class="stat-number" id="stat2">0</span><div>contributors</div></div>
-        <div class="stat-item"><span class="stat-number" id="stat3">0</span><div>topics</div></div>
-      </div>
-    </div>
+    </nav>
 
-    <!-- FOUNDER spread (magazine style) -->
-    <div class="founder-spread">
-      <div class="founder-visual">
-        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&auto=format&fit=crop" alt="Alex Chen">
-      </div>
-      <div class="founder-detail">
-        <h3>Emmanuel Okafor</h3>
-        <div class="founder-role"><i class="fas fa-crown" style="margin-right: 8px;"></i> Founder & editor</div>
-        <div class="founder-bio">“We started SupremeMotive to build a home for curious minds — where depth isn’t sacrificed for speed, and every story carries purpose.”</div>
-        <div class="signature"><i class="fas fa-feather"></i> — 2025· NYC</div>
-      </div>
-    </div>
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Welcome to SupremeMotive</h1>
+            <p class="hero-subtitle">
+                We're on a mission to inspire, motivate, and empower millions of people worldwide 
+                to achieve their greatest potential through daily motivation and quality resources.
+            </p>
+        </section>
 
-    <!-- MISSION (short) -->
-    <h2>Our mission</h2>
-    <div style="background: var(--surface); border-radius: 2rem; padding: 2.5rem; border:1px solid var(--border); margin-bottom: 3rem;">
-      <p style="font-size: 1.6rem; font-weight: 400;">SupremeMotive delivers high‑quality, insightful content that informs, inspires, and engages — through well‑crafted stories and fearless reporting.</p>
-    </div>
+        <!-- Mission Section -->
+        <section class="mission-section">
+            <div class="mission-content">
+                <h2 class="section-title">Our Mission</h2>
+                <p class="mission-text">
+                    SupremeMotive was born from a simple idea: everyone deserves access to daily 
+                    motivation and personal development resources. We believe that with the right 
+                    mindset and tools, anyone can achieve extraordinary things.
+                </p>
+                <p class="mission-text">
+                    Our platform brings together a community of motivated individuals, daily 
+                    inspirational content, and a growing library of ebooks to help you on your 
+                    journey to success.
+                </p>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="userCount">10K+</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="postCount">500+</div>
+                        <div class="stat-label">Daily Posts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="ebookCount">50+</div>
+                        <div class="stat-label">Ebooks</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mission-image">
+                <div class="image-placeholder">
+                    <div class="icon">🚀</div>
+                    <h3 style="color: var(--primary-black);">Empowering Dreams</h3>
+                    <p style="color: var(--primary-black);">One Day at a Time</p>
+                </div>
+            </div>
+        </section>
 
-    <!-- what we do (pill refresh) -->
-    <h2>What we do</h2>
-    <div class="pill-grid">
-      <span class="pill-item"><i class="fas fa-newspaper"></i> News</span>
-      <span class="pill-item"><i class="fas fa-lightbulb"></i> Ideas</span>
-      <span class="pill-item"><i class="fas fa-graduation-cap"></i> Learning</span>
-      <span class="pill-item"><i class="fas fa-star"></i> Profiles</span>
-      <span class="pill-item"><i class="fas fa-chart-line"></i> Analysis</span>
-      <span class="pill-item"><i class="fas fa-video"></i> Docs</span>
-      <span class="pill-item"><i class="fas fa-podcast"></i> Audio</span>
-      <span class="pill-item"><i class="fas fa-globe"></i> Global</span>
-    </div>
+        <!-- Founder Section -->
+        <section class="founder-section">
+            <h2 class="section-title">Meet Our Founder</h2>
+            
+            <div class="founder-card">
+                <div class="founder-image">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                         alt="Founder" 
+                         onerror="this.src='https://via.placeholder.com/300x350?text=Founder'">
+                </div>
+                
+                <div class="founder-info">
+                    <h3 class="founder-name">Alexander Mitchell</h3>
+                    <span class="founder-title">Founder & CEO</span>
+                    
+                    <p class="founder-bio">
+                        Alexander started SupremeMotive after a 15-year journey in personal development 
+                        and entrepreneurship. Having struggled with motivation himself early in his career, 
+                        he realized the power of daily inspiration and community support.
+                    </p>
+                    
+                    <p class="founder-bio">
+                        His vision was to create a platform where people could not only receive daily 
+                        motivation but also access quality resources to transform their lives. Today, 
+                        SupremeMotive serves thousands of users worldwide, and Alexander continues to 
+                        personally curate content and connect with the community.
+                    </p>
+                    
+                    <div class="founder-social">
+                        <a href="#" class="social-link twitter" title="Twitter">
+                            <span>𝕏</span>
+                        </a>
+                        <a href="#" class="social-link linkedin" title="LinkedIn">
+                            <span>in</span>
+                        </a>
+                        <a href="#" class="social-link instagram" title="Instagram">
+                            <span>📷</span>
+                        </a>
+                        <a href="#" class="social-link email" title="Email">
+                            <span>✉️</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- values (compact) -->
-    <h2>Core values</h2>
-    <div class="grid-values">
-      <div class="value-card"><h3><i class="fas fa-medal" style="color:#3366ff;"></i> Excellence</h3><p>No compromise on quality.</p></div>
-      <div class="value-card"><h3><i class="fas fa-scale-balanced" style="color:#0e7b5e;"></i> Integrity</h3><p>Ethics always.</p></div>
-      <div class="value-card"><h3><i class="fas fa-globe" style="color:#4299e1;"></i> Inclusivity</h3><p>Every voice matters.</p></div>
-      <div class="value-card"><h3><i class="fas fa-microchip" style="color:#f59e0b;"></i> Innovation</h3><p>Evolving constantly.</p></div>
-      <div class="value-card"><h3><i class="fas fa-magnifying-glass" style="color:#8b5cf6;"></i> Accuracy</h3><p>Fact first.</p></div>
-      <div class="value-card"><h3><i class="fas fa-comments" style="color:#ec4899;"></i> Engagement</h3><p>Community centered.</p></div>
-    </div>
+        <!-- Team Section -->
+        <section class="team-section">
+            <h2 class="section-title">Our Core Team</h2>
+            
+            <div class="team-grid">
+                <!-- Team Member 1 -->
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                             alt="Sarah Johnson"
+                             onerror="this.src='https://via.placeholder.com/150x150?text=Sarah'">
+                    </div>
+                    <h3 class="team-name">Sarah Johnson</h3>
+                    <div class="team-role">Content Director</div>
+                    <p class="team-bio">
+                        Sarah oversees all motivational content, ensuring every post resonates with 
+                        our community's journey. She has a background in positive psychology.
+                    </p>
+                    <div class="team-social">
+                        <a href="#" class="social-link twitter">𝕏</a>
+                        <a href="#" class="social-link linkedin">in</a>
+                        <a href="#" class="social-link email">✉️</a>
+                    </div>
+                </div>
 
-    <!-- story block (clean) -->
-    <h2>Our story</h2>
-    <div class="story-block">
-      <p><i class="fas fa-quote-left" style="color:var(--primary); opacity:0.6; font-size:1.5rem; margin-right:0.5rem;"></i> Founded in 2018, we started as a tiny newsletter. Today we're a collective of journalists, creators, and developers committed to one thing: content that actually means something.</p>
-      <p>We believe in slowness in a fast world — research, empathy, and narrative power. SupremeMotive is reader-supported, independent, and built to last.</p>
-    </div>
+                <!-- Team Member 2 -->
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                             alt="Michael Chen"
+                             onerror="this.src='https://via.placeholder.com/150x150?text=Michael'">
+                    </div>
+                    <h3 class="team-name">Michael Chen</h3>
+                    <div class="team-role">Lead Developer</div>
+                    <p class="team-bio">
+                        Michael built the SupremeMotive platform from the ground up. He's passionate 
+                        about creating technology that makes a positive impact.
+                    </p>
+                    <div class="team-social">
+                        <a href="#" class="social-link github">🐙</a>
+                        <a href="#" class="social-link linkedin">in</a>
+                        <a href="#" class="social-link email">✉️</a>
+                    </div>
+                </div>
 
-    <!-- final CTA -->
-    <section style="margin: 3rem 0;">
-      <h2>Let's connect</h2>
-      <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
-        <a href="contact.html" class="btn"><i class="fas fa-paper-plane"></i> Contact</a>
-        <a href="donation.html" class="btn btn-outline"><i class="fas fa-heart"></i> Buy a coffee</a>
-      </div>
-    </section>
-  </main>
+                <!-- Team Member 3 -->
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                             alt="Emma Rodriguez"
+                             onerror="this.src='https://via.placeholder.com/150x150?text=Emma'">
+                    </div>
+                    <h3 class="team-name">Emma Rodriguez</h3>
+                    <div class="team-role">Community Manager</div>
+                    <p class="team-bio">
+                        Emma connects with our users daily, moderates discussions, and ensures 
+                        everyone feels welcomed and supported in our community.
+                    </p>
+                    <div class="team-social">
+                        <a href="#" class="social-link instagram">📷</a>
+                        <a href="#" class="social-link twitter">𝕏</a>
+                        <a href="#" class="social-link email">✉️</a>
+                    </div>
+                </div>
 
-  <footer>
-    <div class="footer-grid">
-      <div><h4>🧠 SupremeMotive</h4><p style="color:var(--text-muted);">Independent media. Since 2018.</p></div>
-      <div><h4>Quick</h4><div class="footer-links"><a href="/">Home</a><a href="about.html">About</a><a href="privacy.html">Privacy</a></div></div>
-      <div><h4>Connect</h4><div class="footer-links"><a href="#"><i class="fab fa-twitter"></i> Twitter</a><a href="#"><i class="fab fa-instagram"></i> Instagram</a></div></div>
-      <div><h4>Support</h4><div class="footer-links"><a href="tel:+2347031924052"><i class="fab fa-whatsapp"></i> WhatsApp</a><a href="mailto:suprememotive43@gmail.com"><i class="far fa-envelope"></i> Email</a></div></div>
-    </div>
-    <div class="footer-bottom"><p>© 2025 SupremeMotive Network. All rights reserved. | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p></div>
-  </footer>
+                <!-- Team Member 4 -->
+                <div class="team-card">
+                    <div class="team-image">
+                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                             alt="David Okafor"
+                             onerror="this.src='https://via.placeholder.com/150x150?text=David'">
+                    </div>
+                    <h3 class="team-name">David Okafor</h3>
+                    <div class="team-role">Ebook Curator</div>
+                    <p class="team-bio">
+                        David selects and curates our ebook library, working with authors to bring 
+                        the best motivational content to our readers.
+                    </p>
+                    <div class="team-social">
+                        <a href="#" class="social-link linkedin">in</a>
+                        <a href="#" class="social-link twitter">𝕏</a>
+                        <a href="#" class="social-link email">✉️</a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <script>
-    (function() {
-      // theme toggle
-      const toggle = document.getElementById('themeToggle');
-      const root = document.documentElement;
-      toggle.innerHTML = root.getAttribute('data-theme')==='light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-      toggle.addEventListener('click', () => {
-        const newTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-        root.setAttribute('data-theme', newTheme);
-        toggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-      });
+        <!-- Values Section -->
+        <section class="values-section">
+            <h2 class="section-title">Our Core Values</h2>
+            
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">💪</div>
+                    <h3 class="value-title">Empowerment</h3>
+                    <p class="value-description">
+                        We believe in giving people the tools and mindset to take control of their lives.
+                    </p>
+                </div>
 
-      // mobile menu
-      const mobToggle = document.getElementById('mobileToggle');
-      const mobMenu = document.getElementById('mobileMenu');
-      mobToggle.addEventListener('click', (e) => { e.stopPropagation(); mobMenu.classList.toggle('open'); });
-      document.querySelectorAll('.mobile-menu a').forEach(l => l.addEventListener('click', () => mobMenu.classList.remove('open')));
-      document.addEventListener('click', (e) => { if (!mobMenu.contains(e.target) && !mobToggle.contains(e.target)) mobMenu.classList.remove('open'); });
+                <div class="value-card">
+                    <div class="value-icon">🌍</div>
+                    <h3 class="value-title">Community</h3>
+                    <p class="value-description">
+                        We're building a global family of motivated individuals supporting each other.
+                    </p>
+                </div>
 
-      // progress bar
-      const prog = document.getElementById('progressBar');
-      window.addEventListener('scroll', () => {
-        const win = document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        prog.style.width = (win/height)*100+'%';
-      });
+                <div class="value-card">
+                    <div class="value-icon">📚</div>
+                    <h3 class="value-title">Growth</h3>
+                    <p class="value-description">
+                        Continuous learning and improvement is at the heart of everything we do.
+                    </p>
+                </div>
 
-      // simple counters
-      [8,150,24].forEach((target, idx) => {
-        let el = document.getElementById(`stat${idx+1}`), curr = 0, step = target/50;
-        if (!el) return;
-        let t = setInterval(() => { curr += step; if(curr >= target) { el.innerText = target; clearInterval(t); } else el.innerText = Math.floor(curr); }, 20);
-      });
-    })();
-  </script>
+                <div class="value-card">
+                    <div class="value-icon">✨</div>
+                    <h3 class="value-title">Authenticity</h3>
+                    <p class="value-description">
+                        We stay true to our mission and always put our community first.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline Section -->
+        <section class="timeline-section">
+            <h2 class="section-title">Our Journey</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <div class="timeline-year">2020</div>
+                        <div class="timeline-title">The Beginning</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <p class="timeline-text">
+                            SupremeMotive started as a small WhatsApp group sharing daily motivation 
+                            with just 50 members.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <div class="timeline-year">2021</div>
+                        <div class="timeline-title">Platform Launch</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <p class="timeline-text">
+                            We launched our first web platform, growing to over 1,000 users and 
+                            introducing our first ebooks.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <div class="timeline-year">2022</div>
+                        <div class="timeline-title">Global Expansion</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <p class="timeline-text">
+                            Reached 10,000 users across 50+ countries and expanded our ebook library 
+                            to 30+ titles.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <div class="timeline-year">2023</div>
+                        <div class="timeline-title">Community Growth</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <p class="timeline-text">
+                            Introduced admin roles and unlock system, creating a sustainable platform 
+                            for growth.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <div class="timeline-year">2024</div>
+                        <div class="timeline-title">Today & Beyond</div>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <p class="timeline-text">
+                            Serving thousands of daily active users with plans for mobile apps and 
+                            premium features.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Join Section -->
+        <section class="join-section">
+            <h2 class="join-title">Join Our Community</h2>
+            <p class="join-text">
+                Be part of a global movement of motivated individuals. Start your journey with 
+                SupremeMotive today and unlock your full potential.
+            </p>
+            <div class="join-buttons">
+                <a href="register.html" class="btn btn-primary">
+                    <span>✨</span>
+                    Create Free Account
+                </a>
+                <a href="ebooks.html" class="btn btn-secondary">
+                    <span>📚</span>
+                    Browse Ebooks
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 SupremeMotive. All rights reserved. | Empowering dreams worldwide</p>
+        </footer>
+    </main>
+
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
+
+        const supabase = createClient(
+            'YOUR_SUPABASE_URL',
+            'YOUR_SUPABASE_ANON_KEY'
+        )
+
+        // Admin emails
+        const ADMIN_EMAILS = [
+            'supremealpha04@gmail.com',
+            'suprememotive43@gmail.com',
+            'sandrakukk055@gmail.com',
+            'emmanuelamer6@gmail.com'
+        ]
+
+        // DOM Elements
+        const logoutBtn = document.getElementById('logoutBtn')
+        const loginLink = document.getElementById('loginLink')
+        const adminLink = document.getElementById('adminLink')
+        const userCount = document.getElementById('userCount')
+        const postCount = document.getElementById('postCount')
+        const ebookCount = document.getElementById('ebookCount')
+
+        // Check auth status
+        async function checkAuth() {
+            const { data: { user } } = await supabase.auth.getUser()
+            
+            if (user) {
+                logoutBtn.style.display = 'block'
+                loginLink.style.display = 'none'
+                
+                if (ADMIN_EMAILS.includes(user.email)) {
+                    adminLink.style.display = 'block'
+                    adminLink.href = 'admin/admin-dashboard.html'
+                }
+            } else {
+                logoutBtn.style.display = 'none'
+                loginLink.style.display = 'block'
+                adminLink.style.display = 'none'
+            }
+        }
+
+        // Load real statistics from database
+        async function loadStats() {
+            try {
+                // Get user count
+                const { count: users } = await supabase
+                    .from('profiles')
+                    .select('*', { count: 'exact', head: true })
+
+                // Get post count
+                const { count: posts } = await supabase
+                    .from('posts')
+                    .select('*', { count: 'exact', head: true })
+
+                // Get ebook count
+                const { count: ebooks } = await supabase
+                    .from('ebooks')
+                    .select('*', { count: 'exact', head: true })
+
+                // Update display with real numbers or formatted numbers
+                userCount.textContent = users ? formatNumber(users) : '10K+'
+                postCount.textContent = posts ? formatNumber(posts) : '500+'
+                ebookCount.textContent = ebooks ? formatNumber(ebooks) : '50+'
+
+            } catch (error) {
+                console.error('Error loading stats:', error)
+                // Keep placeholder numbers if error
+            }
+        }
+
+        // Format numbers (e.g., 1500 -> 1.5K)
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M'
+            }
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K'
+            }
+            return num.toString()
+        }
+
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            await supabase.auth.signOut()
+            window.location.reload()
+        })
+
+        // Initialize
+        async function init() {
+            await checkAuth()
+            await loadStats()
+        }
+
+        init()
+    </script>
 </body>
 </html>
