@@ -27,7 +27,6 @@
             color: var(--text-color);
             min-height: 100vh;
             padding-bottom: 80px;
-            transition: background-color 0.3s ease;
         }
 
         /* Top Navigation */
@@ -175,7 +174,7 @@
             border-color: var(--gold);
         }
 
-        /* Quote Card */
+        /* Quote Card - Exactly like your image */
         .quote-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -191,18 +190,7 @@
             border-color: var(--gold);
         }
 
-        /* Watermark */
-        .quote-card::after {
-            content: 'SUPREME MOTIVE';
-            position: absolute;
-            bottom: 5px;
-            right: 10px;
-            font-size: 0.7rem;
-            color: rgba(255, 215, 0, 0.15);
-            transform: rotate(-5deg);
-            pointer-events: none;
-        }
-
+        /* Quote Text - Like your image */
         .quote-text {
             font-size: 1.2rem;
             line-height: 1.5;
@@ -210,22 +198,22 @@
             color: var(--text-color);
         }
 
+        /* Quote Tag Line - Exactly like your image "Life Quotes" */
         .quote-tag {
             color: var(--text-secondary);
             font-size: 0.9rem;
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .quote-tag span {
             color: var(--gold);
+            margin-right: 0.3rem;
         }
 
+        /* Action Buttons - Like your image */
         .quote-actions {
             display: flex;
-            gap: 1rem;
+            gap: 2rem;
             padding-top: 0.5rem;
             border-top: 1px solid var(--border-color);
         }
@@ -238,14 +226,12 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.3rem 0.5rem;
-            transition: all 0.3s ease;
-            border-radius: 8px;
+            gap: 0.3rem;
+            padding: 0.3rem 0;
+            transition: color 0.3s ease;
         }
 
         .action-btn:hover {
-            background: var(--medium-gray);
             color: var(--gold);
         }
 
@@ -357,7 +343,7 @@
             }
 
             .quote-actions {
-                gap: 0.5rem;
+                gap: 1rem;
                 justify-content: space-between;
             }
 
@@ -376,18 +362,12 @@
             }
         }
     </style>
-    <script type="importmap">
-        {
-            "imports": {
-                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Top Navigation -->
     <nav class="top-nav">
-        <div class="logo">SupremeMotive</div>
+        <div class="logo">SupremeMotive Network</div>
         
         <div class="menu-toggle" id="menuToggle">
             <span></span>
@@ -421,13 +401,17 @@
             <span class="nav-icon">👤</span>
             <span>Profile</span>
         </a>
+<a href="post.html" class="nav-item">
+            <span class="nav-icon">📰</span>
+           <span>Articles</span>
+        </a>
     </nav>
 
     <!-- Main Content -->
     <main class="container">
         <div class="header">
             <h1>Daily Motivation</h1>
-            <p>Quotes to inspire your day</p>
+            <p> inspire your day</p>
         </div>
 
         <!-- Categories -->
@@ -451,26 +435,16 @@
             </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <a href="post.html">Daily Article</a>
-            <a href="about.html">About Us</a>
-            <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="terms.html">Terms</a>
-        </footer>
     </main>
 
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
-
+    <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - UPDATE THESE!
         // ============================================
-        const supabase = createClient(
-            'https://dzcykpbfykajhoutzhpf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
-        )
+        const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co'
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
         // Admin emails
         const ADMIN_EMAILS = [
@@ -480,9 +454,7 @@
             'emmanuelamer6@gmail.com'
         ]
 
-        // ============================================
-        // STATE MANAGEMENT
-        // ============================================
+        // State
         let currentUser = null
         let currentCategory = 'all'
         let quotes = []
@@ -557,7 +529,7 @@
         // ============================================
         // SHOW ALERT
         // ============================================
-        function showAlert(message, type = 'success') {
+        function showAlert(message) {
             alertContainer.innerHTML = `<div class="alert">${message}</div>`
             setTimeout(() => {
                 alertContainer.innerHTML = ''
@@ -568,12 +540,16 @@
         // CHECK AUTH
         // ============================================
         async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser()
-            currentUser = user
-            
-            if (user && ADMIN_EMAILS.includes(user.email)) {
-                adminLink.style.display = 'block'
-                adminLink.href = 'admin/admin-dashboard.html'
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+                currentUser = user
+                
+                if (user && ADMIN_EMAILS.includes(user.email)) {
+                    adminLink.style.display = 'block'
+                    adminLink.href = 'admin/admin-dashboard.html'
+                }
+            } catch (error) {
+                console.error('Auth error:', error)
             }
         }
 
@@ -610,17 +586,10 @@
         }
 
         // ============================================
-        // LOAD QUOTES FROM SUPABASE
+        // LOAD QUOTES
         // ============================================
         async function loadQuotes() {
             try {
-                quotesContainer.innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Loading quotes...</p>
-                    </div>
-                `
-
                 const { data, error } = await supabase
                     .from('quotes')
                     .select('*')
@@ -628,87 +597,86 @@
 
                 if (error) throw error
 
-                quotes = data || []
-                
-                // If no quotes in database, create sample quotes
-                if (quotes.length === 0) {
-                    await createSampleQuotes()
+                if (data && data.length > 0) {
+                    quotes = data
                 } else {
-                    renderQuotes()
+                    // Use fallback quotes if database is empty
+                    quotes = [
+                        {
+                            id: '1',
+                            text: 'Actions lie just like words so if you don\'t mean it stop doing it.',
+                            author: 'Unknown',
+                            category: 'life',
+                            tag: 'Tr',
+                            likes: 1243,
+                            saves: 567
+                        },
+                        {
+                            id: '2',
+                            text: 'The only way to do great work is to love what you do.',
+                            author: 'Steve Jobs',
+                            category: 'success',
+                            tag: 'St',
+                            likes: 2341,
+                            saves: 1234
+                        },
+                        {
+                            id: '3',
+                            text: 'Life is what happens when you\'re busy making other plans.',
+                            author: 'John Lennon',
+                            category: 'life',
+                            tag: 'Lf',
+                            likes: 1892,
+                            saves: 892
+                        },
+                        {
+                            id: '4',
+                            text: 'The future belongs to those who believe in the beauty of their dreams.',
+                            author: 'Eleanor Roosevelt',
+                            category: 'motivation',
+                            tag: 'Mv',
+                            likes: 2156,
+                            saves: 1456
+                        },
+                        {
+                            id: '5',
+                            text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.',
+                            author: 'Winston Churchill',
+                            category: 'success',
+                            tag: 'Sc',
+                            likes: 3124,
+                            saves: 2134
+                        }
+                    ]
                 }
+                
+                renderQuotes()
 
             } catch (error) {
                 console.error('Error loading quotes:', error)
-                quotesContainer.innerHTML = `
-                    <div class="loading">
-                        <p>Error loading quotes. Please refresh.</p>
-                    </div>
-                `
+                // Use fallback quotes on error
+                quotes = [
+                    {
+                        id: '1',
+                        text: 'Actions lie just like words so if you don\'t mean it stop doing it.',
+                        author: 'Unknown',
+                        category: 'life',
+                        tag: 'Tr',
+                        likes: 1243,
+                        saves: 567
+                    },
+                    {
+                        id: '2',
+                        text: 'The only way to do great work is to love what you do.',
+                        author: 'Steve Jobs',
+                        category: 'success',
+                        tag: 'St',
+                        likes: 2341,
+                        saves: 1234
+                    }
+                ]
+                renderQuotes()
             }
-        }
-
-        // ============================================
-        // CREATE SAMPLE QUOTES (if database is empty)
-        // ============================================
-        async function createSampleQuotes() {
-            const sampleQuotes = [
-                {
-                    text: 'Actions lie just like words so if you don\'t mean it stop doing it.',
-                    author: 'Unknown',
-                    category: 'life',
-                    tag: 'Tr',
-                    likes: 1243,
-                    saves: 567,
-                    created_at: new Date().toISOString()
-                },
-                {
-                    text: 'The only way to do great work is to love what you do.',
-                    author: 'Steve Jobs',
-                    category: 'success',
-                    tag: 'St',
-                    likes: 2341,
-                    saves: 1234,
-                    created_at: new Date().toISOString()
-                },
-                {
-                    text: 'Life is what happens when you\'re busy making other plans.',
-                    author: 'John Lennon',
-                    category: 'life',
-                    tag: 'Lf',
-                    likes: 1892,
-                    saves: 892,
-                    created_at: new Date().toISOString()
-                },
-                {
-                    text: 'The future belongs to those who believe in the beauty of their dreams.',
-                    author: 'Eleanor Roosevelt',
-                    category: 'motivation',
-                    tag: 'Mv',
-                    likes: 2156,
-                    saves: 1456,
-                    created_at: new Date().toISOString()
-                },
-                {
-                    text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.',
-                    author: 'Winston Churchill',
-                    category: 'success',
-                    tag: 'Sc',
-                    likes: 3124,
-                    saves: 2134,
-                    created_at: new Date().toISOString()
-                }
-            ]
-
-            const { error } = await supabase
-                .from('quotes')
-                .insert(sampleQuotes)
-
-            if (error) {
-                console.error('Error creating sample quotes:', error)
-            }
-
-            // Reload quotes
-            await loadQuotes()
         }
 
         // ============================================
@@ -737,9 +705,9 @@
                 const likeCount = quote.likes + (isLiked ? 1 : 0)
                 
                 return `
-                    <div class="quote-card" data-id="${quote.id}">
+                    <div class="quote-card">
                         <div class="quote-text">
-                            "${quote.text}"
+                            ${quote.text}
                         </div>
                         
                         <div class="quote-tag">
@@ -817,7 +785,7 @@
 
             } catch (error) {
                 console.error('Error liking quote:', error)
-                showAlert('Error updating like', 'error')
+                showAlert('Error updating like')
             }
         }
 
@@ -871,12 +839,12 @@
 
             } catch (error) {
                 console.error('Error saving quote:', error)
-                showAlert('Error saving quote', 'error')
+                showAlert('Error saving quote')
             }
         }
 
         // ============================================
-        // DOWNLOAD QUOTE
+        // DOWNLOAD QUOTE - PERFECT STYLING LIKE YOUR IMAGE
         // ============================================
         window.downloadQuote = (quoteId) => {
             const quote = quotes.find(q => q.id === quoteId)
@@ -887,41 +855,25 @@
             canvas.height = 600
             const ctx = canvas.getContext('2d')
 
-            // Background
-            const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim()
-            ctx.fillStyle = bgColor
+            // Dark background
+            ctx.fillStyle = '#1A1A1A'
             ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-            // Border
-            ctx.strokeStyle = '#FFD700'
-            ctx.lineWidth = 4
-            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40)
-
-            // Watermark
-            ctx.save()
-            ctx.translate(400, 300)
-            ctx.rotate(-15 * Math.PI / 180)
-            ctx.font = 'bold 60px Arial'
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.15)'
-            ctx.textAlign = 'center'
-            ctx.fillText('SUPREME MOTIVE', 0, 0)
-            ctx.restore()
-
-            // Quote text
-            ctx.font = 'bold 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim()
-            ctx.textAlign = 'center'
+            // Quote text - exactly like your image
+            ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+            ctx.fillStyle = '#FFFFFF'
+            ctx.textAlign = 'left'
             
-            // Wrap text
+            // Word wrap for long quotes
             const words = quote.text.split(' ')
             let line = ''
             let lines = []
-            let y = 200
+            let y = 150
 
             for (let n = 0; n < words.length; n++) {
                 let testLine = line + words[n] + ' '
                 let metrics = ctx.measureText(testLine)
-                if (metrics.width > 600 && n > 0) {
+                if (metrics.width > 700 && n > 0) {
                     lines.push(line)
                     line = words[n] + ' '
                 } else {
@@ -932,26 +884,37 @@
 
             // Draw quote lines
             lines.forEach((line, index) => {
-                ctx.fillText(line, 400, y + (index * 40))
+                ctx.fillText(line, 50, y + (index * 50))
             })
 
-            // Author
+            // Category line - exactly like your image "Life Quotes"
             ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-            ctx.fillStyle = '#FFD700'
-            ctx.fillText(`— ${quote.author}`, 400, 450)
+            ctx.fillStyle = '#B0B0B0'
+            ctx.fillText(`${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`, 50, 400)
 
-            // Category tag
-            ctx.font = '18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-            ctx.fillStyle = '#00F0FF'
-            ctx.fillText(`${quote.tag} ${quote.category} Quotes`, 400, 500)
+            // Supreme Motive watermark - big and prominent
+            ctx.save()
+            ctx.translate(400, 500)
+            ctx.rotate(-10 * Math.PI / 180)
+            ctx.font = 'bold 40px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.3)'
+            ctx.textAlign = 'center'
+            ctx.fillText('SUPREME MOTIVE', 0, 0)
+            ctx.restore()
+
+            // Add a second smaller watermark at bottom
+            ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.5)'
+            ctx.textAlign = 'right'
+            ctx.fillText('suprememotive.com', 750, 550)
 
             // Download
             const link = document.createElement('a')
             link.download = `suprememotive-${quote.category}-quote.jpg`
-            link.href = canvas.toDataURL('image/jpeg', 0.9)
+            link.href = canvas.toDataURL('image/jpeg', 0.95)
             link.click()
             
-            showAlert('Quote downloaded with watermark!')
+            showAlert('Quote downloaded with Supreme Motive watermark!')
         }
 
         // ============================================
