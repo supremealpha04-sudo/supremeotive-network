@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Daily Motivation</title>
+    <title>SupremeMotive - Daily Quotes</title>
     <style>
         * {
             margin: 0;
@@ -12,53 +12,26 @@
         }
 
         :root {
-            --primary-black: #0A0A0A;
-            --deep-navy: #0B1A33;
-            --gold: #FFD700;
-            --electric-blue: #00F0FF;
-            --dark-gray: #1A1A1A;
-            --medium-gray: #2A2A2A;
-            --light-gray: #3A3A3A;
-            --text-primary: #FFFFFF;
+            --bg-color: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --text-color: #FFFFFF;
             --text-secondary: #B0B0B0;
-            --success: #4CAF50;
-            --error: #F44336;
-            --warning: #FFC107;
-            --card-bg: rgba(26, 26, 26, 0.95);
-            --card-border: rgba(255, 215, 0, 0.3);
-            --overlay: rgba(0, 0, 0, 0.7);
-        }
-
-        /* Light mode variables */
-        body.light-mode {
-            --primary-black: #FFFFFF;
-            --deep-navy: #F0F5FF;
-            --gold: #D4AF37;
-            --electric-blue: #0066CC;
-            --dark-gray: #F5F5F5;
-            --medium-gray: #E0E0E0;
-            --light-gray: #CCCCCC;
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --card-border: rgba(212, 175, 55, 0.3);
-            --overlay: rgba(255, 255, 255, 0.7);
-            background: #F5F5F5;
-            color: #333333;
+            --gold: #FFD700;
+            --border-color: #333333;
+            --electric-blue: #00F0FF;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, var(--primary-black) 0%, var(--deep-navy) 100%);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
             padding-bottom: 80px;
         }
 
         /* Top Navigation */
         .top-nav {
-            background: var(--dark-gray);
+            background: var(--card-bg);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
@@ -66,21 +39,13 @@
             border-bottom: 2px solid var(--gold);
             position: sticky;
             top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            background: rgba(26, 26, 26, 0.95);
-        }
-
-        body.light-mode .top-nav {
-            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--gold);
         }
 
         .menu-toggle {
@@ -88,7 +53,6 @@
             flex-direction: column;
             gap: 6px;
             cursor: pointer;
-            padding: 10px;
         }
 
         .menu-toggle span {
@@ -105,28 +69,10 @@
         }
 
         .nav-links a {
-            color: var(--text-primary);
+            color: var(--text-color);
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 0.9rem;
             transition: color 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gold);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after,
-        .nav-links a.active::after {
-            width: 100%;
         }
 
         .nav-links a:hover,
@@ -137,16 +83,10 @@
         .theme-toggle {
             background: none;
             border: none;
-            font-size: 1.3rem;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
             cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            transform: rotate(360deg);
-            background: var(--medium-gray);
+            padding: 0.3rem;
         }
 
         /* Bottom Navigation */
@@ -155,18 +95,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--dark-gray);
+            background: var(--card-bg);
             border-top: 2px solid var(--gold);
             display: flex;
             justify-content: space-around;
-            padding: 0.8rem 1rem;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            background: rgba(26, 26, 26, 0.95);
-        }
-
-        body.light-mode .bottom-nav {
-            background: rgba(255, 255, 255, 0.95);
+            padding: 0.8rem;
+            z-index: 100;
         }
 
         .nav-item {
@@ -175,289 +109,152 @@
             align-items: center;
             text-decoration: none;
             color: var(--text-secondary);
-            transition: all 0.3s ease;
-            gap: 0.3rem;
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
         }
 
         .nav-item:hover,
         .nav-item.active {
             color: var(--gold);
-            transform: translateY(-3px);
         }
 
         .nav-icon {
             font-size: 1.3rem;
-        }
-
-        .nav-label {
-            font-size: 0.7rem;
-            font-weight: 500;
+            margin-bottom: 0.2rem;
         }
 
         /* Main Content */
         .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
-
-        /* Header Section */
-        .header-section {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .header-title {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .header-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
 
         /* Categories */
         .categories {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
             justify-content: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .category-btn {
-            padding: 0.8rem 1.5rem;
-            background: var(--dark-gray);
-            border: 2px solid var(--light-gray);
-            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             color: var(--text-secondary);
-            font-weight: 600;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.95rem;
         }
 
         .category-btn:hover,
         .category-btn.active {
+            background: var(--gold);
+            color: var(--bg-color);
             border-color: var(--gold);
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
 
-        /* Quotes Grid */
-        .quotes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        /* Quote Card - Exactly like the sample */
+        /* Quote Card - Exactly like the image */
         .quote-card {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid var(--card-border);
-            transition: all 0.3s ease;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
         }
 
         .quote-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-4px);
             border-color: var(--gold);
-            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.15);
         }
 
-        /* Quote Background Pattern */
-        .quote-card::before {
-            content: '"';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 8rem;
-            color: var(--gold);
-            opacity: 0.1;
-            font-family: serif;
-            line-height: 1;
-        }
-
-        .quote-card::after {
-            content: '"';
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 8rem;
-            color: var(--gold);
-            opacity: 0.1;
-            font-family: serif;
-            line-height: 1;
-        }
-
-        /* Watermark (visible on card) */
-        .quote-card .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-15deg);
-            font-size: 2rem;
-            font-weight: bold;
-            color: rgba(255, 215, 0, 0.1);
-            white-space: nowrap;
-            pointer-events: none;
-            z-index: 0;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-        }
-
-        /* Quote Content */
-        .quote-content {
-            position: relative;
-            z-index: 1;
-            margin-bottom: 1.5rem;
-        }
-
+        /* Quote Text */
         .quote-text {
-            font-size: 1.3rem;
-            line-height: 1.6;
-            color: var(--text-primary);
-            font-style: italic;
+            font-size: 1.2rem;
+            line-height: 1.5;
             margin-bottom: 1rem;
-            position: relative;
-            padding: 0 0.5rem;
+            color: var(--text-color);
         }
 
-        .quote-text::before {
-            content: '"';
-            font-size: 2rem;
+        /* Category/Tag */
+        .quote-tag {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quote-tag span {
             color: var(--gold);
-            opacity: 0.5;
-            position: absolute;
-            left: -10px;
-            top: -10px;
         }
 
-        .quote-text::after {
-            content: '"';
-            font-size: 2rem;
-            color: var(--gold);
-            opacity: 0.5;
-            position: absolute;
-            right: -10px;
-            bottom: -20px;
-        }
-
-        .quote-author {
-            color: var(--gold);
-            font-weight: 600;
-            text-align: right;
-            font-size: 1rem;
-            margin-top: 0.5rem;
-            padding-right: 1rem;
-        }
-
-        .quote-author::before {
-            content: '— ';
-            color: var(--electric-blue);
-        }
-
-        .quote-category {
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid var(--gold);
-            border-radius: 30px;
-            color: var(--gold);
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin: 1rem 0 0.5rem;
-            align-self: flex-start;
-        }
-
-        /* Quote Actions - Exactly like the sample */
+        /* Action Buttons - Exactly like the image */
         .quote-actions {
             display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--light-gray);
-            position: relative;
-            z-index: 1;
+            gap: 2rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
         }
 
         .action-btn {
-            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            padding: 0.7rem;
-            border: none;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: var(--medium-gray);
-            color: var(--text-primary);
-        }
-
-        .action-btn.like-btn {
-            background: rgba(255, 215, 0, 0.1);
-            color: var(--gold);
-        }
-
-        .action-btn.like-btn.liked {
-            background: var(--gold);
-            color: var(--primary-black);
-        }
-
-        .action-btn.save-btn {
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--electric-blue);
-        }
-
-        .action-btn.save-btn.saved {
-            background: var(--electric-blue);
-            color: var(--primary-black);
-        }
-
-        .action-btn.copy-btn {
-            background: var(--medium-gray);
-            color: var(--text-primary);
-        }
-
-        .action-btn.share-btn {
-            background: var(--medium-gray);
-            color: var(--text-primary);
+            padding: 0.3rem 0;
+            transition: color 0.3s ease;
         }
 
         .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            color: var(--gold);
+        }
+
+        .action-btn.liked {
+            color: var(--gold);
+        }
+
+        .action-btn.saved {
+            color: var(--electric-blue);
         }
 
         /* Loading */
         .loading {
             text-align: center;
-            padding: 3rem;
-            grid-column: 1 / -1;
+            padding: 2rem;
+            color: var(--text-secondary);
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid var(--light-gray);
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
             border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -470,51 +267,28 @@
 
         /* Alert */
         .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            animation: slideIn 0.3s ease;
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            color: var(--text-color);
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
         }
 
-        @keyframes slideIn {
+        @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translate(-50%, -20px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate(-50%, 0);
             }
-        }
-
-        .alert-success {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid var(--success);
-            color: var(--success);
-        }
-
-        .alert-error {
-            background: rgba(244, 67, 54, 0.1);
-            border: 1px solid var(--error);
-            color: var(--error);
-        }
-
-        .alert-info {
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--electric-blue);
-            color: var(--electric-blue);
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--light-gray);
-            margin-top: 3rem;
         }
 
         /* Hidden */
@@ -530,70 +304,34 @@
 
             .nav-links {
                 position: fixed;
-                top: 70px;
+                top: 60px;
                 left: 0;
                 right: 0;
-                background: var(--dark-gray);
+                background: var(--card-bg);
                 flex-direction: column;
                 padding: 2rem;
-                gap: 1.5rem;
+                gap: 1rem;
                 transform: translateY(-150%);
                 transition: transform 0.3s ease;
-                z-index: 999;
                 border-bottom: 2px solid var(--gold);
+                z-index: 99;
             }
 
             .nav-links.active {
                 transform: translateY(0);
             }
 
-            .header-title {
-                font-size: 2rem;
-            }
-
-            .quotes-grid {
-                grid-template-columns: 1fr;
-            }
-
             .quote-actions {
-                flex-wrap: wrap;
+                gap: 1rem;
+                justify-content: space-between;
             }
 
-            .action-btn {
-                min-width: calc(50% - 0.5rem);
-            }
-        }
-
-        /* Print styles for downloaded quotes */
-        @media print {
-            body {
-                background: white;
-                color: black;
-            }
-
-            .top-nav,
-            .bottom-nav,
-            .categories,
-            .footer {
-                display: none !important;
-            }
-
-            .quote-card {
-                break-inside: avoid;
-                page-break-inside: avoid;
-                background: white;
-                border: 1px solid #000;
-                box-shadow: none;
-                position: relative;
-            }
-
-            .quote-card .watermark {
-                color: rgba(0, 0, 0, 0.1);
-                font-size: 1.5rem;
-            }
-
-            .action-btn {
+            .action-btn span:last-child {
                 display: none;
+            }
+
+            .action-btn {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -632,63 +370,54 @@
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active">
             <span class="nav-icon">🏠</span>
-            <span class="nav-label">Home</span>
+            <span>Home</span>
         </a>
         <a href="ebooks.html" class="nav-item">
             <span class="nav-icon">📚</span>
-            <span class="nav-label">Ebooks</span>
+            <span>Ebooks</span>
         </a>
         <a href="profile.html" class="nav-item">
             <span class="nav-icon">👤</span>
-            <span class="nav-label">Profile</span>
+            <span>Profile</span>
         </a>
     </nav>
 
     <!-- Main Content -->
     <main class="container">
-        <!-- Header Section -->
-        <div class="header-section">
-            <h1 class="header-title">Daily Motivation</h1>
-            <p class="header-subtitle">Inspiring quotes to start your day with purpose</p>
+        <div class="header">
+            <h1>Daily Motivation</h1>
+            <p>Quotes to inspire your day</p>
         </div>
 
         <!-- Categories -->
         <div class="categories" id="categories">
-            <button class="category-btn active" data-category="all">All Quotes</button>
+            <button class="category-btn active" data-category="all">All</button>
             <button class="category-btn" data-category="life">Life</button>
             <button class="category-btn" data-category="success">Success</button>
             <button class="category-btn" data-category="love">Love</button>
-            <button class="category-btn" data-category="happiness">Happiness</button>
             <button class="category-btn" data-category="wisdom">Wisdom</button>
             <button class="category-btn" data-category="motivation">Motivation</button>
         </div>
 
         <div id="alertContainer"></div>
 
-        <!-- Quotes Grid -->
-        <div class="quotes-grid" id="quotesGrid">
+        <!-- Quotes Container -->
+        <div id="quotesContainer">
             <div class="loading">
                 <div class="spinner"></div>
-                <p>Loading inspirational quotes...</p>
+                <p>Loading quotes...</p>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>&copy; 2024 SupremeMotive. All rights reserved. | Share daily motivation with the world</p>
-        </footer>
     </main>
 
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 
-        // Initialize Supabase
         const supabase = createClient(
-            'https://dzcykpbfykajhoutzhpf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
+            'YOUR_SUPABASE_URL',
+            'YOUR_SUPABASE_ANON_KEY'
         )
 
-        // Admin emails
         const ADMIN_EMAILS = [
             'supremealpha04@gmail.com',
             'suprememotive43@gmail.com',
@@ -696,115 +425,135 @@
             'emmanuelamer6@gmail.com'
         ]
 
-        // State
-        let currentUser = null
-        let allQuotes = []
-        let currentCategory = 'all'
-        let userLikes = new Set()
-        let userSaves = new Set()
-
-        // DOM Elements
-        const quotesGrid = document.getElementById('quotesGrid')
-        const alertContainer = document.getElementById('alertContainer')
-        const categories = document.querySelectorAll('.category-btn')
-        const menuToggle = document.getElementById('menuToggle')
-        const navLinks = document.getElementById('navLinks')
-        const themeToggle = document.getElementById('themeToggle')
-        const adminLink = document.getElementById('adminLink')
-
-        // Sample quotes data (in a real app, this would come from Supabase)
-        const sampleQuotes = [
+        // Sample quotes data
+        const quotes = [
             {
                 id: '1',
                 text: 'Actions lie just like words so if you don\'t mean it stop doing it.',
                 author: 'Unknown',
                 category: 'life',
+                tag: 'Tr',
                 likes: 1243,
-                saves: 567,
-                created_at: new Date().toISOString()
+                saves: 567
             },
             {
                 id: '2',
                 text: 'The only way to do great work is to love what you do.',
                 author: 'Steve Jobs',
                 category: 'success',
+                tag: 'St',
                 likes: 2341,
-                saves: 1234,
-                created_at: new Date().toISOString()
+                saves: 1234
             },
             {
                 id: '3',
                 text: 'Life is what happens when you\'re busy making other plans.',
                 author: 'John Lennon',
                 category: 'life',
+                tag: 'Lf',
                 likes: 1892,
-                saves: 892,
-                created_at: new Date().toISOString()
+                saves: 892
             },
             {
                 id: '4',
                 text: 'The future belongs to those who believe in the beauty of their dreams.',
                 author: 'Eleanor Roosevelt',
                 category: 'motivation',
+                tag: 'Mv',
                 likes: 2156,
-                saves: 1456,
-                created_at: new Date().toISOString()
+                saves: 1456
             },
             {
                 id: '5',
                 text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.',
                 author: 'Winston Churchill',
                 category: 'success',
+                tag: 'Sc',
                 likes: 3124,
-                saves: 2134,
-                created_at: new Date().toISOString()
+                saves: 2134
             },
             {
                 id: '6',
                 text: 'The best way to predict the future is to create it.',
                 author: 'Peter Drucker',
                 category: 'wisdom',
+                tag: 'Wd',
                 likes: 1678,
-                saves: 978,
-                created_at: new Date().toISOString()
+                saves: 978
             },
             {
                 id: '7',
                 text: 'Happiness is not something ready made. It comes from your own actions.',
                 author: 'Dalai Lama',
-                category: 'happiness',
+                category: 'wisdom',
+                tag: 'Hp',
                 likes: 1987,
-                saves: 1087,
-                created_at: new Date().toISOString()
+                saves: 1087
             },
             {
                 id: '8',
                 text: 'The greatest glory in living lies not in never falling, but in rising every time we fall.',
                 author: 'Nelson Mandela',
                 category: 'motivation',
+                tag: 'Mv',
                 likes: 2876,
-                saves: 1876,
-                created_at: new Date().toISOString()
+                saves: 1876
             }
         ]
+
+        let currentUser = null
+        let userLikes = new Set()
+        let userSaves = new Set()
+        let currentCategory = 'all'
+
+        // DOM Elements
+        const quotesContainer = document.getElementById('quotesContainer')
+        const alertContainer = document.getElementById('alertContainer')
+        const menuToggle = document.getElementById('menuToggle')
+        const navLinks = document.getElementById('navLinks')
+        const themeToggle = document.getElementById('themeToggle')
+        const adminLink = document.getElementById('adminLink')
+        const categoryBtns = document.querySelectorAll('.category-btn')
 
         // Theme handling
         function initTheme() {
             const savedTheme = localStorage.getItem('theme')
             if (savedTheme === 'light') {
-                document.body.classList.add('light-mode')
+                document.body.style.setProperty('--bg-color', '#F5F5F5')
+                document.body.style.setProperty('--card-bg', '#FFFFFF')
+                document.body.style.setProperty('--text-color', '#333333')
+                document.body.style.setProperty('--text-secondary', '#666666')
+                document.body.style.setProperty('--border-color', '#DDDDDD')
                 themeToggle.textContent = '☀️'
             } else {
-                document.body.classList.remove('light-mode')
+                document.body.style.setProperty('--bg-color', '#0A0A0A')
+                document.body.style.setProperty('--card-bg', '#1A1A1A')
+                document.body.style.setProperty('--text-color', '#FFFFFF')
+                document.body.style.setProperty('--text-secondary', '#B0B0B0')
+                document.body.style.setProperty('--border-color', '#333333')
                 themeToggle.textContent = '🌙'
             }
         }
 
         themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode')
-            const isLight = document.body.classList.contains('light-mode')
-            localStorage.setItem('theme', isLight ? 'light' : 'dark')
-            themeToggle.textContent = isLight ? '☀️' : '🌙'
+            const isLight = document.body.style.getPropertyValue('--bg-color') === '#F5F5F5'
+            if (isLight) {
+                document.body.style.setProperty('--bg-color', '#0A0A0A')
+                document.body.style.setProperty('--card-bg', '#1A1A1A')
+                document.body.style.setProperty('--text-color', '#FFFFFF')
+                document.body.style.setProperty('--text-secondary', '#B0B0B0')
+                document.body.style.setProperty('--border-color', '#333333')
+                themeToggle.textContent = '🌙'
+                localStorage.setItem('theme', 'dark')
+            } else {
+                document.body.style.setProperty('--bg-color', '#F5F5F5')
+                document.body.style.setProperty('--card-bg', '#FFFFFF')
+                document.body.style.setProperty('--text-color', '#333333')
+                document.body.style.setProperty('--text-secondary', '#666666')
+                document.body.style.setProperty('--border-color', '#DDDDDD')
+                themeToggle.textContent = '☀️'
+                localStorage.setItem('theme', 'light')
+            }
         })
 
         // Mobile menu
@@ -818,7 +567,7 @@
             })
         })
 
-        // Check auth status
+        // Check auth
         async function checkAuth() {
             const { data: { user } } = await supabase.auth.getUser()
             currentUser = user
@@ -829,77 +578,53 @@
             }
         }
 
-        // Load quotes (using sample data for now)
-        async function loadQuotes() {
-            try {
-                // In a real app, you would fetch from Supabase
-                // const { data, error } = await supabase.from('quotes').select('*')
-                // if (error) throw error
-                // allQuotes = data
-
-                // Using sample data for demonstration
-                allQuotes = sampleQuotes
-                
-                renderQuotes()
-
-            } catch (error) {
-                showAlert('Error loading quotes: ' + error.message, 'error')
-            }
+        // Show alert
+        function showAlert(message) {
+            alertContainer.innerHTML = `<div class="alert">${message}</div>`
+            setTimeout(() => {
+                alertContainer.innerHTML = ''
+            }, 2000)
         }
 
         // Render quotes
         function renderQuotes() {
-            if (allQuotes.length === 0) {
-                quotesGrid.innerHTML = `
-                    <div class="loading">
-                        <p>No quotes available. Check back soon!</p>
-                    </div>
-                `
-                return
-            }
-
             const filteredQuotes = currentCategory === 'all' 
-                ? allQuotes 
-                : allQuotes.filter(q => q.category === currentCategory)
+                ? quotes 
+                : quotes.filter(q => q.category === currentCategory)
 
             if (filteredQuotes.length === 0) {
-                quotesGrid.innerHTML = `
+                quotesContainer.innerHTML = `
                     <div class="loading">
-                        <p>No quotes in this category yet.</p>
+                        <p>No quotes in this category</p>
                     </div>
                 `
                 return
             }
 
-            quotesGrid.innerHTML = filteredQuotes.map(quote => `
+            quotesContainer.innerHTML = filteredQuotes.map(quote => `
                 <div class="quote-card" data-id="${quote.id}">
-                    <div class="watermark">SUPREME MOTIVE</div>
+                    <div class="quote-text">
+                        ${quote.text}
+                    </div>
                     
-                    <div class="quote-content">
-                        <div class="quote-text">${escapeHtml(quote.text)}</div>
-                        <div class="quote-author">${escapeHtml(quote.author)}</div>
-                        <span class="quote-category">#${quote.category}</span>
+                    <div class="quote-tag">
+                        <span>${quote.tag}</span> ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes
                     </div>
 
                     <div class="quote-actions">
-                        <button class="action-btn like-btn ${userLikes.has(quote.id) ? 'liked' : ''}" 
-                                onclick="handleLike('${quote.id}')">
+                        <button class="action-btn like-btn ${userLikes.has(quote.id) ? 'liked' : ''}" onclick="handleLike('${quote.id}')">
                             <span>❤️</span>
                             <span>${quote.likes + (userLikes.has(quote.id) ? 1 : 0)}</span>
                         </button>
-                        
-                        <button class="action-btn save-btn ${userSaves.has(quote.id) ? 'saved' : ''}" 
-                                onclick="handleSave('${quote.id}')">
+                        <button class="action-btn save-btn ${userSaves.has(quote.id) ? 'saved' : ''}" onclick="handleSave('${quote.id}')">
                             <span>🔖</span>
                             <span>Save</span>
                         </button>
-                        
-                        <button class="action-btn copy-btn" onclick="copyQuote('${quote.id}')">
+                        <button class="action-btn" onclick="copyQuote('${quote.id}')">
                             <span>📋</span>
                             <span>Copy</span>
                         </button>
-                        
-                        <button class="action-btn share-btn" onclick="shareQuote('${quote.id}')">
+                        <button class="action-btn" onclick="shareQuote('${quote.id}')">
                             <span>📤</span>
                             <span>Share</span>
                         </button>
@@ -911,7 +636,7 @@
         // Handle like
         window.handleLike = async (quoteId) => {
             if (!currentUser) {
-                if (confirm('Please login to like quotes. Go to login page?')) {
+                if (confirm('Please login to like quotes')) {
                     window.location.href = 'login.html'
                 }
                 return
@@ -922,17 +647,13 @@
             } else {
                 userLikes.add(quoteId)
             }
-
-            // In a real app, you would update the database
-            // await supabase.from('quote_likes').upsert(...)
-            
             renderQuotes()
         }
 
         // Handle save
         window.handleSave = async (quoteId) => {
             if (!currentUser) {
-                if (confirm('Please login to save quotes. Go to login page?')) {
+                if (confirm('Please login to save quotes')) {
                     window.location.href = 'login.html'
                 }
                 return
@@ -940,164 +661,52 @@
 
             if (userSaves.has(quoteId)) {
                 userSaves.delete(quoteId)
-                showAlert('Quote removed from saved', 'success')
+                showAlert('Quote removed from saved')
             } else {
                 userSaves.add(quoteId)
-                showAlert('Quote saved!', 'success')
+                showAlert('Quote saved!')
             }
-
             renderQuotes()
         }
 
         // Copy quote
         window.copyQuote = (quoteId) => {
-            const quote = allQuotes.find(q => q.id === quoteId)
-            if (!quote) return
-
-            const text = `"${quote.text}" — ${quote.author}\n\nShared from SupremeMotive`
-            
-            navigator.clipboard.writeText(text).then(() => {
-                showAlert('Quote copied to clipboard!', 'success')
-            }).catch(() => {
-                showAlert('Failed to copy quote', 'error')
-            })
+            const quote = quotes.find(q => q.id === quoteId)
+            const text = `"${quote.text}" — ${quote.author}`
+            navigator.clipboard.writeText(text)
+            showAlert('Quote copied to clipboard!')
         }
 
         // Share quote
         window.shareQuote = (quoteId) => {
-            const quote = allQuotes.find(q => q.id === quoteId)
-            if (!quote) return
-
+            const quote = quotes.find(q => q.id === quoteId)
             const text = `"${quote.text}" — ${quote.author}`
-            const url = window.location.href
-
+            
             if (navigator.share) {
                 navigator.share({
                     title: 'SupremeMotive Quote',
                     text: text,
-                    url: url
-                }).catch(() => {
-                    copyQuote(quoteId)
                 })
             } else {
                 copyQuote(quoteId)
             }
         }
 
-        // Download quote as image
-        window.downloadQuote = (quoteId) => {
-            const quote = allQuotes.find(q => q.id === quoteId)
-            if (!quote) return
-
-            // Create a canvas to generate the quote image
-            const canvas = document.createElement('canvas')
-            canvas.width = 800
-            canvas.height = 600
-            const ctx = canvas.getContext('2d')
-
-            // Background
-            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#F5F5F5' : '#1A1A1A'
-            ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-            // Add watermark
-            ctx.save()
-            ctx.translate(400, 300)
-            ctx.rotate(-15 * Math.PI / 180)
-            ctx.font = 'bold 60px Arial'
-            ctx.fillStyle = document.body.classList.contains('light-mode') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'
-            ctx.textAlign = 'center'
-            ctx.fillText('SUPREME MOTIVE', 0, 0)
-            ctx.restore()
-
-            // Add quote marks
-            ctx.font = '200px serif'
-            ctx.fillStyle = 'rgba(255,215,0,0.1)'
-            ctx.fillText('"', 50, 150)
-            ctx.fillText('"', canvas.width - 100, canvas.height - 100)
-
-            // Quote text
-            ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#333' : '#FFF'
-            ctx.textAlign = 'center'
-            wrapText(ctx, `"${quote.text}"`, 400, 250, 600, 40)
-
-            // Author
-            ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
-            ctx.fillStyle = '#FFD700'
-            ctx.fillText(`— ${quote.author}`, 400, 450)
-
-            // Convert to image and download
-            const link = document.createElement('a')
-            link.download = `suprememotive-${quote.category}-quote.jpg`
-            link.href = canvas.toDataURL('image/jpeg', 0.9)
-            link.click()
-
-            showAlert('Quote downloaded with watermark!', 'success')
-        }
-
-        // Helper function to wrap text
-        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-            const words = text.split(' ')
-            let line = ''
-            let lines = []
-
-            for (let n = 0; n < words.length; n++) {
-                let testLine = line + words[n] + ' '
-                let metrics = ctx.measureText(testLine)
-                let testWidth = metrics.width
-                if (testWidth > maxWidth && n > 0) {
-                    lines.push(line)
-                    line = words[n] + ' '
-                } else {
-                    line = testLine
-                }
-            }
-            lines.push(line)
-
-            for (let i = 0; i < lines.length; i++) {
-                ctx.fillText(lines[i], x, y + (i * lineHeight))
-            }
-        }
-
         // Category filtering
-        categories.forEach(btn => {
+        categoryBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                categories.forEach(b => b.classList.remove('active'))
+                categoryBtns.forEach(b => b.classList.remove('active'))
                 btn.classList.add('active')
                 currentCategory = btn.dataset.category
                 renderQuotes()
             })
         })
 
-        // Show alert
-        function showAlert(message, type) {
-            alertContainer.innerHTML = `
-                <div class="alert alert-${type}">
-                    <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
-                    <span>${message}</span>
-                </div>
-            `
-            setTimeout(() => {
-                alertContainer.innerHTML = ''
-            }, 3000)
-        }
-
-        // Escape HTML
-        function escapeHtml(unsafe) {
-            if (!unsafe) return ''
-            return unsafe
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
-        }
-
         // Initialize
         async function init() {
             initTheme()
             await checkAuth()
-            await loadQuotes()
+            renderQuotes()
         }
 
         init()
