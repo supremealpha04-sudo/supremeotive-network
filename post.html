@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Ebook Reader</title>
-    <!-- PDF.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <title>SupremeMotive - Daily Articles</title>
     <style>
         * {
             margin: 0;
@@ -14,169 +12,286 @@
         }
 
         :root {
-            --primary-black: #0A0A0A;
-            --deep-navy: #0B1A33;
-            --gold: #FFD700;
-            --electric-blue: #00F0FF;
-            --dark-gray: #1A1A1A;
-            --medium-gray: #2A2A2A;
-            --light-gray: #3A3A3A;
-            --text-primary: #FFFFFF;
+            --bg-color: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --text-color: #FFFFFF;
             --text-secondary: #B0B0B0;
+            --gold: #FFD700;
+            --border-color: #333333;
+            --electric-blue: #00F0FF;
             --success: #4CAF50;
             --error: #F44336;
-            --overlay: rgba(0, 0, 0, 0.8);
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--primary-black);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
+            padding-bottom: 80px;
         }
 
-        /* Modern Navbar */
-        .navbar {
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(10px);
+        .top-nav {
+            background: var(--card-bg);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--light-gray);
+            border-bottom: 2px solid var(--gold);
             position: sticky;
             top: 0;
-            z-index: 1000;
+            z-index: 100;
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--gold);
+            transition: all 0.3s ease;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
         .nav-links a {
-            color: var(--text-primary);
+            color: var(--text-color);
             text-decoration: none;
-            font-weight: 500;
+            font-size: 0.9rem;
             transition: color 0.3s ease;
-            font-size: 0.95rem;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover,
+        .nav-links a.active {
             color: var(--gold);
         }
 
-        #logoutBtn {
-            background: rgba(244, 67, 54, 0.1);
-            color: var(--error);
-            border: 1px solid var(--error);
-            padding: 0.5rem 1.5rem;
-            border-radius: 8px;
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
             cursor: pointer;
-            font-weight: 600;
+            padding: 0.3rem;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 2px solid var(--gold);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .categories {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        #logoutBtn:hover {
-            background: var(--error);
-            color: white;
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--gold);
+            color: var(--bg-color);
+            border-color: var(--gold);
         }
 
-        /* Main Container */
-        .reader-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
+        .posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
         }
 
-        /* Ebook Header - Magazine Style */
-        .ebook-header {
-            background: linear-gradient(135deg, var(--dark-gray) 0%, var(--medium-gray) 100%);
-            border-radius: 24px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--light-gray);
+        .post-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold);
+        }
+
+        .post-card::after {
+            content: 'SUPREME MOTIVE';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: rgba(255, 215, 0, 0.15);
+            transform: rotate(-5deg);
+            pointer-events: none;
+        }
+
+        .post-header {
             display: flex;
             align-items: center;
-            gap: 2.5rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            position: relative;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-author {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .post-date {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .post-title {
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .post-content.collapsed {
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .ebook-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .ebook-cover-wrapper {
-            position: relative;
-            z-index: 1;
-        }
-
-        .ebook-cover {
-            width: 120px;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 16px;
-            border: 3px solid var(--gold);
-            box-shadow: 0 20px 30px rgba(255, 215, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .ebook-cover:hover {
-            transform: scale(1.05);
-        }
-
-        .ebook-info {
-            flex: 1;
-            z-index: 1;
-        }
-
-        .ebook-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--gold);
-            margin-bottom: 0.5rem;
-            line-height: 1.2;
-        }
-
-        .ebook-description {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
+        .read-more-btn {
+            background: none;
+            border: none;
+            color: var(--electric-blue);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             margin-bottom: 1rem;
-            max-width: 600px;
+            padding: 0.3rem 0;
         }
 
-        .ebook-meta {
+        .read-more-btn:hover {
+            color: var(--gold);
+        }
+
+        .post-stats {
             display: flex;
             gap: 2rem;
-            margin-top: 1rem;
+            margin: 1rem 0;
+            padding: 0.5rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .meta-item {
+        .stat-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -184,458 +299,288 @@
             font-size: 0.9rem;
         }
 
-        .meta-item i {
+        .stat-item span {
             color: var(--gold);
+            font-weight: bold;
         }
 
-        .back-btn {
-            background: var(--medium-gray);
-            color: var(--text-primary);
-            border: 1px solid var(--light-gray);
-            padding: 0.8rem 1.5rem;
-            border-radius: 12px;
-            cursor: pointer;
+        .post-actions {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            white-space: nowrap;
-            z-index: 1;
-        }
-
-        .back-btn:hover {
-            background: var(--light-gray);
-            transform: translateX(-5px);
-        }
-
-        /* PDF Viewer - Modern Design */
-        .pdf-viewer {
-            background: var(--dark-gray);
-            border-radius: 24px;
-            padding: 1.5rem;
-            border: 1px solid var(--light-gray);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        /* PDF Toolbar - Glass Effect */
-        .pdf-toolbar {
-            background: rgba(42, 42, 42, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 50px;
-            padding: 0.8rem 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
             gap: 1rem;
-            border: 1px solid var(--light-gray);
+            margin: 1rem 0;
         }
 
-        .toolbar-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--dark-gray);
-            padding: 0.3rem;
-            border-radius: 40px;
-            border: 1px solid var(--light-gray);
-        }
-
-        .toolbar-btn {
-            background: transparent;
+        .action-btn {
+            flex: 1;
+            background: none;
+            border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
-            cursor: pointer;
             font-size: 0.9rem;
-            font-weight: 500;
+            cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
+            padding: 0.7rem;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
 
-        .toolbar-btn:hover:not(:disabled) {
+        .action-btn:hover {
             background: var(--gold);
-            color: var(--primary-black);
+            color: var(--bg-color);
+            border-color: var(--gold);
         }
 
-        .toolbar-btn.active {
+        .action-btn.liked {
             background: var(--gold);
-            color: var(--primary-black);
+            color: var(--bg-color);
+            border-color: var(--gold);
         }
 
-        .toolbar-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
+        .action-btn.saved {
+            background: var(--electric-blue);
+            color: var(--bg-color);
+            border-color: var(--electric-blue);
         }
 
-        .page-indicator {
-            background: var(--medium-gray);
-            padding: 0.4rem 1.2rem;
-            border-radius: 30px;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            border: 1px solid var(--light-gray);
-        }
-
-        .page-indicator span {
-            color: var(--gold);
-            font-weight: 600;
-            margin: 0 0.2rem;
-        }
-
-        .zoom-level {
-            background: var(--medium-gray);
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            color: var(--gold);
-            font-weight: 600;
-            font-size: 0.95rem;
-            border: 1px solid var(--light-gray);
-            min-width: 70px;
-            text-align: center;
-        }
-
-        /* PDF Canvas Area - Clean Design */
-        .pdf-canvas-container {
-            background: var(--medium-gray);
-            border-radius: 20px;
-            padding: 2rem;
-            min-height: 700px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: auto;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
-
-        #pdfCanvas {
-            max-width: 100%;
-            height: auto;
+        .comments-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: box-shadow 0.3s ease;
         }
 
-        #pdfCanvas:hover {
-            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.2);
-        }
-
-        /* Loading Overlay */
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--overlay);
-            backdrop-filter: blur(5px);
+        .comment-form {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 20px;
-            z-index: 10;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
 
-        .loading-content {
+        .comment-form input {
+            flex: 1;
+            padding: 0.7rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+        }
+
+        .comment-form input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .comment-form button {
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            border: none;
+            border-radius: 8px;
+            color: var(--bg-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .comment {
+            padding: 0.8rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .comment-author {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .comment-date {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
+
+        .comment-content {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-left: 2.5rem;
+        }
+
+        .loading {
             text-align: center;
+            padding: 2rem;
         }
 
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--light-gray);
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
             border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 1rem;
         }
 
-        /* Page Navigation Arrows */
-        .nav-arrow {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 50px;
-            height: 50px;
-            background: var(--dark-gray);
-            border: 2px solid var(--gold);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 100;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .nav-arrow:hover {
-            background: var(--gold);
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .nav-arrow.left {
-            left: 20px;
-        }
-
-        .nav-arrow.right {
-            right: 20px;
-        }
-
-        .nav-arrow i {
-            font-size: 1.5rem;
-            color: var(--gold);
-            transition: color 0.3s ease;
-        }
-
-        .nav-arrow:hover i {
-            color: var(--primary-black);
-        }
-
-        /* Thumbnail Strip */
-        .thumbnail-strip {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: var(--dark-gray);
-            border-radius: 20px;
-            border: 1px solid var(--light-gray);
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: thin;
-            scrollbar-color: var(--gold) var(--dark-gray);
-        }
-
-        .thumbnail-strip::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .thumbnail-strip::-webkit-scrollbar-track {
-            background: var(--dark-gray);
-            border-radius: 10px;
-        }
-
-        .thumbnail-strip::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 10px;
-        }
-
-        .thumbnail-container {
-            display: inline-flex;
-            gap: 1rem;
-            padding: 0.5rem;
-        }
-
-        .thumbnail {
-            width: 80px;
-            height: 110px;
-            background: var(--medium-gray);
-            border-radius: 8px;
-            border: 2px solid var(--light-gray);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .thumbnail:hover {
-            border-color: var(--gold);
-            transform: translateY(-5px);
-        }
-
-        .thumbnail.active {
-            border-color: var(--gold);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        .thumbnail canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .thumbnail-number {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: var(--gold);
-            color: var(--primary-black);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        /* Alert */
         .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            color: var(--text-color);
+            z-index: 1000;
             animation: slideDown 0.3s ease;
         }
 
         @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translate(-50%, -20px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate(-50%, 0);
             }
         }
 
-        .alert-success {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid var(--success);
-            color: var(--success);
-        }
-
-        .alert-error {
-            background: rgba(244, 67, 54, 0.1);
-            border: 1px solid var(--error);
-            color: var(--error);
-        }
-
-        /* Hidden */
         .hidden {
             display: none !important;
         }
 
-        /* Download Fallback */
-        .download-fallback {
-            text-align: center;
-            padding: 3rem;
-            background: var(--dark-gray);
-            border-radius: 20px;
-            border: 1px solid var(--light-gray);
-        }
-
-        .download-btn {
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            margin-top: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .ebook-header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .ebook-meta {
-                justify-content: center;
-            }
-
-            .nav-arrow {
-                display: none;
-            }
-        }
-
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
+            .menu-toggle {
+                display: flex;
             }
 
             .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .reader-container {
-                padding: 0 1rem;
-            }
-
-            .pdf-toolbar {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
                 flex-direction: column;
-                border-radius: 20px;
+                padding: 2rem;
+                gap: 1rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                border-bottom: 2px solid var(--gold);
+                z-index: 99;
             }
 
-            .toolbar-group {
-                width: 100%;
-                justify-content: center;
+            .nav-links.active {
+                transform: translateY(0);
             }
 
-            .thumbnail-strip {
-                display: none;
+            .post-actions {
+                flex-wrap: wrap;
+            }
+
+            .action-btn {
+                min-width: calc(50% - 0.5rem);
+            }
+
+            .post-stats {
+                justify-content: space-around;
             }
         }
     </style>
-    <script type="importmap">
-        {
-            "imports": {
-                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="top-nav">
         <div class="logo">SupremeMotive</div>
-        <div class="nav-links">
+
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
-            <a href="ebooks.html">Ebooks</a>
-            <a href="profile.html">Profile</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
-            <button id="logoutBtn" style="display: none;">Logout</button>
-            <a href="login.html" id="loginLink">Login</a>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
     </nav>
 
-    <main class="reader-container">
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="ebooks.html" class="nav-item">
+            <span class="nav-icon">📚</span>
+            <span>Ebooks</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+        <a href="post.html" class="nav-item active">
+            <span class="nav-icon">📰</span>
+            <span>Articles</span>
+        </a>
+    </nav>
+
+    <main class="container">
+        <div class="header">
+            <h1>Daily Articles</h1>
+            <p>Inspirational posts from our team</p>
+        </div>
+
+        <div class="categories" id="categories">
+            <button class="category-btn active" data-category="all">All Posts</button>
+            <button class="category-btn" data-category="motivation">Motivation</button>
+            <button class="category-btn" data-category="success">Success</button>
+            <button class="category-btn" data-category="life">Life</button>
+            <button class="category-btn" data-category="wisdom">Wisdom</button>
+        </div>
+
         <div id="alertContainer"></div>
-        
-        <div id="readerContent">
-            <div class="loading-overlay">
-                <div class="loading-content">
-                    <div class="spinner"></div>
-                    <p>Loading your ebook...</p>
-                </div>
+
+        <div class="posts-container" id="postsContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading articles...</p>
             </div>
         </div>
     </main>
 
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
+    <script>
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        // Initialize PDF.js
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js'
-
-        const supabase = createClient(
-            'https://dzcykpbfykajhoutzhpf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
-        )
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
         const ADMIN_EMAILS = [
@@ -643,489 +588,520 @@
             'suprememotive43@gmail.com',
             'sandrakukk055@gmail.com',
             'emmanuelamer6@gmail.com'
-        ]
+        ];
 
-        let currentUser = null
-        let currentEbook = null
-        let pdfDoc = null
-        let currentPage = 1
-        let totalPages = 1
-        let currentScale = 1.2
-        let pageRendering = false
-        let thumbnails = []
-
-        // Get ebook ID from URL
-        const urlParams = new URLSearchParams(window.location.search)
-        const ebookId = urlParams.get('id')
-
-        if (!ebookId) {
-            window.location.href = 'ebooks.html'
-        }
+        // State
+        let currentUser = null;
+        let currentCategory = 'all';
+        let posts = [];
+        let userLikes = new Set();
+        let userSaves = new Set();
 
         // DOM Elements
-        const readerContent = document.getElementById('readerContent')
-        const alertContainer = document.getElementById('alertContainer')
-        const logoutBtn = document.getElementById('logoutBtn')
-        const loginLink = document.getElementById('loginLink')
-        const adminLink = document.getElementById('adminLink')
+        const postsContainer = document.getElementById('postsContainer');
+        const alertContainer = document.getElementById('alertContainer');
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        const themeToggle = document.getElementById('themeToggle');
+        const adminLink = document.getElementById('adminLink');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+
+        // Theme toggle
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5';
+            if (isLight) {
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Mobile menu
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
 
         // Show alert
-        function showAlert(message, type) {
-            alertContainer.innerHTML = `
-                <div class="alert alert-${type}">
-                    <i>${type === 'success' ? '✅' : '❌'}</i>
-                    <span>${message}</span>
-                </div>
-            `
+        function showAlert(message) {
+            alertContainer.innerHTML = `<div class="alert">${message}</div>`;
             setTimeout(() => {
-                alertContainer.innerHTML = ''
-            }, 3000)
+                alertContainer.innerHTML = '';
+            }, 2000);
         }
 
-        // Check auth status
+        // Check auth
         async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser()
-            currentUser = user
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                currentUser = user;
 
-            if (user) {
-                logoutBtn.style.display = 'block'
-                loginLink.style.display = 'none'
-                
-                if (ADMIN_EMAILS.includes(user.email)) {
-                    adminLink.style.display = 'block'
-                    adminLink.href = 'admin/admin-dashboard.html'
+                if (user && ADMIN_EMAILS.includes(user.email)) {
+                    adminLink.style.display = 'block';
+                    adminLink.href = 'admin/admin-dashboard.html';
                 }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        // Load posts from database
+        async function loadPosts() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:created_by (id, name, profile_image_url),
+                        post_likes(count),
+                        comments(count)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                posts = data || [];
+
+                // Load user interactions if logged in
+                if (currentUser) {
+                    await loadUserInteractions();
+                }
+
+                renderPosts();
+
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                postsContainer.innerHTML = `
+                    <div class="loading">
+                        <p style="color: var(--error);">Error loading posts. Please refresh.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load user interactions (likes and saves)
+        async function loadUserInteractions() {
+            try {
+                // Load likes
+                const { data: likes } = await supabaseClient
+                    .from('post_likes')
+                    .select('post_id')
+                    .eq('user_id', currentUser.id);
+
+                if (likes) {
+                    userLikes = new Set(likes.map(l => l.post_id));
+                }
+
+                // Load saves
+                const { data: saves } = await supabaseClient
+                    .from('saved_posts')
+                    .select('post_id')
+                    .eq('user_id', currentUser.id);
+
+                if (saves) {
+                    userSaves = new Set(saves.map(s => s.post_id));
+                }
+            } catch (error) {
+                console.error('Error loading interactions:', error);
+            }
+        }
+
+        // Render posts
+        function renderPosts() {
+            let filteredPosts = [...posts];
+
+            // Filter by category (you can add a category field to posts table)
+            if (currentCategory !== 'all') {
+                // This assumes you have a category field in posts
+                // filteredPosts = filteredPosts.filter(p => p.category === currentCategory);
+            }
+
+            if (filteredPosts.length === 0) {
+                postsContainer.innerHTML = `
+                    <div class="loading">
+                        <p>No articles yet. Check back soon!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            postsContainer.innerHTML = filteredPosts.map(post => {
+                const isLiked = userLikes.has(post.id);
+                const isSaved = userSaves.has(post.id);
+                const likesCount = post.post_likes?.[0]?.count || 0;
+                const commentsCount = post.comments?.[0]?.count || 0;
+                const authorName = post.profiles?.name || 'SupremeMotive Admin';
+                const authorAvatar = post.profiles?.profile_image_url || 
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=FFD700&color=000&size=50`;
+
+                return `
+                    <div class="post-card" data-id="${post.id}">
+                        <div class="post-header">
+                            <img src="${authorAvatar}" alt="${authorName}" class="post-avatar">
+                            <div class="post-info">
+                                <div class="post-author">${authorName}</div>
+                                <div class="post-date">${new Date(post.created_at).toLocaleDateString()}</div>
+                            </div>
+                        </div>
+
+                        <h2 class="post-title">${escapeHtml(post.title)}</h2>
+
+                        ${post.image_url ? `
+                            <img src="${post.image_url}" alt="${escapeHtml(post.title)}" class="post-image">
+                        ` : ''}
+
+                        <div class="post-content collapsed" id="content-${post.id}">
+                            ${escapeHtml(post.content).replace(/\n/g, '<br>')}
+                        </div>
+
+                        <button class="read-more-btn" onclick="toggleReadMore('${post.id}')">
+                            <span>Read More</span>
+                            <span>▼</span>
+                        </button>
+
+                        <div class="post-stats">
+                            <div class="stat-item">
+                                <span>❤️</span>
+                                <span id="likes-${post.id}">${likesCount}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>💬</span>
+                                <span>${commentsCount}</span>
+                            </div>
+                        </div>
+
+                        <div class="post-actions">
+                            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" 
+                                    onclick="handleLike('${post.id}')">
+                                <span>❤️</span>
+                                <span>${isLiked ? 'Liked' : 'Like'}</span>
+                            </button>
+                            <button class="action-btn save-btn ${isSaved ? 'saved' : ''}" 
+                                    onclick="handleSave('${post.id}')">
+                                <span>🔖</span>
+                                <span>${isSaved ? 'Saved' : 'Save'}</span>
+                            </button>
+                            <button class="action-btn" onclick="sharePost('${post.id}')">
+                                <span>📤</span>
+                                <span>Share</span>
+                            </button>
+                        </div>
+
+                        <div class="comments-section" id="comments-${post.id}" style="display: none;">
+                            ${currentUser ? `
+                                <div class="comment-form">
+                                    <input type="text" id="comment-${post.id}" placeholder="Write a comment...">
+                                    <button onclick="addComment('${post.id}')">Post</button>
+                                </div>
+                            ` : `
+                                <p style="color: var(--text-secondary); text-align: center; margin-bottom: 1rem;">
+                                    <a href="login.html" style="color: var(--gold);">Login</a> to comment
+                                </p>
+                            `}
+                            <div id="comments-list-${post.id}"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Load comments for each post
+            posts.forEach(post => loadComments(post.id));
+        }
+
+        // Toggle read more
+        window.toggleReadMore = (postId) => {
+            const content = document.getElementById(`content-${postId}`);
+            const btn = document.querySelector(`[onclick="toggleReadMore('${postId}')"]`);
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                btn.innerHTML = '<span>Show Less</span> <span>▲</span>';
             } else {
-                logoutBtn.style.display = 'none'
-                loginLink.style.display = 'block'
-                adminLink.style.display = 'none'
+                content.classList.add('collapsed');
+                btn.innerHTML = '<span>Read More</span> <span>▼</span>';
             }
-        }
+        };
 
-        // Check if ebook is unlocked
-        async function checkUnlock(ebookId, userId) {
-            if (!userId) return false
+        // Handle like
+        window.handleLike = async (postId) => {
+            if (!currentUser) {
+                if (confirm('Please login to like posts')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
 
             try {
-                const { data, error } = await supabase
-                    .from('unlocks')
-                    .select('*')
-                    .eq('ebook_id', ebookId)
-                    .eq('user_id', userId)
-                    .eq('status', 'approved')
-                    .maybeSingle()
+                if (userLikes.has(postId)) {
+                    // Unlike
+                    await supabaseClient
+                        .from('post_likes')
+                        .delete()
+                        .eq('post_id', postId)
+                        .eq('user_id', currentUser.id);
 
-                if (error) throw error
-                return !!data
-            } catch (error) {
-                console.error('Error checking unlock:', error)
-                return false
-            }
-        }
-
-        // Load ebook
-        async function loadEbook() {
-            try {
-                // Fetch ebook details
-                const { data: ebook, error } = await supabase
-                    .from('ebooks')
-                    .select('*')
-                    .eq('id', ebookId)
-                    .single()
-
-                if (error) throw error
-                if (!ebook) throw new Error('Ebook not found')
-
-                currentEbook = ebook
-
-                // Check if user has access
-                let hasAccess = !ebook.is_paid
-                
-                if (ebook.is_paid && currentUser) {
-                    hasAccess = await checkUnlock(ebookId, currentUser.id)
-                }
-
-                if (!hasAccess) {
-                    showAlert('This ebook is locked. Please unlock it first.', 'error')
-                    setTimeout(() => {
-                        window.location.href = 'ebooks.html'
-                    }, 2000)
-                    return
-                }
-
-                renderReader(ebook)
-                loadPDF(ebook.pdf_url)
-
-            } catch (error) {
-                readerContent.innerHTML = `
-                    <div class="alert alert-error">
-                        <i>❌</i>
-                        <span>Error loading ebook: ${error.message}</span>
-                    </div>
-                `
-            }
-        }
-
-        // Render reader interface
-        function renderReader(ebook) {
-            const date = new Date().toLocaleDateString()
-            
-            readerContent.innerHTML = `
-                <!-- Ebook Header -->
-                <div class="ebook-header">
-                    <div class="ebook-cover-wrapper">
-                        <img src="${ebook.cover_url}" alt="${escapeHtml(ebook.title)}" class="ebook-cover"
-                             onerror="this.src='https://via.placeholder.com/120x160?text=No+Cover'">
-                    </div>
+                    userLikes.delete(postId);
                     
-                    <div class="ebook-info">
-                        <h1 class="ebook-title">${escapeHtml(ebook.title)}</h1>
-                        <p class="ebook-description">${escapeHtml(ebook.description)}</p>
-                        
-                        <div class="ebook-meta">
-                            <div class="meta-item">
-                                <i>📅</i>
-                                <span>Added ${new Date(ebook.created_at).toLocaleDateString()}</span>
-                            </div>
-                            <div class="meta-item">
-                                <i>📄</i>
-                                <span>PDF Ebook</span>
-                            </div>
-                            <div class="meta-item">
-                                <i>🔖</i>
-                                <span>${ebook.is_paid ? 'Paid' : 'Free'}</span>
-                            </div>
-                        </div>
-                    </div>
+                    // Update count
+                    const countEl = document.getElementById(`likes-${postId}`);
+                    countEl.textContent = parseInt(countEl.textContent) - 1;
+                } else {
+                    // Like
+                    await supabaseClient
+                        .from('post_likes')
+                        .insert([{ post_id: postId, user_id: currentUser.id }]);
 
-                    <a href="ebooks.html" class="back-btn">
-                        <i>←</i>
-                        Back to Library
-                    </a>
-                </div>
-
-                <!-- PDF Viewer -->
-                <div class="pdf-viewer">
-                    <!-- Toolbar -->
-                    <div class="pdf-toolbar">
-                        <div class="toolbar-group">
-                            <button class="toolbar-btn" id="prevPageBtn" disabled>
-                                <i>←</i>
-                                Prev
-                            </button>
-                            <span class="page-indicator">
-                                Page <span id="currentPageDisplay">1</span> / <span id="totalPagesDisplay">1</span>
-                            </span>
-                            <button class="toolbar-btn" id="nextPageBtn" disabled>
-                                Next
-                                <i>→</i>
-                            </button>
-                        </div>
-                        
-                        <div class="toolbar-group">
-                            <button class="toolbar-btn" id="zoomOutBtn">
-                                <i>−</i>
-                                Zoom Out
-                            </button>
-                            <span class="zoom-level" id="zoomLevel">120%</span>
-                            <button class="toolbar-btn" id="zoomInBtn">
-                                Zoom In
-                                <i>+</i>
-                            </button>
-                        </div>
-                        
-                        <div class="toolbar-group">
-                            <button class="toolbar-btn" id="fitWidthBtn">
-                                <i>⤢</i>
-                                Fit Width
-                            </button>
-                            <button class="toolbar-btn" id="fitPageBtn">
-                                <i>📄</i>
-                                Fit Page
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- PDF Canvas -->
-                    <div class="pdf-canvas-container" id="pdfCanvasContainer">
-                        <div class="loading-overlay" id="pageLoadingOverlay">
-                            <div class="loading-content">
-                                <div class="spinner"></div>
-                                <p>Loading page...</p>
-                            </div>
-                        </div>
-                        <canvas id="pdfCanvas"></canvas>
-                    </div>
-
-                    <!-- Navigation Arrows -->
-                    <div class="nav-arrow left" id="leftArrow">
-                        <i>←</i>
-                    </div>
-                    <div class="nav-arrow right" id="rightArrow">
-                        <i>→</i>
-                    </div>
-
-                    <!-- Thumbnail Strip -->
-                    <div class="thumbnail-strip" id="thumbnailStrip">
-                        <div class="thumbnail-container" id="thumbnailContainer">
-                            <div class="loading-spinner"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Download Fallback -->
-                <div id="downloadFallback" class="hidden">
-                    <div class="download-fallback">
-                        <h3 style="color: var(--gold); margin-bottom: 1rem;">PDF Viewer Unavailable</h3>
-                        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Your browser may not support embedded PDF viewing. You can download the PDF instead.</p>
-                        <a href="${ebook.pdf_url}" download class="download-btn">
-                            <i>📥</i>
-                            Download PDF
-                        </a>
-                    </div>
-                </div>
-            `
-
-            // Hide loading overlay initially
-            document.getElementById('pageLoadingOverlay').classList.add('hidden')
-        }
-
-        // Load PDF using PDF.js
-        async function loadPDF(pdfUrl) {
-            try {
-                // Add timestamp to bypass cache
-                const urlWithTimestamp = `${pdfUrl}?t=${Date.now()}`
-                
-                // Load the PDF document
-                pdfDoc = await pdfjsLib.getDocument(urlWithTimestamp).promise
-                
-                totalPages = pdfDoc.numPages
-                document.getElementById('totalPagesDisplay').textContent = totalPages
-                
-                // Enable buttons
-                updateButtons()
-                
-                // Render first page
-                await renderPage(currentPage)
-                
-                // Generate thumbnails
-                await generateThumbnails()
-
-                // Add event listeners
-                document.getElementById('prevPageBtn').addEventListener('click', () => navigatePage(-1))
-                document.getElementById('nextPageBtn').addEventListener('click', () => navigatePage(1))
-                document.getElementById('leftArrow').addEventListener('click', () => navigatePage(-1))
-                document.getElementById('rightArrow').addEventListener('click', () => navigatePage(1))
-
-                document.getElementById('zoomInBtn').addEventListener('click', () => {
-                    currentScale += 0.2
-                    if (currentScale > 3) currentScale = 3
-                    document.getElementById('zoomLevel').textContent = Math.round(currentScale * 100) + '%'
-                    renderPage(currentPage)
-                })
-
-                document.getElementById('zoomOutBtn').addEventListener('click', () => {
-                    currentScale -= 0.2
-                    if (currentScale < 0.5) currentScale = 0.5
-                    document.getElementById('zoomLevel').textContent = Math.round(currentScale * 100) + '%'
-                    renderPage(currentPage)
-                })
-
-                document.getElementById('fitWidthBtn').addEventListener('click', fitToWidth)
-                document.getElementById('fitPageBtn').addEventListener('click', fitToPage)
-
-                // Keyboard navigation
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'ArrowLeft') navigatePage(-1)
-                    if (e.key === 'ArrowRight') navigatePage(1)
-                })
-
-            } catch (error) {
-                console.error('Error loading PDF:', error)
-                showAlert('Error loading PDF. You can download it instead.', 'error')
-                
-                // Show download fallback
-                document.querySelector('.pdf-viewer').classList.add('hidden')
-                document.getElementById('downloadFallback').classList.remove('hidden')
-            }
-        }
-
-        // Navigate pages
-        function navigatePage(direction) {
-            const newPage = currentPage + direction
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage
-                renderPage(currentPage)
-            }
-        }
-
-        // Render a specific page
-        async function renderPage(pageNum) {
-            if (pageRendering) return
-            pageRendering = true
-
-            const loadingOverlay = document.getElementById('pageLoadingOverlay')
-            loadingOverlay.classList.remove('hidden')
-
-            try {
-                const page = await pdfDoc.getPage(pageNum)
-                
-                const viewport = page.getViewport({ scale: currentScale })
-                
-                const canvas = document.getElementById('pdfCanvas')
-                const context = canvas.getContext('2d')
-                
-                canvas.height = viewport.height
-                canvas.width = viewport.width
-
-                // Render the page
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
+                    userLikes.add(postId);
+                    
+                    // Update count
+                    const countEl = document.getElementById(`likes-${postId}`);
+                    countEl.textContent = parseInt(countEl.textContent) + 1;
                 }
 
-                await page.render(renderContext).promise
-                
-                // Update page display
-                document.getElementById('currentPageDisplay').textContent = pageNum
-                
-                // Update active thumbnail
-                document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
-                    if (index + 1 === pageNum) {
-                        thumb.classList.add('active')
-                        thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
-                    } else {
-                        thumb.classList.remove('active')
-                    }
-                })
-
-                updateButtons()
+                // Update button state
+                const btn = document.querySelector(`[onclick="handleLike('${postId}')"]`);
+                if (userLikes.has(postId)) {
+                    btn.classList.add('liked');
+                    btn.innerHTML = '<span>❤️</span><span>Liked</span>';
+                } else {
+                    btn.classList.remove('liked');
+                    btn.innerHTML = '<span>❤️</span><span>Like</span>';
+                }
 
             } catch (error) {
-                console.error('Error rendering page:', error)
-            } finally {
-                pageRendering = false
-                loadingOverlay.classList.add('hidden')
+                console.error('Error liking post:', error);
+                showAlert('Error updating like');
             }
-        }
+        };
 
-        // Generate thumbnails
-        async function generateThumbnails() {
-            const container = document.getElementById('thumbnailContainer')
-            container.innerHTML = ''
-
-            for (let i = 1; i <= totalPages; i++) {
-                const page = await pdfDoc.getPage(i)
-                const viewport = page.getViewport({ scale: 0.2 })
-                
-                const canvas = document.createElement('canvas')
-                canvas.width = viewport.width
-                canvas.height = viewport.height
-                
-                const context = canvas.getContext('2d')
-                
-                await page.render({
-                    canvasContext: context,
-                    viewport: viewport
-                }).promise
-
-                const thumbnail = document.createElement('div')
-                thumbnail.className = `thumbnail ${i === currentPage ? 'active' : ''}`
-                thumbnail.onclick = () => {
-                    currentPage = i
-                    renderPage(currentPage)
+        // Handle save
+        window.handleSave = async (postId) => {
+            if (!currentUser) {
+                if (confirm('Please login to save posts')) {
+                    window.location.href = 'login.html';
                 }
-                
-                thumbnail.appendChild(canvas)
-                
-                const numberSpan = document.createElement('span')
-                numberSpan.className = 'thumbnail-number'
-                numberSpan.textContent = i
-                thumbnail.appendChild(numberSpan)
-                
-                container.appendChild(thumbnail)
+                return;
+            }
+
+            try {
+                if (userSaves.has(postId)) {
+                    // Unsave
+                    await supabaseClient
+                        .from('saved_posts')
+                        .delete()
+                        .eq('post_id', postId)
+                        .eq('user_id', currentUser.id);
+
+                    userSaves.delete(postId);
+                    showAlert('Post removed from saved');
+                } else {
+                    // Save
+                    await supabaseClient
+                        .from('saved_posts')
+                        .insert([{ post_id: postId, user_id: currentUser.id }]);
+
+                    userSaves.add(postId);
+                    showAlert('Post saved!');
+                }
+
+                // Update button state
+                const btn = document.querySelector(`[onclick="handleSave('${postId}')"]`);
+                if (userSaves.has(postId)) {
+                    btn.classList.add('saved');
+                    btn.innerHTML = '<span>🔖</span><span>Saved</span>';
+                } else {
+                    btn.classList.remove('saved');
+                    btn.innerHTML = '<span>🔖</span><span>Save</span>';
+                }
+
+            } catch (error) {
+                console.error('Error saving post:', error);
+                showAlert('Error saving post');
+            }
+        };
+
+        // Share post
+        window.sharePost = (postId) => {
+            const post = posts.find(p => p.id === postId);
+            const url = `${window.location.origin}/post.html?id=${postId}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: post.title,
+                    text: post.content.substring(0, 100) + '...',
+                    url: url
+                }).catch(() => {
+                    copyToClipboard(url);
+                });
+            } else {
+                copyToClipboard(url);
+            }
+        };
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('Link copied to clipboard!');
+            }).catch(() => {
+                showAlert('Could not copy link');
+            });
+        }
+
+        // Load comments for a post
+        async function loadComments(postId) {
+            try {
+                const { data: comments, error } = await supabaseClient
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (id, name, profile_image_url)
+                    `)
+                    .eq('post_id', postId)
+                    .is('parent_comment_id', null)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                renderComments(comments, postId);
+
+            } catch (error) {
+                console.error('Error loading comments:', error);
             }
         }
 
-        // Fit to width
-        async function fitToWidth() {
-            const container = document.getElementById('pdfCanvasContainer')
-            const containerWidth = container.clientWidth - 40
-            
-            const page = await pdfDoc.getPage(currentPage)
-            const viewport = page.getViewport({ scale: 1.0 })
-            
-            currentScale = containerWidth / viewport.width
-            document.getElementById('zoomLevel').textContent = Math.round(currentScale * 100) + '%'
-            renderPage(currentPage)
+        // Render comments
+        function renderComments(comments, postId) {
+            const container = document.getElementById(`comments-list-${postId}`);
+            if (!container) return;
+
+            if (comments.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No comments yet</p>';
+                return;
+            }
+
+            container.innerHTML = comments.map(comment => `
+                <div class="comment">
+                    <div class="comment-header">
+                        <img src="${comment.profiles?.profile_image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.profiles?.name || 'User')}&background=FFD700&color=000&size=30`}" 
+                             class="comment-avatar">
+                        <span class="comment-author">${comment.profiles?.name || 'User'}</span>
+                        <span class="comment-date">${new Date(comment.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                </div>
+            `).join('');
         }
 
-        // Fit to page
-        async function fitToPage() {
-            const container = document.getElementById('pdfCanvasContainer')
-            const containerWidth = container.clientWidth - 40
-            const containerHeight = container.clientHeight - 40
-            
-            const page = await pdfDoc.getPage(currentPage)
-            const viewport = page.getViewport({ scale: 1.0 })
-            
-            const scaleWidth = containerWidth / viewport.width
-            const scaleHeight = containerHeight / viewport.height
-            currentScale = Math.min(scaleWidth, scaleHeight)
-            
-            document.getElementById('zoomLevel').textContent = Math.round(currentScale * 100) + '%'
-            renderPage(currentPage)
-        }
+        // Add comment
+        window.addComment = async (postId) => {
+            if (!currentUser) {
+                showAlert('Please login to comment');
+                return;
+            }
 
-        // Update button states
-        function updateButtons() {
-            const prevBtn = document.getElementById('prevPageBtn')
-            const nextBtn = document.getElementById('nextPageBtn')
-            const leftArrow = document.getElementById('leftArrow')
-            const rightArrow = document.getElementById('rightArrow')
-            
-            const isFirst = currentPage <= 1
-            const isLast = currentPage >= totalPages
-            
-            prevBtn.disabled = isFirst
-            nextBtn.disabled = isLast
-            leftArrow.style.opacity = isFirst ? '0.3' : '1'
-            rightArrow.style.opacity = isLast ? '0.3' : '1'
-            leftArrow.style.pointerEvents = isFirst ? 'none' : 'auto'
-            rightArrow.style.pointerEvents = isLast ? 'none' : 'auto'
-        }
+            const input = document.getElementById(`comment-${postId}`);
+            const content = input.value.trim();
+
+            if (!content) {
+                showAlert('Please enter a comment');
+                return;
+            }
+
+            try {
+                await supabaseClient
+                    .from('comments')
+                    .insert([{
+                        post_id: postId,
+                        user_id: currentUser.id,
+                        content: content
+                    }]);
+
+                input.value = '';
+                await loadComments(postId);
+                showAlert('Comment posted!');
+
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                showAlert('Error posting comment');
+            }
+        };
+
+        // Toggle comments section
+        window.toggleComments = (postId) => {
+            const section = document.getElementById(`comments-${postId}`);
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                loadComments(postId);
+            } else {
+                section.style.display = 'none';
+            }
+        };
 
         // Escape HTML
         function escapeHtml(unsafe) {
-            if (!unsafe) return ''
+            if (!unsafe) return '';
             return unsafe
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
+                .replace(/'/g, '&#039;');
         }
 
-        // Logout
-        logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut()
-            window.location.reload()
-        })
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (pdfDoc && currentPage) {
-                renderPage(currentPage)
-            }
-        })
+        // Category filtering
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                renderPosts();
+            });
+        });
 
         // Initialize
         async function init() {
-            await checkAuth()
-            await loadEbook()
+            initTheme();
+            await checkAuth();
+            await loadPosts();
         }
 
-        init()
+        init();
     </script>
 </body>
 </html>
