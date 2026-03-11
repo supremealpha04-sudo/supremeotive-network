@@ -12,28 +12,28 @@
         }
 
         :root {
-            --primary-black: #0A0A0A;
-            --deep-navy: #0B1A33;
-            --gold: #FFD700;
-            --electric-blue: #00F0FF;
-            --dark-gray: #1A1A1A;
-            --medium-gray: #2A2A2A;
-            --light-gray: #3A3A3A;
-            --text-primary: #FFFFFF;
+            --bg-color: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --text-color: #FFFFFF;
             --text-secondary: #B0B0B0;
+            --gold: #FFD700;
+            --border-color: #333333;
+            --electric-blue: #00F0FF;
             --success: #4CAF50;
             --error: #F44336;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, var(--primary-black) 0%, var(--deep-navy) 100%);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
+            padding-bottom: 80px;
         }
 
-        .navbar {
-            background: var(--dark-gray);
+        /* Top Navigation */
+        .top-nav {
+            background: var(--card-bg);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
@@ -45,22 +45,35 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--gold);
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--gold);
+            transition: all 0.3s ease;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
         .nav-links a {
-            color: var(--text-primary);
+            color: var(--text-color);
             text-decoration: none;
+            font-size: 0.9rem;
             transition: color 0.3s ease;
         }
 
@@ -69,151 +82,247 @@
             color: var(--gold);
         }
 
-        #logoutBtn {
-            background: var(--error);
-            color: white;
+        .theme-toggle {
+            background: none;
             border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
             cursor: pointer;
-            font-weight: 600;
+            padding: 0.3rem;
         }
 
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 2px solid var(--gold);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
+        }
+
+        /* Main Content */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
-            padding: 0 2rem;
+            padding: 0 1rem;
         }
 
+        /* Header */
         .header {
+            margin-bottom: 2rem;
             text-align: center;
-            margin-bottom: 3rem;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
 
         .header p {
             color: var(--text-secondary);
-            font-size: 1.1rem;
+            font-size: 0.95rem;
         }
 
-        .filters {
+        /* Categories/Filters */
+        .categories {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
             justify-content: center;
+            margin-bottom: 2rem;
         }
 
-        .search-box {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
+        .category-btn {
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .search-box input {
-            width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            background: var(--dark-gray);
-            border: 1px solid var(--light-gray);
-            border-radius: 50px;
-            color: var(--text-primary);
-            font-size: 1rem;
-        }
-
-        .search-box input:focus {
-            outline: none;
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--gold);
+            color: var(--bg-color);
             border-color: var(--gold);
         }
 
-        .search-box i {
+        /* Search Bar */
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .search-icon {
             position: absolute;
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
+            font-size: 1rem;
         }
 
-        .filter-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 0.8rem 1.5rem;
-            background: var(--dark-gray);
-            border: 1px solid var(--light-gray);
-            border-radius: 50px;
-            color: var(--text-secondary);
-            cursor: pointer;
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            color: var(--text-color);
+            font-size: 0.95rem;
             transition: all 0.3s ease;
         }
 
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: var(--gold);
-            color: var(--primary-black);
+        .search-input:focus {
+            outline: none;
             border-color: var(--gold);
         }
 
-        .ebooks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
         }
 
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-item span {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Ebooks Grid - Exactly like home quotes grid */
+        .ebooks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Ebook Card - Matching quote card style */
         .ebook-card {
-            background: var(--dark-gray);
-            border-radius: 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
             overflow: hidden;
-            border: 1px solid var(--light-gray);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .ebook-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-4px);
             border-color: var(--gold);
-            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
         }
 
+        /* Watermark */
+        .ebook-card::after {
+            content: 'SUPREME MOTIVE';
+            position: absolute;
+            bottom: 60px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: rgba(255, 215, 0, 0.15);
+            transform: rotate(-5deg);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Ebook Cover */
         .ebook-cover {
             width: 100%;
-            height: 250px;
+            height: 200px;
             object-fit: cover;
-            border-bottom: 2px solid var(--gold);
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
         }
 
         .ebook-info {
             padding: 1.5rem;
+            position: relative;
+            z-index: 2;
         }
 
-        .ebook-title {
-            font-size: 1.3rem;
-            color: var(--gold);
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-        }
-
-        .ebook-description {
+        /* Category/Tag - Like quote tag */
+        .ebook-tag {
             color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
         }
 
-        .ebook-price {
-            font-size: 1.5rem;
+        .ebook-tag span {
+            color: var(--gold);
+            margin-right: 0.3rem;
+        }
+
+        /* Title */
+        .ebook-title {
+            font-size: 1.2rem;
             font-weight: bold;
-            color: var(--electric-blue);
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        /* Description - truncated like quote text */
+        .ebook-description {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Price */
+        .ebook-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--gold);
             margin-bottom: 1rem;
         }
 
@@ -221,87 +330,98 @@
             color: var(--success);
         }
 
-        .ebook-badge {
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-
-        .badge-free {
-            background: rgba(76, 175, 80, 0.1);
-            color: var(--success);
-            border: 1px solid var(--success);
-        }
-
-        .badge-paid {
-            background: rgba(255, 215, 0, 0.1);
-            color: var(--gold);
-            border: 1px solid var(--gold);
-        }
-
-        .badge-unlocked {
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--electric-blue);
-            border: 1px solid var(--electric-blue);
-        }
-
+        /* Action Buttons - Like quote actions */
         .ebook-actions {
             display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-color);
         }
 
-        .btn {
+        .action-btn {
             flex: 1;
-            padding: 1rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
+            padding: 0.6rem;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
 
-        .btn-primary {
+        .action-btn:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+            border-color: var(--gold);
+        }
+
+        .action-btn.primary {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
+            color: var(--bg-color);
+            border: none;
         }
 
-        .btn-primary:hover {
+        .action-btn.primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
 
-        .btn-success {
-            background: var(--success);
-            color: white;
+        .action-btn.saved {
+            background: var(--electric-blue);
+            color: var(--bg-color);
+            border-color: var(--electric-blue);
         }
 
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
         }
 
-        .btn-secondary {
-            background: var(--medium-gray);
-            color: var(--text-primary);
-            border: 1px solid var(--light-gray);
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
         }
 
-        .btn-secondary:hover {
-            background: var(--light-gray);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        /* Alert */
+        .alert {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            color: var(--text-color);
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
         }
 
         /* Modal */
@@ -316,6 +436,7 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            backdrop-filter: blur(5px);
         }
 
         .modal.show {
@@ -323,11 +444,11 @@
         }
 
         .modal-content {
-            background: var(--dark-gray);
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 2rem;
+            max-width: 400px;
             width: 90%;
-            max-width: 500px;
             border: 1px solid var(--gold);
         }
 
@@ -338,7 +459,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .modal-header h2 {
+        .modal-header h3 {
             color: var(--gold);
         }
 
@@ -348,10 +469,6 @@
             color: var(--text-secondary);
             font-size: 1.5rem;
             cursor: pointer;
-        }
-
-        .close-btn:hover {
-            color: var(--error);
         }
 
         .whatsapp-info {
@@ -367,414 +484,563 @@
 
         .whatsapp-icon {
             font-size: 2rem;
-        }
-
-        .whatsapp-text {
             color: #25D366;
-            font-weight: 500;
         }
 
         .admin-number {
-            background: var(--medium-gray);
+            background: var(--bg-color);
             padding: 1rem;
             border-radius: 8px;
             margin: 1rem 0;
-            text-align: center;
-            font-size: 1.2rem;
-            color: var(--gold);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            word-break: break-all;
         }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            grid-column: 1 / -1;
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid var(--light-gray);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Alert */
-        .alert {
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
+        .btn-primary {
+            flex: 1;
+            padding: 0.8rem;
+            background: #25D366;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            animation: slideIn 0.3s ease;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .btn-secondary {
+            flex: 1;
+            padding: 0.8rem;
+            background: var(--border-color);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .alert-success {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid var(--success);
-            color: var(--success);
-        }
-
-        .alert-error {
-            background: rgba(244, 67, 54, 0.1);
-            border: 1px solid var(--error);
-            color: var(--error);
+        /* Hidden */
+        .hidden {
+            display: none !important;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1rem;
+            .menu-toggle {
+                display: flex;
             }
 
             .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .filters {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
                 flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                border-bottom: 2px solid var(--gold);
+                z-index: 99;
             }
 
-            .search-box {
-                width: 100%;
+            .nav-links.active {
+                transform: translateY(0);
             }
 
             .ebooks-grid {
                 grid-template-columns: 1fr;
             }
-        }
-    </style>
-    <script type="importmap">
-        {
-            "imports": {
-                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+
+            .stats-row {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
             }
         }
-    </script>
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="top-nav">
         <div class="logo">SupremeMotive</div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="ebooks.html" class="active">Ebooks</a>
-            <a href="profile.html">Profile</a>
-            <a href="#" id="adminLink" style="display: none;">Admin</a>
-            <button id="logoutBtn" style="display: none;">Logout</button>
-            <a href="login.html" id="loginLink">Login</a>
+        
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="support.html">Support</a>
+            <a href="#" id="adminLink" style="display: none;">Admin</a>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+    </nav>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="ebooks.html" class="nav-item active">
+            <span class="nav-icon">📚</span>
+            <span>Ebooks</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+        <a href="post.html" class="nav-item">
+            <span class="nav-icon">📰</span>
+            <span>Articles</span>
+        </a>
     </nav>
 
     <main class="container">
         <div class="header">
-            <h1>📚 Ebook Library</h1>
-            <p>Expand your mind with our collection of motivational ebooks</p>
+            <h1>Ebook Library</h1>
+            <p>Expand your mind with our collection</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search ebooks...">
+        </div>
+
+        <!-- Categories -->
+        <div class="categories" id="categories">
+            <button class="category-btn active" data-category="all">All</button>
+            <button class="category-btn" data-category="free">Free</button>
+            <button class="category-btn" data-category="paid">Paid</button>
+            <button class="category-btn" data-category="motivation">Motivation</button>
+            <button class="category-btn" data-category="success">Success</button>
+            <button class="category-btn" data-category="mindset">Mindset</button>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-item">
+                <span>📚</span>
+                <span id="totalEbooks">0</span> Total Ebooks
+            </div>
+            <div class="stat-item">
+                <span>🎁</span>
+                <span id="freeEbooks">0</span> Free
+            </div>
+            <div class="stat-item">
+                <span>💰</span>
+                <span id="paidEbooks">0</span> Paid
+            </div>
         </div>
 
         <div id="alertContainer"></div>
 
-        <div class="filters">
-            <div class="search-box">
-                <i>🔍</i>
-                <input type="text" id="searchInput" placeholder="Search ebooks by title or description...">
-            </div>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="free">Free</button>
-                <button class="filter-btn" data-filter="paid">Paid</button>
-                <button class="filter-btn" data-filter="unlocked">Unlocked</button>
-            </div>
-        </div>
-
+        <!-- Ebooks Grid -->
         <div class="ebooks-grid" id="ebooksGrid">
             <div class="loading">
                 <div class="spinner"></div>
                 <p>Loading ebooks...</p>
             </div>
         </div>
-
-        <!-- Unlock Modal -->
-        <div class="modal" id="unlockModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>🔓 Unlock Ebook</h2>
-                    <button class="close-btn" id="closeModalBtn">&times;</button>
-                </div>
-                <div id="modalEbookInfo"></div>
-                <div class="whatsapp-info">
-                    <span class="whatsapp-icon">📱</span>
-                    <span class="whatsapp-text">Complete payment via WhatsApp</span>
-                </div>
-                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Send the following information to our admin on WhatsApp:</p>
-                <div class="admin-number" id="whatsappMessage"></div>
-                <div class="whatsapp-info" style="margin-top: 1rem;">
-                    <span class="whatsapp-icon">⏳</span>
-                    <span class="whatsapp-text">After payment, admin will approve your access</span>
-                </div>
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button class="btn btn-success" id="sendWhatsAppBtn" style="flex: 2;">
-                        <i>📱</i>
-                        Open WhatsApp
-                    </button>
-                    <button class="btn btn-secondary" id="cancelModalBtn" style="flex: 1;">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </div>
     </main>
 
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
+    <!-- Unlock Modal -->
+    <div class="modal" id="unlockModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔓 Unlock Ebook</h3>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            
+            <div id="modalEbookInfo" style="margin-bottom: 1rem;"></div>
 
-        const supabase = createClient(
-            'https://dzcykpbfykajhoutzhpf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
-        )
+            <div class="whatsapp-info">
+                <span class="whatsapp-icon">📱</span>
+                <span>Complete payment via WhatsApp</span>
+            </div>
 
-        // Admin WhatsApp number (replace with actual admin number)
-        const ADMIN_WHATSAPP = '+1234567890'
+            <div class="admin-number" id="whatsappMessage"></div>
+
+            <div class="modal-actions">
+                <button class="btn-primary" id="sendWhatsAppBtn">
+                    <span>📱</span>
+                    Open WhatsApp
+                </button>
+                <button class="btn-secondary" id="cancelModalBtn">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
         
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Admin WhatsApp number
+        const ADMIN_WHATSAPP = '2349012345678';
+
         // Admin emails
         const ADMIN_EMAILS = [
             'supremealpha04@gmail.com',
             'suprememotive43@gmail.com',
             'sandrakukk055@gmail.com',
             'emmanuelamer6@gmail.com'
-        ]
+        ];
 
-        let currentUser = null
-        let allEbooks = []
-        let userUnlocks = []
-        let selectedEbook = null
+        // State
+        let currentUser = null;
+        let currentCategory = 'all';
+        let searchTerm = '';
+        let ebooks = [];
+        let userUnlocks = new Set();
+        let selectedEbook = null;
+
+        // Sample ebooks (in case database is empty)
+        const sampleEbooks = [
+            {
+                id: '1',
+                title: 'The Motivation Manifesto',
+                description: 'A powerful guide to reclaiming your life and pursuing your purpose with unwavering determination.',
+                cover_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400',
+                category: 'motivation',
+                price: 0,
+                is_paid: false,
+                tag: 'Mm'
+            },
+            {
+                id: '2',
+                title: 'Mindset Mastery',
+                description: 'Transform your thinking and unlock your full potential with proven psychological strategies.',
+                cover_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400',
+                category: 'mindset',
+                price: 9.99,
+                is_paid: true,
+                tag: 'Mm'
+            },
+            {
+                id: '3',
+                title: 'Daily Habits of Successful People',
+                description: 'Learn the morning routines and daily practices that separate high achievers from the rest.',
+                cover_url: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400',
+                category: 'success',
+                price: 14.99,
+                is_paid: true,
+                tag: 'Dh'
+            },
+            {
+                id: '4',
+                title: 'The Power of Consistency',
+                description: 'Discover how small daily actions lead to extraordinary results over time.',
+                cover_url: 'https://images.unsplash.com/photo-1491841573634-28140fc7ced7?w=400',
+                category: 'success',
+                price: 0,
+                is_paid: false,
+                tag: 'Pc'
+            },
+            {
+                id: '5',
+                title: 'Emotional Intelligence 2.0',
+                description: 'Master your emotions and improve your relationships with practical EQ strategies.',
+                cover_url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400',
+                category: 'mindset',
+                price: 12.99,
+                is_paid: true,
+                tag: 'Ei'
+            }
+        ];
 
         // DOM Elements
-        const ebooksGrid = document.getElementById('ebooksGrid')
-        const searchInput = document.getElementById('searchInput')
-        const filterBtns = document.querySelectorAll('.filter-btn')
-        const logoutBtn = document.getElementById('logoutBtn')
-        const loginLink = document.getElementById('loginLink')
-        const adminLink = document.getElementById('adminLink')
-        const alertContainer = document.getElementById('alertContainer')
-        const unlockModal = document.getElementById('unlockModal')
-        const modalEbookInfo = document.getElementById('modalEbookInfo')
-        const whatsappMessage = document.getElementById('whatsappMessage')
-        const sendWhatsAppBtn = document.getElementById('sendWhatsAppBtn')
-        const closeModalBtn = document.getElementById('closeModalBtn')
-        const cancelModalBtn = document.getElementById('cancelModalBtn')
+        const ebooksGrid = document.getElementById('ebooksGrid');
+        const alertContainer = document.getElementById('alertContainer');
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        const themeToggle = document.getElementById('themeToggle');
+        const adminLink = document.getElementById('adminLink');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const searchInput = document.getElementById('searchInput');
+        const totalEbooks = document.getElementById('totalEbooks');
+        const freeEbooks = document.getElementById('freeEbooks');
+        const paidEbooks = document.getElementById('paidEbooks');
+        const unlockModal = document.getElementById('unlockModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const sendWhatsAppBtn = document.getElementById('sendWhatsAppBtn');
+        const modalEbookInfo = document.getElementById('modalEbookInfo');
+        const whatsappMessage = document.getElementById('whatsappMessage');
 
-        // Check auth status
-        async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser()
-            currentUser = user
-
-            if (user) {
-                logoutBtn.style.display = 'block'
-                loginLink.style.display = 'none'
-                
-                if (ADMIN_EMAILS.includes(user.email)) {
-                    adminLink.style.display = 'block'
-                    adminLink.href = 'admin/admin-dashboard.html'
-                }
-
-                // Load user's unlocked ebooks
-                await loadUserUnlocks()
+        // Theme toggle
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
             } else {
-                logoutBtn.style.display = 'none'
-                loginLink.style.display = 'block'
-                adminLink.style.display = 'none'
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
             }
         }
 
-        // Load user's unlocked ebooks
+        themeToggle.addEventListener('click', () => {
+            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5';
+            if (isLight) {
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Mobile menu
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Show alert
+        function showAlert(message) {
+            alertContainer.innerHTML = `<div class="alert">${message}</div>`;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 2000);
+        }
+
+        // Check auth
+        async function checkAuth() {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                currentUser = user;
+                
+                if (user && ADMIN_EMAILS.includes(user.email)) {
+                    adminLink.style.display = 'block';
+                    adminLink.href = 'admin/admin-dashboard.html';
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        // Load user unlocks
         async function loadUserUnlocks() {
-            if (!currentUser) return
+            if (!currentUser) return;
 
             try {
-                const { data, error } = await supabase
+                const { data: unlocks } = await supabase
                     .from('unlocks')
                     .select('ebook_id')
                     .eq('user_id', currentUser.id)
-                    .eq('status', 'approved')
+                    .eq('status', 'approved');
 
-                if (error) throw error
-                userUnlocks = data.map(u => u.ebook_id) || []
+                if (unlocks) {
+                    userUnlocks = new Set(unlocks.map(u => u.ebook_id));
+                }
             } catch (error) {
-                console.error('Error loading unlocks:', error)
+                console.error('Error loading unlocks:', error);
             }
         }
 
         // Load ebooks
         async function loadEbooks() {
             try {
-                ebooksGrid.innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Loading ebooks...</p>
-                    </div>
-                `
-
                 const { data, error } = await supabase
                     .from('ebooks')
                     .select('*')
-                    .order('created_at', { ascending: false })
+                    .order('created_at', { ascending: false });
 
-                if (error) throw error
+                if (error) throw error;
 
-                allEbooks = data || []
-                renderEbooks(allEbooks)
+                if (data && data.length > 0) {
+                    ebooks = data;
+                } else {
+                    // Use sample ebooks if database is empty
+                    ebooks = sampleEbooks;
+                }
+
+                // Update stats
+                updateStats();
+                renderEbooks();
 
             } catch (error) {
-                ebooksGrid.innerHTML = `
-                    <div class="loading">
-                        <p style="color: var(--error);">Error loading ebooks: ${error.message}</p>
-                    </div>
-                `
+                console.error('Error loading ebooks:', error);
+                ebooks = sampleEbooks;
+                updateStats();
+                renderEbooks();
             }
         }
 
+        // Update stats
+        function updateStats() {
+            totalEbooks.textContent = ebooks.length;
+            freeEbooks.textContent = ebooks.filter(e => !e.is_paid).length;
+            paidEbooks.textContent = ebooks.filter(e => e.is_paid).length;
+        }
+
         // Render ebooks
-        function renderEbooks(ebooks) {
-            if (ebooks.length === 0) {
+        function renderEbooks() {
+            let filteredEbooks = [...ebooks];
+
+            // Filter by category
+            if (currentCategory === 'free') {
+                filteredEbooks = filteredEbooks.filter(e => !e.is_paid);
+            } else if (currentCategory === 'paid') {
+                filteredEbooks = filteredEbooks.filter(e => e.is_paid);
+            } else if (currentCategory !== 'all') {
+                filteredEbooks = filteredEbooks.filter(e => e.category === currentCategory);
+            }
+
+            // Filter by search
+            if (searchTerm) {
+                filteredEbooks = filteredEbooks.filter(e => 
+                    e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    e.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+
+            if (filteredEbooks.length === 0) {
                 ebooksGrid.innerHTML = `
                     <div class="loading">
                         <p>No ebooks found</p>
                     </div>
-                `
-                return
+                `;
+                return;
             }
 
-            ebooksGrid.innerHTML = ebooks.map(ebook => {
-                const isUnlocked = !ebook.is_paid || (currentUser && userUnlocks.includes(ebook.id))
-                const hasPendingRequest = false // You can check pending requests if needed
-
+            ebooksGrid.innerHTML = filteredEbooks.map(ebook => {
+                const isUnlocked = !ebook.is_paid || userUnlocks.has(ebook.id);
+                const priceDisplay = ebook.is_paid ? `$${ebook.price}` : 'FREE';
+                const priceClass = ebook.is_paid ? '' : 'free';
+                
                 return `
-                    <div class="ebook-card" data-id="${ebook.id}">
-                        <img src="${ebook.cover_url}" alt="${escapeHtml(ebook.title)}" class="ebook-cover"
-                             onerror="this.src='https://via.placeholder.com/300x400?text=No+Cover'">
+                    <div class="ebook-card">
+                        <img src="${ebook.cover_url}" alt="${ebook.title}" class="ebook-cover"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=No+Cover'">
                         
                         <div class="ebook-info">
-                            <span class="ebook-badge ${ebook.is_paid ? 'badge-paid' : 'badge-free'}">
-                                ${ebook.is_paid ? '💰 PAID' : '🎁 FREE'}
-                            </span>
+                            <div class="ebook-tag">
+                                <span>${ebook.tag || 'Eb'}</span> ${ebook.category.charAt(0).toUpperCase() + ebook.category.slice(1)}
+                            </div>
                             
-                            ${isUnlocked ? `
-                                <span class="ebook-badge badge-unlocked" style="margin-left: 0.5rem;">
-                                    🔓 UNLOCKED
-                                </span>
-                            ` : ''}
+                            <h3 class="ebook-title">${ebook.title}</h3>
+                            <p class="ebook-description">${ebook.description}</p>
                             
-                            <h3 class="ebook-title">${escapeHtml(ebook.title)}</h3>
-                            <p class="ebook-description">${escapeHtml(ebook.description.substring(0, 120))}...</p>
-                            
-                            <div class="ebook-price ${!ebook.is_paid ? 'free' : ''}">
-                                ${ebook.is_paid ? `$${ebook.price}` : 'FREE'}
+                            <div class="ebook-price ${priceClass}">
+                                ${priceDisplay}
                             </div>
 
                             <div class="ebook-actions">
                                 ${isUnlocked ? `
-                                    <button class="btn btn-success" onclick="readEbook('${ebook.id}')">
-                                        <i>📖</i>
+                                    <button class="action-btn primary" onclick="readEbook('${ebook.id}')">
+                                        <span>📖</span>
                                         Read Now
-                                    </button>
-                                ` : ebook.is_paid ? `
-                                    <button class="btn btn-primary" onclick="showUnlockModal('${ebook.id}')">
-                                        <i>🔓</i>
-                                        Unlock for $${ebook.price}
                                     </button>
                                 ` : `
-                                    <button class="btn btn-success" onclick="readEbook('${ebook.id}')">
-                                        <i>📖</i>
-                                        Read Now
+                                    <button class="action-btn primary" onclick="showUnlockModal('${ebook.id}')">
+                                        <span>🔓</span>
+                                        Unlock
                                     </button>
                                 `}
-                                
-                                <button class="btn btn-secondary" onclick="viewDetails('${ebook.id}')">
-                                    <i>ℹ️</i>
-                                    Details
+                                <button class="action-btn" onclick="saveEbook('${ebook.id}')">
+                                    <span>🔖</span>
+                                    Save
                                 </button>
                             </div>
                         </div>
                     </div>
-                `
-            }).join('')
+                `;
+            }).join('');
         }
 
         // Show unlock modal
-        window.showUnlockModal = async (ebookId) => {
+        window.showUnlockModal = (ebookId) => {
             if (!currentUser) {
-                if (confirm('Please login to unlock ebooks. Go to login page?')) {
-                    window.location.href = 'login.html'
+                if (confirm('Please login to unlock ebooks')) {
+                    window.location.href = 'login.html';
                 }
-                return
+                return;
             }
 
-            const ebook = allEbooks.find(e => e.id === ebookId)
-            if (!ebook) return
+            const ebook = ebooks.find(e => e.id === ebookId);
+            if (!ebook) return;
 
-            selectedEbook = ebook
+            selectedEbook = ebook;
 
-            // Create unlock request in database
-            try {
-                await supabase
-                    .from('unlocks')
-                    .insert([{
-                        user_id: currentUser.id,
-                        ebook_id: ebookId,
-                        status: 'pending'
-                    }])
-            } catch (error) {
-                console.error('Error creating unlock request:', error)
-            }
-
-            // Prepare modal content
             modalEbookInfo.innerHTML = `
-                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
-                    <img src="${ebook.cover_url}" alt="${escapeHtml(ebook.title)}" 
-                         style="width: 80px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gold);">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <img src="${ebook.cover_url}" alt="${ebook.title}" 
+                         style="width: 60px; height: 80px; object-fit: cover; border-radius: 8px;">
                     <div>
-                        <h3 style="color: var(--gold); margin-bottom: 0.5rem;">${escapeHtml(ebook.title)}</h3>
-                        <p style="color: var(--electric-blue); font-weight: bold;">$${ebook.price}</p>
+                        <h4 style="color: var(--gold);">${ebook.title}</h4>
+                        <p style="color: var(--text-secondary);">$${ebook.price}</p>
                     </div>
                 </div>
-            `
+            `;
 
             const message = `*Unlock Request - SupremeMotive*\n\n` +
                 `*User:* ${currentUser.email}\n` +
                 `*User ID:* ${currentUser.id}\n` +
                 `*Ebook:* ${ebook.title}\n` +
                 `*Ebook ID:* ${ebook.id}\n` +
-                `*Price:* $${ebook.price}\n\n` +
-                `Please process this unlock request.`
+                `*Price:* $${ebook.price}`;
 
-            whatsappMessage.textContent = message
+            whatsappMessage.textContent = message;
 
-            unlockModal.classList.add('show')
-        }
+            unlockModal.classList.add('show');
+        };
 
-        // Send WhatsApp message
+        // Send WhatsApp
         sendWhatsAppBtn.addEventListener('click', () => {
-            if (!selectedEbook || !currentUser) return
+            if (!selectedEbook || !currentUser) return;
 
             const message = encodeURIComponent(
                 `*Unlock Request - SupremeMotive*\n\n` +
@@ -782,128 +1048,73 @@
                 `*User ID:* ${currentUser.id}\n` +
                 `*Ebook:* ${selectedEbook.title}\n` +
                 `*Ebook ID:* ${selectedEbook.id}\n` +
-                `*Price:* $${selectedEbook.price}\n\n` +
-                `Please process this unlock request.`
-            )
+                `*Price:* $${selectedEbook.price}`
+            );
 
-            window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${message}`, '_blank')
-            
-            showAlert('Request sent! Admin will approve your access after payment confirmation.', 'success')
+            window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${message}`, '_blank');
+            showAlert('Request sent! Admin will approve after payment.');
             
             setTimeout(() => {
-                unlockModal.classList.remove('show')
-            }, 2000)
-        })
+                unlockModal.classList.remove('show');
+            }, 2000);
+        });
 
-        // Read ebook
-        window.readEbook = (ebookId) => {
-            window.open(`ebook-reader.html?id=${ebookId}`, '_blank')
-        }
-
-        // View details
-        window.viewDetails = (ebookId) => {
-            window.open(`ebook-details.html?id=${ebookId}`, '_blank')
-        }
-
-        // Filter ebooks
-        function filterEbooks(filter) {
-            let filtered = [...allEbooks]
-
-            switch(filter) {
-                case 'free':
-                    filtered = filtered.filter(e => !e.is_paid)
-                    break
-                case 'paid':
-                    filtered = filtered.filter(e => e.is_paid)
-                    break
-                case 'unlocked':
-                    if (currentUser) {
-                        filtered = filtered.filter(e => !e.is_paid || userUnlocks.includes(e.id))
-                    } else {
-                        filtered = []
-                    }
-                    break
-            }
-
-            // Apply search
-            const searchTerm = searchInput.value.toLowerCase()
-            if (searchTerm) {
-                filtered = filtered.filter(e => 
-                    e.title.toLowerCase().includes(searchTerm) ||
-                    e.description.toLowerCase().includes(searchTerm)
-                )
-            }
-
-            renderEbooks(filtered)
-        }
-
-        // Search input
-        searchInput.addEventListener('input', () => {
-            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter
-            filterEbooks(activeFilter)
-        })
-
-        // Filter buttons
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'))
-                btn.classList.add('active')
-                filterEbooks(btn.dataset.filter)
-            })
-        })
-
-        // Modal close
+        // Close modal
         closeModalBtn.addEventListener('click', () => {
-            unlockModal.classList.remove('show')
-        })
+            unlockModal.classList.remove('show');
+        });
 
         cancelModalBtn.addEventListener('click', () => {
-            unlockModal.classList.remove('show')
-        })
+            unlockModal.classList.remove('show');
+        });
 
         window.addEventListener('click', (e) => {
             if (e.target === unlockModal) {
-                unlockModal.classList.remove('show')
+                unlockModal.classList.remove('show');
             }
-        })
+        });
 
-        // Logout
-        logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut()
-            window.location.reload()
-        })
+        // Read ebook
+        window.readEbook = (ebookId) => {
+            window.open(`ebook-reader.html?id=${ebookId}`, '_blank');
+        };
 
-        // Show alert
-        function showAlert(message, type) {
-            alertContainer.innerHTML = `
-                <div class="alert alert-${type}">
-                    <i>${type === 'success' ? '✅' : '❌'}</i>
-                    <span>${message}</span>
-                </div>
-            `
-            setTimeout(() => {
-                alertContainer.innerHTML = ''
-            }, 3000)
-        }
+        // Save ebook
+        window.saveEbook = (ebookId) => {
+            if (!currentUser) {
+                if (confirm('Please login to save ebooks')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+            showAlert('Ebook saved to your library!');
+        };
 
-        // Escape HTML
-        function escapeHtml(unsafe) {
-            if (!unsafe) return ''
-            return unsafe
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
-        }
+        // Category filtering
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                renderEbooks();
+            });
+        });
+
+        // Search
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderEbooks();
+        });
 
         // Initialize
         async function init() {
-            await checkAuth()
-            await loadEbooks()
+            initTheme();
+            await checkAuth();
+            await loadEbooks();
+            await loadUserUnlocks();
         }
 
-        init()
+        init();
     </script>
 </body>
 </html>
