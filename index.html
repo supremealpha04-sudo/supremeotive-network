@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Daily Quotes</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
             margin: 0;
@@ -42,9 +43,17 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--gold);
+        }
+
+        .logo img {
+            height: 35px;
+            width: auto;
         }
 
         .menu-toggle {
@@ -225,12 +234,11 @@
         }
 
         .quote-text {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             line-height: 1.6;
             margin-bottom: 1rem;
             color: var(--text-color);
             font-style: italic;
-            padding-left: 0.5rem;
         }
 
         .quote-tag {
@@ -249,23 +257,25 @@
 
         .quote-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
             padding-top: 1rem;
             border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
         }
 
         .action-btn {
             flex: 1;
+            min-width: 70px;
             background: none;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            padding: 0.6rem;
+            gap: 0.3rem;
+            padding: 0.5rem;
             border-radius: 8px;
             transition: all 0.3s ease;
         }
@@ -291,7 +301,7 @@
         .like-count {
             font-weight: bold;
             color: inherit;
-            min-width: 30px;
+            min-width: 25px;
             display: inline-block;
         }
 
@@ -385,11 +395,12 @@
             }
 
             .quote-actions {
-                flex-wrap: wrap;
+                gap: 0.3rem;
             }
 
             .action-btn {
-                min-width: calc(50% - 0.5rem);
+                min-width: calc(50% - 0.3rem);
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -397,7 +408,10 @@
 </head>
 <body>
     <nav class="top-nav">
-        <div class="logo">SupremeMotive</div>
+        <div class="logo">
+            <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
+            <span>SupremeMotive</span>
+        </div>
 
         <div class="menu-toggle" id="menuToggle">
             <span></span>
@@ -734,40 +748,6 @@
         }
 
         // ============================================
-        // SHARE QUOTE FUNCTION
-        // ============================================
-        window.shareQuote = (quoteId) => {
-            const quote = quotes.find(q => q.id === quoteId);
-            const shareText = `"${quote.text}" — ${quote.author}\n\nShared from SupremeMotive`;
-            
-            if (navigator.share) {
-                // Use Web Share API if available (mobile)
-                navigator.share({
-                    title: 'SupremeMotive Quote',
-                    text: shareText,
-                }).catch((error) => {
-                    console.log('Share cancelled or failed:', error);
-                    // Fallback to copy
-                    copyToClipboard(shareText);
-                });
-            } else {
-                // Fallback for desktop - copy to clipboard
-                copyToClipboard(shareText);
-            }
-        };
-
-        // ============================================
-        // COPY TO CLIPBOARD
-        // ============================================
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showAlert('Quote copied to clipboard!');
-            }).catch(() => {
-                showAlert('Could not copy quote');
-            });
-        }
-
-        // ============================================
         // RENDER QUOTES
         // ============================================
         async function renderQuotes() {
@@ -814,10 +794,6 @@
                                 <span>📥</span>
                                 <span>Download</span>
                             </button>
-                            <button class="action-btn" onclick="shareQuote('${quote.id}')">
-                                <span>📤</span>
-                                <span>Share</span>
-                            </button>
                         </div>
                     </div>
                 `;
@@ -845,7 +821,6 @@
                         .eq('user_id', currentUser.id);
 
                     userLikes.delete(quoteId);
-                    showAlert('Quote unliked');
                 } else {
                     // Like - add to database
                     await supabaseClient
@@ -856,7 +831,6 @@
                         }]);
 
                     userLikes.add(quoteId);
-                    showAlert('Quote liked!');
                 }
 
                 // Re-render to show updated count
@@ -910,32 +884,43 @@
         };
 
         // ============================================
-        // DOWNLOAD QUOTE
+        // DOWNLOAD QUOTE - EXACTLY LIKE YOUR DESIGN
         // ============================================
         window.downloadQuote = (quoteId) => {
             const quote = quotes.find(q => q.id === quoteId);
             
+            // Create canvas with exact dimensions from your design
             const canvas = document.createElement('canvas');
-            canvas.width = 800;
-            canvas.height = 600;
+            canvas.width = 500;
+            canvas.height = 500;
             const ctx = canvas.getContext('2d');
 
-            ctx.fillStyle = '#1A1A1A';
+            // Black background
+            ctx.fillStyle = '#000000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            // Opening quote mark
+            ctx.font = 'bold 80px Georgia, serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText('“', 40, 40);
+
+            // Quote text - centered
+            ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
             
+            // Word wrap for long quotes
             const words = quote.text.split(' ');
             let line = '';
             let lines = [];
-            let y = 100;
+            let y = 150;
 
             for (let n = 0; n < words.length; n++) {
                 let testLine = line + words[n] + ' ';
                 let metrics = ctx.measureText(testLine);
-                if (metrics.width > 700 && n > 0) {
+                if (metrics.width > 400 && n > 0) {
                     lines.push(line);
                     line = words[n] + ' ';
                 } else {
@@ -944,23 +929,37 @@
             }
             lines.push(line);
 
+            // Draw quote lines
             lines.forEach((line, index) => {
-                ctx.fillText(line, 50, y + (index * 50));
+                ctx.fillText(line, 250, y + (index * 45));
             });
 
-            ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
-            ctx.fillStyle = '#B0B0B0';
-            ctx.fillText(`${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`, 50, 400);
+            // Closing quote mark
+            ctx.font = 'bold 80px Georgia, serif';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'right';
+            ctx.fillText('”', 460, 380);
 
-            ctx.save();
-            ctx.translate(400, 520);
-            ctx.rotate(-5 * Math.PI / 180);
-            ctx.font = 'bold 40px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+            // Tag at bottom right - dashed border like your design
+            const tagText = `${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`;
+            
+            // Draw dashed rectangle
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.setLineDash([5, 5]);
+            ctx.lineWidth = 2;
+            ctx.strokeRect(300, 420, 150, 35);
+            
+            // Draw tag text
+            ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
-            ctx.fillText('SUPREME MOTIVE', 0, 0);
-            ctx.restore();
+            ctx.textBaseline = 'middle';
+            ctx.fillText(tagText, 375, 437);
 
+            // Reset line dash
+            ctx.setLineDash([]);
+
+            // Download
             const link = document.createElement('a');
             link.download = `suprememotive-${quote.category}-quote.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.95);
