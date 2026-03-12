@@ -18,6 +18,7 @@
             --text-secondary: #B0B0B0;
             --gold: #FFD700;
             --border-color: #333333;
+            --electric-blue: #00F0FF;
         }
 
         body {
@@ -28,7 +29,6 @@
             padding-bottom: 80px;
         }
 
-        /* Navigation */
         .top-nav {
             background: var(--card-bg);
             padding: 1rem 2rem;
@@ -176,6 +176,7 @@
             margin-bottom: 1.5rem;
             border: 1px solid var(--border-color);
             transition: transform 0.3s ease;
+            position: relative;
         }
 
         .quote-card:hover {
@@ -188,12 +189,17 @@
             line-height: 1.6;
             margin-bottom: 1rem;
             color: var(--text-color);
+            font-style: italic;
+            padding-left: 0.5rem;
         }
 
         .quote-tag {
             color: var(--text-secondary);
             font-size: 1rem;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .quote-tag span {
@@ -236,9 +242,17 @@
             border-color: var(--gold);
         }
 
+        .action-btn.saved {
+            background: var(--electric-blue);
+            color: var(--bg-color);
+            border-color: var(--electric-blue);
+        }
+
         .like-count {
             font-weight: bold;
             color: inherit;
+            min-width: 30px;
+            display: inline-block;
         }
 
         .loading {
@@ -394,11 +408,12 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - DECLARED ONCE
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
+        // Create client - ONLY ONCE
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
