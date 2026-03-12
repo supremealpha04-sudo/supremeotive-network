@@ -303,17 +303,6 @@
             border-color: var(--gold);
         }
 
-        .quote-card::after {
-            content: 'SUPREME MOTIVE';
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 0.7rem;
-            color: rgba(255, 215, 0, 0.15);
-            transform: rotate(-5deg);
-            pointer-events: none;
-        }
-
         .quote-text {
             font-size: 1.1rem;
             line-height: 1.5;
@@ -807,11 +796,6 @@
                             <option value="happiness">Happiness</option>
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label for="initialLikes">Initial Likes</label>
-                        <input type="number" id="initialLikes" class="form-control" value="0" min="0">
-                    </div>
                 </div>
 
                 <div class="form-actions">
@@ -839,14 +823,14 @@
         </div>
     </div>
 
-    <script type="module">
+    <script>
         // ============================================
         // SUPABASE CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails for quote management
         const QUOTE_ADMIN_EMAILS = [
@@ -874,7 +858,6 @@
         const quoteAuthor = document.getElementById('quoteAuthor');
         const quoteTag = document.getElementById('quoteTag');
         const quoteCategory = document.getElementById('quoteCategory');
-        const initialLikes = document.getElementById('initialLikes');
         const submitBtn = document.getElementById('submitBtn');
         const charCounter = document.getElementById('charCounter');
         const searchInput = document.getElementById('searchInput');
@@ -896,14 +879,18 @@
         // ============================================
         async function checkAuth() {
             try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                currentUser = user;
-
+                const { data: { user }, error } = await supabase.auth.getUser();
+                
+                if (error) throw error;
+                
                 if (!user) {
                     window.location.href = '../login.html';
                     return false;
                 }
 
+                currentUser = user;
+
+                // Check if user is quote admin
                 if (!QUOTE_ADMIN_EMAILS.includes(user.email)) {
                     window.location.href = '../index.html';
                     return false;
@@ -923,7 +910,7 @@
         // ============================================
         async function loadQuotes() {
             try {
-                const { data, error } = await supabaseClient
+                const { data, error } = await supabase
                     .from('quotes')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -931,12 +918,33 @@
                 if (error) throw error;
 
                 quotes = data || [];
+                
+                // Get like counts for each quote
+                const quotesWithStats = await Promise.all(quotes.map(async (quote) => {
+                    const { count: likes } = await supabase
+                        .from('quote_likes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('quote_id', quote.id);
+
+                    const { count: saves } = await supabase
+                        .from('quote_saves')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('quote_id', quote.id);
+
+                    return {
+                        ...quote,
+                        likes_count: likes || 0,
+                        saves_count: saves || 0
+                    };
+                }));
+
+                quotes = quotesWithStats;
                 updateStats();
                 renderQuotes();
 
             } catch (error) {
                 console.error('Error loading quotes:', error);
-                showAlert('Error loading quotes', 'error');
+                showAlert('Error loading quotes: ' + error.message, 'error');
             }
         }
 
@@ -945,8 +953,8 @@
         // ============================================
         function updateStats() {
             totalQuotes.textContent = quotes.length;
-            const likes = quotes.reduce((sum, q) => sum + (q.likes || 0), 0);
-            const saves = quotes.reduce((sum, q) => sum + (q.saves || 0), 0);
+            const likes = quotes.reduce((sum, q) => sum + (q.likes_count || 0), 0);
+            const saves = quotes.reduce((sum, q) => sum + (q.saves_count || 0), 0);
             totalLikes.textContent = likes.toLocaleString();
             totalSaves.textContent = saves.toLocaleString();
         }
@@ -981,38 +989,55 @@
                 return;
             }
 
-            quotesGrid.innerHTML = filteredQuotes.map(quote => `
-                <div class="quote-card" data-id="${quote.id}">
-                    <div class="quote-text">"${escapeHtml(quote.text)}"</div>
-                    
-                    <div class="quote-meta">
-                        <span class="quote-author">— ${escapeHtml(quote.author)}</span>
-                        <span class="quote-category">#${quote.category}</span>
-                    </div>
-                    
-                    <div>
-                        <span class="quote-tag">${quote.tag}</span>
-                    </div>
+            quotesGrid.innerHTML = filteredQuotes.map(quote => {
+                const date = new Date(quote.created_at).toLocaleDateString();
+                
+                return `
+                    <div class="quote-card" data-id="${quote.id}">
+                        <div class="quote-text">"${escapeHtml(quote.text)}"</div>
+                        
+                        <div class="quote-meta">
+                            <span class="quote-author">— ${escapeHtml(quote.author)}</span>
+                            <span class="quote-category">#${quote.category}</span>
+                        </div>
+                        
+                        <div>
+                            <span class="quote-tag">${quote.tag}</span>
+                        </div>
 
-                    <div class="quote-stats">
-                        <span>❤️ ${quote.likes || 0}</span>
-                        <span>🔖 ${quote.saves || 0}</span>
-                        <span>📅 ${new Date(quote.created_at).toLocaleDateString()}</span>
-                    </div>
+                        <div class="quote-stats">
+                            <span>❤️ ${quote.likes_count || 0}</span>
+                            <span>🔖 ${quote.saves_count || 0}</span>
+                            <span>📅 ${date}</span>
+                        </div>
 
-                    <div class="quote-actions">
-                        <button class="view-btn" onclick="viewQuote('${quote.id}')">
-                            <span>👁️</span> Preview
-                        </button>
-                        <button class="edit-btn" onclick="editQuote('${quote.id}')">
-                            <span>✏️</span> Edit
-                        </button>
-                        <button class="delete-btn" onclick="showDeleteModal('${quote.id}')">
-                            <span>🗑️</span> Delete
-                        </button>
+                        <div class="quote-actions">
+                            <button class="view-btn" onclick="viewQuote('${quote.id}')">
+                                <span>👁️</span> Preview
+                            </button>
+                            <button class="edit-btn" onclick="editQuote('${quote.id}')">
+                                <span>✏️</span> Edit
+                            </button>
+                            <button class="delete-btn" onclick="showDeleteModal('${quote.id}')">
+                                <span>🗑️</span> Delete
+                            </button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        // ============================================
+        // ESCAPE HTML
+        // ============================================
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         // ============================================
@@ -1107,7 +1132,6 @@
             quoteAuthor.value = quote.author;
             quoteTag.value = quote.tag;
             quoteCategory.value = quote.category;
-            initialLikes.value = quote.likes || 0;
 
             charCounter.textContent = `${quote.text.length}/300`;
             modalTitle.textContent = 'Edit Quote';
@@ -1131,7 +1155,8 @@
             if (!currentQuoteId) return;
 
             try {
-                const { error } = await supabaseClient
+                // Delete the quote
+                const { error } = await supabase
                     .from('quotes')
                     .delete()
                     .eq('id', currentQuoteId);
@@ -1145,12 +1170,12 @@
 
             } catch (error) {
                 console.error('Error deleting quote:', error);
-                showAlert('Error deleting quote', 'error');
+                showAlert('Error deleting quote: ' + error.message, 'error');
             }
         });
 
         // ============================================
-        // FORM SUBMIT
+        // FORM SUBMIT - CREATE/UPDATE QUOTE
         // ============================================
         quoteForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1160,8 +1185,8 @@
             const author = quoteAuthor.value.trim();
             const tag = quoteTag.value.trim().toUpperCase();
             const category = quoteCategory.value;
-            const likes = parseInt(initialLikes.value) || 0;
 
+            // Validation
             if (!text || !author || !tag || !category) {
                 showAlert('Please fill all required fields', 'error');
                 return;
@@ -1174,15 +1199,14 @@
 
             try {
                 if (id) {
-                    // Update existing quote
-                    const { error } = await supabaseClient
+                    // UPDATE existing quote
+                    const { error } = await supabase
                         .from('quotes')
                         .update({
-                            text,
-                            author,
-                            tag,
-                            category,
-                            likes,
+                            text: text,
+                            author: author,
+                            tag: tag,
+                            category: category,
                             updated_at: new Date()
                         })
                         .eq('id', id);
@@ -1190,15 +1214,14 @@
                     if (error) throw error;
                     showAlert('Quote updated successfully!');
                 } else {
-                    // Create new quote
-                    const { error } = await supabaseClient
+                    // CREATE new quote
+                    const { error } = await supabase
                         .from('quotes')
                         .insert([{
-                            text,
-                            author,
-                            tag,
-                            category,
-                            likes,
+                            text: text,
+                            author: author,
+                            tag: tag,
+                            category: category,
                             created_by: currentUser.id
                         }]);
 
@@ -1206,6 +1229,7 @@
                     showAlert('Quote created successfully!');
                 }
 
+                // Reload quotes and close modal
                 await loadQuotes();
                 quoteModal.classList.remove('show');
                 resetForm();
@@ -1230,23 +1254,10 @@
         });
 
         // ============================================
-        // ESCAPE HTML
-        // ============================================
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return unsafe
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
-        // ============================================
         // LOGOUT
         // ============================================
         logoutBtn.addEventListener('click', async () => {
-            await supabaseClient.auth.signOut();
+            await supabase.auth.signOut();
             window.location.href = '../index.html';
         });
 
