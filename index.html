@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Daily Quotes</title>
     <link rel="icon" type="image/png" href="logo.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFD700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SupremeMotive">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         * {
             margin: 0;
@@ -360,6 +366,15 @@
             display: none !important;
         }
 
+        .offline-badge {
+            background: #F44336;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+
         @media (max-width: 768px) {
             .menu-toggle {
                 display: flex;
@@ -411,6 +426,7 @@
         <div class="logo">
             <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
             <span>SupremeMotive</span>
+            <span id="offlineIndicator" class="offline-badge hidden">Offline</span>
         </div>
 
         <div class="menu-toggle" id="menuToggle">
@@ -486,6 +502,38 @@
 
     <script>
         // ============================================
+        // PWA & OFFLINE DETECTION
+        // ============================================
+        const offlineIndicator = document.getElementById('offlineIndicator');
+        
+        function updateOnlineStatus() {
+            if (navigator.onLine) {
+                offlineIndicator.classList.add('hidden');
+                console.log('Application is online');
+            } else {
+                offlineIndicator.classList.remove('hidden');
+                showAlert('You are offline. Some features may be limited.', 'warning');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered successfully:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+
+        // ============================================
         // SUPABASE CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
@@ -501,7 +549,7 @@
             'emmanuelamer6@gmail.com'
         ];
 
-        // Sample quotes (fallback)
+        // Sample quotes (fallback for offline)
         const sampleQuotes = [
             {
                 id: '1',
@@ -516,6 +564,20 @@
                 author: 'Steve Jobs',
                 category: 'success',
                 tag: 'St'
+            },
+            {
+                id: '3',
+                text: 'Life is what happens when you\'re busy making other plans.',
+                author: 'John Lennon',
+                category: 'life',
+                tag: 'Lf'
+            },
+            {
+                id: '4',
+                text: 'The future belongs to those who believe in the beauty of their dreams.',
+                author: 'Eleanor Roosevelt',
+                category: 'motivation',
+                tag: 'Mv'
             }
         ];
 
@@ -597,7 +659,7 @@
         // ============================================
         // SHOW ALERT
         // ============================================
-        function showAlert(message) {
+        function showAlert(message, type = 'success') {
             alertContainer.innerHTML = `<div class="alert">${message}</div>`;
             setTimeout(() => {
                 alertContainer.innerHTML = '';
@@ -703,10 +765,11 @@
         }
 
         // ============================================
-        // LOAD QUOTES
+        // LOAD QUOTES WITH OFFLINE SUPPORT
         // ============================================
         async function loadQuotes() {
             try {
+                // Try to load from network first
                 const { data, error } = await supabaseClient
                     .from('quotes')
                     .select('*')
@@ -716,16 +779,34 @@
 
                 if (data && data.length > 0) {
                     quotes = data;
+                    // Cache quotes for offline use
+                    localStorage.setItem('cachedQuotes', JSON.stringify(data));
                 } else {
-                    quotes = sampleQuotes;
+                    // If no data from network, try cache
+                    const cached = localStorage.getItem('cachedQuotes');
+                    if (cached) {
+                        quotes = JSON.parse(cached);
+                    } else {
+                        quotes = sampleQuotes;
+                    }
                 }
 
                 renderQuotes();
 
             } catch (error) {
                 console.error('Error loading quotes:', error);
-                quotes = sampleQuotes;
+                // On error, load from cache or samples
+                const cached = localStorage.getItem('cachedQuotes');
+                if (cached) {
+                    quotes = JSON.parse(cached);
+                } else {
+                    quotes = sampleQuotes;
+                }
                 renderQuotes();
+                
+                if (!navigator.onLine) {
+                    showAlert('You are offline. Showing cached quotes.', 'warning');
+                }
             }
         }
 
@@ -807,11 +888,20 @@
                 return;
             }
 
-            // Get real like counts for all quotes
-            const quotesWithLikes = await Promise.all(filteredQuotes.map(async (quote) => {
-                const likeCount = await getLikeCount(quote.id);
-                return { ...quote, likeCount };
-            }));
+            // Get real like counts for all quotes (if online)
+            let quotesWithLikes = filteredQuotes;
+            if (navigator.onLine) {
+                quotesWithLikes = await Promise.all(filteredQuotes.map(async (quote) => {
+                    const likeCount = await getLikeCount(quote.id);
+                    return { ...quote, likeCount };
+                }));
+            } else {
+                // Use cached like counts or 0 when offline
+                quotesWithLikes = filteredQuotes.map(quote => ({
+                    ...quote,
+                    likeCount: 0
+                }));
+            }
 
             quotesContainer.innerHTML = quotesWithLikes.map(quote => {
                 const isLiked = userLikes.has(quote.id);
@@ -823,11 +913,11 @@
                         <div class="quote-text">${quote.text}</div>
                         <div class="quote-tag"><span>${quote.tag}</span> ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes</div>
                         <div class="quote-actions">
-                            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" onclick="handleLike('${quote.id}')">
+                            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" onclick="handleLike('${quote.id}')" ${!navigator.onLine ? 'disabled' : ''}>
                                 <span>❤️</span>
                                 <span class="like-count">${displayLikeCount}</span>
                             </button>
-                            <button class="action-btn save-btn ${isSaved ? 'saved' : ''}" onclick="handleSave('${quote.id}')">
+                            <button class="action-btn save-btn ${isSaved ? 'saved' : ''}" onclick="handleSave('${quote.id}')" ${!navigator.onLine ? 'disabled' : ''}>
                                 <span>🔖</span>
                                 <span>Save</span>
                             </button>
@@ -853,6 +943,11 @@
                 if (confirm('Please login to like quotes')) {
                     window.location.href = 'login.html';
                 }
+                return;
+            }
+
+            if (!navigator.onLine) {
+                showAlert('You need to be online to like quotes', 'warning');
                 return;
             }
 
@@ -895,6 +990,11 @@
                 if (confirm('Please login to save quotes')) {
                     window.location.href = 'login.html';
                 }
+                return;
+            }
+
+            if (!navigator.onLine) {
+                showAlert('You need to be online to save quotes', 'warning');
                 return;
             }
 
@@ -986,8 +1086,8 @@
             ctx.textBaseline = 'bottom';
             ctx.fillText('”', 355, 300);
 
-            // Tag at bottom right - dashed border exactly like your design
-            const tagText = quote.category.charAt(0).toUpperCase() + quote.category.slice(1) + ' Quotes';
+            // Tag at bottom right - dashed border with "supreme motive"
+            const tagText = 'supreme motive';
             
             // Draw dashed rectangle
             ctx.strokeStyle = '#FFFFFF';
