@@ -199,18 +199,7 @@
             margin-bottom: 1rem;
             color: var(--text-color);
             font-style: italic;
-            position: relative;
-            padding-left: 1rem;
-        }
-
-        .quote-text::before {
-            content: '"';
-            font-size: 3rem;
-            color: var(--gold);
-            opacity: 0.3;
-            position: absolute;
-            left: -0.5rem;
-            top: -1rem;
+            padding-left: 0.5rem;
         }
 
         .quote-tag {
@@ -271,6 +260,8 @@
         .like-count {
             font-weight: bold;
             color: inherit;
+            min-width: 30px;
+            display: inline-block;
         }
 
         .loading {
@@ -440,7 +431,7 @@
             'emmanuelamer6@gmail.com'
         ];
 
-        // Sample quotes (fallback if database is empty)
+        // Sample quotes (only used if database is empty)
         const sampleQuotes = [
             {
                 id: '1',
@@ -459,33 +450,6 @@
                 tag: 'St',
                 likes: 2341,
                 saves: 1234
-            },
-            {
-                id: '3',
-                text: 'Life is what happens when you\'re busy making other plans.',
-                author: 'John Lennon',
-                category: 'life',
-                tag: 'Lf',
-                likes: 1892,
-                saves: 892
-            },
-            {
-                id: '4',
-                text: 'The future belongs to those who believe in the beauty of their dreams.',
-                author: 'Eleanor Roosevelt',
-                category: 'motivation',
-                tag: 'Mv',
-                likes: 2156,
-                saves: 1456
-            },
-            {
-                id: '5',
-                text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.',
-                author: 'Winston Churchill',
-                category: 'success',
-                tag: 'Sc',
-                likes: 3124,
-                saves: 2134
             }
         ];
 
@@ -572,7 +536,7 @@
         }
 
         // ============================================
-        // CHECK AUTH
+        // CHECK AUTH AND LOAD USER DATA
         // ============================================
         async function checkAuth() {
             try {
@@ -594,13 +558,13 @@
         }
 
         // ============================================
-        // LOAD USER INTERACTIONS
+        // LOAD USER INTERACTIONS FROM DATABASE
         // ============================================
         async function loadUserInteractions() {
             if (!currentUser) return;
 
             try {
-                // Load likes
+                // Load user's likes
                 const { data: likes } = await supabaseClient
                     .from('quote_likes')
                     .select('quote_id')
@@ -608,9 +572,10 @@
 
                 if (likes) {
                     userLikes = new Set(likes.map(l => l.quote_id));
+                    console.log('User likes loaded:', userLikes);
                 }
 
-                // Load saves
+                // Load user's saves
                 const { data: saves } = await supabaseClient
                     .from('quote_saves')
                     .select('quote_id')
@@ -625,7 +590,7 @@
         }
 
         // ============================================
-        // LOAD QUOTES
+        // LOAD QUOTES FROM DATABASE
         // ============================================
         async function loadQuotes() {
             try {
@@ -638,7 +603,9 @@
 
                 if (data && data.length > 0) {
                     quotes = data;
+                    console.log('Quotes loaded from database:', quotes);
                 } else {
+                    console.log('No quotes in database, using samples');
                     quotes = sampleQuotes;
                 }
 
@@ -673,6 +640,7 @@
             quotesContainer.innerHTML = filteredQuotes.map(quote => {
                 const isLiked = userLikes.has(quote.id);
                 const isSaved = userSaves.has(quote.id);
+                // REAL like count from database + user's like
                 const likeCount = (quote.likes || 0) + (isLiked ? 1 : 0);
 
                 return `
@@ -709,7 +677,7 @@
         }
 
         // ============================================
-        // HANDLE LIKE - REAL AND VISIBLE
+        // HANDLE LIKE - REAL DATABASE UPDATE
         // ============================================
         window.handleLike = async (quoteId) => {
             if (!currentUser) {
@@ -724,18 +692,25 @@
                 const currentLikes = quote.likes || 0;
 
                 if (userLikes.has(quoteId)) {
-                    // Unlike - remove from database
-                    await supabaseClient
+                    // UNLIKE - Remove from database
+                    console.log('Removing like for quote:', quoteId);
+                    
+                    // Delete from quote_likes table
+                    const { error: deleteError } = await supabaseClient
                         .from('quote_likes')
                         .delete()
                         .eq('quote_id', quoteId)
                         .eq('user_id', currentUser.id);
 
-                    // Update quote likes count in database
-                    await supabaseClient
+                    if (deleteError) throw deleteError;
+
+                    // Update quotes table - decrease like count
+                    const { error: updateError } = await supabaseClient
                         .from('quotes')
                         .update({ likes: currentLikes - 1 })
                         .eq('id', quoteId);
+
+                    if (updateError) throw updateError;
 
                     // Update local state
                     userLikes.delete(quoteId);
@@ -743,19 +718,26 @@
                     
                     showAlert('Quote unliked');
                 } else {
-                    // Like - add to database
-                    await supabaseClient
+                    // LIKE - Add to database
+                    console.log('Adding like for quote:', quoteId);
+                    
+                    // Insert into quote_likes table
+                    const { error: insertError } = await supabaseClient
                         .from('quote_likes')
                         .insert([{ 
                             quote_id: quoteId, 
                             user_id: currentUser.id 
                         }]);
 
-                    // Update quote likes count in database
-                    await supabaseClient
+                    if (insertError) throw insertError;
+
+                    // Update quotes table - increase like count
+                    const { error: updateError } = await supabaseClient
                         .from('quotes')
                         .update({ likes: currentLikes + 1 })
                         .eq('id', quoteId);
+
+                    if (updateError) throw updateError;
 
                     // Update local state
                     userLikes.add(quoteId);
@@ -769,12 +751,12 @@
 
             } catch (error) {
                 console.error('Error liking quote:', error);
-                showAlert('Error updating like');
+                showAlert('Error updating like: ' + error.message);
             }
         };
 
         // ============================================
-        // HANDLE SAVE - REAL AND VISIBLE
+        // HANDLE SAVE - REAL DATABASE UPDATE
         // ============================================
         window.handleSave = async (quoteId) => {
             if (!currentUser) {
@@ -832,45 +814,37 @@
         };
 
         // ============================================
-        // DOWNLOAD QUOTE
+        // DOWNLOAD QUOTE - EXACTLY LIKE YOUR IMAGE
         // ============================================
         window.downloadQuote = (quoteId) => {
             const quote = quotes.find(q => q.id === quoteId);
             
+            // Create canvas
             const canvas = document.createElement('canvas');
             canvas.width = 800;
             canvas.height = 600;
             const ctx = canvas.getContext('2d');
 
-            // Background
+            // Dark background
             ctx.fillStyle = '#1A1A1A';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Border
-            ctx.strokeStyle = '#FFD700';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
-
-            // Large quote marks
-            ctx.font = '120px Georgia, serif';
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.15)';
-            ctx.fillText('"', 50, 150);
-            ctx.fillText('"', canvas.width - 100, canvas.height - 100);
-
-            // Quote text
+            // Quote text - exactly like your image
             ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
             ctx.fillStyle = '#FFFFFF';
-            ctx.textAlign = 'center';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
             
+            // Word wrap for long quotes
             const words = quote.text.split(' ');
             let line = '';
             let lines = [];
-            let y = 200;
+            let y = 100;
 
             for (let n = 0; n < words.length; n++) {
                 let testLine = line + words[n] + ' ';
                 let metrics = ctx.measureText(testLine);
-                if (metrics.width > 600 && n > 0) {
+                if (metrics.width > 700 && n > 0) {
                     lines.push(line);
                     line = words[n] + ' ';
                 } else {
@@ -879,36 +853,32 @@
             }
             lines.push(line);
 
+            // Draw quote lines
             lines.forEach((line, index) => {
-                ctx.fillText(line, 400, y + (index * 50));
+                ctx.fillText(line, 50, y + (index * 50));
             });
 
-            // Category line
-            ctx.font = '28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            // Category line - exactly like your image "Life Quotes"
+            ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
             ctx.fillStyle = '#B0B0B0';
-            ctx.fillText(`${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`, 400, 400);
+            ctx.fillText(`${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`, 50, 400);
 
-            // Watermark
+            // Supreme Motive watermark
             ctx.save();
             ctx.translate(400, 520);
             ctx.rotate(-5 * Math.PI / 180);
-            ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';
+            ctx.font = 'bold 40px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
             ctx.textAlign = 'center';
             ctx.fillText('SUPREME MOTIVE', 0, 0);
             ctx.restore();
-
-            // Website
-            ctx.font = '18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
-            ctx.textAlign = 'right';
-            ctx.fillText('suprememotive.com', 750, 550);
 
             // Download
             const link = document.createElement('a');
             link.download = `suprememotive-${quote.category}-quote.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.95);
             link.click();
+            
             showAlert('Quote downloaded!');
         };
 
