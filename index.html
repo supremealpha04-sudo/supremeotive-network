@@ -748,6 +748,47 @@
         }
 
         // ============================================
+        // SHARE QUOTE - WORKING PERFECTLY
+        // ============================================
+        window.shareQuote = (quoteId) => {
+            const quote = quotes.find(q => q.id === quoteId);
+            
+            // Create share text with quote, author, and site link
+            const shareText = `"${quote.text}" — ${quote.author}`;
+            const shareUrl = window.location.href;
+            const fullMessage = `${shareText}\n\nShared from SupremeMotive\n${shareUrl}`;
+            
+            if (navigator.share) {
+                // Mobile share with Web Share API
+                navigator.share({
+                    title: 'SupremeMotive Quote',
+                    text: shareText,
+                    url: shareUrl
+                }).then(() => {
+                    showAlert('Shared successfully!');
+                }).catch((error) => {
+                    console.log('Share cancelled or failed:', error);
+                    // Fallback to copy
+                    copyToClipboard(fullMessage);
+                });
+            } else {
+                // Desktop fallback - copy to clipboard
+                copyToClipboard(fullMessage);
+            }
+        };
+
+        // ============================================
+        // COPY TO CLIPBOARD
+        // ============================================
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('Quote copied to clipboard! Share it anywhere.');
+            }).catch(() => {
+                showAlert('Could not copy quote. Please try again.');
+            });
+        }
+
+        // ============================================
         // RENDER QUOTES
         // ============================================
         async function renderQuotes() {
@@ -793,6 +834,10 @@
                             <button class="action-btn" onclick="downloadQuote('${quote.id}')">
                                 <span>📥</span>
                                 <span>Download</span>
+                            </button>
+                            <button class="action-btn" onclick="shareQuote('${quote.id}')">
+                                <span>📤</span>
+                                <span>Share</span>
                             </button>
                         </div>
                     </div>
