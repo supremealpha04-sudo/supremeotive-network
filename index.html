@@ -936,23 +936,23 @@
             
             // Create canvas with exact dimensions from your design
             const canvas = document.createElement('canvas');
-            canvas.width = 500;
-            canvas.height = 500;
+            canvas.width = 380;
+            canvas.height = 380;
             const ctx = canvas.getContext('2d');
 
             // Black background
             ctx.fillStyle = '#000000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Opening quote mark
-            ctx.font = 'bold 80px Georgia, serif';
+            // Opening quote mark - top left
+            ctx.font = 'bold 50px Georgia, serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
-            ctx.fillText('“', 40, 40);
+            ctx.fillText('“', 25, 20);
 
-            // Quote text - centered
-            ctx.font = 'bold 32px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
+            // Quote text - centered, 28px bold
+            ctx.font = 'bold 28px Arial, Helvetica, sans-serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
             
@@ -960,12 +960,12 @@
             const words = quote.text.split(' ');
             let line = '';
             let lines = [];
-            let y = 150;
+            let y = 100;
 
             for (let n = 0; n < words.length; n++) {
                 let testLine = line + words[n] + ' ';
                 let metrics = ctx.measureText(testLine);
-                if (metrics.width > 400 && n > 0) {
+                if (metrics.width > 300 && n > 0) {
                     lines.push(line);
                     line = words[n] + ' ';
                 } else {
@@ -976,30 +976,39 @@
 
             // Draw quote lines
             lines.forEach((line, index) => {
-                ctx.fillText(line, 250, y + (index * 45));
+                ctx.fillText(line, 190, y + (index * 40));
             });
 
-            // Closing quote mark
-            ctx.font = 'bold 80px Georgia, serif';
+            // Closing quote mark - bottom right
+            ctx.font = 'bold 50px Georgia, serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'right';
-            ctx.fillText('”', 460, 380);
+            ctx.textBaseline = 'bottom';
+            ctx.fillText('”', 355, 300);
 
-            // Tag at bottom right - dashed border like your design
-            const tagText = `${quote.tag} ${quote.category.charAt(0).toUpperCase() + quote.category.slice(1)} Quotes`;
+            // Tag at bottom right - dashed border exactly like your design
+            const tagText = quote.category.charAt(0).toUpperCase() + quote.category.slice(1) + ' Quotes';
             
             // Draw dashed rectangle
             ctx.strokeStyle = '#FFFFFF';
             ctx.setLineDash([5, 5]);
             ctx.lineWidth = 2;
-            ctx.strokeRect(300, 420, 150, 35);
+            
+            // Measure text for rectangle size
+            ctx.font = '14px Arial, Helvetica, sans-serif';
+            const textWidth = ctx.measureText(tagText).width;
+            const rectX = 380 - textWidth - 30; // 380 width - text width - padding
+            const rectY = 340;
+            const rectWidth = textWidth + 24;
+            const rectHeight = 30;
+            
+            ctx.strokeRect(rectX, rectY, rectWidth, rectHeight);
             
             // Draw tag text
-            ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto';
             ctx.fillStyle = '#FFFFFF';
-            ctx.textAlign = 'center';
+            ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
-            ctx.fillText(tagText, 375, 437);
+            ctx.fillText(tagText, rectX + 12, rectY + 15);
 
             // Reset line dash
             ctx.setLineDash([]);
