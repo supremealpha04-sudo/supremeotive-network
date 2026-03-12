@@ -734,6 +734,40 @@
         }
 
         // ============================================
+        // SHARE QUOTE FUNCTION
+        // ============================================
+        window.shareQuote = (quoteId) => {
+            const quote = quotes.find(q => q.id === quoteId);
+            const shareText = `"${quote.text}" — ${quote.author}\n\nShared from SupremeMotive`;
+            
+            if (navigator.share) {
+                // Use Web Share API if available (mobile)
+                navigator.share({
+                    title: 'SupremeMotive Quote',
+                    text: shareText,
+                }).catch((error) => {
+                    console.log('Share cancelled or failed:', error);
+                    // Fallback to copy
+                    copyToClipboard(shareText);
+                });
+            } else {
+                // Fallback for desktop - copy to clipboard
+                copyToClipboard(shareText);
+            }
+        };
+
+        // ============================================
+        // COPY TO CLIPBOARD
+        // ============================================
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showAlert('Quote copied to clipboard!');
+            }).catch(() => {
+                showAlert('Could not copy quote');
+            });
+        }
+
+        // ============================================
         // RENDER QUOTES
         // ============================================
         async function renderQuotes() {
@@ -779,6 +813,10 @@
                             <button class="action-btn" onclick="downloadQuote('${quote.id}')">
                                 <span>📥</span>
                                 <span>Download</span>
+                            </button>
+                            <button class="action-btn" onclick="shareQuote('${quote.id}')">
+                                <span>📤</span>
+                                <span>Share</span>
                             </button>
                         </div>
                     </div>
