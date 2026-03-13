@@ -714,7 +714,7 @@
         termsCheckbox.addEventListener('change', updateRegisterButton);
 
         // ============================================
-        // FORM SUBMISSION HANDLER - FIXED
+        // FORM SUBMISSION HANDLER - EMAIL CONFIRMATION REQUIRED
         // ============================================
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -743,7 +743,7 @@
                     role = ADMIN_EMAILS[email];
                 }
 
-                // Sign up with Supabase
+                // Sign up with Supabase - email confirmation REQUIRED
                 const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: passwordValue,
@@ -762,15 +762,14 @@
                 if (error) throw error;
 
                 if (data.user) {
-                    // Check if email confirmation is required
+                    // Check if user already exists
                     if (data.user.identities && data.user.identities.length === 0) {
-                        // User already exists
                         showAlert('An account with this email already exists. Please login.', 'error');
                         setTimeout(() => {
                             window.location.href = 'login.html';
                         }, 2000);
-                    } else if (data.session === null) {
-                        // Email confirmation required
+                    } else {
+                        // Email confirmation REQUIRED - always redirect to verify page
                         showAlert('Registration successful! Please check your email to verify your account.', 'success');
                         
                         // Clear form
@@ -780,17 +779,6 @@
                         setTimeout(() => {
                             window.location.href = `verify.html?email=${encodeURIComponent(email)}`;
                         }, 2000);
-                    } else {
-                        // Auto-confirmed (no email verification needed)
-                        showAlert('Registration successful! You are now logged in.', 'success');
-                        
-                        // Store user session in localStorage
-                        localStorage.setItem('user', JSON.stringify(data.user));
-                        
-                        // Redirect to home page
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1500);
                     }
                 }
 
