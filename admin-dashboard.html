@@ -4,61 +4,983 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Admin Dashboard</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --text-color: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --gold: #FFD700;
+            --border-color: #333333;
+            --electric-blue: #00F0FF;
+            --success: #4CAF50;
+            --error: #F44336;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #0B1A33 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        /* Admin Layout */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--card-bg);
+            border-right: 2px solid var(--gold);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-badge {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--bg-color);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .admin-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover {
+            background: var(--border-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav a.active {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--bg-color);
+            font-weight: 600;
+        }
+
+        .sidebar-nav a i {
+            font-size: 1.3rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--error);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content-header h1 {
+            color: var(--gold);
+            font-size: 2rem;
+        }
+
+        .date-display {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            background: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.8rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--electric-blue);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Country List */
+        .country-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .country-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .country-list::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .country-list::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        .country-item {
+            background: var(--bg-color);
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .country-item:hover {
+            border-color: var(--gold);
+            transform: translateX(3px);
+        }
+
+        .country-name {
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .country-count {
+            background: var(--gold);
+            color: var(--bg-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Tables */
+        .table-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--gold);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .admin-table tr:hover td {
+            background: var(--border-color);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #FFC107;
+            border: 1px solid #FFC107;
+        }
+
+        .status-approved {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-rejected {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.4rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .approve-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .reject-btn {
+            background: var(--error);
+            color: white;
+        }
+
+        .view-btn {
+            background: var(--electric-blue);
+            color: var(--bg-color);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+                padding: 1rem;
+            }
+
+            .sidebar-logo {
+                font-size: 0;
+            }
+
+            .sidebar-logo::before {
+                content: 'SM';
+                font-size: 1.5rem;
+                background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .role-badge,
+            .admin-name,
+            .sidebar-nav a span {
+                display: none;
+            }
+
+            .sidebar-nav a {
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .sidebar-nav a i {
+                margin: 0;
+                font-size: 1.5rem;
+            }
+
+            .sidebar-footer {
+                left: 1rem;
+                right: 1rem;
+            }
+
+            .logout-btn span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="admin-dashboard">
+    <div class="admin-container">
         <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <h2>SupremeMotive</h2>
-            <h3>Admin Panel</h3>
-            <ul class="admin-nav">
-                <li><a href="admin-dashboard.html" class="active">Dashboard</a></li>
-                <li><a href="post-admin.html">Post Management</a></li>
-                <li><a href="ebook-admin.html">Ebook Management</a></li>
-                <li><a href="unlock-admin.html">Unlock Requests</a></li>
-                <li><a href="../index.html">View Site</a></li>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">SupremeMotive</div>
+                <div id="role-badge" class="role-badge">Loading...</div>
+                <div id="admin-name" class="admin-name"></div>
+            </div>
+
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="admin-dashboard.html" class="active">
+                        <i>📊</i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li id="posts-menu">
+                    <a href="post-admin.html">
+                        <i>📝</i>
+                        <span>Post Management</span>
+                    </a>
+                </li>
+                <li id="quotes-menu">
+                    <a href="admin-quotes.html">
+                        <i>💬</i>
+                        <span>Quote Management</span>
+                    </a>
+                </li>
+                <li id="ebooks-menu">
+                    <a href="ebook-admin.html">
+                        <i>📚</i>
+                        <span>Ebook Management</span>
+                    </a>
+                </li>
+                <li id="unlocks-menu">
+                    <a href="unlock-admin.html">
+                        <i>🔓</i>
+                        <span>Unlock Requests</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../index.html">
+                        <i>🏠</i>
+                        <span>View Site</span>
+                    </a>
+                </li>
             </ul>
+
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="logout-btn">
+                    <i>🚪</i>
+                    <span>Logout</span>
+                </button>
+            </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="admin-content">
-            <div class="admin-header">
-                <h1>Dashboard</h1>
-                <div id="admin-info"></div>
+        <main class="main-content">
+            <div class="content-header">
+                <h1>Dashboard Overview</h1>
+                <div id="current-date" class="date-display"></div>
             </div>
 
-            <div id="dashboard-container">
-                <!-- Stats will be loaded here -->
+            <div id="alert-container"></div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="stats-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading statistics...</p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <div class="chart-card">
+                    <h3 class="chart-title">🌍 Users by Country</h3>
+                    <div id="country-list" class="country-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">📊 Quick Stats</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-color); border-radius: 8px;">
+                            <span>Total Quotes:</span>
+                            <span style="color: var(--gold); font-weight: bold;" id="total-quotes">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-color); border-radius: 8px;">
+                            <span>Total Posts:</span>
+                            <span style="color: var(--gold); font-weight: bold;" id="total-posts">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-color); border-radius: 8px;">
+                            <span>Total Ebooks:</span>
+                            <span style="color: var(--gold); font-weight: bold;" id="total-ebooks">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-color); border-radius: 8px;">
+                            <span>Pending Unlocks:</span>
+                            <span style="color: var(--warning); font-weight: bold;" id="pending-unlocks">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Unlock Requests -->
+            <div class="table-section">
+                <h3 class="section-title">🔓 Recent Unlock Requests</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Ebook</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="unlocks-table-body">
+                        <tr>
+                            <td colspan="5" class="loading">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </main>
     </div>
 
-    <script type="module">
-        import { getDashboardStats, renderAdminDashboard } from '../js/admin.js';
-        import { getCurrentUser, isAdmin } from '../js/auth.js';
+    <script>
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        async function loadDashboard() {
-            // Check admin access
-            const admin = await isAdmin();
-            if (!admin) {
-                window.location.href = '../index.html';
-                return;
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Admin role mapping
+        const ADMIN_ROLES = {
+            'supremealpha04@gmail.com': {
+                role: 'super_admin',
+                name: 'Super Admin',
+                menus: ['posts', 'quotes', 'ebooks', 'unlocks']
+            },
+            'suprememotive43@gmail.com': {
+                role: 'post_admin',
+                name: 'Post Admin',
+                menus: ['posts', 'quotes']
+            },
+            'sandrakukk055@gmail.com': {
+                role: 'ebook_admin',
+                name: 'Ebook Admin',
+                menus: ['ebooks']
+            },
+            'emmanuelamer6@gmail.com': {
+                role: 'unlock_admin',
+                name: 'Unlock Admin',
+                menus: ['unlocks']
             }
+        };
 
-            const { user, profile } = await getCurrentUser();
-            document.getElementById('admin-info').innerHTML = `
-                <span>Welcome, ${profile.name} (${profile.role})</span>
-            `;
+        let currentUser = null;
+        let userRole = null;
 
-            const result = await getDashboardStats();
-            if (result.success) {
-                renderAdminDashboard(result.stats, 'dashboard-container');
+        // DOM Elements
+        const roleBadge = document.getElementById('role-badge');
+        const adminName = document.getElementById('admin-name');
+        const logoutBtn = document.getElementById('logout-btn');
+        const alertContainer = document.getElementById('alert-container');
+        const currentDate = document.getElementById('current-date');
+        
+        // Menu elements
+        const postsMenu = document.getElementById('posts-menu');
+        const quotesMenu = document.getElementById('quotes-menu');
+        const ebooksMenu = document.getElementById('ebooks-menu');
+        const unlocksMenu = document.getElementById('unlocks-menu');
+
+        // Set current date
+        currentDate.textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Show alert
+        function showAlert(message, type) {
+            alertContainer.innerHTML = `<div class="alert alert-${type}">${type === 'success' ? '✅' : '❌'} ${message}</div>`;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
+        }
+
+        // Check authentication and admin status
+        async function checkAdmin() {
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                
+                if (error) throw error;
+
+                if (!user) {
+                    window.location.href = '../login.html';
+                    return false;
+                }
+
+                currentUser = user;
+
+                // Check if user is admin
+                const adminConfig = ADMIN_ROLES[user.email];
+                
+                if (!adminConfig) {
+                    window.location.href = '../index.html';
+                    return false;
+                }
+
+                userRole = adminConfig.role;
+
+                // Display admin info
+                roleBadge.textContent = adminConfig.name;
+                adminName.textContent = user.email;
+
+                // Show appropriate menus based on role
+                postsMenu.style.display = adminConfig.menus.includes('posts') ? 'block' : 'none';
+                quotesMenu.style.display = adminConfig.menus.includes('quotes') ? 'block' : 'none';
+                ebooksMenu.style.display = adminConfig.menus.includes('ebooks') ? 'block' : 'none';
+                unlocksMenu.style.display = adminConfig.menus.includes('unlocks') ? 'block' : 'none';
+
+                return true;
+            } catch (error) {
+                console.error('Auth error:', error);
+                window.location.href = '../login.html';
+                return false;
             }
         }
 
-        loadDashboard();
+        // Load dashboard statistics
+        async function loadStats() {
+            try {
+                // Get total users
+                const { count: totalUsers } = await supabaseClient
+                    .from('profiles')
+                    .select('*', { count: 'exact', head: true });
+
+                // Get total posts
+                const { count: totalPosts } = await supabaseClient
+                    .from('posts')
+                    .select('*', { count: 'exact', head: true });
+
+                // Get total quotes
+                const { count: totalQuotes } = await supabaseClient
+                    .from('quotes')
+                    .select('*', { count: 'exact', head: true });
+
+                // Get total ebooks
+                const { count: totalEbooks } = await supabaseClient
+                    .from('ebooks')
+                    .select('*', { count: 'exact', head: true });
+
+                // Get pending unlocks
+                const { count: pendingUnlocks } = await supabaseClient
+                    .from('unlocks')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'pending');
+
+                // Get approved unlocks
+                const { count: approvedUnlocks } = await supabaseClient
+                    .from('unlocks')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('status', 'approved');
+
+                const statsContainer = document.getElementById('stats-container');
+                statsContainer.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-value">${totalUsers || 0}</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-value">${totalPosts || 0}</div>
+                        <div class="stat-label">Total Posts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-value">${totalQuotes || 0}</div>
+                        <div class="stat-label">Total Quotes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-value">${totalEbooks || 0}</div>
+                        <div class="stat-label">Total Ebooks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-value">${pendingUnlocks || 0}</div>
+                        <div class="stat-label">Pending Unlocks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-value">${approvedUnlocks || 0}</div>
+                        <div class="stat-label">Approved Unlocks</div>
+                    </div>
+                `;
+
+                // Update quick stats
+                document.getElementById('total-quotes').textContent = totalQuotes || 0;
+                document.getElementById('total-posts').textContent = totalPosts || 0;
+                document.getElementById('total-ebooks').textContent = totalEbooks || 0;
+                document.getElementById('pending-unlocks').textContent = pendingUnlocks || 0;
+
+                // Load users by country
+                await loadUsersByCountry();
+                
+                // Load recent unlocks
+                await loadRecentUnlocks();
+
+            } catch (error) {
+                console.error('Stats error:', error);
+                showAlert('Error loading statistics: ' + error.message, 'error');
+            }
+        }
+
+        // Load users by country
+        async function loadUsersByCountry() {
+            try {
+                const { data: profiles, error } = await supabaseClient
+                    .from('profiles')
+                    .select('country');
+
+                if (error) throw error;
+
+                const countryCount = {};
+                profiles.forEach(profile => {
+                    const country = profile.country || 'Not specified';
+                    countryCount[country] = (countryCount[country] || 0) + 1;
+                });
+
+                const sortedCountries = Object.entries(countryCount)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 15);
+
+                const countryList = document.getElementById('country-list');
+                
+                if (sortedCountries.length === 0) {
+                    countryList.innerHTML = '<p style="color: var(--text-secondary);">No user data</p>';
+                    return;
+                }
+
+                countryList.innerHTML = sortedCountries.map(([country, count]) => `
+                    <div class="country-item">
+                        <span class="country-name">${country}</span>
+                        <span class="country-count">${count}</span>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Country stats error:', error);
+            }
+        }
+
+        // Load recent unlock requests
+        async function loadRecentUnlocks() {
+            try {
+                const { data: unlocks, error } = await supabaseClient
+                    .from('unlocks')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (error) throw error;
+
+                const tableBody = document.getElementById('unlocks-table-body');
+                
+                if (!unlocks || unlocks.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No unlock requests</td></tr>';
+                    return;
+                }
+
+                // Get user and ebook details for each unlock
+                const unlocksWithDetails = await Promise.all(unlocks.map(async (unlock) => {
+                    const { data: profile } = await supabaseClient
+                        .from('profiles')
+                        .select('name, email')
+                        .eq('id', unlock.user_id)
+                        .single();
+
+                    const { data: ebook } = await supabaseClient
+                        .from('ebooks')
+                        .select('title')
+                        .eq('id', unlock.ebook_id)
+                        .single();
+
+                    return {
+                        ...unlock,
+                        profiles: profile || { name: 'Unknown', email: 'Unknown' },
+                        ebooks: ebook || { title: 'Unknown' }
+                    };
+                }));
+
+                tableBody.innerHTML = unlocksWithDetails.map(unlock => `
+                    <tr>
+                        <td>${unlock.profiles?.name || 'Unknown'}</td>
+                        <td>${unlock.profiles?.email || 'Unknown'}</td>
+                        <td>${unlock.ebooks?.title || 'Unknown'}</td>
+                        <td>${new Date(unlock.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <span class="status-badge status-${unlock.status}">
+                                ${unlock.status}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Unlocks error:', error);
+            }
+        }
+
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await supabaseClient.auth.signOut();
+                window.location.href = '../index.html';
+            } catch (error) {
+                showAlert('Error logging out: ' + error.message, 'error');
+            }
+        });
+
+        // Initialize
+        async function init() {
+            const isAdmin = await checkAdmin();
+            if (isAdmin) {
+                await loadStats();
+            }
+        }
+
+        init();
     </script>
 </body>
 </html>
