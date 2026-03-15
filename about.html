@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - About Us</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -12,29 +14,33 @@
         }
 
         :root {
-            --primary-black: #0A0A0A;
-            --deep-navy: #0B1A33;
-            --gold: #FFD700;
-            --electric-blue: #00F0FF;
-            --dark-gray: #1A1A1A;
-            --medium-gray: #2A2A2A;
-            --light-gray: #3A3A3A;
-            --text-primary: #FFFFFF;
+            --bg-color: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --text-color: #FFFFFF;
             --text-secondary: #B0B0B0;
+            --gold: #FFD700;
+            --border-color: #333333;
+            --electric-blue: #00F0FF;
             --success: #4CAF50;
             --error: #F44336;
             --warning: #FFC107;
+            --twitter: #1DA1F2;
+            --linkedin: #0077B5;
+            --instagram: #E4405F;
+            --github: #333333;
+            --facebook: #4267B2;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, var(--primary-black) 0%, var(--deep-navy) 100%);
-            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--bg-color) 0%, #0B1A33 100%);
+            color: var(--text-color);
             min-height: 100vh;
+            padding-bottom: 80px;
         }
 
         /* Navigation */
-        .navbar {
+        .top-nav {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
             padding: 1rem 2rem;
@@ -48,22 +54,44 @@
         }
 
         .logo {
-            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
             font-weight: bold;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--gold);
+        }
+
+        .logo img {
+            height: 35px;
+            width: auto;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--gold);
+            transition: all 0.3s ease;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
-            color: var(--text-primary);
+            color: var(--text-color);
             text-decoration: none;
+            font-size: 0.9rem;
             transition: color 0.3s ease;
         }
 
@@ -72,14 +100,85 @@
             color: var(--gold);
         }
 
-        #logoutBtn {
-            background: var(--error);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 6px;
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
             cursor: pointer;
-            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #F44336;
+            color: #F44336;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #F44336;
+            color: white;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.3rem;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 2px solid var(--gold);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 0.2rem;
         }
 
         /* Container */
@@ -93,10 +192,10 @@
         .hero-section {
             text-align: center;
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, var(--dark-gray), var(--medium-gray));
+            background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
             border-radius: 30px;
             margin-bottom: 3rem;
-            border: 1px solid var(--light-gray);
+            border: 1px solid var(--border-color);
             position: relative;
             overflow: hidden;
         }
@@ -122,7 +221,7 @@
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             position: relative;
             z-index: 1;
         }
@@ -135,6 +234,42 @@
             line-height: 1.8;
             position: relative;
             z-index: 1;
+        }
+
+        /* Stats Section */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* Mission Section */
@@ -174,44 +309,11 @@
             font-size: 1.1rem;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1.5rem;
-            background: var(--dark-gray);
-            border-radius: 15px;
-            border: 1px solid var(--light-gray);
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--electric-blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
         .mission-image {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             border-radius: 20px;
             padding: 2rem;
-            min-height: 400px;
+            min-height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -229,7 +331,7 @@
 
         .image-placeholder {
             text-align: center;
-            color: var(--primary-black);
+            color: var(--bg-color);
         }
 
         .image-placeholder .icon {
@@ -237,153 +339,95 @@
             margin-bottom: 1rem;
         }
 
-        /* Founder Section */
-        .founder-section {
-            margin-bottom: 4rem;
-        }
-
-        .founder-card {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 3rem;
-            background: var(--dark-gray);
-            border-radius: 30px;
-            padding: 2rem;
-            border: 1px solid var(--light-gray);
-            transition: all 0.3s ease;
-        }
-
-        .founder-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--gold);
-            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
-        }
-
-        .founder-image {
-            width: 100%;
-            height: 350px;
-            border-radius: 20px;
-            overflow: hidden;
-            border: 3px solid var(--gold);
-            position: relative;
-        }
-
-        .founder-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .founder-image:hover img {
-            transform: scale(1.1);
-        }
-
-        .founder-info {
-            padding: 1rem 0;
-        }
-
-        .founder-name {
-            font-size: 2.2rem;
-            color: var(--gold);
-            margin-bottom: 0.5rem;
-        }
-
-        .founder-title {
-            font-size: 1.2rem;
-            color: var(--electric-blue);
-            margin-bottom: 1.5rem;
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            background: rgba(0, 240, 255, 0.1);
-            border-radius: 30px;
-            border: 1px solid var(--electric-blue);
-        }
-
-        .founder-bio {
-            color: var(--text-secondary);
-            line-height: 1.8;
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-
-        .founder-social {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--medium-gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 1.3rem;
-            border: 1px solid var(--light-gray);
-        }
-
-        .social-link:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-        }
-
-        .social-link.twitter:hover {
-            background: #1DA1F2;
-            border-color: #1DA1F2;
-        }
-
-        .social-link.linkedin:hover {
-            background: #0077B5;
-            border-color: #0077B5;
-        }
-
-        .social-link.github:hover {
-            background: #333;
-            border-color: #333;
-        }
-
-        .social-link.instagram:hover {
-            background: #E4405F;
-            border-color: #E4405F;
-        }
-
-        .social-link.email:hover {
-            background: var(--gold);
-            border-color: var(--gold);
-            color: var(--primary-black);
-        }
-
-        /* Team Section */
+        /* Team Carousel Section */
         .team-section {
             margin-bottom: 4rem;
         }
 
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .carousel-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .carousel-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-btn:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+            transform: scale(1.1);
+        }
+
+        .carousel-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .team-carousel-container {
+            position: relative;
+            overflow: hidden;
+            padding: 1rem 0;
+        }
+
+        .team-carousel {
+            display: flex;
             gap: 2rem;
-            margin-top: 2rem;
+            transition: transform 0.5s ease;
+            padding: 1rem 0;
         }
 
         .team-card {
-            background: var(--dark-gray);
+            min-width: 300px;
+            flex: 0 0 300px;
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 2rem;
             text-align: center;
-            border: 1px solid var(--light-gray);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .team-card:hover {
             transform: translateY(-10px);
             border-color: var(--gold);
-            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
+        }
+
+        .team-card:hover::before {
+            opacity: 1;
         }
 
         .team-image {
@@ -393,6 +437,8 @@
             margin: 0 auto 1.5rem;
             overflow: hidden;
             border: 3px solid var(--gold);
+            position: relative;
+            z-index: 1;
         }
 
         .team-image img {
@@ -407,19 +453,24 @@
         }
 
         .team-name {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             color: var(--gold);
             margin-bottom: 0.3rem;
+            position: relative;
+            z-index: 1;
         }
 
         .team-role {
             color: var(--electric-blue);
-            font-size: 0.95rem;
+            font-size: 1rem;
             margin-bottom: 1rem;
             display: inline-block;
-            padding: 0.2rem 1rem;
+            padding: 0.3rem 1rem;
             background: rgba(0, 240, 255, 0.1);
-            border-radius: 20px;
+            border-radius: 30px;
+            border: 1px solid var(--electric-blue);
+            position: relative;
+            z-index: 1;
         }
 
         .team-bio {
@@ -427,18 +478,174 @@
             line-height: 1.6;
             margin-bottom: 1.5rem;
             font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
         }
 
         .team-social {
             display: flex;
             gap: 1rem;
             justify-content: center;
+            position: relative;
+            z-index: 1;
         }
 
-        .team-social .social-link {
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px);
+        }
+
+        .social-link.twitter:hover {
+            background: var(--twitter);
+            border-color: var(--twitter);
+            color: white;
+        }
+
+        .social-link.linkedin:hover {
+            background: var(--linkedin);
+            border-color: var(--linkedin);
+            color: white;
+        }
+
+        .social-link.instagram:hover {
+            background: var(--instagram);
+            border-color: var(--instagram);
+            color: white;
+        }
+
+        .social-link.github:hover {
+            background: var(--github);
+            border-color: var(--github);
+            color: white;
+        }
+
+        .social-link.facebook:hover {
+            background: var(--facebook);
+            border-color: var(--facebook);
+            color: white;
+        }
+
+        .social-link.email:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--bg-color);
+        }
+
+        /* Sponsors Section */
+        .sponsors-section {
+            margin-bottom: 4rem;
+        }
+
+        .sponsors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .sponsor-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sponsor-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sponsor-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--electric-blue);
+            box-shadow: 0 20px 40px rgba(0, 240, 255, 0.1);
+        }
+
+        .sponsor-card:hover::before {
+            opacity: 1;
+        }
+
+        .sponsor-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sponsor-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+
+        .sponsor-info {
+            flex: 1;
+        }
+
+        .sponsor-name {
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 0.2rem;
+        }
+
+        .sponsor-title {
+            color: var(--electric-blue);
+            font-size: 0.9rem;
+        }
+
+        .sponsor-intro {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sponsor-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sponsor-social .social-link {
             width: 35px;
             height: 35px;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         /* Values Section */
@@ -454,11 +661,11 @@
         }
 
         .value-card {
-            background: var(--dark-gray);
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 2rem;
             text-align: center;
-            border: 1px solid var(--light-gray);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
@@ -484,95 +691,13 @@
             line-height: 1.6;
         }
 
-        /* Timeline Section */
-        .timeline-section {
-            margin-bottom: 4rem;
-        }
-
-        .timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(180deg, var(--gold), var(--electric-blue));
-        }
-
-        .timeline-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .timeline-item:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-
-        .timeline-date {
-            width: 45%;
-            text-align: right;
-            padding-right: 2rem;
-        }
-
-        .timeline-item:nth-child(even) .timeline-date {
-            text-align: left;
-            padding-right: 0;
-            padding-left: 2rem;
-        }
-
-        .timeline-content {
-            width: 45%;
-            padding-left: 2rem;
-        }
-
-        .timeline-item:nth-child(even) .timeline-content {
-            padding-left: 0;
-            padding-right: 2rem;
-        }
-
-        .timeline-dot {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 16px;
-            height: 16px;
-            background: var(--gold);
-            border: 3px solid var(--electric-blue);
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        .timeline-year {
-            font-size: 1.5rem;
-            color: var(--gold);
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-title {
-            font-size: 1.2rem;
-            color: var(--electric-blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-text {
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
         /* Join Section */
         .join-section {
             text-align: center;
             padding: 4rem;
-            background: linear-gradient(135deg, var(--dark-gray), var(--medium-gray));
+            background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
             border-radius: 30px;
-            border: 1px solid var(--light-gray);
+            border: 1px solid var(--border-color);
             margin-top: 2rem;
         }
 
@@ -610,7 +735,7 @@
 
         .btn-primary {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
+            color: var(--bg-color);
         }
 
         .btn-primary:hover {
@@ -619,13 +744,13 @@
         }
 
         .btn-secondary {
-            background: var(--medium-gray);
-            color: var(--text-primary);
-            border: 1px solid var(--light-gray);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: var(--light-gray);
+            background: var(--border-color);
             transform: translateY(-3px);
         }
 
@@ -633,12 +758,34 @@
         .footer {
             margin-top: 4rem;
             padding: 2rem 0;
-            border-top: 1px solid var(--light-gray);
+            border-top: 1px solid var(--border-color);
             text-align: center;
             color: var(--text-secondary);
         }
 
-        /* Loading State */
+        /* Carousel Indicators */
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: var(--gold);
+            transform: scale(1.2);
+        }
+
+        /* Loading */
         .loading {
             text-align: center;
             padding: 3rem;
@@ -647,15 +794,43 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid var(--light-gray);
+            border: 3px solid var(--border-color);
             border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 1rem;
         }
 
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
         /* Responsive */
-        @media (max-width: 1024px) {
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                border-bottom: 2px solid var(--gold);
+                z-index: 99;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
             .hero-title {
                 font-size: 2.5rem;
             }
@@ -664,70 +839,15 @@
                 grid-template-columns: 1fr;
             }
 
-            .founder-card {
-                grid-template-columns: 1fr;
-                text-align: center;
+            .team-card {
+                min-width: 250px;
+                flex: 0 0 250px;
             }
 
-            .founder-image {
-                max-width: 300px;
-                margin: 0 auto;
-            }
-
-            .founder-social {
-                justify-content: center;
-            }
-
-            .timeline::before {
-                left: 20px;
-            }
-
-            .timeline-item,
-            .timeline-item:nth-child(even) {
-                flex-direction: column;
-                margin-left: 40px;
-            }
-
-            .timeline-date,
-            .timeline-item:nth-child(even) .timeline-date,
-            .timeline-content,
-            .timeline-item:nth-child(even) .timeline-content {
-                width: 100%;
-                text-align: left;
-                padding: 0;
-            }
-
-            .timeline-dot {
-                left: 20px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .hero-title {
-                font-size: 2rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .team-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .values-grid {
-                grid-template-columns: 1fr;
+            .carousel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
 
             .join-buttons {
@@ -740,28 +860,63 @@
             }
         }
     </style>
-    <script type="importmap">
-        {
-            "imports": {
-                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">SupremeMotive</div>
-        <div class="nav-links">
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="logo">
+            <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
+            <span>SupremeMotive</span>
+        </div>
+
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
-            <a href="ebooks.html">Ebooks</a>
-            <a href="profile.html">Profile</a>
             <a href="about.html" class="active">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+            <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
-            <button id="logoutBtn" style="display: none;">Logout</button>
-            <a href="login.html" id="loginLink">Login</a>
+            
+            <!-- Auth Buttons -->
+            <div class="auth-buttons" id="authButtons">
+                <span id="userGreeting" class="user-greeting hidden"></span>
+                <a href="login.html" class="login-btn" id="loginBtn">Login</a>
+                <button class="logout-btn hidden" id="logoutBtn">Logout</button>
+            </div>
+            
+            <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
     </nav>
 
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </a>
+        <a href="ebooks.html" class="nav-item">
+            <span class="nav-icon">📚</span>
+            <span>Ebooks</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+        <a href="post.html" class="nav-item">
+            <span class="nav-icon">📰</span>
+            <span>Articles</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
     <main class="container">
         <!-- Hero Section -->
         <section class="hero-section">
@@ -771,6 +926,26 @@
                 to achieve their greatest potential through daily motivation and quality resources.
             </p>
         </section>
+
+        <!-- Stats Section -->
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number" id="userCount">10K+</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="quoteCount">500+</div>
+                <div class="stat-label">Daily Quotes</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="ebookCount">50+</div>
+                <div class="stat-label">Ebooks</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="countryCount">30+</div>
+                <div class="stat-label">Countries</div>
+            </div>
+        </div>
 
         <!-- Mission Section -->
         <section class="mission-section">
@@ -786,160 +961,264 @@
                     inspirational content, and a growing library of ebooks to help you on your 
                     journey to success.
                 </p>
-                
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-number" id="userCount">10K+</div>
-                        <div class="stat-label">Active Users</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="postCount">500+</div>
-                        <div class="stat-label">Daily Posts</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="ebookCount">50+</div>
-                        <div class="stat-label">Ebooks</div>
-                    </div>
-                </div>
             </div>
             
             <div class="mission-image">
                 <div class="image-placeholder">
                     <div class="icon">🚀</div>
-                    <h3 style="color: var(--primary-black);">Empowering Dreams</h3>
-                    <p style="color: var(--primary-black);">One Day at a Time</p>
+                    <h3 style="color: var(--bg-color);">Empowering Dreams</h3>
+                    <p style="color: var(--bg-color);">One Day at a Time</p>
                 </div>
             </div>
         </section>
 
-        <!-- Founder Section -->
-        <section class="founder-section">
-            <h2 class="section-title">Meet Our Founder</h2>
-            
-            <div class="founder-card">
-                <div class="founder-image">
-                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                         alt="Founder" 
-                         onerror="this.src='https://via.placeholder.com/300x350?text=Founder'">
-                </div>
-                
-                <div class="founder-info">
-                    <h3 class="founder-name">Alexander Mitchell</h3>
-                    <span class="founder-title">Founder & CEO</span>
-                    
-                    <p class="founder-bio">
-                        Alexander started SupremeMotive after a 15-year journey in personal development 
-                        and entrepreneurship. Having struggled with motivation himself early in his career, 
-                        he realized the power of daily inspiration and community support.
-                    </p>
-                    
-                    <p class="founder-bio">
-                        His vision was to create a platform where people could not only receive daily 
-                        motivation but also access quality resources to transform their lives. Today, 
-                        SupremeMotive serves thousands of users worldwide, and Alexander continues to 
-                        personally curate content and connect with the community.
-                    </p>
-                    
-                    <div class="founder-social">
-                        <a href="#" class="social-link twitter" title="Twitter">
-                            <span>𝕏</span>
-                        </a>
-                        <a href="#" class="social-link linkedin" title="LinkedIn">
-                            <span>in</span>
-                        </a>
-                        <a href="#" class="social-link instagram" title="Instagram">
-                            <span>📷</span>
-                        </a>
-                        <a href="#" class="social-link email" title="Email">
-                            <span>✉️</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Team Section -->
+        <!-- Team Section with Carousel -->
         <section class="team-section">
-            <h2 class="section-title">Our Core Team</h2>
-            
-            <div class="team-grid">
-                <!-- Team Member 1 -->
-                <div class="team-card">
-                    <div class="team-image">
-                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                             alt="Sarah Johnson"
-                             onerror="this.src='https://via.placeholder.com/150x150?text=Sarah'">
+            <div class="section-header">
+                <h2 class="section-title">Meet Our Team</h2>
+                <div class="carousel-controls">
+                    <button class="carousel-btn" id="prevTeamBtn" disabled>←</button>
+                    <button class="carousel-btn" id="nextTeamBtn">→</button>
+                </div>
+            </div>
+
+            <div class="team-carousel-container">
+                <div class="team-carousel" id="teamCarousel">
+                    <!-- Team Member 1 -->
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Alexander Mitchell"
+                                 onerror="this.src='https://via.placeholder.com/150x150?text=AM'">
+                        </div>
+                        <h3 class="team-name">Alexander Mitchell</h3>
+                        <div class="team-role">Founder & CEO</div>
+                        <p class="team-bio">
+                            Visionary leader with 15+ years in personal development. Created SupremeMotive to inspire millions.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
+                        </div>
                     </div>
-                    <h3 class="team-name">Sarah Johnson</h3>
-                    <div class="team-role">Content Director</div>
-                    <p class="team-bio">
-                        Sarah oversees all motivational content, ensuring every post resonates with 
-                        our community's journey. She has a background in positive psychology.
+
+                    <!-- Team Member 2 -->
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Sarah Johnson"
+                                 onerror="this.src='https://via.placeholder.com/150x150?text=SJ'">
+                        </div>
+                        <h3 class="team-name">Sarah Johnson</h3>
+                        <div class="team-role">Content Director</div>
+                        <p class="team-bio">
+                            Content strategist and positive psychology expert. Ensures every quote resonates with our community.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 3 -->
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Michael Chen"
+                                 onerror="this.src='https://via.placeholder.com/150x150?text=MC'">
+                        </div>
+                        <h3 class="team-name">Michael Chen</h3>
+                        <div class="team-role">Lead Developer</div>
+                        <p class="team-bio">
+                            Full-stack developer passionate about creating technology that makes a positive impact on people's lives.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
+                            <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 4 -->
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Emma Rodriguez"
+                                 onerror="this.src='https://via.placeholder.com/150x150?text=ER'">
+                        </div>
+                        <h3 class="team-name">Emma Rodriguez</h3>
+                        <div class="team-role">Community Manager</div>
+                        <p class="team-bio">
+                            Builds and nurtures our community, ensuring everyone feels welcomed and supported on their journey.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 5 -->
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                 alt="David Okafor"
+                                 onerror="this.src='https://via.placeholder.com/150x150?text=DO'">
+                        </div>
+                        <h3 class="team-name">David Okafor</h3>
+                        <div class="team-role">Ebook Curator</div>
+                        <p class="team-bio">
+                            Selects and curates our ebook library, bringing the best motivational content to our readers.
+                        </p>
+                        <div class="team-social">
+                            <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link email"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators" id="teamIndicators">
+                <span class="indicator active"></span>
+                <span class="indicator"></span>
+                <span class="indicator"></span>
+                <span class="indicator"></span>
+                <span class="indicator"></span>
+            </div>
+        </section>
+
+        <!-- Sponsors Section -->
+        <section class="sponsors-section">
+            <h2 class="section-title">Our Valued Sponsors</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                We're grateful to our sponsors who help us keep the motivation flowing
+            </p>
+
+            <div class="sponsors-grid">
+                <!-- Sponsor 1 -->
+                <div class="sponsor-card">
+                    <div class="sponsor-header">
+                        <div class="sponsor-logo">MV</div>
+                        <div class="sponsor-info">
+                            <h3 class="sponsor-name">Motivate Ventures</h3>
+                            <div class="sponsor-title">Lead Sponsor</div>
+                        </div>
+                    </div>
+                    <p class="sponsor-intro">
+                        Venture capital firm focused on personal development and wellness startups. 
+                        Committed to making motivation accessible to all.
                     </p>
-                    <div class="team-social">
-                        <a href="#" class="social-link twitter">𝕏</a>
-                        <a href="#" class="social-link linkedin">in</a>
-                        <a href="#" class="social-link email">✉️</a>
+                    <div class="sponsor-social">
+                        <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link email"><i class="fas fa-globe"></i></a>
                     </div>
                 </div>
 
-                <!-- Team Member 2 -->
-                <div class="team-card">
-                    <div class="team-image">
-                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                             alt="Michael Chen"
-                             onerror="this.src='https://via.placeholder.com/150x150?text=Michael'">
+                <!-- Sponsor 2 -->
+                <div class="sponsor-card">
+                    <div class="sponsor-header">
+                        <div class="sponsor-logo">GW</div>
+                        <div class="sponsor-info">
+                            <h3 class="sponsor-name">GrowthWorks</h3>
+                            <div class="sponsor-title">Content Partner</div>
+                        </div>
                     </div>
-                    <h3 class="team-name">Michael Chen</h3>
-                    <div class="team-role">Lead Developer</div>
-                    <p class="team-bio">
-                        Michael built the SupremeMotive platform from the ground up. He's passionate 
-                        about creating technology that makes a positive impact.
+                    <p class="sponsor-intro">
+                        Digital publishing house specializing in motivational and self-help content. 
+                        Providing quality resources for our community.
                     </p>
-                    <div class="team-social">
-                        <a href="#" class="social-link github">🐙</a>
-                        <a href="#" class="social-link linkedin">in</a>
-                        <a href="#" class="social-link email">✉️</a>
+                    <div class="sponsor-social">
+                        <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
 
-                <!-- Team Member 3 -->
-                <div class="team-card">
-                    <div class="team-image">
-                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                             alt="Emma Rodriguez"
-                             onerror="this.src='https://via.placeholder.com/150x150?text=Emma'">
+                <!-- Sponsor 3 -->
+                <div class="sponsor-card">
+                    <div class="sponsor-header">
+                        <div class="sponsor-logo">TF</div>
+                        <div class="sponsor-info">
+                            <h3 class="sponsor-name">TechForGood</h3>
+                            <div class="sponsor-title">Technology Partner</div>
+                        </div>
                     </div>
-                    <h3 class="team-name">Emma Rodriguez</h3>
-                    <div class="team-role">Community Manager</div>
-                    <p class="team-bio">
-                        Emma connects with our users daily, moderates discussions, and ensures 
-                        everyone feels welcomed and supported in our community.
+                    <p class="sponsor-intro">
+                        Tech company providing infrastructure and support for platforms making a positive 
+                        social impact. Proud to support SupremeMotive.
                     </p>
-                    <div class="team-social">
-                        <a href="#" class="social-link instagram">📷</a>
-                        <a href="#" class="social-link twitter">𝕏</a>
-                        <a href="#" class="social-link email">✉️</a>
+                    <div class="sponsor-social">
+                        <a href="#" class="social-link github"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
 
-                <!-- Team Member 4 -->
-                <div class="team-card">
-                    <div class="team-image">
-                        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                             alt="David Okafor"
-                             onerror="this.src='https://via.placeholder.com/150x150?text=David'">
+                <!-- Sponsor 4 -->
+                <div class="sponsor-card">
+                    <div class="sponsor-header">
+                        <div class="sponsor-logo">IP</div>
+                        <div class="sponsor-info">
+                            <h3 class="sponsor-name">Inspire Publishing</h3>
+                            <div class="sponsor-title">Book Partner</div>
+                        </div>
                     </div>
-                    <h3 class="team-name">David Okafor</h3>
-                    <div class="team-role">Ebook Curator</div>
-                    <p class="team-bio">
-                        David selects and curates our ebook library, working with authors to bring 
-                        the best motivational content to our readers.
+                    <p class="sponsor-intro">
+                        Publishing house dedicated to bringing inspirational books to readers worldwide. 
+                        Partnering for our ebook library.
                     </p>
-                    <div class="team-social">
-                        <a href="#" class="social-link linkedin">in</a>
-                        <a href="#" class="social-link twitter">𝕏</a>
-                        <a href="#" class="social-link email">✉️</a>
+                    <div class="sponsor-social">
+                        <a href="#" class="social-link facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+
+                <!-- Sponsor 5 -->
+                <div class="sponsor-card">
+                    <div class="sponsor-header">
+                        <div class="sponsor-logo">WL</div>
+                        <div class="sponsor-info">
+                            <h3 class="sponsor-name">Wellness Labs</h3>
+                            <div class="sponsor-title">Wellness Partner</div>
+                        </div>
+                    </div>
+                    <p class="sponsor-intro">
+                        Research and development in mental wellness and personal growth. 
+                        Providing insights for our content strategy.
+                    </p>
+                    <div class="sponsor-social">
+                        <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link email"><i class="fas fa-flask"></i></a>
+                    </div>
+                </div>
+
+                <!-- Sponsor 6 -->
+                <div class="sponsor-card">
+                    <div class="sponsor-header">
+                        <div class="sponsor-logo">FC</div>
+                        <div class="sponsor-info">
+                            <h3 class="sponsor-name">Future Capital</h3>
+                            <div class="sponsor-title">Investment Partner</div>
+                        </div>
+                    </div>
+                    <p class="sponsor-intro">
+                        Investment firm focused on innovative startups with purpose. 
+                        Backing SupremeMotive's mission to inspire globally.
+                    </p>
+                    <div class="sponsor-social">
+                        <a href="#" class="social-link linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link email"><i class="fas fa-chart-line"></i></a>
                     </div>
                 </div>
             </div>
@@ -984,83 +1263,6 @@
             </div>
         </section>
 
-        <!-- Timeline Section -->
-        <section class="timeline-section">
-            <h2 class="section-title">Our Journey</h2>
-            
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">
-                        <div class="timeline-year">2020</div>
-                        <div class="timeline-title">The Beginning</div>
-                    </div>
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <p class="timeline-text">
-                            SupremeMotive started as a small WhatsApp group sharing daily motivation 
-                            with just 50 members.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">
-                        <div class="timeline-year">2021</div>
-                        <div class="timeline-title">Platform Launch</div>
-                    </div>
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <p class="timeline-text">
-                            We launched our first web platform, growing to over 1,000 users and 
-                            introducing our first ebooks.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">
-                        <div class="timeline-year">2022</div>
-                        <div class="timeline-title">Global Expansion</div>
-                    </div>
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <p class="timeline-text">
-                            Reached 10,000 users across 50+ countries and expanded our ebook library 
-                            to 30+ titles.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">
-                        <div class="timeline-year">2023</div>
-                        <div class="timeline-title">Community Growth</div>
-                    </div>
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <p class="timeline-text">
-                            Introduced admin roles and unlock system, creating a sustainable platform 
-                            for growth.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">
-                        <div class="timeline-year">2024</div>
-                        <div class="timeline-title">Today & Beyond</div>
-                    </div>
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <p class="timeline-text">o
-                            Serving thousands of daily active users with plans for mobile apps and 
-                            premium features.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Join Section -->
         <section class="join-section">
             <h2 class="join-title">Join Our Community</h2>
@@ -1086,13 +1288,14 @@
         </footer>
     </main>
 
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
+    <script>
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabase = createClient(
-            'https://dzcykpbfykajhoutzhpf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
-        )
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
         const ADMIN_EMAILS = [
@@ -1100,88 +1303,210 @@
             'suprememotive43@gmail.com',
             'sandrakukk055@gmail.com',
             'emmanuelamer6@gmail.com'
-        ]
+        ];
 
         // DOM Elements
-        const logoutBtn = document.getElementById('logoutBtn')
-        const loginLink = document.getElementById('loginLink')
-        const adminLink = document.getElementById('adminLink')
-        const userCount = document.getElementById('userCount')
-        const postCount = document.getElementById('postCount')
-        const ebookCount = document.getElementById('ebookCount')
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        const themeToggle = document.getElementById('themeToggle');
+        const adminLink = document.getElementById('adminLink');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userGreeting = document.getElementById('userGreeting');
 
-        // Check auth status
-        async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser()
-            
-            if (user) {
-                logoutBtn.style.display = 'block'
-                loginLink.style.display = 'none'
-                
-                if (ADMIN_EMAILS.includes(user.email)) {
-                    adminLink.style.display = 'block'
-                    adminLink.href = 'admin/admin-dashboard.html'
-                }
+        // Team Carousel Elements
+        const teamCarousel = document.getElementById('teamCarousel');
+        const prevTeamBtn = document.getElementById('prevTeamBtn');
+        const nextTeamBtn = document.getElementById('nextTeamBtn');
+        const indicators = document.querySelectorAll('.indicator');
+
+        let currentIndex = 0;
+        const totalCards = document.querySelectorAll('.team-card').length;
+
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
             } else {
-                logoutBtn.style.display = 'none'
-                loginLink.style.display = 'block'
-                adminLink.style.display = 'none'
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
             }
         }
 
-        // Load real statistics from database
+        themeToggle.addEventListener('click', () => {
+            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5';
+            if (isLight) {
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // ============================================
+        // TEAM CAROUSEL
+        // ============================================
+        function updateCarousel() {
+            const cardWidth = document.querySelector('.team-card').offsetWidth + 32; // width + gap
+            teamCarousel.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+            
+            // Update buttons
+            prevTeamBtn.disabled = currentIndex === 0;
+            nextTeamBtn.disabled = currentIndex >= totalCards - 1;
+            
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                if (index === currentIndex) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        prevTeamBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        });
+
+        nextTeamBtn.addEventListener('click', () => {
+            if (currentIndex < totalCards - 1) {
+                currentIndex++;
+                updateCarousel();
+            }
+        });
+
+        // Add click handlers to indicators
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentIndex = index;
+                updateCarousel();
+            });
+        });
+
+        // Update carousel on window resize
+        window.addEventListener('resize', updateCarousel);
+
+        // ============================================
+        // CHECK AUTH
+        // ============================================
+        async function checkAuth() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                
+                if (user) {
+                    loginBtn.classList.add('hidden');
+                    logoutBtn.classList.remove('hidden');
+                    userGreeting.classList.remove('hidden');
+                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
+                    
+                    if (ADMIN_EMAILS.includes(user.email)) {
+                        adminLink.style.display = 'block';
+                        adminLink.href = 'admin/admin-dashboard.html';
+                    }
+                } else {
+                    loginBtn.classList.remove('hidden');
+                    logoutBtn.classList.add('hidden');
+                    userGreeting.classList.add('hidden');
+                    adminLink.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
+
+        // ============================================
+        // LOAD STATS
+        // ============================================
         async function loadStats() {
             try {
-                // Get user count
-                const { count: users } = await supabase
+                const { count: users } = await supabaseClient
                     .from('profiles')
-                    .select('*', { count: 'exact', head: true })
+                    .select('*', { count: 'exact', head: true });
 
-                // Get post count
-                const { count: posts } = await supabase
-                    .from('posts')
-                    .select('*', { count: 'exact', head: true })
+                const { count: quotes } = await supabaseClient
+                    .from('quotes')
+                    .select('*', { count: 'exact', head: true });
 
-                // Get ebook count
-                const { count: ebooks } = await supabase
+                const { count: ebooks } = await supabaseClient
                     .from('ebooks')
-                    .select('*', { count: 'exact', head: true })
+                    .select('*', { count: 'exact', head: true });
 
-                // Update display with real numbers or formatted numbers
-                userCount.textContent = users ? formatNumber(users) : '10K+'
-                postCount.textContent = posts ? formatNumber(posts) : '500+'
-                ebookCount.textContent = ebooks ? formatNumber(ebooks) : '50+'
+                // Get unique countries
+                const { data: profiles } = await supabaseClient
+                    .from('profiles')
+                    .select('country');
+                
+                const uniqueCountries = new Set(profiles?.map(p => p.country) || []);
+                const countryCount = uniqueCountries.size;
+
+                document.getElementById('userCount').textContent = users ? (users > 1000 ? (users/1000).toFixed(1) + 'K' : users) : '10K+';
+                document.getElementById('quoteCount').textContent = quotes || '500+';
+                document.getElementById('ebookCount').textContent = ebooks || '50+';
+                document.getElementById('countryCount').textContent = countryCount || '30+';
 
             } catch (error) {
-                console.error('Error loading stats:', error)
-                // Keep placeholder numbers if error
+                console.error('Error loading stats:', error);
             }
         }
 
-        // Format numbers (e.g., 1500 -> 1.5K)
-        function formatNumber(num) {
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1) + 'M'
-            }
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'K'
-            }
-            return num.toString()
-        }
-
-        // Logout
-        logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut()
-            window.location.reload()
-        })
-
-        // Initialize
+        // ============================================
+        // INITIALIZE
+        // ============================================
         async function init() {
-            await checkAuth()
-            await loadStats()
+            initTheme();
+            await checkAuth();
+            await loadStats();
+            updateCarousel();
         }
 
-        init()
+        init();
     </script>
 </body>
 </html>
