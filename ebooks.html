@@ -82,6 +82,45 @@
             color: var(--gold);
         }
 
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #F44336;
+            color: #F44336;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #F44336;
+            color: white;
+        }
+
         .theme-toggle {
             background: none;
             border: none;
@@ -89,6 +128,12 @@
             font-size: 1.2rem;
             cursor: pointer;
             padding: 0.3rem;
+        }
+
+        .user-greeting {
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
         }
 
         /* Bottom Navigation */
@@ -233,14 +278,14 @@
             font-size: 1.2rem;
         }
 
-        /* Ebooks Grid - Exactly like home quotes grid */
+        /* Ebooks Grid */
         .ebooks-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
         }
 
-        /* Ebook Card - Matching quote card style */
+        /* Ebook Card */
         .ebook-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -285,7 +330,7 @@
             z-index: 2;
         }
 
-        /* Category/Tag - Like quote tag */
+        /* Category/Tag */
         .ebook-tag {
             color: var(--text-secondary);
             font-size: 0.9rem;
@@ -306,7 +351,7 @@
             line-height: 1.4;
         }
 
-        /* Description - truncated like quote text */
+        /* Description */
         .ebook-description {
             font-size: 0.95rem;
             line-height: 1.5;
@@ -330,7 +375,7 @@
             color: var(--success);
         }
 
-        /* Action Buttons - Like quote actions */
+        /* Action Buttons */
         .ebook-actions {
             display: flex;
             gap: 0.8rem;
@@ -375,6 +420,11 @@
             background: var(--electric-blue);
             color: var(--bg-color);
             border-color: var(--electric-blue);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* Loading */
@@ -594,6 +644,13 @@
             <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
+            
+            <div class="auth-buttons">
+                <span id="userGreeting" class="user-greeting hidden"></span>
+                <a href="login.html" class="login-btn" id="loginBtn">Login</a>
+                <button class="logout-btn hidden" id="logoutBtn">Logout</button>
+            </div>
+            
             <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
     </nav>
@@ -697,12 +754,11 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION - FIXED
+        // SUPABASE CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        // Use consistent variable name
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin WhatsApp number
@@ -745,36 +801,6 @@
                 price: 9.99,
                 is_paid: true,
                 tag: 'Mm'
-            },
-            {
-                id: '3',
-                title: 'Daily Habits of Successful People',
-                description: 'Learn the morning routines and daily practices that separate high achievers from the rest.',
-                cover_url: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=400',
-                category: 'success',
-                price: 14.99,
-                is_paid: true,
-                tag: 'Dh'
-            },
-            {
-                id: '4',
-                title: 'The Power of Consistency',
-                description: 'Discover how small daily actions lead to extraordinary results over time.',
-                cover_url: 'https://images.unsplash.com/photo-1491841573634-28140fc7ced7?w=400',
-                category: 'success',
-                price: 0,
-                is_paid: false,
-                tag: 'Pc'
-            },
-            {
-                id: '5',
-                title: 'Emotional Intelligence 2.0',
-                description: 'Master your emotions and improve your relationships with practical EQ strategies.',
-                cover_url: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=400',
-                category: 'mindset',
-                price: 12.99,
-                is_paid: true,
-                tag: 'Ei'
             }
         ];
 
@@ -785,6 +811,9 @@
         const navLinks = document.getElementById('navLinks');
         const themeToggle = document.getElementById('themeToggle');
         const adminLink = document.getElementById('adminLink');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userGreeting = document.getElementById('userGreeting');
         const categoryBtns = document.querySelectorAll('.category-btn');
         const searchInput = document.getElementById('searchInput');
         const totalEbooks = document.getElementById('totalEbooks');
@@ -797,7 +826,9 @@
         const modalEbookInfo = document.getElementById('modalEbookInfo');
         const whatsappMessage = document.getElementById('whatsappMessage');
 
-        // Theme toggle
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
@@ -838,7 +869,9 @@
             }
         });
 
-        // Mobile menu
+        // ============================================
+        // MOBILE MENU
+        // ============================================
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
@@ -849,7 +882,9 @@
             });
         });
 
-        // Show alert
+        // ============================================
+        // SHOW ALERT
+        // ============================================
         function showAlert(message) {
             alertContainer.innerHTML = `<div class="alert">${message}</div>`;
             setTimeout(() => {
@@ -857,22 +892,48 @@
             }, 2000);
         }
 
-        // Check auth - FIXED to use supabaseClient
+        // ============================================
+        // CHECK AUTH
+        // ============================================
         async function checkAuth() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
 
-                if (user && ADMIN_EMAILS.includes(user.email)) {
-                    adminLink.style.display = 'block';
-                    adminLink.href = 'admin/admin-dashboard.html';
+                if (user) {
+                    loginBtn.classList.add('hidden');
+                    logoutBtn.classList.remove('hidden');
+                    userGreeting.classList.remove('hidden');
+                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
+
+                    if (ADMIN_EMAILS.includes(user.email)) {
+                        adminLink.style.display = 'block';
+                        adminLink.href = 'admin/admin-dashboard.html';
+                    }
+
+                    await loadUserUnlocks();
+                } else {
+                    loginBtn.classList.remove('hidden');
+                    logoutBtn.classList.add('hidden');
+                    userGreeting.classList.add('hidden');
+                    adminLink.style.display = 'none';
                 }
             } catch (error) {
                 console.error('Auth error:', error);
             }
         }
 
-        // Load user unlocks - FIXED to use supabaseClient
+        // ============================================
+        // LOGOUT
+        // ============================================
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
+
+        // ============================================
+        // LOAD USER UNLOCKS
+        // ============================================
         async function loadUserUnlocks() {
             if (!currentUser) return;
 
@@ -891,7 +952,9 @@
             }
         }
 
-        // Load ebooks - FIXED to use supabaseClient
+        // ============================================
+        // LOAD EBOOKS
+        // ============================================
         async function loadEbooks() {
             try {
                 const { data, error } = await supabaseClient
@@ -904,11 +967,9 @@
                 if (data && data.length > 0) {
                     ebooks = data;
                 } else {
-                    // Use sample ebooks if database is empty
                     ebooks = sampleEbooks;
                 }
 
-                // Update stats
                 updateStats();
                 renderEbooks();
 
@@ -920,18 +981,21 @@
             }
         }
 
-        // Update stats
+        // ============================================
+        // UPDATE STATS
+        // ============================================
         function updateStats() {
             totalEbooks.textContent = ebooks.length;
             freeEbooks.textContent = ebooks.filter(e => !e.is_paid).length;
             paidEbooks.textContent = ebooks.filter(e => e.is_paid).length;
         }
 
-        // Render ebooks
+        // ============================================
+        // RENDER EBOOKS
+        // ============================================
         function renderEbooks() {
             let filteredEbooks = [...ebooks];
 
-            // Filter by category
             if (currentCategory === 'free') {
                 filteredEbooks = filteredEbooks.filter(e => !e.is_paid);
             } else if (currentCategory === 'paid') {
@@ -940,7 +1004,6 @@
                 filteredEbooks = filteredEbooks.filter(e => e.category === currentCategory);
             }
 
-            // Filter by search
             if (searchTerm) {
                 filteredEbooks = filteredEbooks.filter(e => 
                     e.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -1002,8 +1065,10 @@
             }).join('');
         }
 
-        // Show unlock modal
-        window.showUnlockModal = (ebookId) => {
+        // ============================================
+        // SHOW UNLOCK MODAL - NOW CREATES DATABASE REQUEST
+        // ============================================
+        window.showUnlockModal = async (ebookId) => {
             if (!currentUser) {
                 if (confirm('Please login to unlock ebooks')) {
                     window.location.href = 'login.html';
@@ -1016,30 +1081,59 @@
 
             selectedEbook = ebook;
 
-            modalEbookInfo.innerHTML = `
-                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                    <img src="${ebook.cover_url}" alt="${ebook.title}" 
-                         style="width: 60px; height: 80px; object-fit: cover; border-radius: 8px;">
-                    <div>
-                        <h4 style="color: var(--gold);">${ebook.title}</h4>
-                        <p style="color: var(--text-secondary);">$${ebook.price}</p>
+            try {
+                // FIRST: Create unlock request in database
+                const { error } = await supabaseClient
+                    .from('unlocks')
+                    .insert([{
+                        user_id: currentUser.id,
+                        ebook_id: ebookId,
+                        status: 'pending',
+                        created_at: new Date()
+                    }]);
+
+                if (error) {
+                    // Check if it's a duplicate
+                    if (error.code === '23505') { // Unique violation
+                        showAlert('You already have a pending request for this ebook');
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    console.log('✅ Unlock request created in database');
+                }
+
+                // THEN: Show modal with WhatsApp info
+                modalEbookInfo.innerHTML = `
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                        <img src="${ebook.cover_url}" alt="${ebook.title}" 
+                             style="width: 60px; height: 80px; object-fit: cover; border-radius: 8px;">
+                        <div>
+                            <h4 style="color: var(--gold);">${ebook.title}</h4>
+                            <p style="color: var(--text-secondary);">$${ebook.price}</p>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
-            const message = `*Unlock Request - SupremeMotive*\n\n` +
-                `*User:* ${currentUser.email}\n` +
-                `*User ID:* ${currentUser.id}\n` +
-                `*Ebook:* ${ebook.title}\n` +
-                `*Ebook ID:* ${ebook.id}\n` +
-                `*Price:* $${ebook.price}`;
+                const message = `*Unlock Request - SupremeMotive*\n\n` +
+                    `*User:* ${currentUser.email}\n` +
+                    `*User ID:* ${currentUser.id}\n` +
+                    `*Ebook:* ${ebook.title}\n` +
+                    `*Ebook ID:* ${ebook.id}\n` +
+                    `*Price:* $${ebook.price}`;
 
-            whatsappMessage.textContent = message;
+                whatsappMessage.textContent = message;
+                unlockModal.classList.add('show');
 
-            unlockModal.classList.add('show');
+            } catch (error) {
+                console.error('Error creating unlock request:', error);
+                showAlert('Error creating request: ' + error.message);
+            }
         };
 
-        // Send WhatsApp
+        // ============================================
+        // SEND WHATSAPP
+        // ============================================
         sendWhatsAppBtn.addEventListener('click', () => {
             if (!selectedEbook || !currentUser) return;
 
@@ -1053,14 +1147,16 @@
             );
 
             window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${message}`, '_blank');
-            showAlert('Request sent! Admin will approve after payment.');
+            showAlert('WhatsApp opened! Admin will process your request.');
             
             setTimeout(() => {
                 unlockModal.classList.remove('show');
             }, 2000);
         });
 
-        // Close modal
+        // ============================================
+        // CLOSE MODAL
+        // ============================================
         closeModalBtn.addEventListener('click', () => {
             unlockModal.classList.remove('show');
         });
@@ -1075,12 +1171,16 @@
             }
         });
 
-        // Read ebook
+        // ============================================
+        // READ EBOOK
+        // ============================================
         window.readEbook = (ebookId) => {
             window.open(`ebook-reader.html?id=${ebookId}`, '_blank');
         };
 
-        // Save ebook - FIXED to use supabaseClient
+        // ============================================
+        // SAVE EBOOK
+        // ============================================
         window.saveEbook = async (ebookId) => {
             if (!currentUser) {
                 if (confirm('Please login to save ebooks')) {
@@ -1090,7 +1190,6 @@
             }
 
             try {
-                // Check if already saved
                 const { data: existing } = await supabaseClient
                     .from('saved_ebooks')
                     .select('*')
@@ -1099,7 +1198,6 @@
                     .maybeSingle();
 
                 if (existing) {
-                    // Unsave
                     await supabaseClient
                         .from('saved_ebooks')
                         .delete()
@@ -1108,7 +1206,6 @@
 
                     showAlert('Ebook removed from your library');
                 } else {
-                    // Save
                     await supabaseClient
                         .from('saved_ebooks')
                         .insert([{
@@ -1124,7 +1221,9 @@
             }
         };
 
-        // Category filtering
+        // ============================================
+        // CATEGORY FILTERING
+        // ============================================
         categoryBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 categoryBtns.forEach(b => b.classList.remove('active'));
@@ -1134,18 +1233,21 @@
             });
         });
 
-        // Search
+        // ============================================
+        // SEARCH
+        // ============================================
         searchInput.addEventListener('input', (e) => {
             searchTerm = e.target.value;
             renderEbooks();
         });
 
-        // Initialize
+        // ============================================
+        // INITIALIZE
+        // ============================================
         async function init() {
             initTheme();
             await checkAuth();
             await loadEbooks();
-            await loadUserUnlocks();
         }
 
         init();
