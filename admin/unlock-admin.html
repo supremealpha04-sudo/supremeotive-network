@@ -751,12 +751,13 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - USING supabaseClient
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // USING supabaseClient AS REQUESTED
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
         const ADMIN_EMAILS = [
@@ -797,10 +798,10 @@
         // ============================================
         async function checkAuth() {
             try {
-                const { data: { user }, error } = await supabase.auth.getUser();
-                
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+
                 if (error) throw error;
-                
+
                 if (!user) {
                     window.location.href = '../login.html';
                     return false;
@@ -838,7 +839,7 @@
                 `;
 
                 // Get all unlocks
-                const { data: unlocks, error } = await supabase
+                const { data: unlocks, error } = await supabaseClient
                     .from('unlocks')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -848,14 +849,14 @@
                 // Get user profiles and ebooks separately
                 const requestsWithDetails = await Promise.all((unlocks || []).map(async (unlock) => {
                     // Get user profile
-                    const { data: profile } = await supabase
+                    const { data: profile } = await supabaseClient
                         .from('profiles')
                         .select('name, email')
                         .eq('id', unlock.user_id)
                         .single();
 
                     // Get ebook details
-                    const { data: ebook } = await supabase
+                    const { data: ebook } = await supabaseClient
                         .from('ebooks')
                         .select('title, price')
                         .eq('id', unlock.ebook_id)
@@ -942,7 +943,7 @@
             tableBody.innerHTML = filteredRequests.map(request => {
                 const date = new Date(request.created_at).toLocaleDateString();
                 const time = new Date(request.created_at).toLocaleTimeString();
-                
+
                 return `
                     <tr>
                         <td><strong>${escapeHtml(request.profiles?.name || 'Unknown')}</strong></td>
@@ -1011,7 +1012,7 @@
             if (!confirm('Are you sure you want to approve this unlock request?')) return;
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('unlocks')
                     .update({ 
                         status: 'approved',
@@ -1047,7 +1048,7 @@
             if (!selectedRequestId) return;
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('unlocks')
                     .update({ 
                         status: 'rejected',
@@ -1133,7 +1134,7 @@ Notes: ${request.admin_notes || 'No notes'}
         // LOGOUT
         // ============================================
         logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.href = '../index.html';
         });
 
