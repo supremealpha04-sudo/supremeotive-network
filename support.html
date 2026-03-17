@@ -567,6 +567,263 @@
             color: var(--gold);
         }
 
+        /* ============================================ */
+        /* DONATION / SUPPORT US SECTION - NEW ADDITION */
+        /* ============================================ */
+        .donation-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .donation-section::before {
+            content: '❤️';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 150px;
+            opacity: 0.03;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+
+        .donation-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .donation-header h2 {
+            font-size: 2.2rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .donation-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .donation-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 2rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--bg-color);
+            border-color: transparent;
+        }
+
+        .donation-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .donation-panel {
+            display: none;
+        }
+
+        .donation-panel.active {
+            display: block;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .payment-card {
+            background: var(--bg-color);
+            border-radius: 20px;
+            padding: 1.8rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .payment-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.03) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .payment-card:hover::before {
+            opacity: 1;
+        }
+
+        .currency-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--bg-color);
+        }
+
+        .currency-name {
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 0.3rem;
+        }
+
+        .currency-rate {
+            color: var(--electric-blue);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .account-details {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .account-number {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--electric-blue);
+            word-break: break-all;
+            margin-bottom: 0.5rem;
+        }
+
+        .account-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .bank-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+            border-color: var(--gold);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .crypto-address {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--electric-blue);
+            word-break: break-all;
+            margin: 1rem 0;
+        }
+
+        .qr-placeholder {
+            width: 100px;
+            height: 100px;
+            background: var(--card-bg);
+            border: 2px dashed var(--gold);
+            border-radius: 10px;
+            margin: 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .support-message {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 16px;
+            border: 1px solid var(--gold);
+        }
+
+        .support-message p {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .support-message .thanks {
+            color: var(--gold);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
         /* FAQ Section */
         .faq-section {
             margin-bottom: 3rem;
@@ -697,6 +954,15 @@
             .hero-title {
                 font-size: 2rem;
             }
+
+            .donation-tabs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -768,22 +1034,22 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">⏱️</div>
-                <div class="stat-number" id="avgResponse">15 min</div>
+                <div class="stat-number">15 min</div>
                 <div class="stat-label">Avg Response Time</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">✅</div>
-                <div class="stat-number" id="solvedToday">150+</div>
+                <div class="stat-number">150+</div>
                 <div class="stat-label">Solved Today</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🌍</div>
-                <div class="stat-number" id="activeUsers">5K+</div>
+                <div class="stat-number">5K+</div>
                 <div class="stat-label">Happy Users</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">📞</div>
-                <div class="stat-number" id="supportAgents">24/7</div>
+                <div class="stat-number">24/7</div>
                 <div class="stat-label">Support Available</div>
             </div>
         </div>
@@ -818,6 +1084,225 @@
                 </button>
             </div>
         </div>
+
+        <!-- ============================================ -->
+        <!-- SUPPORT US / DONATION SECTION - MAIN ADDITION -->
+        <!-- ============================================ -->
+        <section class="donation-section">
+            <div class="donation-header">
+                <h2>💝 Support Our Mission</h2>
+                <p>Your contributions help us keep spreading motivation worldwide. Every donation, no matter the size, makes a difference.</p>
+            </div>
+
+            <!-- Donation Tabs -->
+            <div class="donation-tabs">
+                <button class="tab-btn active" onclick="switchDonationTab('fiat')">💵 Fiat Currency</button>
+                <button class="tab-btn" onclick="switchDonationTab('crypto')">₿ Cryptocurrency</button>
+                <button class="tab-btn" onclick="switchDonationTab('other')">📱 Other Methods</button>
+            </div>
+
+            <!-- Fiat Currency Panel -->
+            <div id="fiat-panel" class="donation-panel active">
+                <div class="payment-grid">
+                    <!-- NGN - Nigerian Naira -->
+                    <div class="payment-card">
+                        <div class="currency-icon">₦</div>
+                        <h3 class="currency-name">Nigerian Naira (NGN)</h3>
+                        <div class="currency-rate">≈ $1 USD = ₦1,550</div>
+                        <div class="account-details">
+                            <div class="account-number" id="ngnAccount">0123456789</div>
+                            <div class="account-name">SupremeMotive Foundation</div>
+                            <div class="bank-name">GTBank • Account</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('0123456789', this)">
+                            <i class="fas fa-copy"></i> Copy Account Number
+                        </button>
+                    </div>
+
+                    <!-- USD - US Dollar -->
+                    <div class="payment-card">
+                        <div class="currency-icon">$</div>
+                        <h3 class="currency-name">US Dollar (USD)</h3>
+                        <div class="currency-rate">International Wire Transfer</div>
+                        <div class="account-details">
+                            <div class="account-number" id="usdAccount">123456789</div>
+                            <div class="account-name">SupremeMotive Inc.</div>
+                            <div class="bank-name">Chase Bank • Routing: 021000021</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('123456789', this)">
+                            <i class="fas fa-copy"></i> Copy Account Number
+                        </button>
+                    </div>
+
+                    <!-- GBP - British Pound -->
+                    <div class="payment-card">
+                        <div class="currency-icon">£</div>
+                        <h3 class="currency-name">British Pound (GBP)</h3>
+                        <div class="currency-rate">UK Bank Transfer</div>
+                        <div class="account-details">
+                            <div class="account-number" id="gbpAccount">GB123456789</div>
+                            <div class="account-name">SupremeMotive UK</div>
+                            <div class="bank-name">Sort Code: 12-34-56</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('GB123456789', this)">
+                            <i class="fas fa-copy"></i> Copy Account Number
+                        </button>
+                    </div>
+
+                    <!-- EUR - Euro -->
+                    <div class="payment-card">
+                        <div class="currency-icon">€</div>
+                        <h3 class="currency-name">Euro (EUR)</h3>
+                        <div class="currency-rate">SEPA Transfer</div>
+                        <div class="account-details">
+                            <div class="account-number" id="eurAccount">EU987654321</div>
+                            <div class="account-name">SupremeMotive Europe</div>
+                            <div class="bank-name">IBAN: DE89 3704 0044 0532 0130 00</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('EU987654321', this)">
+                            <i class="fas fa-copy"></i> Copy Account Number
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cryptocurrency Panel -->
+            <div id="crypto-panel" class="donation-panel">
+                <div class="payment-grid">
+                    <!-- Bitcoin -->
+                    <div class="payment-card">
+                        <div class="currency-icon">₿</div>
+                        <h3 class="currency-name">Bitcoin (BTC)</h3>
+                        <div class="crypto-address" id="btcAddress">
+                            bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', this)">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+
+                    <!-- Ethereum -->
+                    <div class="payment-card">
+                        <div class="currency-icon">Ξ</div>
+                        <h3 class="currency-name">Ethereum (ETH)</h3>
+                        <div class="crypto-address" id="ethAddress">
+                            0x742d35Cc6634C0532925a3b844Bc454e4438f44e
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('0x742d35Cc6634C0532925a3b844Bc454e4438f44e', this)">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+
+                    <!-- USDT (ERC-20) -->
+                    <div class="payment-card">
+                        <div class="currency-icon">💵</div>
+                        <h3 class="currency-name">USDT (ERC-20)</h3>
+                        <div class="crypto-address" id="usdtAddress">
+                            0x742d35Cc6634C0532925a3b844Bc454e4438f44e
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('0x742d35Cc6634C0532925a3b844Bc454e4438f44e', this)">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+
+                    <!-- USDT (TRC-20) -->
+                    <div class="payment-card">
+                        <div class="currency-icon">💵</div>
+                        <h3 class="currency-name">USDT (TRC-20)</h3>
+                        <div class="crypto-address" id="usdtTrcAddress">
+                            TXYZ123456789abcdefghijklmnopqrstuvwxyz
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('TXYZ123456789abcdefghijklmnopqrstuvwxyz', this)">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+
+                    <!-- BNB -->
+                    <div class="payment-card">
+                        <div class="currency-icon">🔶</div>
+                        <h3 class="currency-name">Binance (BNB)</h3>
+                        <div class="crypto-address" id="bnbAddress">
+                            bnb1abcdef123456789abcdef123456789abcdef
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('bnb1abcdef123456789abcdef123456789abcdef', this)">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+
+                    <!-- Litecoin -->
+                    <div class="payment-card">
+                        <div class="currency-icon">Ł</div>
+                        <h3 class="currency-name">Litecoin (LTC)</h3>
+                        <div class="crypto-address" id="ltcAddress">
+                            Lcrypto123456789abcdefghijklmnopqrstuv
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('Lcrypto123456789abcdefghijklmnopqrstuv', this)">
+                            <i class="fas fa-copy"></i> Copy Address
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Methods Panel -->
+            <div id="other-panel" class="donation-panel">
+                <div class="payment-grid">
+                    <!-- PayPal -->
+                    <div class="payment-card">
+                        <div class="currency-icon">🅿️</div>
+                        <h3 class="currency-name">PayPal</h3>
+                        <div class="account-details">
+                            <div class="account-number">paypal@suprememotive.com</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyToClipboard('paypal@suprememotive.com', this)">
+                            <i class="fas fa-copy"></i> Copy Email
+                        </button>
+                    </div>
+
+                    <!-- Patreon -->
+                    <div class="payment-card">
+                        <div class="currency-icon">🎭</div>
+                        <h3 class="currency-name">Patreon</h3>
+                        <div class="account-details">
+                            <div class="account-number">patreon.com/suprememotive</div>
+                        </div>
+                        <button class="copy-btn" onclick="window.open('https://patreon.com/suprememotive', '_blank')">
+                            <i class="fas fa-external-link-alt"></i> Visit Page
+                        </button>
+                    </div>
+
+                    <!-- Ko-fi -->
+                    <div class="payment-card">
+                        <div class="currency-icon">☕</div>
+                        <h3 class="currency-name">Ko-fi</h3>
+                        <div class="account-details">
+                            <div class="account-number">ko-fi.com/suprememotive</div>
+                        </div>
+                        <button class="copy-btn" onclick="window.open('https://ko-fi.com/suprememotive', '_blank')">
+                            <i class="fas fa-external-link-alt"></i> Buy us a coffee
+                        </button>
+                    </div>
+
+                    <!-- Buy Me a Coffee -->
+                    <div class="payment-card">
+                        <div class="currency-icon">☕</div>
+                        <h3 class="currency-name">Buy Me a Coffee</h3>
+                        <div class="account-details">
+                            <div class="account-number">buymeacoffee.com/suprememotive</div>
+                        </div>
+                        <button class="copy-btn" onclick="window.open('https://buymeacoffee.com/suprememotive', '_blank')">
+                            <i class="fas fa-external-link-alt"></i> Support Us
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Message -->
+            <div class="support-message">
+                <p class="thanks">🙏 Thank You for Your Support!</p>
+                <p>Every contribution helps us create more motivational content, maintain our platform, and reach more people worldwide. We're truly grateful for your generosity.</p>
+                <p style="margin-top: 1rem; color: var(--gold);">"Together, we can inspire millions"</p>
+            </div>
+        </section>
 
         <!-- Contact Admin Section -->
         <section class="contact-section">
@@ -859,13 +1344,13 @@
                     </p>
                     
                     <div class="contact-methods">
-                        <a href="#" class="contact-method" onclick="copyAdminNumber()" title="Copy WhatsApp Number">
+                        <a href="#" class="contact-method" onclick="copyAdminNumber(event)" title="Copy WhatsApp Number">
                             <i class="fab fa-whatsapp"></i>
                         </a>
-                        <a href="#" class="contact-method" onclick="emailAdmin()" title="Email Admin">
+                        <a href="#" class="contact-method" onclick="emailAdmin(event)" title="Email Admin">
                             <i class="fas fa-envelope"></i>
                         </a>
-                        <a href="#" class="contact-method" onclick="telegramAdmin()" title="Telegram">
+                        <a href="#" class="contact-method" onclick="telegramAdmin(event)" title="Telegram">
                             <i class="fab fa-telegram"></i>
                         </a>
                     </div>
@@ -890,6 +1375,16 @@
 
                 <div class="faq-item" onclick="toggleFAQ(this)">
                     <div class="faq-question">
+                        <span>How can I donate/support the platform?</span>
+                        <span class="faq-toggle">➕</span>
+                    </div>
+                    <div class="faq-answer">
+                        You can support us through bank transfers (NGN, USD, GBP, EUR), cryptocurrency (BTC, ETH, USDT), or platforms like PayPal, Patreon, and Ko-fi. All details are in the "Support Our Mission" section above.
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
                         <span>How long does unlock approval take?</span>
                         <span class="faq-toggle">➕</span>
                     </div>
@@ -905,36 +1400,6 @@
                     </div>
                     <div class="faq-answer">
                         Yes, go to your Profile settings and select "Delete Account". This action is permanent and cannot be undone.
-                    </div>
-                </div>
-
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <span>How do I reset my password?</span>
-                        <span class="faq-toggle">➕</span>
-                    </div>
-                    <div class="faq-answer">
-                        Go to the login page and click "Forgot Password". Follow the instructions sent to your email.
-                    </div>
-                </div>
-
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <span>Are ebooks downloadable?</span>
-                        <span class="faq-toggle">➕</span>
-                    </div>
-                    <div class="faq-answer">
-                        Ebooks are designed to be read within our platform using the built-in reader. Offline download is coming soon.
-                    </div>
-                </div>
-
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <span>How do I contact support?</span>
-                        <span class="faq-toggle">➕</span>
-                    </div>
-                    <div class="faq-answer">
-                        Use the live chat, email form, or contact admin directly via WhatsApp. We're here 24/7!
                     </div>
                 </div>
             </div>
@@ -1091,6 +1556,48 @@
             await supabaseClient.auth.signOut();
             window.location.reload();
         });
+
+        // ============================================
+        // DONATION TAB SWITCHING
+        // ============================================
+        window.switchDonationTab = (tab) => {
+            // Hide all panels
+            document.getElementById('fiat-panel').classList.remove('active');
+            document.getElementById('crypto-panel').classList.remove('active');
+            document.getElementById('other-panel').classList.remove('active');
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected panel
+            document.getElementById(`${tab}-panel`).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        };
+
+        // ============================================
+        // COPY TO CLIPBOARD
+        // ============================================
+        window.copyToClipboard = (text, button) => {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show copied state
+                button.classList.add('copied');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.innerHTML = originalText;
+                }, 2000);
+                
+                showAlert('Copied to clipboard!');
+            }).catch(() => {
+                showAlert('Failed to copy');
+            });
+        };
 
         // ============================================
         // SUPPORT FUNCTIONS
