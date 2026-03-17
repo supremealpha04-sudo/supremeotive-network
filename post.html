@@ -20,6 +20,8 @@
             --gold: #FFD700;
             --border-color: #333333;
             --electric-blue: #00F0FF;
+            --success: #4CAF50;
+            --error: #F44336;
         }
 
         body {
@@ -56,10 +58,25 @@
             width: auto;
         }
 
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--gold);
+            transition: all 0.3s ease;
+        }
+
         .nav-links {
             display: flex;
             gap: 1.5rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
@@ -67,6 +84,23 @@
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
         }
 
         .nav-links a:hover,
@@ -113,6 +147,15 @@
             color: white;
         }
 
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.3rem;
+        }
+
         .user-greeting {
             color: var(--gold);
             font-size: 0.9rem;
@@ -139,12 +182,13 @@
             text-decoration: none;
             color: var(--text-secondary);
             font-size: 0.8rem;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .nav-item:hover,
         .nav-item.active {
             color: var(--gold);
+            transform: translateY(-3px);
         }
 
         .nav-icon {
@@ -153,9 +197,9 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 2rem auto;
-            padding: 0 1rem;
+            padding: 0 2rem;
         }
 
         .back-btn {
@@ -178,33 +222,53 @@
 
         .post-card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
+            border-radius: 24px;
+            padding: 2.5rem;
             border: 1px solid var(--border-color);
             margin-bottom: 2rem;
             position: relative;
+            overflow: hidden;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .post-header {
             display: flex;
             align-items: center;
-            margin-bottom: 1.5rem;
+            gap: 1rem;
+            margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1;
         }
 
         .post-avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            margin-right: 1rem;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--bg-color);
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            border: 2px solid var(--gold);
         }
 
         .post-info {
@@ -212,47 +276,55 @@
         }
 
         .post-author {
+            font-size: 1.2rem;
             color: var(--gold);
             font-weight: 600;
-            font-size: 1.1rem;
         }
 
         .post-date {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .post-title {
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--gold);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             line-height: 1.3;
+            position: relative;
+            z-index: 1;
         }
 
         .post-image {
             width: 100%;
-            max-height: 400px;
+            max-height: 500px;
             object-fit: cover;
-            border-radius: 12px;
-            margin: 1rem 0;
+            border-radius: 16px;
+            margin: 1.5rem 0;
             border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1;
         }
 
         .post-content {
             color: var(--text-secondary);
             line-height: 1.8;
-            margin-bottom: 1.5rem;
             font-size: 1.1rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
             white-space: pre-wrap;
         }
 
         .post-stats {
             display: flex;
             gap: 2rem;
-            margin: 1.5rem 0;
-            padding: 1rem 0;
+            margin: 2rem 0;
+            padding: 1.5rem 0;
             border-top: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1;
         }
 
         .stat-item {
@@ -265,33 +337,41 @@
         .stat-value {
             color: var(--gold);
             font-weight: bold;
+            font-size: 1.2rem;
         }
 
         .post-actions {
             display: flex;
             gap: 1rem;
-            margin: 1.5rem 0;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
 
         .action-btn {
             flex: 1;
+            min-width: 120px;
             padding: 1rem;
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            border-radius: 8px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
-            font-size: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
         }
 
         .action-btn:hover {
             border-color: var(--gold);
             color: var(--gold);
+            transform: translateY(-2px);
         }
 
         .action-btn.liked {
@@ -300,10 +380,16 @@
             border-color: var(--gold);
         }
 
+        .action-btn.saved {
+            background: var(--electric-blue);
+            color: var(--bg-color);
+            border-color: var(--electric-blue);
+        }
+
         .comments-section {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
+            border-radius: 24px;
+            padding: 2rem;
             border: 1px solid var(--border-color);
         }
 
@@ -311,15 +397,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .comments-header h3 {
             color: var(--gold);
+            font-size: 1.5rem;
+        }
+
+        .comment-count {
+            color: var(--text-secondary);
+            background: rgba(255, 215, 0, 0.1);
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            border: 1px solid var(--gold);
         }
 
         .comment-form {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .comment-form textarea {
@@ -327,7 +422,7 @@
             padding: 1rem;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             color: var(--text-color);
             font-size: 1rem;
             resize: vertical;
@@ -335,21 +430,36 @@
             margin-bottom: 1rem;
         }
 
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
         .comment-form button {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             color: var(--bg-color);
             border: none;
             padding: 0.8rem 2rem;
-            border-radius: 8px;
+            border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
             float: right;
+            transition: all 0.3s ease;
+        }
+
+        .comment-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .comments-list {
+            margin-top: 2rem;
         }
 
         .comment {
             background: var(--bg-color);
-            border-radius: 8px;
-            padding: 1rem;
+            border-radius: 16px;
+            padding: 1.5rem;
             margin-bottom: 1rem;
             border-left: 3px solid var(--gold);
         }
@@ -357,8 +467,20 @@
         .comment-header {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.5rem;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-color);
+            font-weight: bold;
         }
 
         .comment-author {
@@ -374,17 +496,24 @@
 
         .comment-content {
             color: var(--text-color);
-            margin-left: 2.5rem;
+            line-height: 1.6;
+            margin-left: 3rem;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 2rem;
         }
 
         .loading {
             text-align: center;
-            padding: 3rem;
+            padding: 4rem;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border: 3px solid var(--border-color);
             border-top-color: var(--gold);
             border-radius: 50%;
@@ -396,10 +525,29 @@
             to { transform: rotate(360deg); }
         }
 
-        .error {
+        .error-container {
             text-align: center;
-            padding: 3rem;
-            color: #F44336;
+            padding: 4rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        .error-title {
+            color: var(--error);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
         }
 
         .alert {
@@ -432,13 +580,48 @@
         }
 
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                border-bottom: 2px solid var(--gold);
+                z-index: 99;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .post-title {
+                font-size: 1.8rem;
+            }
+
             .post-actions {
                 flex-direction: column;
             }
-            
+
+            .action-btn {
+                width: 100%;
+            }
+
             .comment-form button {
                 width: 100%;
                 float: none;
+            }
+
+            .comment-content {
+                margin-left: 0;
             }
         }
     </style>
@@ -451,17 +634,28 @@
             <span>SupremeMotive</span>
         </div>
 
-        <div class="nav-links">
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
             
-            <div class="auth-buttons">
+            <div class="auth-buttons" id="authButtons">
                 <span id="userGreeting" class="user-greeting hidden"></span>
                 <a href="login.html" class="login-btn" id="loginBtn">Login</a>
                 <button class="logout-btn hidden" id="logoutBtn">Logout</button>
             </div>
+            
+            <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
     </nav>
 
@@ -478,6 +672,10 @@
             <span class="nav-icon">👤</span>
             <span>Profile</span>
         </a>
+        <a href="post.html" class="nav-item active">
+            <span class="nav-icon">📰</span>
+            <span>Articles</span>
+        </a>
     </nav>
 
     <main class="container">
@@ -491,7 +689,7 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION - USING supabaseClient
+        // SUPABASE CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
@@ -511,10 +709,14 @@
         let currentUser = null;
         let currentPost = null;
         let userLiked = false;
+        let userSaved = false;
 
         // DOM Elements
         const postContainer = document.getElementById('postContainer');
         const alertContainer = document.getElementById('alertContainer');
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        const themeToggle = document.getElementById('themeToggle');
         const adminLink = document.getElementById('adminLink');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
@@ -525,11 +727,75 @@
         const postId = urlParams.get('id');
 
         if (!postId) {
-            postContainer.innerHTML = '<div class="error">❌ No post ID provided</div>';
+            postContainer.innerHTML = `
+                <div class="error-container">
+                    <div class="error-icon">❌</div>
+                    <h2 class="error-title">No Post Selected</h2>
+                    <p class="error-message">Please select an article to read.</p>
+                    <button class="back-btn" onclick="window.location.href='post.html'" style="margin:0 auto; display:inline-block;">Browse Articles</button>
+                </div>
+            `;
         } else {
-            // Load everything
+            // Initialize everything
+            initTheme();
             checkAuth();
         }
+
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5';
+            if (isLight) {
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
 
         // ============================================
         // SHOW ALERT
@@ -597,10 +863,18 @@
                     </div>
                 `;
 
-                // Fetch post
+                // Fetch post with author info
                 const { data: post, error } = await supabaseClient
                     .from('posts')
-                    .select('*')
+                    .select(`
+                        *,
+                        profiles:created_by (
+                            id,
+                            name,
+                            email,
+                            profile_image_url
+                        )
+                    `)
                     .eq('id', postId)
                     .single();
 
@@ -608,13 +882,6 @@
                 if (!post) throw new Error('Post not found');
 
                 currentPost = post;
-
-                // Get author info
-                const { data: profile } = await supabaseClient
-                    .from('profiles')
-                    .select('name')
-                    .eq('id', post.created_by)
-                    .single();
 
                 // Get like count
                 const { count: likesCount } = await supabaseClient
@@ -628,7 +895,7 @@
                     .select('*', { count: 'exact', head: true })
                     .eq('post_id', postId);
 
-                // Check if user liked
+                // Check if user liked this post
                 if (currentUser) {
                     const { data: like } = await supabaseClient
                         .from('post_likes')
@@ -637,16 +904,34 @@
                         .eq('user_id', currentUser.id)
                         .maybeSingle();
                     userLiked = !!like;
+
+                    // Check if user saved this post
+                    const { data: save } = await supabaseClient
+                        .from('saved_posts')
+                        .select('*')
+                        .eq('post_id', postId)
+                        .eq('user_id', currentUser.id)
+                        .maybeSingle();
+                    userSaved = !!save;
                 }
 
-                renderPost(post, profile, likesCount || 0, commentsCount || 0);
+                // Add counts to post object
+                currentPost.likes_count = likesCount || 0;
+                currentPost.comments_count = commentsCount || 0;
+                currentPost.user_liked = userLiked;
+                currentPost.user_saved = userSaved;
+
+                renderPost();
                 await loadComments();
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error loading post:', error);
                 postContainer.innerHTML = `
-                    <div class="error">
-                        ❌ Error: ${error.message}
+                    <div class="error-container">
+                        <div class="error-icon">❌</div>
+                        <h2 class="error-title">Error Loading Article</h2>
+                        <p class="error-message">${error.message}</p>
+                        <button class="back-btn" onclick="window.location.href='post.html'" style="margin:0 auto; display:inline-block;">Browse Articles</button>
                     </div>
                 `;
             }
@@ -655,15 +940,17 @@
         // ============================================
         // RENDER POST
         // ============================================
-        function renderPost(post, profile, likesCount, commentsCount) {
-            const date = new Date(post.created_at).toLocaleDateString('en-US', {
+        function renderPost() {
+            const post = currentPost;
+            const authorName = post.profiles?.name || 'SupremeMotive Admin';
+            const authorInitial = authorName.charAt(0).toUpperCase();
+            
+            // Format date
+            const postDate = new Date(post.created_at).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
-
-            const authorName = profile?.name || 'SupremeMotive Admin';
-            const authorInitial = authorName.charAt(0).toUpperCase();
 
             postContainer.innerHTML = `
                 <div class="post-card">
@@ -671,35 +958,41 @@
                         <div class="post-avatar">${authorInitial}</div>
                         <div class="post-info">
                             <div class="post-author">${authorName}</div>
-                            <div class="post-date">${date}</div>
+                            <div class="post-date">${postDate}</div>
                         </div>
                     </div>
 
                     <h1 class="post-title">${escapeHtml(post.title)}</h1>
-                    
+
                     ${post.image_url ? `
                         <img src="${post.image_url}" alt="${escapeHtml(post.title)}" class="post-image">
                     ` : ''}
-                    
-                    <div class="post-content">${escapeHtml(post.content).replace(/\n/g, '<br>')}</div>
+
+                    <div class="post-content">
+                        ${escapeHtml(post.content).replace(/\n/g, '<br>')}
+                    </div>
 
                     <div class="post-stats">
                         <div class="stat-item">
                             <span>❤️</span>
-                            <span class="stat-value" id="likesCount">${likesCount}</span>
+                            <span class="stat-value" id="likesCount">${post.likes_count}</span>
                             <span>likes</span>
                         </div>
                         <div class="stat-item">
                             <span>💬</span>
-                            <span class="stat-value" id="commentsCount">${commentsCount}</span>
+                            <span class="stat-value" id="commentsCount">${post.comments_count}</span>
                             <span>comments</span>
                         </div>
                     </div>
 
                     <div class="post-actions">
-                        <button class="action-btn ${userLiked ? 'liked' : ''}" id="likeBtn">
+                        <button class="action-btn ${post.user_liked ? 'liked' : ''}" id="likeBtn">
                             <span>❤️</span>
-                            <span>${userLiked ? 'Liked' : 'Like'}</span>
+                            <span>${post.user_liked ? 'Liked' : 'Like'}</span>
+                        </button>
+                        <button class="action-btn ${post.user_saved ? 'saved' : ''}" id="saveBtn">
+                            <span>🔖</span>
+                            <span>${post.user_saved ? 'Saved' : 'Save'}</span>
                         </button>
                         <button class="action-btn" id="shareBtn">
                             <span>📤</span>
@@ -710,6 +1003,7 @@
                     <div class="comments-section">
                         <div class="comments-header">
                             <h3>Comments</h3>
+                            <span class="comment-count" id="commentCount">${post.comments_count}</span>
                         </div>
 
                         ${currentUser ? `
@@ -718,18 +1012,24 @@
                                 <button onclick="addComment()">Post Comment</button>
                             </div>
                         ` : `
-                            <p style="color: var(--text-secondary); text-align: center; margin: 1rem;">
-                                <a href="login.html" style="color: var(--gold);">Login</a> to comment
+                            <p style="color: var(--text-secondary); text-align: center; margin: 2rem;">
+                                <a href="login.html" style="color: var(--gold);">Login</a> to join the discussion
                             </p>
                         `}
 
-                        <div id="commentsList"></div>
+                        <div id="commentsList" class="comments-list">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <p>Loading comments...</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
 
             // Add event listeners
             document.getElementById('likeBtn').addEventListener('click', handleLike);
+            document.getElementById('saveBtn').addEventListener('click', handleSave);
             document.getElementById('shareBtn').addEventListener('click', handleShare);
         }
 
@@ -800,6 +1100,58 @@
         }
 
         // ============================================
+        // HANDLE SAVE
+        // ============================================
+        async function handleSave() {
+            if (!currentUser) {
+                if (confirm('Please login to save posts')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                if (userSaved) {
+                    // Unsave
+                    await supabaseClient
+                        .from('saved_posts')
+                        .delete()
+                        .eq('post_id', postId)
+                        .eq('user_id', currentUser.id);
+
+                    userSaved = false;
+                    showAlert('Post removed from saved');
+                } else {
+                    // Save
+                    await supabaseClient
+                        .from('saved_posts')
+                        .insert([{
+                            post_id: postId,
+                            user_id: currentUser.id
+                        }]);
+
+                    userSaved = true;
+                    showAlert('Post saved!');
+                }
+
+                // Update UI
+                const saveBtn = document.getElementById('saveBtn');
+                
+                if (userSaved) {
+                    saveBtn.classList.add('saved');
+                    saveBtn.innerHTML = '<span>🔖</span><span>Saved</span>';
+                } else {
+                    saveBtn.classList.remove('saved');
+                    saveBtn.innerHTML = '<span>🔖</span><span>Save</span>';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error saving post');
+            }
+        }
+
+        // ============================================
         // HANDLE SHARE
         // ============================================
         async function handleShare() {
@@ -838,7 +1190,11 @@
                     .from('comments')
                     .select(`
                         *,
-                        profiles:user_id (name)
+                        profiles:user_id (
+                            id,
+                            name,
+                            profile_image_url
+                        )
                     `)
                     .eq('post_id', postId)
                     .is('parent_comment_id', null)
@@ -850,6 +1206,10 @@
 
             } catch (error) {
                 console.error('Error loading comments:', error);
+                const commentsList = document.getElementById('commentsList');
+                if (commentsList) {
+                    commentsList.innerHTML = '<p class="no-comments">Error loading comments</p>';
+                }
             }
         }
 
@@ -861,19 +1221,21 @@
             if (!commentsList) return;
 
             if (comments.length === 0) {
-                commentsList.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No comments yet</p>';
+                commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
                 return;
             }
 
             commentsList.innerHTML = comments.map(comment => {
-                const date = new Date(comment.created_at).toLocaleDateString();
+                const commentDate = new Date(comment.created_at).toLocaleDateString();
                 const authorName = comment.profiles?.name || 'User';
-                
+                const authorInitial = authorName.charAt(0).toUpperCase();
+
                 return `
                     <div class="comment">
                         <div class="comment-header">
+                            <div class="comment-avatar">${authorInitial}</div>
                             <span class="comment-author">${authorName}</span>
-                            <span class="comment-date">${date}</span>
+                            <span class="comment-date">${commentDate}</span>
                         </div>
                         <div class="comment-content">${escapeHtml(comment.content)}</div>
                     </div>
@@ -913,8 +1275,9 @@
                 await loadComments();
                 
                 // Update comment count
-                const commentsCountEl = document.getElementById('commentsCount');
-                commentsCountEl.textContent = parseInt(commentsCountEl.textContent) + 1;
+                currentPost.comments_count++;
+                document.getElementById('commentsCount').textContent = currentPost.comments_count;
+                document.getElementById('commentCount').textContent = currentPost.comments_count;
                 
                 showAlert('Comment posted!');
 
