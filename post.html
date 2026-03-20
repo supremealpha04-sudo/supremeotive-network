@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Daily Articles</title>
+    <title>SupremeMotive - Article</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
             margin: 0;
@@ -25,7 +26,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-color);
+            background: linear-gradient(135deg, var(--bg-color) 0%, #0B1A33 100%);
             color: var(--text-color);
             min-height: 100vh;
             padding-bottom: 80px;
@@ -44,23 +45,17 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--gold);
         }
 
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: var(--gold);
-            transition: all 0.3s ease;
+        .logo img {
+            height: 35px;
+            width: auto;
         }
 
         .nav-links {
@@ -81,13 +76,49 @@
             color: var(--gold);
         }
 
-        .theme-toggle {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1.2rem;
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
             cursor: pointer;
-            padding: 0.3rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #F44336;
+            color: #F44336;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #F44336;
+            color: white;
+        }
+
+        .user-greeting {
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
         }
 
         .bottom-nav {
@@ -129,84 +160,38 @@
             padding: 0 1rem;
         }
 
-        .header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .header h1 {
-            color: var(--gold);
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .categories {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            justify-content: center;
+            text-decoration: none;
             margin-bottom: 2rem;
-        }
-
-        .category-btn {
-            padding: 0.5rem 1rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 1rem;
         }
 
-        .category-btn:hover,
-        .category-btn.active {
-            background: var(--gold);
-            color: var(--bg-color);
-            border-color: var(--gold);
-        }
-
-        .posts-container {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
+        .back-btn:hover {
+            color: var(--gold);
         }
 
         .post-card {
             background: var(--card-bg);
             border-radius: 16px;
-            padding: 1.5rem;
+            padding: 2rem;
             border: 1px solid var(--border-color);
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .post-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--gold);
-        }
-
-        .post-card::after {
-            content: 'SUPREME MOTIVE';
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 0.7rem;
-            color: rgba(255, 215, 0, 0.15);
-            transform: rotate(-5deg);
-            pointer-events: none;
+            margin-bottom: 2rem;
         }
 
         .post-header {
             display: flex;
             align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -214,9 +199,13 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            margin-right: 1rem;
-            object-fit: cover;
-            border: 2px solid var(--gold);
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-color);
+            font-weight: bold;
+            font-size: 1.2rem;
         }
 
         .post-info {
@@ -226,19 +215,18 @@
         .post-author {
             color: var(--gold);
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
 
         .post-date {
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
         .post-title {
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: var(--gold);
             margin-bottom: 1rem;
-            line-height: 1.3;
         }
 
         .post-image {
@@ -247,46 +235,20 @@
             object-fit: cover;
             border-radius: 12px;
             margin: 1rem 0;
-            border: 1px solid var(--border-color);
         }
 
         .post-content {
             color: var(--text-secondary);
             line-height: 1.8;
             margin-bottom: 1.5rem;
-            font-size: 1rem;
-        }
-
-        .post-content.collapsed {
-            display: -webkit-box;
-            -webkit-line-clamp: 5;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .read-more-btn {
-            background: none;
-            border: none;
-            color: var(--electric-blue);
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding: 0.3rem 0;
-        }
-
-        .read-more-btn:hover {
-            color: var(--gold);
+            white-space: pre-wrap;
         }
 
         .post-stats {
             display: flex;
             gap: 2rem;
-            margin: 1rem 0;
-            padding: 0.5rem 0;
+            margin: 1.5rem 0;
+            padding: 1rem 0;
             border-top: 1px solid var(--border-color);
             border-bottom: 1px solid var(--border-color);
         }
@@ -296,10 +258,9 @@
             align-items: center;
             gap: 0.5rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
         }
 
-        .stat-item span {
+        .stat-value {
             color: var(--gold);
             font-weight: bold;
         }
@@ -307,29 +268,27 @@
         .post-actions {
             display: flex;
             gap: 1rem;
-            margin: 1rem 0;
+            margin: 1.5rem 0;
         }
 
         .action-btn {
             flex: 1;
+            padding: 1rem;
             background: none;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 0.7rem;
-            border-radius: 8px;
             transition: all 0.3s ease;
         }
 
         .action-btn:hover {
-            background: var(--gold);
-            color: var(--bg-color);
             border-color: var(--gold);
+            color: var(--gold);
         }
 
         .action-btn.liked {
@@ -338,68 +297,99 @@
             border-color: var(--gold);
         }
 
-        .action-btn.saved {
-            background: var(--electric-blue);
-            color: var(--bg-color);
-            border-color: var(--electric-blue);
+        /* Comments Section */
+        .comments-section {
+            margin-top: 2rem;
         }
 
-        .comments-section {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .comments-header h3 {
+            color: var(--gold);
+            font-size: 1.2rem;
+        }
+
+        .comment-count {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            color: var(--gold);
+            font-size: 0.9rem;
         }
 
         .comment-form {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
         }
 
-        .comment-form input {
-            flex: 1;
-            padding: 0.7rem;
-            background: var(--card-bg);
+        .comment-form textarea {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-color);
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 1rem;
+            font-family: inherit;
         }
 
-        .comment-form input:focus {
+        .comment-form textarea:focus {
             outline: none;
             border-color: var(--gold);
         }
 
         .comment-form button {
-            padding: 0.7rem 1.5rem;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            border: none;
-            border-radius: 8px;
             color: var(--bg-color);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .comments-list {
+            margin-top: 1rem;
         }
 
         .comment {
-            padding: 0.8rem;
-            background: var(--card-bg);
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--gold);
         }
 
         .comment-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.8rem;
             margin-bottom: 0.5rem;
         }
 
         .comment-avatar {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            object-fit: cover;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-color);
+            font-weight: bold;
+            font-size: 0.9rem;
         }
 
         .comment-author {
@@ -410,20 +400,26 @@
 
         .comment-date {
             color: var(--text-secondary);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             margin-left: auto;
         }
 
         .comment-content {
             color: var(--text-color);
-            font-size: 0.9rem;
+            margin-left: 2.8rem;
             line-height: 1.5;
-            margin-left: 2.5rem;
+            font-size: 0.95rem;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 2rem;
         }
 
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
         }
 
         .spinner {
@@ -438,6 +434,12 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #F44336;
         }
 
         .alert {
@@ -470,39 +472,17 @@
         }
 
         @media (max-width: 768px) {
-            .menu-toggle {
-                display: flex;
-            }
-
-            .nav-links {
-                position: fixed;
-                top: 60px;
-                left: 0;
-                right: 0;
-                background: var(--card-bg);
-                flex-direction: column;
-                padding: 2rem;
-                gap: 1rem;
-                transform: translateY(-150%);
-                transition: transform 0.3s ease;
-                border-bottom: 2px solid var(--gold);
-                z-index: 99;
-            }
-
-            .nav-links.active {
-                transform: translateY(0);
-            }
-
             .post-actions {
-                flex-wrap: wrap;
+                flex-direction: column;
             }
-
-            .action-btn {
-                min-width: calc(50% - 0.5rem);
+            
+            .comment-form button {
+                width: 100%;
             }
-
-            .post-stats {
-                justify-content: space-around;
+            
+            .comment-content {
+                margin-left: 0;
+                margin-top: 0.5rem;
             }
         }
     </style>
@@ -510,23 +490,22 @@
 </head>
 <body>
     <nav class="top-nav">
-        <div class="logo">SupremeMotive</div>
-
-        <div class="menu-toggle" id="menuToggle">
-            <span></span>
-            <span></span>
-            <span></span>
+        <div class="logo">
+            <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
+            <span>SupremeMotive</span>
         </div>
 
-        <div class="nav-links" id="navLinks">
+        <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
-            <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
-            <button class="theme-toggle" id="themeToggle">🌙</button>
+            
+            <div class="auth-buttons">
+                <span id="userGreeting" class="user-greeting hidden"></span>
+                <a href="login.html" class="login-btn" id="loginBtn">Login</a>
+                <button class="logout-btn hidden" id="logoutBtn">Logout</button>
+            </div>
         </div>
     </nav>
 
@@ -543,34 +522,15 @@
             <span class="nav-icon">👤</span>
             <span>Profile</span>
         </a>
-        <a href="post.html" class="nav-item active">
-            <span class="nav-icon">📰</span>
-            <span>Articles</span>
-        </a>
     </nav>
 
     <main class="container">
-        <div class="header">
-            <h1>Daily Articles</h1>
-            <p>Inspirational posts from our team</p>
-        </div>
-
-        <div class="categories" id="categories">
-            <button class="category-btn active" data-category="all">All Posts</button>
-            <button class="category-btn" data-category="motivation">Motivation</button>
-            <button class="category-btn" data-category="success">Success</button>
-            <button class="category-btn" data-category="life">Life</button>
-            <button class="category-btn" data-category="wisdom">Wisdom</button>
-        </div>
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <span>←</span> Back to Home
+        </button>
 
         <div id="alertContainer"></div>
-
-        <div class="posts-container" id="postsContainer">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading articles...</p>
-            </div>
-        </div>
+        <div id="postContainer"></div>
     </main>
 
     <script>
@@ -592,73 +552,30 @@
 
         // State
         let currentUser = null;
-        let currentCategory = 'all';
-        let posts = [];
-        let userLikes = new Set();
-        let userSaves = new Set();
+        let currentPost = null;
+        let userLiked = false;
 
         // DOM Elements
-        const postsContainer = document.getElementById('postsContainer');
+        const postContainer = document.getElementById('postContainer');
         const alertContainer = document.getElementById('alertContainer');
-        const menuToggle = document.getElementById('menuToggle');
-        const navLinks = document.getElementById('navLinks');
-        const themeToggle = document.getElementById('themeToggle');
         const adminLink = document.getElementById('adminLink');
-        const categoryBtns = document.querySelectorAll('.category-btn');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userGreeting = document.getElementById('userGreeting');
 
-        // Theme toggle
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
-                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
-                document.documentElement.style.setProperty('--text-color', '#333333');
-                document.documentElement.style.setProperty('--text-secondary', '#666666');
-                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
-                themeToggle.textContent = '☀️';
-            } else {
-                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
-                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
-                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
-                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
-                document.documentElement.style.setProperty('--border-color', '#333333');
-                themeToggle.textContent = '🌙';
-            }
+        // Get post ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+
+        if (!postId) {
+            postContainer.innerHTML = '<div class="error">❌ No post ID provided</div>';
+        } else {
+            checkAuth();
         }
 
-        themeToggle.addEventListener('click', () => {
-            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5';
-            if (isLight) {
-                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
-                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
-                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
-                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
-                document.documentElement.style.setProperty('--border-color', '#333333');
-                themeToggle.textContent = '🌙';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
-                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
-                document.documentElement.style.setProperty('--text-color', '#333333');
-                document.documentElement.style.setProperty('--text-secondary', '#666666');
-                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
-                themeToggle.textContent = '☀️';
-                localStorage.setItem('theme', 'light');
-            }
-        });
-
-        // Mobile menu
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
-        });
-
-        // Show alert
+        // ============================================
+        // SHOW ALERT
+        // ============================================
         function showAlert(message) {
             alertContainer.innerHTML = `<div class="alert">${message}</div>`;
             setTimeout(() => {
@@ -666,414 +583,9 @@
             }, 2000);
         }
 
-        // Check auth
-        async function checkAuth() {
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                currentUser = user;
-
-                if (user && ADMIN_EMAILS.includes(user.email)) {
-                    adminLink.style.display = 'block';
-                    adminLink.href = 'admin/admin-dashboard.html';
-                }
-            } catch (error) {
-                console.error('Auth error:', error);
-            }
-        }
-
-        // Load posts from database
-        async function loadPosts() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('posts')
-                    .select(`
-                        *,
-                        profiles:created_by (id, name, profile_image_url),
-                        post_likes(count),
-                        comments(count)
-                    `)
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                posts = data || [];
-
-                // Load user interactions if logged in
-                if (currentUser) {
-                    await loadUserInteractions();
-                }
-
-                renderPosts();
-
-            } catch (error) {
-                console.error('Error loading posts:', error);
-                postsContainer.innerHTML = `
-                    <div class="loading">
-                        <p style="color: var(--error);">Error loading posts. Please refresh.</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Load user interactions (likes and saves)
-        async function loadUserInteractions() {
-            try {
-                // Load likes
-                const { data: likes } = await supabaseClient
-                    .from('post_likes')
-                    .select('post_id')
-                    .eq('user_id', currentUser.id);
-
-                if (likes) {
-                    userLikes = new Set(likes.map(l => l.post_id));
-                }
-
-                // Load saves
-                const { data: saves } = await supabaseClient
-                    .from('saved_posts')
-                    .select('post_id')
-                    .eq('user_id', currentUser.id);
-
-                if (saves) {
-                    userSaves = new Set(saves.map(s => s.post_id));
-                }
-            } catch (error) {
-                console.error('Error loading interactions:', error);
-            }
-        }
-
-        // Render posts
-        function renderPosts() {
-            let filteredPosts = [...posts];
-
-            // Filter by category (you can add a category field to posts table)
-            if (currentCategory !== 'all') {
-                // This assumes you have a category field in posts
-                // filteredPosts = filteredPosts.filter(p => p.category === currentCategory);
-            }
-
-            if (filteredPosts.length === 0) {
-                postsContainer.innerHTML = `
-                    <div class="loading">
-                        <p>No articles yet. Check back soon!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            postsContainer.innerHTML = filteredPosts.map(post => {
-                const isLiked = userLikes.has(post.id);
-                const isSaved = userSaves.has(post.id);
-                const likesCount = post.post_likes?.[0]?.count || 0;
-                const commentsCount = post.comments?.[0]?.count || 0;
-                const authorName = post.profiles?.name || 'SupremeMotive Admin';
-                const authorAvatar = post.profiles?.profile_image_url || 
-                    `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=FFD700&color=000&size=50`;
-
-                return `
-                    <div class="post-card" data-id="${post.id}">
-                        <div class="post-header">
-                            <img src="${authorAvatar}" alt="${authorName}" class="post-avatar">
-                            <div class="post-info">
-                                <div class="post-author">${authorName}</div>
-                                <div class="post-date">${new Date(post.created_at).toLocaleDateString()}</div>
-                            </div>
-                        </div>
-
-                        <h2 class="post-title">${escapeHtml(post.title)}</h2>
-
-                        ${post.image_url ? `
-                            <img src="${post.image_url}" alt="${escapeHtml(post.title)}" class="post-image">
-                        ` : ''}
-
-                        <div class="post-content collapsed" id="content-${post.id}">
-                            ${escapeHtml(post.content).replace(/\n/g, '<br>')}
-                        </div>
-
-                        <button class="read-more-btn" onclick="toggleReadMore('${post.id}')">
-                            <span>Read More</span>
-                            <span>▼</span>
-                        </button>
-
-                        <div class="post-stats">
-                            <div class="stat-item">
-                                <span>❤️</span>
-                                <span id="likes-${post.id}">${likesCount}</span>
-                            </div>
-                            <div class="stat-item">
-                                <span>💬</span>
-                                <span>${commentsCount}</span>
-                            </div>
-                        </div>
-
-                        <div class="post-actions">
-                            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" 
-                                    onclick="handleLike('${post.id}')">
-                                <span>❤️</span>
-                                <span>${isLiked ? 'Liked' : 'Like'}</span>
-                            </button>
-                            <button class="action-btn save-btn ${isSaved ? 'saved' : ''}" 
-                                    onclick="handleSave('${post.id}')">
-                                <span>🔖</span>
-                                <span>${isSaved ? 'Saved' : 'Save'}</span>
-                            </button>
-                            <button class="action-btn" onclick="sharePost('${post.id}')">
-                                <span>📤</span>
-                                <span>Share</span>
-                            </button>
-                        </div>
-
-                        <div class="comments-section" id="comments-${post.id}" style="display: none;">
-                            ${currentUser ? `
-                                <div class="comment-form">
-                                    <input type="text" id="comment-${post.id}" placeholder="Write a comment...">
-                                    <button onclick="addComment('${post.id}')">Post</button>
-                                </div>
-                            ` : `
-                                <p style="color: var(--text-secondary); text-align: center; margin-bottom: 1rem;">
-                                    <a href="login.html" style="color: var(--gold);">Login</a> to comment
-                                </p>
-                            `}
-                            <div id="comments-list-${post.id}"></div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Load comments for each post
-            posts.forEach(post => loadComments(post.id));
-        }
-
-        // Toggle read more
-        window.toggleReadMore = (postId) => {
-            const content = document.getElementById(`content-${postId}`);
-            const btn = document.querySelector(`[onclick="toggleReadMore('${postId}')"]`);
-            
-            if (content.classList.contains('collapsed')) {
-                content.classList.remove('collapsed');
-                btn.innerHTML = '<span>Show Less</span> <span>▲</span>';
-            } else {
-                content.classList.add('collapsed');
-                btn.innerHTML = '<span>Read More</span> <span>▼</span>';
-            }
-        };
-
-        // Handle like
-        window.handleLike = async (postId) => {
-            if (!currentUser) {
-                if (confirm('Please login to like posts')) {
-                    window.location.href = 'login.html';
-                }
-                return;
-            }
-
-            try {
-                if (userLikes.has(postId)) {
-                    // Unlike
-                    await supabaseClient
-                        .from('post_likes')
-                        .delete()
-                        .eq('post_id', postId)
-                        .eq('user_id', currentUser.id);
-
-                    userLikes.delete(postId);
-                    
-                    // Update count
-                    const countEl = document.getElementById(`likes-${postId}`);
-                    countEl.textContent = parseInt(countEl.textContent) - 1;
-                } else {
-                    // Like
-                    await supabaseClient
-                        .from('post_likes')
-                        .insert([{ post_id: postId, user_id: currentUser.id }]);
-
-                    userLikes.add(postId);
-                    
-                    // Update count
-                    const countEl = document.getElementById(`likes-${postId}`);
-                    countEl.textContent = parseInt(countEl.textContent) + 1;
-                }
-
-                // Update button state
-                const btn = document.querySelector(`[onclick="handleLike('${postId}')"]`);
-                if (userLikes.has(postId)) {
-                    btn.classList.add('liked');
-                    btn.innerHTML = '<span>❤️</span><span>Liked</span>';
-                } else {
-                    btn.classList.remove('liked');
-                    btn.innerHTML = '<span>❤️</span><span>Like</span>';
-                }
-
-            } catch (error) {
-                console.error('Error liking post:', error);
-                showAlert('Error updating like');
-            }
-        };
-
-        // Handle save
-        window.handleSave = async (postId) => {
-            if (!currentUser) {
-                if (confirm('Please login to save posts')) {
-                    window.location.href = 'login.html';
-                }
-                return;
-            }
-
-            try {
-                if (userSaves.has(postId)) {
-                    // Unsave
-                    await supabaseClient
-                        .from('saved_posts')
-                        .delete()
-                        .eq('post_id', postId)
-                        .eq('user_id', currentUser.id);
-
-                    userSaves.delete(postId);
-                    showAlert('Post removed from saved');
-                } else {
-                    // Save
-                    await supabaseClient
-                        .from('saved_posts')
-                        .insert([{ post_id: postId, user_id: currentUser.id }]);
-
-                    userSaves.add(postId);
-                    showAlert('Post saved!');
-                }
-
-                // Update button state
-                const btn = document.querySelector(`[onclick="handleSave('${postId}')"]`);
-                if (userSaves.has(postId)) {
-                    btn.classList.add('saved');
-                    btn.innerHTML = '<span>🔖</span><span>Saved</span>';
-                } else {
-                    btn.classList.remove('saved');
-                    btn.innerHTML = '<span>🔖</span><span>Save</span>';
-                }
-
-            } catch (error) {
-                console.error('Error saving post:', error);
-                showAlert('Error saving post');
-            }
-        };
-
-        // Share post
-        window.sharePost = (postId) => {
-            const post = posts.find(p => p.id === postId);
-            const url = `${window.location.origin}/post.html?id=${postId}`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: post.title,
-                    text: post.content.substring(0, 100) + '...',
-                    url: url
-                }).catch(() => {
-                    copyToClipboard(url);
-                });
-            } else {
-                copyToClipboard(url);
-            }
-        };
-
-        // Copy to clipboard
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showAlert('Link copied to clipboard!');
-            }).catch(() => {
-                showAlert('Could not copy link');
-            });
-        }
-
-        // Load comments for a post
-        async function loadComments(postId) {
-            try {
-                const { data: comments, error } = await supabaseClient
-                    .from('comments')
-                    .select(`
-                        *,
-                        profiles:user_id (id, name, profile_image_url)
-                    `)
-                    .eq('post_id', postId)
-                    .is('parent_comment_id', null)
-                    .order('created_at', { ascending: true });
-
-                if (error) throw error;
-
-                renderComments(comments, postId);
-
-            } catch (error) {
-                console.error('Error loading comments:', error);
-            }
-        }
-
-        // Render comments
-        function renderComments(comments, postId) {
-            const container = document.getElementById(`comments-list-${postId}`);
-            if (!container) return;
-
-            if (comments.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No comments yet</p>';
-                return;
-            }
-
-            container.innerHTML = comments.map(comment => `
-                <div class="comment">
-                    <div class="comment-header">
-                        <img src="${comment.profiles?.profile_image_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.profiles?.name || 'User')}&background=FFD700&color=000&size=30`}" 
-                             class="comment-avatar">
-                        <span class="comment-author">${comment.profiles?.name || 'User'}</span>
-                        <span class="comment-date">${new Date(comment.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <div class="comment-content">${escapeHtml(comment.content)}</div>
-                </div>
-            `).join('');
-        }
-
-        // Add comment
-        window.addComment = async (postId) => {
-            if (!currentUser) {
-                showAlert('Please login to comment');
-                return;
-            }
-
-            const input = document.getElementById(`comment-${postId}`);
-            const content = input.value.trim();
-
-            if (!content) {
-                showAlert('Please enter a comment');
-                return;
-            }
-
-            try {
-                await supabaseClient
-                    .from('comments')
-                    .insert([{
-                        post_id: postId,
-                        user_id: currentUser.id,
-                        content: content
-                    }]);
-
-                input.value = '';
-                await loadComments(postId);
-                showAlert('Comment posted!');
-
-            } catch (error) {
-                console.error('Error posting comment:', error);
-                showAlert('Error posting comment');
-            }
-        };
-
-        // Toggle comments section
-        window.toggleComments = (postId) => {
-            const section = document.getElementById(`comments-${postId}`);
-            if (section.style.display === 'none') {
-                section.style.display = 'block';
-                loadComments(postId);
-            } else {
-                section.style.display = 'none';
-            }
-        };
-
-        // Escape HTML
+        // ============================================
+        // ESCAPE HTML
+        // ============================================
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
             return unsafe
@@ -1084,24 +596,331 @@
                 .replace(/'/g, '&#039;');
         }
 
-        // Category filtering
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategory = btn.dataset.category;
-                renderPosts();
-            });
-        });
-
-        // Initialize
-        async function init() {
-            initTheme();
-            await checkAuth();
-            await loadPosts();
+        // ============================================
+        // CHECK AUTH
+        // ============================================
+        async function checkAuth() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                currentUser = user;
+                
+                if (user) {
+                    loginBtn.classList.add('hidden');
+                    logoutBtn.classList.remove('hidden');
+                    userGreeting.classList.remove('hidden');
+                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
+                    
+                    if (ADMIN_EMAILS.includes(user.email)) {
+                        adminLink.style.display = 'block';
+                        adminLink.href = 'admin/admin-dashboard.html';
+                    }
+                }
+                
+                await loadPost();
+                
+            } catch (error) {
+                console.error('Auth error:', error);
+                await loadPost();
+            }
         }
 
-        init();
+        // ============================================
+        // LOGOUT
+        // ============================================
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
+
+        // ============================================
+        // LOAD POST
+        // ============================================
+        async function loadPost() {
+            try {
+                postContainer.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading article...</p>
+                    </div>
+                `;
+
+                // Fetch post with author info
+                const { data: post, error } = await supabaseClient
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:created_by (name)
+                    `)
+                    .eq('id', postId)
+                    .single();
+
+                if (error) throw error;
+                if (!post) throw new Error('Post not found');
+
+                currentPost = post;
+
+                // Get like count
+                const { count: likesCount } = await supabaseClient
+                    .from('post_likes')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('post_id', postId);
+
+                // Get comment count
+                const { count: commentsCount } = await supabaseClient
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('post_id', postId);
+
+                // Check if user liked
+                if (currentUser) {
+                    const { data: like } = await supabaseClient
+                        .from('post_likes')
+                        .select('*')
+                        .eq('post_id', postId)
+                        .eq('user_id', currentUser.id)
+                        .maybeSingle();
+                    userLiked = !!like;
+                }
+
+                renderPost(post, likesCount || 0, commentsCount || 0);
+                await loadComments();
+
+            } catch (error) {
+                postContainer.innerHTML = `
+                    <div class="error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // RENDER POST
+        // ============================================
+        function renderPost(post, likesCount, commentsCount) {
+            const date = new Date(post.created_at).toLocaleDateString();
+            const authorName = post.profiles?.name || 'Admin';
+            const authorInitial = authorName.charAt(0).toUpperCase();
+
+            postContainer.innerHTML = `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">${authorInitial}</div>
+                        <div class="post-info">
+                            <div class="post-author">${authorName}</div>
+                            <div class="post-date">${date}</div>
+                        </div>
+                    </div>
+
+                    <h1 class="post-title">${escapeHtml(post.title)}</h1>
+                    
+                    ${post.image_url ? `
+                        <img src="${post.image_url}" class="post-image">
+                    ` : ''}
+                    
+                    <div class="post-content">${escapeHtml(post.content)}</div>
+
+                    <div class="post-stats">
+                        <div class="stat-item">
+                            <span>❤️</span>
+                            <span class="stat-value" id="likesCount">${likesCount}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>💬</span>
+                            <span class="stat-value" id="commentsCount">${commentsCount}</span>
+                        </div>
+                    </div>
+
+                    <div class="post-actions">
+                        <button class="action-btn ${userLiked ? 'liked' : ''}" id="likeBtn">
+                            <span>❤️</span>
+                            <span>${userLiked ? 'Liked' : 'Like'}</span>
+                        </button>
+                    </div>
+
+                    <div class="comments-section">
+                        <div class="comments-header">
+                            <h3>Comments</h3>
+                            <span class="comment-count" id="commentCount">${commentsCount}</span>
+                        </div>
+
+                        ${currentUser ? `
+                            <div class="comment-form">
+                                <textarea id="commentInput" placeholder="Write a comment..."></textarea>
+                                <button onclick="submitComment()">Post Comment</button>
+                            </div>
+                        ` : `
+                            <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
+                                <a href="login.html" style="color: var(--gold);">Login</a> to join the discussion
+                            </p>
+                        `}
+
+                        <div id="commentsList" class="comments-list">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <p>Loading comments...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('likeBtn').addEventListener('click', handleLike);
+        }
+
+        // ============================================
+        // HANDLE LIKE
+        // ============================================
+        async function handleLike() {
+            if (!currentUser) {
+                if (confirm('Please login to like posts')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                if (userLiked) {
+                    await supabaseClient
+                        .from('post_likes')
+                        .delete()
+                        .eq('post_id', postId)
+                        .eq('user_id', currentUser.id);
+                    userLiked = false;
+                } else {
+                    await supabaseClient
+                        .from('post_likes')
+                        .insert([{
+                            post_id: postId,
+                            user_id: currentUser.id
+                        }]);
+                    userLiked = true;
+                }
+
+                // Update like count
+                const { count } = await supabaseClient
+                    .from('post_likes')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('post_id', postId);
+
+                document.getElementById('likesCount').textContent = count;
+                
+                const btn = document.getElementById('likeBtn');
+                btn.classList.toggle('liked');
+                btn.innerHTML = userLiked ? 
+                    '<span>❤️</span><span>Liked</span>' : 
+                    '<span>❤️</span><span>Like</span>';
+
+            } catch (error) {
+                showAlert('Error updating like');
+            }
+        }
+
+        // ============================================
+        // LOAD COMMENTS
+        // ============================================
+        async function loadComments() {
+            try {
+                const { data: comments, error } = await supabaseClient
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (name)
+                    `)
+                    .eq('post_id', postId)
+                    .is('parent_comment_id', null)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                renderComments(comments || []);
+
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                const commentsList = document.getElementById('commentsList');
+                if (commentsList) {
+                    commentsList.innerHTML = '<p class="no-comments">Error loading comments</p>';
+                }
+            }
+        }
+
+        // ============================================
+        // RENDER COMMENTS
+        // ============================================
+        function renderComments(comments) {
+            const commentsList = document.getElementById('commentsList');
+            if (!commentsList) return;
+
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
+                return;
+            }
+
+            commentsList.innerHTML = comments.map(comment => {
+                const commentDate = new Date(comment.created_at).toLocaleString();
+                const authorName = comment.profiles?.name || 'User';
+                const authorInitial = authorName.charAt(0).toUpperCase();
+
+                return `
+                    <div class="comment">
+                        <div class="comment-header">
+                            <div class="comment-avatar">${authorInitial}</div>
+                            <span class="comment-author">${escapeHtml(authorName)}</span>
+                            <span class="comment-date">${commentDate}</span>
+                        </div>
+                        <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================
+        // SUBMIT COMMENT
+        // ============================================
+        window.submitComment = async () => {
+            if (!currentUser) {
+                showAlert('Please login to comment');
+                return;
+            }
+
+            const input = document.getElementById('commentInput');
+            const content = input.value.trim();
+
+            if (!content) {
+                showAlert('Please enter a comment');
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('comments')
+                    .insert([{
+                        post_id: postId,
+                        user_id: currentUser.id,
+                        content: content
+                    }]);
+
+                if (error) throw error;
+
+                input.value = '';
+                await loadComments();
+                
+                // Update comment count
+                const { count } = await supabaseClient
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('post_id', postId);
+                
+                document.getElementById('commentsCount').textContent = count;
+                document.getElementById('commentCount').textContent = count;
+                
+                showAlert('Comment posted!');
+
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                showAlert('Error posting comment: ' + error.message);
+            }
+        };
     </script>
 </body>
 </html>
