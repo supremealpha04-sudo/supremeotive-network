@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Manage Posts</title>
+    <link rel="icon" type="image/png" href="../logo.png">
     <style>
         * {
             margin: 0;
@@ -12,115 +13,128 @@
         }
 
         :root {
-            --primary-black: #0A0A0A;
-            --deep-navy: #0B1A33;
-            --gold: #FFD700;
-            --electric-blue: #00F0FF;
-            --dark-gray: #1A1A1A;
-            --medium-gray: #2A2A2A;
-            --light-gray: #3A3A3A;
-            --text-primary: #FFFFFF;
+            --bg-color: #0A0A0A;
+            --card-bg: #1A1A1A;
+            --text-color: #FFFFFF;
             --text-secondary: #B0B0B0;
+            --gold: #FFD700;
+            --border-color: #333333;
+            --electric-blue: #00F0FF;
             --success: #4CAF50;
             --error: #F44336;
             --warning: #FFC107;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, var(--primary-black) 0%, var(--deep-navy) 100%);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #0B1A33 100%);
+            color: var(--text-color);
             min-height: 100vh;
         }
 
-        /* Layout */
-        .app {
+        /* Admin Layout */
+        .admin-container {
             display: flex;
             min-height: 100vh;
         }
 
         /* Sidebar */
         .sidebar {
-            width: 260px;
-            background: var(--dark-gray);
-            border-right: 1px solid var(--light-gray);
-            padding: 2rem 1rem;
+            width: 280px;
+            background: var(--card-bg);
+            border-right: 2px solid var(--gold);
+            padding: 2rem 1.5rem;
             position: fixed;
             height: 100vh;
+            overflow-y: auto;
         }
 
         .sidebar-header {
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--light-gray);
+            text-align: center;
             margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
+        .sidebar-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .role-tag {
-            background: rgba(255, 215, 0, 0.1);
-            color: var(--gold);
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            display: inline-block;
-            border: 1px solid var(--gold);
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
             margin-bottom: 0.5rem;
         }
 
-        .nav-link {
+        .role-badge {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--bg-color);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .admin-name {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.9rem 1rem;
-            color: var(--text-secondary);
+            padding: 1rem 1.5rem;
+            color: var(--text-color);
             text-decoration: none;
-            border-radius: 10px;
+            border-radius: 12px;
             transition: all 0.3s ease;
         }
 
-        .nav-link:hover {
-            background: var(--medium-gray);
-            color: var(--text-primary);
+        .sidebar-nav a:hover {
+            background: var(--border-color);
+            transform: translateX(5px);
         }
 
-        .nav-link.active {
+        .sidebar-nav a.active {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
-            font-weight: 500;
+            color: var(--bg-color);
+            font-weight: 600;
         }
 
-        .nav-link i {
-            font-size: 1.2rem;
+        .sidebar-nav a i {
+            font-size: 1.3rem;
+            width: 24px;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
         }
 
         .logout-btn {
-            position: absolute;
-            bottom: 2rem;
-            left: 1rem;
-            right: 1rem;
+            width: 100%;
             padding: 1rem;
-            background: none;
+            background: rgba(244, 67, 54, 0.1);
             border: 1px solid var(--error);
             color: var(--error);
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -134,33 +148,36 @@
         }
 
         /* Main Content */
-        .main {
+        .main-content {
             flex: 1;
-            margin-left: 260px;
+            margin-left: 280px;
             padding: 2rem;
         }
 
         /* Header */
-        .header {
+        .content-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .header h1 {
+        .content-header h1 {
+            color: var(--gold);
             font-size: 2rem;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .new-post-btn {
+        .create-btn {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
+            color: var(--bg-color);
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
+            padding: 1rem 2rem;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -169,7 +186,7 @@
             transition: all 0.3s ease;
         }
 
-        .new-post-btn:hover {
+        .create-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
         }
@@ -177,7 +194,7 @@
         /* Alert */
         .alert {
             padding: 1rem 1.5rem;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
@@ -188,7 +205,7 @@
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -208,6 +225,200 @@
             color: var(--error);
         }
 
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--electric-blue);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold);
+        }
+
+        .post-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .post-content {
+            padding: 1.5rem;
+        }
+
+        .post-title {
+            font-size: 1.2rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .post-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: var(--electric-blue);
+            color: var(--bg-color);
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .delete-btn {
+            background: var(--error);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .view-btn {
+            background: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .view-btn:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+        }
+
         /* Modal */
         .modal {
             display: none;
@@ -220,6 +431,7 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            backdrop-filter: blur(5px);
         }
 
         .modal.show {
@@ -227,12 +439,12 @@
         }
 
         .modal-content {
-            background: var(--dark-gray);
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 2rem;
             width: 90%;
             max-width: 600px;
-            max-height: 90vh;
+            max-height: 80vh;
             overflow-y: auto;
             border: 1px solid var(--gold);
         }
@@ -255,7 +467,6 @@
             color: var(--text-secondary);
             font-size: 1.5rem;
             cursor: pointer;
-            transition: color 0.3s ease;
         }
 
         .close-btn:hover {
@@ -277,10 +488,10 @@
         .form-control {
             width: 100%;
             padding: 0.8rem 1rem;
-            background: var(--medium-gray);
-            border: 1px solid var(--light-gray);
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            color: var(--text-primary);
+            color: var(--text-color);
             font-size: 1rem;
             transition: all 0.3s ease;
         }
@@ -297,18 +508,18 @@
 
         /* File Upload */
         .file-upload {
-            border: 2px dashed var(--light-gray);
+            border: 2px dashed var(--border-color);
             border-radius: 10px;
             padding: 2rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            background: var(--bg-color);
         }
 
         .file-upload:hover {
             border-color: var(--gold);
-            background: var(--medium-gray);
         }
 
         .file-upload input {
@@ -331,12 +542,6 @@
             color: var(--text-secondary);
         }
 
-        .upload-hint {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-
         .file-preview {
             margin-top: 1rem;
             display: none;
@@ -348,15 +553,9 @@
 
         .preview-image {
             max-width: 200px;
-            max-height: 200px;
+            max-height: 150px;
             border-radius: 8px;
-            border: 2px solid var(--gold);
-        }
-
-        .file-name {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
+            border: 1px solid var(--gold);
         }
 
         .remove-file {
@@ -364,7 +563,7 @@
             color: white;
             border: none;
             padding: 0.3rem 1rem;
-            border-radius: 5px;
+            border-radius: 4px;
             font-size: 0.8rem;
             cursor: pointer;
             margin-top: 0.5rem;
@@ -378,144 +577,53 @@
 
         .btn-primary {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--primary-black);
+            color: var(--bg-color);
             border: none;
             padding: 0.8rem 2rem;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             flex: 1;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
 
         .btn-secondary {
-            background: var(--medium-gray);
-            color: var(--text-primary);
-            border: 1px solid var(--light-gray);
+            background: var(--border-color);
+            color: var(--text-color);
+            border: none;
             padding: 0.8rem 2rem;
             border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
             flex: 1;
-            transition: all 0.3s ease;
         }
 
-        .btn-secondary:hover {
-            background: var(--light-gray);
+        /* Delete Modal */
+        .delete-modal {
+            max-width: 400px;
         }
 
-        /* Posts Grid */
-        .posts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
+        .warning-text {
+            color: var(--warning);
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .delete-actions {
+            display: flex;
+            gap: 1rem;
             margin-top: 2rem;
         }
 
-        .post-card {
-            background: var(--dark-gray);
-            border-radius: 15px;
-            padding: 1.5rem;
-            border: 1px solid var(--light-gray);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .post-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--gold);
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
-        }
-
-        .post-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            background: var(--medium-gray);
-        }
-
-        .post-title {
-            font-size: 1.3rem;
-            color: var(--gold);
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-        }
-
-        .post-excerpt {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-
-        .post-meta {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .post-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .post-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--light-gray);
-        }
-
-        .post-actions button {
-            flex: 1;
-            padding: 0.6rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            transition: all 0.3s ease;
-        }
-
-        .view-post {
-            background: var(--medium-gray);
-            color: var(--text-primary);
-        }
-
-        .view-post:hover {
-            background: var(--light-gray);
-        }
-
-        .edit-post {
-            background: var(--electric-blue);
-            color: var(--primary-black);
-        }
-
-        .edit-post:hover {
-            filter: brightness(1.1);
-        }
-
-        .delete-post {
+        .confirm-delete {
             background: var(--error);
             color: white;
+            flex: 1;
         }
 
-        .delete-post:hover {
-            filter: brightness(1.1);
+        .cancel-delete {
+            background: var(--border-color);
+            color: var(--text-color);
+            flex: 1;
         }
 
         /* Loading */
@@ -528,7 +636,7 @@
         .spinner {
             width: 50px;
             height: 50px;
-            border: 3px solid var(--light-gray);
+            border: 3px solid var(--border-color);
             border-top-color: var(--gold);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -544,9 +652,9 @@
             text-align: center;
             padding: 4rem 2rem;
             grid-column: 1 / -1;
-            background: var(--dark-gray);
+            background: var(--card-bg);
             border-radius: 15px;
-            border: 1px dashed var(--light-gray);
+            border: 1px dashed var(--border-color);
         }
 
         .empty-icon {
@@ -564,43 +672,47 @@
             color: var(--text-secondary);
         }
 
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
         /* Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .sidebar {
-                width: 70px;
-                padding: 1rem 0.5rem;
-            }
-
-            .sidebar-header {
-                text-align: center;
-            }
-
-            .logo {
-                font-size: 0;
-            }
-
-            .logo::first-letter {
-                font-size: 1.5rem;
-            }
-
-            .role-tag {
-                display: none;
-            }
-
-            .nav-link span {
-                display: none;
-            }
-
-            .nav-link {
-                justify-content: center;
-                padding: 0.9rem;
-            }
-
-            .main {
-                margin-left: 70px;
+                width: 80px;
                 padding: 1rem;
             }
 
+            .sidebar-logo {
+                font-size: 0;
+            }
+
+            .sidebar-logo::before {
+                content: 'SM';
+                font-size: 1.5rem;
+                background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .role-badge,
+            .admin-name,
+            .sidebar-nav a span {
+                display: none;
+            }
+
+            .sidebar-nav a {
+                justify-content: center;
+                padding: 1rem;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
             .posts-grid {
                 grid-template-columns: 1fr;
             }
@@ -608,63 +720,117 @@
             .form-actions {
                 flex-direction: column;
             }
-        }
-    </style>
-    <script type="importmap">
-        {
-            "imports": {
-                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.0"
+
+            .delete-actions {
+                flex-direction: column;
             }
         }
-    </script>
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="app">
+    <div class="admin-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <div class="logo">SupremeMotive</div>
-                <span class="role-tag">Post Admin</span>
+                <div class="sidebar-logo">SupremeMotive</div>
+                <div class="role-badge" id="roleBadge">Loading...</div>
+                <div class="admin-name" id="adminName"></div>
             </div>
 
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="admin-dashboard.html" class="nav-link">
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="admin-dashboard.html">
                         <i>📊</i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="post-admin.html" class="nav-link active">
+                <li>
+                    <a href="post-admin.html" class="active">
                         <i>📝</i>
-                        <span>Posts</span>
+                        <span>Post Management</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="../index.html" class="nav-link">
+                <li>
+                    <a href="admin-quotes.html">
+                        <i>💬</i>
+                        <span>Quote Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="ebook-admin.html">
+                        <i>📚</i>
+                        <span>Ebook Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="unlock-admin.html">
+                        <i>🔓</i>
+                        <span>Unlock Requests</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../index.html">
                         <i>🏠</i>
                         <span>View Site</span>
                     </a>
                 </li>
             </ul>
 
-            <button class="logout-btn" id="logoutBtn">
-                <i>🚪</i>
-                <span>Logout</span>
-            </button>
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logoutBtn">
+                    <i>🚪</i>
+                    <span>Logout</span>
+                </button>
+            </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="main">
-            <div class="header">
-                <h1>📝 Manage Posts</h1>
-                <button class="new-post-btn" id="newPostBtn">
+        <main class="main-content">
+            <div class="content-header">
+                <h1>
+                    <i>📝</i>
+                    Manage Posts
+                </h1>
+                <button class="create-btn" id="createPostBtn">
                     <i>➕</i>
-                    <span>New Post</span>
+                    <span>Create New Post</span>
                 </button>
             </div>
 
             <div id="alertContainer"></div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="totalPosts">0</div>
+                    <div class="stat-label">Total Posts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❤️</div>
+                    <div class="stat-value" id="totalLikes">0</div>
+                    <div class="stat-label">Total Likes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-value" id="totalComments">0</div>
+                    <div class="stat-label">Total Comments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="postsThisMonth">0</div>
+                    <div class="stat-label">This Month</div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search posts by title...">
+                </div>
+            </div>
 
             <!-- Posts Grid -->
             <div class="posts-grid" id="postsGrid">
@@ -674,478 +840,568 @@
                 </div>
             </div>
         </main>
+    </div>
 
-        <!-- Post Modal -->
-        <div class="modal" id="postModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 id="modalTitle">Create New Post</h2>
-                    <button class="close-btn" id="closeModalBtn">&times;</button>
+    <!-- Create/Edit Post Modal -->
+    <div class="modal" id="postModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create New Post</h2>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+
+            <form id="postForm">
+                <input type="hidden" id="postId">
+
+                <div class="form-group">
+                    <label for="title">Post Title *</label>
+                    <input type="text" id="title" class="form-control" placeholder="Enter post title" required>
                 </div>
 
-                <form id="postForm">
-                    <input type="hidden" id="postId">
+                <div class="form-group">
+                    <label for="content">Post Content *</label>
+                    <textarea id="content" class="form-control" placeholder="Write your post content..." required></textarea>
+                </div>
 
-                    <div class="form-group">
-                        <label for="title">Post Title</label>
-                        <input type="text" id="title" class="form-control" placeholder="Enter an inspiring title..." required>
+                <div class="form-group">
+                    <label>Featured Image (Optional)</label>
+                    <div class="file-upload" id="fileUploadArea">
+                        <input type="file" id="image" accept="image/*">
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">Click or drag image to upload</div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="content">Post Content</label>
-                        <textarea id="content" class="form-control" placeholder="Write your motivational message..." required></textarea>
+                    <div class="file-preview" id="filePreview">
+                        <img id="previewImage" class="preview-image" src="#" alt="Preview">
+                        <div id="fileName" class="file-name"></div>
+                        <button type="button" class="remove-file" id="removeFileBtn">Remove</button>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label>Featured Image (Optional)</label>
-                        <div class="file-upload" id="fileUploadArea">
-                            <input type="file" id="image" accept="image/*">
-                            <div class="upload-icon">📷</div>
-                            <div class="upload-text">Click or drag image to upload</div>
-                            <div class="upload-hint">Supports: JPG, PNG, GIF (max 5MB)</div>
-                        </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="submitBtn">Save Post</button>
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-                        <div class="file-preview" id="filePreview">
-                            <img id="previewImage" class="preview-image" src="#" alt="Preview">
-                            <div id="fileName" class="file-name"></div>
-                            <button type="button" class="remove-file" id="removeFileBtn">Remove</button>
-                        </div>
-                    </div>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content delete-modal">
+            <div class="modal-header">
+                <h2 style="color: var(--error);">Delete Post</h2>
+                <button class="close-btn" id="closeDeleteModal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    Are you sure you want to delete this post? This action cannot be undone.
+                </p>
+                <p class="warning-text">
+                    ⚠️ This will also delete all likes and comments associated with this post.
+                </p>
+            </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary" id="submitBtn">Publish Post</button>
-                        <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
-                    </div>
-                </form>
+            <div class="delete-actions">
+                <button class="confirm-delete" id="confirmDeleteBtn">Delete Permanently</button>
+                <button class="cancel-delete" id="cancelDeleteBtn">Cancel</button>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
+    <script>
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        // Initialize Supabase
-        const supabase = createClient(
-            'https://dzcykpbfykajhoutzhpf.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
-        )
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Admin emails
-        const ADMIN_EMAILS = [
+        // Admin emails for post management
+        const POST_ADMIN_EMAILS = [
             'supremealpha04@gmail.com',
             'suprememotive43@gmail.com'
-        ]
+        ];
+
+        // Storage bucket
+        const STORAGE_BUCKET = 'suprememotive-assets';
 
         // State
-        let currentUser = null
-        let posts = []
+        let currentUser = null;
+        let posts = [];
+        let selectedPostId = null;
+        let selectedImageFile = null;
+        let existingImageUrl = null;
 
         // DOM Elements
-        const postsGrid = document.getElementById('postsGrid')
-        const modal = document.getElementById('postModal')
-        const modalTitle = document.getElementById('modalTitle')
-        const postForm = document.getElementById('postForm')
-        const postId = document.getElementById('postId')
-        const titleInput = document.getElementById('title')
-        const contentInput = document.getElementById('content')
-        const imageInput = document.getElementById('image')
-        const filePreview = document.getElementById('filePreview')
-        const previewImage = document.getElementById('previewImage')
-        const fileName = document.getElementById('fileName')
-        const removeFileBtn = document.getElementById('removeFileBtn')
-        const submitBtn = document.getElementById('submitBtn')
-        const alertContainer = document.getElementById('alertContainer')
-        const logoutBtn = document.getElementById('logoutBtn')
-        const newPostBtn = document.getElementById('newPostBtn')
-        const closeModalBtn = document.getElementById('closeModalBtn')
-        const cancelBtn = document.getElementById('cancelBtn')
-        const fileUploadArea = document.getElementById('fileUploadArea')
+        const postsGrid = document.getElementById('postsGrid');
+        const alertContainer = document.getElementById('alertContainer');
+        const createPostBtn = document.getElementById('createPostBtn');
+        const postModal = document.getElementById('postModal');
+        const deleteModal = document.getElementById('deleteModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const postForm = document.getElementById('postForm');
+        const postId = document.getElementById('postId');
+        const title = document.getElementById('title');
+        const content = document.getElementById('content');
+        const image = document.getElementById('image');
+        const filePreview = document.getElementById('filePreview');
+        const previewImage = document.getElementById('previewImage');
+        const fileName = document.getElementById('fileName');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const searchInput = document.getElementById('searchInput');
+        const totalPosts = document.getElementById('totalPosts');
+        const totalLikes = document.getElementById('totalLikes');
+        const totalComments = document.getElementById('totalComments');
+        const postsThisMonth = document.getElementById('postsThisMonth');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const roleBadge = document.getElementById('roleBadge');
+        const adminName = document.getElementById('adminName');
 
-        // Show alert
-        function showAlert(message, type) {
-            alertContainer.innerHTML = `
-                <div class="alert alert-${type}">
-                    <i>${type === 'success' ? '✅' : '❌'}</i>
-                    <span>${message}</span>
-                </div>
-            `
-            setTimeout(() => {
-                alertContainer.innerHTML = ''
-            }, 3000)
-        }
+        // Modal close buttons
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const closeDeleteModal = document.getElementById('closeDeleteModal');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
-        // Check authentication
+        // ============================================
+        // CHECK AUTH
+        // ============================================
         async function checkAuth() {
             try {
-                const { data: { user }, error } = await supabase.auth.getUser()
-                
-                if (error) throw error
-                if (!user) throw new Error('Not authenticated')
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
 
-                currentUser = user
+                if (error) throw error;
+
+                if (!user) {
+                    window.location.href = '../login.html';
+                    return false;
+                }
+
+                currentUser = user;
 
                 // Check if user is post admin
-                if (!ADMIN_EMAILS.includes(user.email)) {
-                    window.location.href = '../index.html'
-                    return false
+                if (!POST_ADMIN_EMAILS.includes(user.email)) {
+                    window.location.href = '../index.html';
+                    return false;
                 }
 
-                return true
+                roleBadge.textContent = 'Post Admin';
+                adminName.textContent = user.email;
+
+                return true;
             } catch (error) {
-                console.error('Auth error:', error)
-                window.location.href = '../login.html'
-                return false
+                console.error('Auth error:', error);
+                window.location.href = '../login.html';
+                return false;
             }
         }
 
-        // Load posts
+        // ============================================
+        // LOAD POSTS
+        // ============================================
         async function loadPosts() {
             try {
-                postsGrid.innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Loading posts...</p>
-                    </div>
-                `
-
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('posts')
-                    .select(`
-                        *,
-                        post_likes(count),
-                        comments(count)
-                    `)
-                    .order('created_at', { ascending: false })
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-                if (error) throw error
+                if (error) throw error;
 
-                posts = data || []
+                posts = data || [];
 
-                if (posts.length === 0) {
-                    postsGrid.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">📝</div>
-                            <h3>No Posts Yet</h3>
-                            <p>Create your first motivational post to inspire others!</p>
-                        </div>
-                    `
-                    return
-                }
+                // Get stats for each post
+                const postsWithStats = await Promise.all(posts.map(async (post) => {
+                    const { count: likes } = await supabaseClient
+                        .from('post_likes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('post_id', post.id);
 
-                renderPosts(posts)
+                    const { count: comments } = await supabaseClient
+                        .from('comments')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('post_id', post.id);
+
+                    return {
+                        ...post,
+                        likes_count: likes || 0,
+                        comments_count: comments || 0
+                    };
+                }));
+
+                posts = postsWithStats;
+                updateStats();
+                renderPosts();
 
             } catch (error) {
-                console.error('Load posts error:', error)
-                postsGrid.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">❌</div>
-                        <h3>Error Loading Posts</h3>
-                        <p>${error.message}</p>
-                    </div>
-                `
+                console.error('Error loading posts:', error);
+                showAlert('Error loading posts: ' + error.message, 'error');
             }
         }
 
-        // Render posts
-        function renderPosts(posts) {
-            postsGrid.innerHTML = posts.map(post => `
-                <div class="post-card" data-id="${post.id}">
-                    ${post.image_url ? 
-                        `<img src="${post.image_url}" alt="${escapeHtml(post.title)}" class="post-image">` : 
-                        `<div class="post-image" style="background: linear-gradient(135deg, var(--gold), var(--electric-blue)); display: flex; align-items: center; justify-content: center; color: var(--primary-black); font-size: 3rem;">📝</div>`
-                    }
-                    
-                    <h3 class="post-title">${escapeHtml(post.title)}</h3>
-                    
-                    <div class="post-excerpt">
-                        ${escapeHtml(post.content.substring(0, 100))}${post.content.length > 100 ? '...' : ''}
-                    </div>
+        // ============================================
+        // UPDATE STATISTICS
+        // ============================================
+        function updateStats() {
+            totalPosts.textContent = posts.length;
 
-                    <div class="post-meta">
-                        <span>❤️ ${post.post_likes?.[0]?.count || 0}</span>
-                        <span>💬 ${post.comments?.[0]?.count || 0}</span>
-                        <span>📅 ${new Date(post.created_at).toLocaleDateString()}</span>
-                    </div>
+            const totalLikesCount = posts.reduce((sum, p) => sum + p.likes_count, 0);
+            const totalCommentsCount = posts.reduce((sum, p) => sum + p.comments_count, 0);
 
-                    <div class="post-actions">
-                        <button class="view-post" onclick="viewPost('${post.id}')">
-                            <span>👁️</span> View
-                        </button>
-                        <button class="edit-post" onclick="editPost('${post.id}')">
-                            <span>✏️</span> Edit
-                        </button>
-                        <button class="delete-post" onclick="deletePost('${post.id}', '${post.image_url || ''}')">
-                            <span>🗑️</span> Delete
-                        </button>
-                    </div>
-                </div>
-            `).join('')
+            totalLikes.textContent = totalLikesCount;
+            totalComments.textContent = totalCommentsCount;
+
+            // Posts this month
+            const now = new Date();
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            const postsThisMonthCount = posts.filter(p => new Date(p.created_at) >= firstDay).length;
+            postsThisMonth.textContent = postsThisMonthCount;
         }
 
-        // Escape HTML
+        // ============================================
+        // RENDER POSTS
+        // ============================================
+        function renderPosts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            let filteredPosts = posts;
+
+            if (searchTerm) {
+                filteredPosts = posts.filter(p => 
+                    p.title.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (filteredPosts.length === 0) {
+                postsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <h3>No Posts Found</h3>
+                        <p>Click "Create New Post" to add your first post.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            postsGrid.innerHTML = filteredPosts.map(post => {
+                const date = new Date(post.created_at).toLocaleDateString();
+                const excerpt = post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '');
+
+                return `
+                    <div class="post-card" data-id="${post.id}">
+                        ${post.image_url ? `
+                            <img src="${post.image_url}" alt="${escapeHtml(post.title)}" class="post-image">
+                        ` : ''}
+                        
+                        <div class="post-content">
+                            <h3 class="post-title">${escapeHtml(post.title)}</h3>
+                            <p class="post-excerpt">${escapeHtml(excerpt)}</p>
+                            
+                            <div class="post-meta">
+                                <span><i>📅</i> ${date}</span>
+                                <span><i>❤️</i> ${post.likes_count}</span>
+                                <span><i>💬</i> ${post.comments_count}</span>
+                            </div>
+
+                            <div class="post-actions">
+                                <button class="action-btn view-btn" onclick="viewPost('${post.id}')">
+                                    <i>👁️</i> View
+                                </button>
+                                <button class="action-btn edit-btn" onclick="editPost('${post.id}')">
+                                    <i>✏️</i> Edit
+                                </button>
+                                <button class="action-btn delete-btn" onclick="showDeleteModal('${post.id}')">
+                                    <i>🗑️</i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================
+        // ESCAPE HTML
+        // ============================================
         function escapeHtml(unsafe) {
-            if (!unsafe) return ''
+            if (!unsafe) return '';
             return unsafe
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
+                .replace(/'/g, '&#039;');
         }
 
-        // View post
+        // ============================================
+        // SHOW ALERT
+        // ============================================
+        function showAlert(message, type = 'success') {
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <span>${type === 'success' ? '✅' : '❌'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
+        }
+
+        // ============================================
+        // RESET FORM
+        // ============================================
+        function resetForm() {
+            postForm.reset();
+            postId.value = '';
+            selectedImageFile = null;
+            existingImageUrl = null;
+            filePreview.classList.remove('show');
+            modalTitle.textContent = 'Create New Post';
+            submitBtn.textContent = 'Save Post';
+        }
+
+        // ============================================
+        // UPLOAD IMAGE
+        // ============================================
+        async function uploadImage(file) {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 8);
+            const ext = file.name.split('.').pop();
+            const fileName = `post-images/${currentUser.id}-${timestamp}-${random}.${ext}`;
+
+            const { error } = await supabaseClient.storage
+                .from(STORAGE_BUCKET)
+                .upload(fileName, file);
+
+            if (error) throw error;
+
+            const { data: { publicUrl } } = supabaseClient.storage
+                .from(STORAGE_BUCKET)
+                .getPublicUrl(fileName);
+
+            return publicUrl;
+        }
+
+        // ============================================
+        // VIEW POST
+        // ============================================
         window.viewPost = (postId) => {
-            window.open(`../post.html?id=${postId}`, '_blank')
-        }
+            window.open(`../post.html?id=${postId}`, '_blank');
+        };
 
-        // Edit post
-        window.editPost = async (postId) => {
-            try {
-                const post = posts.find(p => p.id === postId)
-                if (!post) return
+        // ============================================
+        // EDIT POST
+        // ============================================
+        window.editPost = (id) => {
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
 
-                // Populate form
-                postId.value = post.id
-                titleInput.value = post.title
-                contentInput.value = post.content
+            postId.value = post.id;
+            title.value = post.title;
+            content.value = post.content;
+            existingImageUrl = post.image_url;
 
-                if (post.image_url) {
-                    previewImage.src = post.image_url
-                    filePreview.classList.add('show')
-                    fileName.textContent = 'Current image'
-                }
-
-                modalTitle.textContent = 'Edit Post'
-                submitBtn.textContent = 'Update Post'
-                modal.classList.add('show')
-
-            } catch (error) {
-                showAlert('Error loading post: ' + error.message, 'error')
-            }
-        }
-
-        // Delete post
-        window.deletePost = async (postId, imageUrl) => {
-            if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
-                return
+            if (post.image_url) {
+                previewImage.src = post.image_url;
+                filePreview.classList.add('show');
+                fileName.textContent = 'Current image';
             }
 
-            try {
-                // Delete image if exists
-                if (imageUrl) {
-                    const path = imageUrl.split('/').slice(-2).join('/')
-                    await supabase.storage
-                        .from('suprememotive-assets')
-                        .remove([path])
-                }
+            modalTitle.textContent = 'Edit Post';
+            submitBtn.textContent = 'Update Post';
+            postModal.classList.add('show');
+        };
 
-                // Delete post
-                const { error } = await supabase
+        // ============================================
+        // SHOW DELETE MODAL
+        // ============================================
+        window.showDeleteModal = (id) => {
+            selectedPostId = id;
+            deleteModal.classList.add('show');
+        };
+
+        // ============================================
+        // CONFIRM DELETE
+        // ============================================
+        confirmDeleteBtn.addEventListener('click', async () => {
+            if (!selectedPostId) return;
+
+            try {
+                const { error } = await supabaseClient
                     .from('posts')
                     .delete()
-                    .eq('id', postId)
+                    .eq('id', selectedPostId);
 
-                if (error) throw error
+                if (error) throw error;
 
-                showAlert('Post deleted successfully!', 'success')
-                await loadPosts()
+                showAlert('Post deleted successfully!');
+                deleteModal.classList.remove('show');
+                await loadPosts();
 
             } catch (error) {
-                showAlert('Error deleting post: ' + error.message, 'error')
+                console.error('Error deleting post:', error);
+                showAlert('Error deleting post: ' + error.message, 'error');
+            } finally {
+                selectedPostId = null;
             }
-        }
+        });
 
-        // Upload image
-        async function uploadImage(file) {
-            if (!file) return null
-
-            const fileName = `${currentUser.id}-${Date.now()}-${file.name}`
-            const filePath = `post-images/${fileName}`
-
-            const { error: uploadError } = await supabase.storage
-                .from('suprememotive-assets')
-                .upload(filePath, file)
-
-            if (uploadError) throw uploadError
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('suprememotive-assets')
-                .getPublicUrl(filePath)
-
-            return publicUrl
-        }
-
-        // Handle form submission
-        postForm.addEventListener('submit', async (e) => {
-            e.preventDefault()
-
-            try {
-                const title = titleInput.value.trim()
-                const content = contentInput.value.trim()
-                const id = postId.value
-                const imageFile = imageInput.files[0]
-
-                if (!title || !content) {
-                    showAlert('Please fill in all required fields', 'error')
-                    return
+        // ============================================
+        // FILE UPLOAD HANDLER
+        // ============================================
+        image.addEventListener('change', () => {
+            const file = image.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('File too large. Max size 5MB', 'error');
+                    image.value = '';
+                    return;
                 }
 
-                submitBtn.disabled = true
-                submitBtn.textContent = 'Saving...'
+                selectedImageFile = file;
 
-                let imageUrl = null
-                if (imageFile) {
-                    imageUrl = await uploadImage(imageFile)
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    filePreview.classList.add('show');
+                    fileName.textContent = file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        removeFileBtn.addEventListener('click', () => {
+            image.value = '';
+            selectedImageFile = null;
+            filePreview.classList.remove('show');
+        });
+
+        // ============================================
+        // FORM SUBMIT
+        // ============================================
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = postId.value;
+            const postTitle = title.value.trim();
+            const postContent = content.value.trim();
+
+            if (!postTitle || !postContent) {
+                showAlert('Please fill all required fields', 'error');
+                return;
+            }
+
+            try {
+                let imageUrl = existingImageUrl;
+
+                if (selectedImageFile) {
+                    imageUrl = await uploadImage(selectedImageFile);
                 }
 
                 if (id) {
                     // Update existing post
-                    const updates = { title, content }
-                    if (imageUrl) updates.image_url = imageUrl
-
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('posts')
-                        .update(updates)
-                        .eq('id', id)
+                        .update({
+                            title: postTitle,
+                            content: postContent,
+                            image_url: imageUrl,
+                            updated_at: new Date()
+                        })
+                        .eq('id', id);
 
-                    if (error) throw error
-                    showAlert('Post updated successfully!', 'success')
+                    if (error) throw error;
+                    showAlert('Post updated successfully!');
                 } else {
                     // Create new post
-                    const { error } = await supabase
+                    const { error } = await supabaseClient
                         .from('posts')
                         .insert([{
-                            title,
-                            content,
+                            title: postTitle,
+                            content: postContent,
                             image_url: imageUrl,
                             created_by: currentUser.id
-                        }])
+                        }]);
 
-                    if (error) throw error
-                    showAlert('Post created successfully!', 'success')
+                    if (error) throw error;
+                    showAlert('Post created successfully!');
                 }
 
-                // Reset and close modal
-                resetForm()
-                modal.classList.remove('show')
-                await loadPosts()
+                await loadPosts();
+                postModal.classList.remove('show');
+                resetForm();
 
             } catch (error) {
-                showAlert('Error: ' + error.message, 'error')
-            } finally {
-                submitBtn.disabled = false
-                submitBtn.textContent = id ? 'Update Post' : 'Publish Post'
+                console.error('Error saving post:', error);
+                showAlert('Error saving post: ' + error.message, 'error');
             }
-        })
+        });
 
-        // Reset form
-        function resetForm() {
-            postForm.reset()
-            postId.value = ''
-            filePreview.classList.remove('show')
-            previewImage.src = '#'
-            fileName.textContent = ''
-            modalTitle.textContent = 'Create New Post'
-            submitBtn.textContent = 'Publish Post'
-        }
+        // ============================================
+        // SEARCH
+        // ============================================
+        searchInput.addEventListener('input', renderPosts);
 
-        // File upload handling
-        imageInput.addEventListener('change', () => {
-            const file = imageInput.files[0]
-            if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    showAlert('File too large. Maximum size is 5MB', 'error')
-                    imageInput.value = ''
-                    return
-                }
-
-                const reader = new FileReader()
-                reader.onload = (e) => {
-                    previewImage.src = e.target.result
-                    filePreview.classList.add('show')
-                    fileName.textContent = file.name
-                }
-                reader.readAsDataURL(file)
-            }
-        })
-
-        removeFileBtn.addEventListener('click', () => {
-            imageInput.value = ''
-            filePreview.classList.remove('show')
-            previewImage.src = '#'
-            fileName.textContent = ''
-        })
-
-        fileUploadArea.addEventListener('click', () => {
-            imageInput.click()
-        })
-
-        fileUploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault()
-            fileUploadArea.style.borderColor = 'var(--gold)'
-            fileUploadArea.style.background = 'var(--medium-gray)'
-        })
-
-        fileUploadArea.addEventListener('dragleave', () => {
-            fileUploadArea.style.borderColor = 'var(--light-gray)'
-            fileUploadArea.style.background = 'none'
-        })
-
-        fileUploadArea.addEventListener('drop', (e) => {
-            e.preventDefault()
-            fileUploadArea.style.borderColor = 'var(--light-gray)'
-            fileUploadArea.style.background = 'none'
-            
-            const file = e.dataTransfer.files[0]
-            if (file && file.type.startsWith('image/')) {
-                imageInput.files = e.dataTransfer.files
-                const event = new Event('change')
-                imageInput.dispatchEvent(event)
-            }
-        })
-
-        // Modal controls
-        newPostBtn.addEventListener('click', () => {
-            resetForm()
-            modal.classList.add('show')
-        })
+        // ============================================
+        // MODAL CONTROLS
+        // ============================================
+        createPostBtn.addEventListener('click', () => {
+            resetForm();
+            postModal.classList.add('show');
+        });
 
         closeModalBtn.addEventListener('click', () => {
-            modal.classList.remove('show')
-            resetForm()
-        })
+            postModal.classList.remove('show');
+        });
 
         cancelBtn.addEventListener('click', () => {
-            modal.classList.remove('show')
-            resetForm()
-        })
+            postModal.classList.remove('show');
+        });
+
+        closeDeleteModal.addEventListener('click', () => {
+            deleteModal.classList.remove('show');
+            selectedPostId = null;
+        });
+
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteModal.classList.remove('show');
+            selectedPostId = null;
+        });
 
         window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('show')
-                resetForm()
+            if (e.target === postModal) {
+                postModal.classList.remove('show');
             }
-        })
+            if (e.target === deleteModal) {
+                deleteModal.classList.remove('show');
+                selectedPostId = null;
+            }
+        });
 
-        // Logout
+        // ============================================
+        // LOGOUT
+        // ============================================
         logoutBtn.addEventListener('click', async () => {
-            try {
-                await supabase.auth.signOut()
-                window.location.href = '../index.html'
-            } catch (error) {
-                showAlert('Error logging out', 'error')
-            }
-        })
+            await supabaseClient.auth.signOut();
+            window.location.href = '../index.html';
+        });
 
-        // Initialize
+        // ============================================
+        // INITIALIZE
+        // ============================================
         async function init() {
-            const isAuthenticated = await checkAuth()
-            if (isAuthenticated) {
-                await loadPosts()
+            const isAuthed = await checkAuth();
+            if (isAuthed) {
+                await loadPosts();
             }
         }
 
-        init()
+        init();
     </script>
 </body>
 </html>
