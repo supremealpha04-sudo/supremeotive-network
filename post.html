@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Article</title>
+    <title>SupremeMotive - Articles</title>
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
@@ -30,6 +30,7 @@
             padding-bottom: 80px;
         }
 
+        /* Navigation */
         .top-nav {
             background: var(--card-bg);
             padding: 1rem 2rem;
@@ -235,11 +236,53 @@
             margin: 1rem 0;
         }
 
+        /* Post Content with Read More */
+        .post-content-wrapper {
+            position: relative;
+        }
+
         .post-content {
             color: var(--text-secondary);
             line-height: 1.8;
-            margin-bottom: 1.5rem;
+            font-size: 1rem;
             white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .post-content.collapsed {
+            max-height: 300px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .post-content.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--card-bg));
+            pointer-events: none;
+        }
+
+        .read-more-btn {
+            background: none;
+            border: none;
+            color: var(--electric-blue);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            padding: 0.5rem 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .read-more-btn:hover {
+            color: var(--gold);
         }
 
         .post-stats {
@@ -482,6 +525,10 @@
                 margin-left: 0;
                 margin-top: 0.5rem;
             }
+            
+            .post-content.collapsed {
+                max-height: 200px;
+            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -566,7 +613,12 @@
         const postId = urlParams.get('id');
 
         if (!postId) {
-            postContainer.innerHTML = '<div class="error">❌ No post ID provided</div>';
+            postContainer.innerHTML = `
+                <div class="error">
+                    <p>❌ No post selected. Please go back to the homepage and select an article.</p>
+                    <button class="back-btn" onclick="window.location.href='index.html'" style="margin-top: 1rem;">Go Home</button>
+                </div>
+            `;
         } else {
             checkAuth();
         }
@@ -684,13 +736,37 @@
                 await loadComments();
 
             } catch (error) {
+                console.error('Error:', error);
                 postContainer.innerHTML = `
                     <div class="error">
                         ❌ Error: ${error.message}
+                        <div style="margin-top: 1rem;">
+                            <button class="back-btn" onclick="window.location.href='index.html'">Go Back Home</button>
+                        </div>
                     </div>
                 `;
             }
         }
+
+        // ============================================
+        // TOGGLE READ MORE
+        // ============================================
+        window.toggleReadMore = () => {
+            const contentDiv = document.getElementById('postContent');
+            const btn = document.getElementById('readMoreBtn');
+            
+            if (contentDiv.classList.contains('collapsed')) {
+                contentDiv.classList.remove('collapsed');
+                btn.innerHTML = '<span>Show Less</span> <span>▲</span>';
+                // Scroll to content
+                contentDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                contentDiv.classList.add('collapsed');
+                btn.innerHTML = '<span>Read More</span> <span>▼</span>';
+                // Scroll to top of post
+                document.querySelector('.post-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
 
         // ============================================
         // RENDER POST
@@ -699,6 +775,10 @@
             const date = new Date(post.created_at).toLocaleDateString();
             const authorName = post.profiles?.name || 'Admin';
             const authorInitial = authorName.charAt(0).toUpperCase();
+            
+            // Check if content needs read more (if content has more than 3 paragraphs or 500 characters)
+            const needsReadMore = post.content.length > 500 || (post.content.match(/\n/g) || []).length > 3;
+            const collapsedClass = needsReadMore ? 'collapsed' : '';
 
             postContainer.innerHTML = `
                 <div class="post-card">
@@ -716,16 +796,27 @@
                         <img src="${post.image_url}" class="post-image">
                     ` : ''}
                     
-                    <div class="post-content">${escapeHtml(post.content)}</div>
+                    <div class="post-content-wrapper">
+                        <div id="postContent" class="post-content ${collapsedClass}">
+                            ${escapeHtml(post.content).replace(/\n/g, '<br>')}
+                        </div>
+                        ${needsReadMore ? `
+                            <button class="read-more-btn" id="readMoreBtn" onclick="toggleReadMore()">
+                                <span>Read More</span> <span>▼</span>
+                            </button>
+                        ` : ''}
+                    </div>
 
                     <div class="post-stats">
                         <div class="stat-item">
                             <span>❤️</span>
                             <span class="stat-value" id="likesCount">${likesCount}</span>
+                            <span>likes</span>
                         </div>
                         <div class="stat-item">
                             <span>💬</span>
                             <span class="stat-value" id="commentsCount">${commentsCount}</span>
+                            <span>comments</span>
                         </div>
                     </div>
 
@@ -815,12 +906,10 @@
         }
 
         // ============================================
-        // LOAD COMMENTS - FIXED
+        // LOAD COMMENTS
         // ============================================
         async function loadComments() {
             try {
-                console.log('Loading comments for post:', postId);
-                
                 const { data: comments, error } = await supabaseClient
                     .from('comments')
                     .select(`
@@ -831,25 +920,21 @@
                     .is('parent_comment_id', null)
                     .order('created_at', { ascending: true });
 
-                if (error) {
-                    console.error('Error loading comments:', error);
-                    throw error;
-                }
+                if (error) throw error;
 
-                console.log('Comments loaded:', comments);
                 renderComments(comments || []);
 
             } catch (error) {
                 console.error('Error loading comments:', error);
                 const commentsList = document.getElementById('commentsList');
                 if (commentsList) {
-                    commentsList.innerHTML = '<p class="no-comments">Error loading comments. Please refresh.</p>';
+                    commentsList.innerHTML = '<p class="no-comments">Error loading comments</p>';
                 }
             }
         }
 
         // ============================================
-        // RENDER COMMENTS - FIXED
+        // RENDER COMMENTS
         // ============================================
         function renderComments(comments) {
             const commentsList = document.getElementById('commentsList');
@@ -866,7 +951,7 @@
                 const authorInitial = authorName.charAt(0).toUpperCase();
 
                 return `
-                    <div class="comment" data-comment-id="${comment.id}">
+                    <div class="comment">
                         <div class="comment-header">
                             <div class="comment-avatar">${authorInitial}</div>
                             <span class="comment-author">${escapeHtml(authorName)}</span>
@@ -879,7 +964,7 @@
         }
 
         // ============================================
-        // SUBMIT COMMENT - FIXED
+        // SUBMIT COMMENT
         // ============================================
         window.submitComment = async () => {
             if (!currentUser) {
@@ -896,27 +981,17 @@
             }
 
             try {
-                console.log('Submitting comment for post:', postId);
-                
-                const { data, error } = await supabaseClient
+                const { error } = await supabaseClient
                     .from('comments')
                     .insert([{
                         post_id: postId,
                         user_id: currentUser.id,
                         content: content
-                    }])
-                    .select();
+                    }]);
 
-                if (error) {
-                    console.error('Error inserting comment:', error);
-                    throw error;
-                }
-
-                console.log('Comment inserted:', data);
+                if (error) throw error;
 
                 input.value = '';
-                
-                // Reload comments
                 await loadComments();
                 
                 // Update comment count
@@ -928,7 +1003,7 @@
                 document.getElementById('commentsCount').textContent = count;
                 document.getElementById('commentCount').textContent = count;
                 
-                showAlert('Comment posted successfully!');
+                showAlert('Comment posted!');
 
             } catch (error) {
                 console.error('Error posting comment:', error);
