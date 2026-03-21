@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - All Articles</title>
     <link rel="icon" type="image/png" href="logo.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFD700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
+        /* ============================================ */
+        /* RESET & BASE STYLES */
+        /* ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -20,18 +27,51 @@
             --gold: #FFD700;
             --border-color: #333333;
             --electric-blue: #00F0FF;
+            --success: #4CAF50;
+            --error: #F44336;
+            --warning: #FFC107;
+            --info: #2196F3;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, var(--bg-color) 0%, #0B1A33 100%);
             color: var(--text-color);
             min-height: 100vh;
             padding-bottom: 80px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* ============================================ */
+        /* CUSTOM SCROLLBAR */
+        /* ============================================ */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-gray);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--electric-blue);
+        }
+
+        /* ============================================ */
+        /* TOP NAVIGATION */
+        /* ============================================ */
         .top-nav {
-            background: var(--card-bg);
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
             padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
@@ -39,7 +79,8 @@
             border-bottom: 2px solid var(--gold);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
         .logo {
@@ -49,6 +90,12 @@
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--gold);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .logo img {
@@ -56,10 +103,33 @@
             width: auto;
         }
 
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: var(--medium-gray);
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--gold);
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
         .nav-links {
             display: flex;
             gap: 1.5rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
@@ -67,6 +137,24 @@
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
         }
 
         .nav-links a:hover,
@@ -90,11 +178,14 @@
             font-size: 0.9rem;
             transition: all 0.3s ease;
             text-decoration: none;
+            font-weight: 500;
         }
 
         .login-btn:hover {
             background: var(--gold);
             color: var(--bg-color);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
         }
 
         .logout-btn {
@@ -106,25 +197,53 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .logout-btn:hover {
             background: #F44336;
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
         }
 
         .user-greeting {
             color: var(--gold);
             font-size: 0.9rem;
             margin-right: 0.5rem;
+            font-weight: 500;
         }
 
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(360deg);
+            background: var(--medium-gray);
+            color: var(--gold);
+        }
+
+        /* ============================================ */
+        /* BOTTOM NAVIGATION */
+        /* ============================================ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--card-bg);
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
             border-top: 2px solid var(--gold);
             display: flex;
             justify-content: space-around;
@@ -139,12 +258,16 @@
             text-decoration: none;
             color: var(--text-secondary);
             font-size: 0.8rem;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
         }
 
         .nav-item:hover,
         .nav-item.active {
             color: var(--gold);
+            transform: translateY(-3px);
+            background: rgba(255, 215, 0, 0.1);
         }
 
         .nav-icon {
@@ -152,50 +275,230 @@
             margin-bottom: 0.2rem;
         }
 
+        /* ============================================ */
+        /* MAIN CONTAINER */
+        /* ============================================ */
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
-        .page-title {
-            font-size: 2rem;
-            color: var(--gold);
-            margin-bottom: 2rem;
+        /* ============================================ */
+        /* PAGE HEADER */
+        /* ============================================ */
+        .page-header {
             text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
         }
 
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================ */
+        /* STATS ROW */
+        /* ============================================ */
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* ============================================ */
+        /* SEARCH & FILTERS */
+        /* ============================================ */
+        .filters-section {
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 1rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+
+        .category-filters {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1.2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--gold);
+            color: var(--bg-color);
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* ============================================ */
+        /* POSTS GRID */
+        /* ============================================ */
         .posts-grid {
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
 
+        /* ============================================ */
+        /* POST CARD */
+        /* ============================================ */
         .post-card {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 24px;
             padding: 2rem;
             border: 1px solid var(--border-color);
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .post-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-5px);
             border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
         }
 
+        .post-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Post Watermark */
+        .post-card::after {
+            content: 'SUPREME MOTIVE';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 215, 0, 0.15);
+            transform: rotate(-5deg);
+            pointer-events: none;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* Post Header */
         .post-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1;
         }
 
         .post-avatar {
-            width: 45px;
-            height: 45px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             display: flex;
@@ -203,7 +506,13 @@
             justify-content: center;
             color: var(--bg-color);
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.2rem;
+            border: 2px solid var(--gold);
+            transition: transform 0.3s ease;
+        }
+
+        .post-card:hover .post-avatar {
+            transform: scale(1.05);
         }
 
         .post-info {
@@ -213,42 +522,76 @@
         .post-author {
             color: var(--gold);
             font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-badge {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--gold);
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            border: 1px solid var(--gold);
         }
 
         .post-date {
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
         }
 
+        /* Post Title */
         .post-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--gold);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
         }
 
         .post-title a {
             color: var(--gold);
             text-decoration: none;
+            transition: color 0.3s ease;
         }
 
         .post-title a:hover {
+            color: var(--electric-blue);
             text-decoration: underline;
         }
 
+        /* Post Image */
         .post-image {
             width: 100%;
-            max-height: 300px;
+            max-height: 400px;
             object-fit: cover;
-            border-radius: 12px;
+            border-radius: 16px;
             margin: 1rem 0;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
+        .post-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* Post Excerpt */
         .post-excerpt {
             color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1rem;
+            line-height: 1.8;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
         }
 
+        /* Post Meta */
         .post-meta {
             display: flex;
             gap: 1.5rem;
@@ -257,26 +600,51 @@
             border-top: 1px solid var(--border-color);
             color: var(--text-secondary);
             font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
         }
 
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .meta-icon {
+            font-size: 1rem;
+        }
+
+        /* Read More Link */
         .read-more-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             color: var(--electric-blue);
             text-decoration: none;
             font-weight: 600;
+            margin-top: 1rem;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .read-more-link:hover {
             color: var(--gold);
+            gap: 0.8rem;
         }
 
+        /* ============================================ */
+        /* LOADING STATES */
+        /* ============================================ */
         .loading {
             text-align: center;
-            padding: 3rem;
+            padding: 4rem;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border: 3px solid var(--border-color);
             border-top-color: var(--gold);
             border-radius: 50%;
@@ -288,18 +656,62 @@
             to { transform: rotate(360deg); }
         }
 
-        .error {
+        /* ============================================ */
+        /* ERROR STATES */
+        /* ============================================ */
+        .error-container {
             text-align: center;
-            padding: 3rem;
-            color: #F44336;
+            padding: 4rem;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
         }
 
-        .empty {
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-title {
+            color: var(--error);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        /* ============================================ */
+        /* EMPTY STATE */
+        /* ============================================ */
+        .empty-state {
             text-align: center;
-            padding: 3rem;
+            padding: 4rem;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px dashed var(--border-color);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
             color: var(--text-secondary);
         }
 
+        /* ============================================ */
+        /* ALERT NOTIFICATION */
+        /* ============================================ */
         .alert {
             position: fixed;
             top: 80px;
@@ -307,11 +719,16 @@
             transform: translateX(-50%);
             background: var(--card-bg);
             border: 2px solid var(--gold);
-            border-radius: 8px;
-            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
             color: var(--text-color);
             z-index: 1000;
             animation: slideDown 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
         }
 
         @keyframes slideDown {
@@ -325,28 +742,178 @@
             }
         }
 
+        /* ============================================ */
+        /* UTILITY CLASSES */
+        /* ============================================ */
         .hidden {
             display: none !important;
         }
 
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        /* ============================================ */
+        /* RESPONSIVE DESIGN */
+        /* ============================================ */
+        @media (max-width: 1024px) {
+            .container {
+                max-width: 90%;
+            }
+        }
+
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--card-bg);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                border-bottom: 2px solid var(--gold);
+                z-index: 99;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .login-btn, .logout-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .post-title {
+                font-size: 1.4rem;
+            }
+
+            .post-card {
+                padding: 1.5rem;
+            }
+
+            .stats-row {
+                flex-direction: column;
+                align-items: flex-start;
+                border-radius: 20px;
+            }
+
+            .post-header {
+                flex-wrap: wrap;
+            }
+
+            .post-meta {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.8rem;
+            }
+
+            .post-card {
+                padding: 1.2rem;
+            }
+
             .post-title {
                 font-size: 1.2rem;
+            }
+
+            .post-excerpt {
+                font-size: 0.9rem;
+            }
+
+            .category-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* ============================================ */
+        /* PRINT STYLES */
+        /* ============================================ */
+        @media print {
+            .top-nav, .bottom-nav, .auth-buttons, .filters-section, .theme-toggle {
+                display: none !important;
+            }
+
+            .post-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                background: white;
+                color: black;
+                border: 1px solid #ccc;
+                box-shadow: none;
+            }
+
+            .post-card::after {
+                content: none;
+            }
+
+            .post-author, .post-title {
+                color: black;
             }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+    <!-- ============================================ -->
+    <!-- TOP NAVIGATION -->
+    <!-- ============================================ -->
     <nav class="top-nav">
-        <div class="logo">
+        <div class="logo" onclick="window.location.href='index.html'">
             <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
             <span>SupremeMotive</span>
         </div>
 
-        <div class="nav-links">
+        <div class="menu-toggle" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
             
@@ -355,9 +922,14 @@
                 <a href="login.html" class="login-btn" id="loginBtn">Login</a>
                 <button class="logout-btn hidden" id="logoutBtn">Logout</button>
             </div>
+            
+            <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
     </nav>
 
+    <!-- ============================================ -->
+    <!-- BOTTOM NAVIGATION -->
+    <!-- ============================================ -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <span class="nav-icon">🏠</span>
@@ -371,13 +943,62 @@
             <span class="nav-icon">👤</span>
             <span>Profile</span>
         </a>
+        <a href="post.html" class="nav-item active">
+            <span class="nav-icon">📰</span>
+            <span>Articles</span>
+        </a>
     </nav>
 
+    <!-- ============================================ -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================================ -->
     <main class="container">
-        <h1 class="page-title">📰 All Articles</h1>
+        <div class="page-header">
+            <h1 class="page-title">📰 All Articles</h1>
+            <p class="page-subtitle">Discover inspiring stories and motivational content from our team</p>
+        </div>
 
         <div id="alertContainer"></div>
-        <div id="postsContainer"></div>
+
+        <div class="stats-row" id="statsRow">
+            <div class="stat-item">
+                <span>📊</span>
+                <span>Total Articles: <span id="totalArticles" class="stat-value">0</span></span>
+            </div>
+            <div class="stat-item">
+                <span>❤️</span>
+                <span>Total Likes: <span id="totalLikes" class="stat-value">0</span></span>
+            </div>
+            <div class="stat-item">
+                <span>💬</span>
+                <span>Total Comments: <span id="totalComments" class="stat-value">0</span></span>
+            </div>
+            <div class="stat-item">
+                <span>📅</span>
+                <span>This Month: <span id="thisMonth" class="stat-value">0</span></span>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search articles by title...">
+            </div>
+            <div class="category-filters" id="categoryFilters">
+                <button class="category-btn active" data-category="all">All</button>
+                <button class="category-btn" data-category="motivation">Motivation</button>
+                <button class="category-btn" data-category="success">Success</button>
+                <button class="category-btn" data-category="life">Life</button>
+                <button class="category-btn" data-category="wisdom">Wisdom</button>
+            </div>
+        </div>
+
+        <div id="postsContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading inspiring articles...</p>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -397,24 +1018,93 @@
             'emmanuelamer6@gmail.com'
         ];
 
+        // State variables
         let currentUser = null;
+        let allPosts = [];
+        let currentCategory = 'all';
+        let searchTerm = '';
 
         // DOM Elements
         const postsContainer = document.getElementById('postsContainer');
         const alertContainer = document.getElementById('alertContainer');
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        const themeToggle = document.getElementById('themeToggle');
         const adminLink = document.getElementById('adminLink');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const userGreeting = document.getElementById('userGreeting');
+        const searchInput = document.getElementById('searchInput');
+        const totalArticlesSpan = document.getElementById('totalArticles');
+        const totalLikesSpan = document.getElementById('totalLikes');
+        const totalCommentsSpan = document.getElementById('totalComments');
+        const thisMonthSpan = document.getElementById('thisMonth');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5';
+            if (isLight) {
+                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
+                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
+                document.documentElement.style.setProperty('--border-color', '#333333');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
+                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
+                document.documentElement.style.setProperty('--text-color', '#333333');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
 
         // ============================================
         // SHOW ALERT
         // ============================================
-        function showAlert(message) {
-            alertContainer.innerHTML = `<div class="alert">${message}</div>`;
+        function showAlert(message, type = 'success') {
+            alertContainer.innerHTML = `<div class="alert">${type === 'success' ? '✅' : '❌'} ${message}</div>`;
             setTimeout(() => {
                 alertContainer.innerHTML = '';
-            }, 2000);
+            }, 3000);
         }
 
         // ============================================
@@ -442,19 +1132,20 @@
                     loginBtn.classList.add('hidden');
                     logoutBtn.classList.remove('hidden');
                     userGreeting.classList.remove('hidden');
-                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
+                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}! 🎉`;
                     
                     if (ADMIN_EMAILS.includes(user.email)) {
                         adminLink.style.display = 'block';
                         adminLink.href = 'admin/admin-dashboard.html';
                     }
+                } else {
+                    loginBtn.classList.remove('hidden');
+                    logoutBtn.classList.add('hidden');
+                    userGreeting.classList.add('hidden');
+                    adminLink.style.display = 'none';
                 }
-                
-                await loadPosts();
-                
             } catch (error) {
                 console.error('Auth error:', error);
-                await loadPosts();
             }
         }
 
@@ -462,8 +1153,12 @@
         // LOGOUT
         // ============================================
         logoutBtn.addEventListener('click', async () => {
-            await supabaseClient.auth.signOut();
-            window.location.reload();
+            try {
+                await supabaseClient.auth.signOut();
+                window.location.reload();
+            } catch (error) {
+                showAlert('Error logging out', 'error');
+            }
         });
 
         // ============================================
@@ -474,63 +1169,144 @@
                 postsContainer.innerHTML = `
                     <div class="loading">
                         <div class="spinner"></div>
-                        <p>Loading articles...</p>
+                        <p>Loading inspiring articles...</p>
                     </div>
                 `;
 
-                // Fetch ALL posts
+                // Fetch all posts with author info
                 const { data: posts, error } = await supabaseClient
                     .from('posts')
                     .select(`
                         *,
-                        profiles:created_by (name)
+                        profiles:created_by (id, name, email)
                     `)
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
-                console.log('Posts found:', posts?.length || 0);
-                
+                console.log('✅ Posts loaded:', posts?.length || 0);
+
                 if (!posts || posts.length === 0) {
                     postsContainer.innerHTML = `
-                        <div class="empty">
-                            <p>No articles yet. Check back soon!</p>
+                        <div class="empty-state">
+                            <div class="empty-icon">📝</div>
+                            <h3>No Articles Yet</h3>
+                            <p>Check back soon for inspiring content from our team!</p>
                         </div>
                     `;
                     return;
                 }
 
-                renderPosts(posts);
+                // Get stats for each post (likes and comments)
+                const postsWithStats = await Promise.all(posts.map(async (post) => {
+                    const { count: likesCount } = await supabaseClient
+                        .from('post_likes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('post_id', post.id);
+
+                    const { count: commentsCount } = await supabaseClient
+                        .from('comments')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('post_id', post.id);
+
+                    return {
+                        ...post,
+                        likes_count: likesCount || 0,
+                        comments_count: commentsCount || 0
+                    };
+                }));
+
+                allPosts = postsWithStats;
+                updateStats();
+                renderPosts();
 
             } catch (error) {
                 console.error('Error loading posts:', error);
                 postsContainer.innerHTML = `
-                    <div class="error">
-                        ❌ Error loading articles: ${error.message}
+                    <div class="error-container">
+                        <div class="error-icon">❌</div>
+                        <h3 class="error-title">Error Loading Articles</h3>
+                        <p class="error-message">${error.message}</p>
+                        <button onclick="location.reload()" style="background: var(--gold); color: var(--bg-color); border: none; padding: 0.8rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 600;">Try Again</button>
                     </div>
                 `;
             }
         }
 
         // ============================================
-        // RENDER ALL POSTS
+        // UPDATE STATISTICS
         // ============================================
-        function renderPosts(posts) {
+        function updateStats() {
+            const total = allPosts.length;
+            const totalLikes = allPosts.reduce((sum, post) => sum + (post.likes_count || 0), 0);
+            const totalComments = allPosts.reduce((sum, post) => sum + (post.comments_count || 0), 0);
+            
+            // Count posts from this month
+            const now = new Date();
+            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            const thisMonthCount = allPosts.filter(post => new Date(post.created_at) >= firstDayOfMonth).length;
+
+            totalArticlesSpan.textContent = total;
+            totalLikesSpan.textContent = totalLikes;
+            totalCommentsSpan.textContent = totalComments;
+            thisMonthSpan.textContent = thisMonthCount;
+        }
+
+        // ============================================
+        // RENDER POSTS
+        // ============================================
+        function renderPosts() {
+            let filteredPosts = [...allPosts];
+
+            // Apply category filter
+            if (currentCategory !== 'all') {
+                filteredPosts = filteredPosts.filter(post => 
+                    post.category?.toLowerCase() === currentCategory.toLowerCase()
+                );
+            }
+
+            // Apply search filter
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filteredPosts = filteredPosts.filter(post => 
+                    post.title.toLowerCase().includes(term) ||
+                    post.content.toLowerCase().includes(term)
+                );
+            }
+
+            if (filteredPosts.length === 0) {
+                postsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <h3>No Articles Found</h3>
+                        <p>Try adjusting your search or filter to find what you're looking for.</p>
+                    </div>
+                `;
+                return;
+            }
+
             postsContainer.innerHTML = `
                 <div class="posts-grid">
-                    ${posts.map(post => {
-                        const date = new Date(post.created_at).toLocaleDateString();
-                        const authorName = post.profiles?.name || 'Admin';
+                    ${filteredPosts.map(post => {
+                        const date = new Date(post.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        const authorName = post.profiles?.name || 'SupremeMotive Admin';
                         const authorInitial = authorName.charAt(0).toUpperCase();
-                        const excerpt = post.content.substring(0, 200) + (post.content.length > 200 ? '...' : '');
+                        const excerpt = post.content.substring(0, 250) + (post.content.length > 250 ? '...' : '');
 
                         return `
-                            <div class="post-card">
+                            <article class="post-card" data-post-id="${post.id}">
                                 <div class="post-header">
                                     <div class="post-avatar">${authorInitial}</div>
                                     <div class="post-info">
-                                        <div class="post-author">${authorName}</div>
-                                        <div class="post-date">${date}</div>
+                                        <div class="post-author">
+                                            ${escapeHtml(authorName)}
+                                            ${ADMIN_EMAILS.includes(post.profiles?.email) ? '<span class="admin-badge">Admin</span>' : ''}
+                                        </div>
+                                        <div class="post-date">📅 ${date}</div>
                                     </div>
                                 </div>
 
@@ -539,7 +1315,8 @@
                                 </h2>
 
                                 ${post.image_url ? `
-                                    <img src="${post.image_url}" class="post-image" onerror="this.style.display='none'">
+                                    <img src="${post.image_url}" alt="${escapeHtml(post.title)}" class="post-image" 
+                                         onerror="this.style.display='none'">
                                 ` : ''}
 
                                 <div class="post-excerpt">
@@ -547,11 +1324,24 @@
                                 </div>
 
                                 <div class="post-meta">
-                                    <a href="single-post.html?id=${post.id}" class="read-more-link">
-                                        Read Full Article →
-                                    </a>
+                                    <div class="meta-item">
+                                        <span class="meta-icon">❤️</span>
+                                        <span>${post.likes_count} likes</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-icon">💬</span>
+                                        <span>${post.comments_count} comments</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <span class="meta-icon">⏱️</span>
+                                        <span>${Math.ceil(post.content.length / 500)} min read</span>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <a href="single-post.html?id=${post.id}" class="read-more-link">
+                                    Read Full Article →
+                                </a>
+                            </article>
                         `;
                     }).join('')}
                 </div>
@@ -559,10 +1349,29 @@
         }
 
         // ============================================
+        // FILTER HANDLERS
+        // ============================================
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                renderPosts();
+            });
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderPosts();
+        });
+
+        // ============================================
         // INITIALIZE
         // ============================================
         async function init() {
+            initTheme();
             await checkAuth();
+            await loadPosts();
         }
 
         init();
