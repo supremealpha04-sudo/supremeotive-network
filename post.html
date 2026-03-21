@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Articles</title>
+    <title>SupremeMotive - Article</title>
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
@@ -202,7 +202,6 @@
             color: var(--gold);
         }
 
-        /* Post Card */
         .post-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -702,7 +701,7 @@
         let currentUser = null;
         let currentPost = null;
         let userLiked = false;
-        let userSaved = false;
+        let commentsData = [];
 
         // DOM Elements
         const postContainer = document.getElementById('postContainer');
@@ -905,12 +904,10 @@
             if (contentDiv.classList.contains('collapsed')) {
                 contentDiv.classList.remove('collapsed');
                 btn.innerHTML = '<span>Show Less</span> <span>▲</span>';
-                // Scroll to content
                 contentDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else {
                 contentDiv.classList.add('collapsed');
                 btn.innerHTML = '<span>Read More</span> <span>▼</span>';
-                // Scroll to top of post
                 document.querySelector('.post-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         };
@@ -922,8 +919,6 @@
             const date = new Date(post.created_at).toLocaleDateString();
             const authorName = post.profiles?.name || 'Admin';
             const authorInitial = authorName.charAt(0).toUpperCase();
-            
-            // Check if content needs read more (if content has more than 500 characters)
             const needsReadMore = post.content.length > 500;
             const collapsedClass = needsReadMore ? 'collapsed' : '';
 
@@ -957,11 +952,11 @@
                     <div class="post-stats">
                         <button class="stat-btn ${userLiked ? 'liked' : ''}" id="likeBtn">
                             <span>❤️</span>
-                            <span>${likesCount}</span>
+                            <span id="likeCount">${likesCount}</span>
                         </button>
                         <button class="stat-btn" id="commentToggleBtn">
                             <span>💬</span>
-                            <span>${commentsCount}</span>
+                            <span id="commentCountDisplay">${commentsCount}</span>
                         </button>
                     </div>
 
@@ -994,8 +989,7 @@
 
             document.getElementById('likeBtn').addEventListener('click', handleLike);
             document.getElementById('commentToggleBtn').addEventListener('click', () => {
-                const section = document.getElementById('commentsSection');
-                section.classList.toggle('hidden');
+                document.getElementById('commentsSection').classList.toggle('hidden');
             });
         }
 
@@ -1025,7 +1019,6 @@
 
             try {
                 if (userLiked) {
-                    // Unlike
                     await supabaseClient
                         .from('post_likes')
                         .delete()
@@ -1034,7 +1027,6 @@
                     userLiked = false;
                     currentPost.likes_count--;
                 } else {
-                    // Like
                     await supabaseClient
                         .from('post_likes')
                         .insert([{
@@ -1045,9 +1037,13 @@
                     currentPost.likes_count++;
                 }
 
-                // Update UI
-                document.getElementById('likeBtn').innerHTML = `<span>❤️</span><span>${currentPost.likes_count}</span>`;
-                document.getElementById('likeBtn').classList.toggle('liked', userLiked);
+                document.getElementById('likeCount').textContent = currentPost.likes_count;
+                const likeBtn = document.getElementById('likeBtn');
+                if (userLiked) {
+                    likeBtn.classList.add('liked');
+                } else {
+                    likeBtn.classList.remove('liked');
+                }
 
             } catch (error) {
                 console.error('Error:', error);
@@ -1072,7 +1068,6 @@
 
                 if (error) throw error;
 
-                // Get replies for each comment
                 const commentsWithReplies = await Promise.all((comments || []).map(async (comment) => {
                     const { data: replies } = await supabaseClient
                         .from('comments')
@@ -1089,7 +1084,8 @@
                     };
                 }));
 
-                renderComments(commentsWithReplies);
+                commentsData = commentsWithReplies;
+                renderComments();
 
             } catch (error) {
                 console.error('Error loading comments:', error);
@@ -1103,16 +1099,16 @@
         // ============================================
         // RENDER COMMENTS
         // ============================================
-        function renderComments(comments) {
+        function renderComments() {
             const commentsList = document.getElementById('commentsList');
             if (!commentsList) return;
 
-            if (comments.length === 0) {
+            if (commentsData.length === 0) {
                 commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
                 return;
             }
 
-            commentsList.innerHTML = comments.map(comment => {
+            commentsList.innerHTML = commentsData.map(comment => {
                 const commentDate = new Date(comment.created_at).toLocaleString();
                 const authorName = comment.profiles?.name || 'User';
                 const authorInitial = authorName.charAt(0).toUpperCase();
@@ -1191,10 +1187,9 @@
                 input.value = '';
                 await loadComments();
                 
-                // Update comment count
                 currentPost.comments_count++;
                 document.getElementById('commentCount').textContent = currentPost.comments_count;
-                document.getElementById('commentToggleBtn').innerHTML = `<span>💬</span><span>${currentPost.comments_count}</span>`;
+                document.getElementById('commentCountDisplay').textContent = currentPost.comments_count;
                 
                 showAlert('Comment posted!');
 
@@ -1250,10 +1245,9 @@
                 document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
                 await loadComments();
                 
-                // Update comment count
                 currentPost.comments_count++;
                 document.getElementById('commentCount').textContent = currentPost.comments_count;
-                document.getElementById('commentToggleBtn').innerHTML = `<span>💬</span><span>${currentPost.comments_count}</span>`;
+                document.getElementById('commentCountDisplay').textContent = currentPost.comments_count;
                 
                 showAlert('Reply posted!');
 
