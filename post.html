@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Articles</title>
+    <title>SupremeMotive - All Articles</title>
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
@@ -30,7 +30,6 @@
             padding-bottom: 80px;
         }
 
-        /* Navigation */
         .top-nav {
             background: var(--card-bg);
             padding: 1rem 2rem;
@@ -159,22 +158,17 @@
             padding: 0 1rem;
         }
 
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            text-decoration: none;
+        .page-title {
+            font-size: 2rem;
+            color: var(--gold);
             margin-bottom: 2rem;
-            transition: color 0.3s ease;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
+            text-align: center;
         }
 
-        .back-btn:hover {
-            color: var(--gold);
+        .posts-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
         }
 
         .post-card {
@@ -182,21 +176,26 @@
             border-radius: 16px;
             padding: 2rem;
             border: 1px solid var(--border-color);
-            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold);
         }
 
         .post-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
         }
 
         .post-avatar {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             display: flex;
@@ -204,7 +203,7 @@
             justify-content: center;
             color: var(--bg-color);
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .post-info {
@@ -214,248 +213,60 @@
         .post-author {
             color: var(--gold);
             font-weight: 600;
-            font-size: 1.1rem;
         }
 
         .post-date {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .post-title {
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: var(--gold);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-title a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .post-title a:hover {
+            text-decoration: underline;
         }
 
         .post-image {
             width: 100%;
-            max-height: 400px;
+            max-height: 300px;
             object-fit: cover;
             border-radius: 12px;
             margin: 1rem 0;
         }
 
-        /* Post Content with Read More */
-        .post-content-wrapper {
-            position: relative;
-        }
-
-        .post-content {
+        .post-excerpt {
             color: var(--text-secondary);
-            line-height: 1.8;
-            font-size: 1rem;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            line-height: 1.6;
+            margin-bottom: 1rem;
         }
 
-        .post-content.collapsed {
-            max-height: 300px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .post-content.collapsed::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(transparent, var(--card-bg));
-            pointer-events: none;
-        }
-
-        .read-more-btn {
-            background: none;
-            border: none;
-            color: var(--electric-blue);
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-top: 1rem;
-            padding: 0.5rem 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .read-more-btn:hover {
-            color: var(--gold);
-        }
-
-        .post-stats {
+        .post-meta {
             display: flex;
-            gap: 2rem;
-            margin: 1.5rem 0;
-            padding: 1rem 0;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
             border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
             color: var(--text-secondary);
-        }
-
-        .stat-value {
-            color: var(--gold);
-            font-weight: bold;
-        }
-
-        .post-actions {
-            display: flex;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 1rem;
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        .action-btn.liked {
-            background: var(--gold);
-            color: var(--bg-color);
-            border-color: var(--gold);
-        }
-
-        /* Comments Section */
-        .comments-section {
-            margin-top: 2rem;
-        }
-
-        .comments-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .comments-header h3 {
-            color: var(--gold);
-            font-size: 1.2rem;
-        }
-
-        .comment-count {
-            background: rgba(255, 215, 0, 0.1);
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            color: var(--gold);
             font-size: 0.9rem;
         }
 
-        .comment-form {
-            margin-bottom: 2rem;
-        }
-
-        .comment-form textarea {
-            width: 100%;
-            padding: 1rem;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-color);
-            resize: vertical;
-            min-height: 100px;
-            margin-bottom: 1rem;
-            font-family: inherit;
-        }
-
-        .comment-form textarea:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .comment-form button {
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--bg-color);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
+        .read-more-link {
+            color: var(--electric-blue);
+            text-decoration: none;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .comment-form button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        .comments-list {
-            margin-top: 1rem;
-        }
-
-        .comment {
-            background: var(--bg-color);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 3px solid var(--gold);
-        }
-
-        .comment-header {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .comment-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--bg-color);
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .comment-author {
+        .read-more-link:hover {
             color: var(--gold);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .comment-date {
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            margin-left: auto;
-        }
-
-        .comment-content {
-            color: var(--text-color);
-            margin-left: 2.8rem;
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        .no-comments {
-            text-align: center;
-            color: var(--text-secondary);
-            padding: 2rem;
         }
 
         .loading {
@@ -481,6 +292,12 @@
             text-align: center;
             padding: 3rem;
             color: #F44336;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
         }
 
         .alert {
@@ -513,21 +330,8 @@
         }
 
         @media (max-width: 768px) {
-            .post-actions {
-                flex-direction: column;
-            }
-            
-            .comment-form button {
-                width: 100%;
-            }
-            
-            .comment-content {
-                margin-left: 0;
-                margin-top: 0.5rem;
-            }
-            
-            .post-content.collapsed {
-                max-height: 200px;
+            .post-title {
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -570,12 +374,10 @@
     </nav>
 
     <main class="container">
-        <button class="back-btn" onclick="window.location.href='index.html'">
-            <span>←</span> Back to Home
-        </button>
+        <h1 class="page-title">📰 All Articles</h1>
 
         <div id="alertContainer"></div>
-        <div id="postContainer"></div>
+        <div id="postsContainer"></div>
     </main>
 
     <script>
@@ -595,33 +397,15 @@
             'emmanuelamer6@gmail.com'
         ];
 
-        // State
         let currentUser = null;
-        let currentPost = null;
-        let userLiked = false;
 
         // DOM Elements
-        const postContainer = document.getElementById('postContainer');
+        const postsContainer = document.getElementById('postsContainer');
         const alertContainer = document.getElementById('alertContainer');
         const adminLink = document.getElementById('adminLink');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const userGreeting = document.getElementById('userGreeting');
-
-        // Get post ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get('id');
-
-        if (!postId) {
-            postContainer.innerHTML = `
-                <div class="error">
-                    <p>❌ No post selected. Please go back to the homepage and select an article.</p>
-                    <button class="back-btn" onclick="window.location.href='index.html'" style="margin-top: 1rem;">Go Home</button>
-                </div>
-            `;
-        } else {
-            checkAuth();
-        }
 
         // ============================================
         // SHOW ALERT
@@ -666,11 +450,11 @@
                     }
                 }
                 
-                await loadPost();
+                await loadPosts();
                 
             } catch (error) {
                 console.error('Auth error:', error);
-                await loadPost();
+                await loadPosts();
             }
         }
 
@@ -683,333 +467,105 @@
         });
 
         // ============================================
-        // LOAD POST
+        // LOAD ALL POSTS
         // ============================================
-        async function loadPost() {
+        async function loadPosts() {
             try {
-                postContainer.innerHTML = `
+                postsContainer.innerHTML = `
                     <div class="loading">
                         <div class="spinner"></div>
-                        <p>Loading article...</p>
+                        <p>Loading articles...</p>
                     </div>
                 `;
 
-                // Fetch post with author info
-                const { data: post, error } = await supabaseClient
+                // Fetch ALL posts
+                const { data: posts, error } = await supabaseClient
                     .from('posts')
                     .select(`
                         *,
                         profiles:created_by (name)
                     `)
-                    .eq('id', postId)
-                    .single();
+                    .order('created_at', { ascending: false });
 
                 if (error) throw error;
-                if (!post) throw new Error('Post not found');
 
-                currentPost = post;
-
-                // Get like count
-                const { count: likesCount } = await supabaseClient
-                    .from('post_likes')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('post_id', postId);
-
-                // Get comment count
-                const { count: commentsCount } = await supabaseClient
-                    .from('comments')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('post_id', postId);
-
-                // Check if user liked
-                if (currentUser) {
-                    const { data: like } = await supabaseClient
-                        .from('post_likes')
-                        .select('*')
-                        .eq('post_id', postId)
-                        .eq('user_id', currentUser.id)
-                        .maybeSingle();
-                    userLiked = !!like;
+                console.log('Posts found:', posts?.length || 0);
+                
+                if (!posts || posts.length === 0) {
+                    postsContainer.innerHTML = `
+                        <div class="empty">
+                            <p>No articles yet. Check back soon!</p>
+                        </div>
+                    `;
+                    return;
                 }
 
-                renderPost(post, likesCount || 0, commentsCount || 0);
-                await loadComments();
+                renderPosts(posts);
 
             } catch (error) {
-                console.error('Error:', error);
-                postContainer.innerHTML = `
+                console.error('Error loading posts:', error);
+                postsContainer.innerHTML = `
                     <div class="error">
-                        ❌ Error: ${error.message}
-                        <div style="margin-top: 1rem;">
-                            <button class="back-btn" onclick="window.location.href='index.html'">Go Back Home</button>
-                        </div>
+                        ❌ Error loading articles: ${error.message}
                     </div>
                 `;
             }
         }
 
         // ============================================
-        // TOGGLE READ MORE
+        // RENDER ALL POSTS
         // ============================================
-        window.toggleReadMore = () => {
-            const contentDiv = document.getElementById('postContent');
-            const btn = document.getElementById('readMoreBtn');
-            
-            if (contentDiv.classList.contains('collapsed')) {
-                contentDiv.classList.remove('collapsed');
-                btn.innerHTML = '<span>Show Less</span> <span>▲</span>';
-                // Scroll to content
-                contentDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else {
-                contentDiv.classList.add('collapsed');
-                btn.innerHTML = '<span>Read More</span> <span>▼</span>';
-                // Scroll to top of post
-                document.querySelector('.post-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        };
+        function renderPosts(posts) {
+            postsContainer.innerHTML = `
+                <div class="posts-grid">
+                    ${posts.map(post => {
+                        const date = new Date(post.created_at).toLocaleDateString();
+                        const authorName = post.profiles?.name || 'Admin';
+                        const authorInitial = authorName.charAt(0).toUpperCase();
+                        const excerpt = post.content.substring(0, 200) + (post.content.length > 200 ? '...' : '');
 
-        // ============================================
-        // RENDER POST
-        // ============================================
-        function renderPost(post, likesCount, commentsCount) {
-            const date = new Date(post.created_at).toLocaleDateString();
-            const authorName = post.profiles?.name || 'Admin';
-            const authorInitial = authorName.charAt(0).toUpperCase();
-            
-            // Check if content needs read more (if content has more than 3 paragraphs or 500 characters)
-            const needsReadMore = post.content.length > 500 || (post.content.match(/\n/g) || []).length > 3;
-            const collapsedClass = needsReadMore ? 'collapsed' : '';
+                        return `
+                            <div class="post-card">
+                                <div class="post-header">
+                                    <div class="post-avatar">${authorInitial}</div>
+                                    <div class="post-info">
+                                        <div class="post-author">${authorName}</div>
+                                        <div class="post-date">${date}</div>
+                                    </div>
+                                </div>
 
-            postContainer.innerHTML = `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div class="post-avatar">${authorInitial}</div>
-                        <div class="post-info">
-                            <div class="post-author">${authorName}</div>
-                            <div class="post-date">${date}</div>
-                        </div>
-                    </div>
+                                <h2 class="post-title">
+                                    <a href="single-post.html?id=${post.id}">${escapeHtml(post.title)}</a>
+                                </h2>
 
-                    <h1 class="post-title">${escapeHtml(post.title)}</h1>
-                    
-                    ${post.image_url ? `
-                        <img src="${post.image_url}" class="post-image">
-                    ` : ''}
-                    
-                    <div class="post-content-wrapper">
-                        <div id="postContent" class="post-content ${collapsedClass}">
-                            ${escapeHtml(post.content).replace(/\n/g, '<br>')}
-                        </div>
-                        ${needsReadMore ? `
-                            <button class="read-more-btn" id="readMoreBtn" onclick="toggleReadMore()">
-                                <span>Read More</span> <span>▼</span>
-                            </button>
-                        ` : ''}
-                    </div>
+                                ${post.image_url ? `
+                                    <img src="${post.image_url}" class="post-image" onerror="this.style.display='none'">
+                                ` : ''}
 
-                    <div class="post-stats">
-                        <div class="stat-item">
-                            <span>❤️</span>
-                            <span class="stat-value" id="likesCount">${likesCount}</span>
-                            <span>likes</span>
-                        </div>
-                        <div class="stat-item">
-                            <span>💬</span>
-                            <span class="stat-value" id="commentsCount">${commentsCount}</span>
-                            <span>comments</span>
-                        </div>
-                    </div>
+                                <div class="post-excerpt">
+                                    ${escapeHtml(excerpt).replace(/\n/g, '<br>')}
+                                </div>
 
-                    <div class="post-actions">
-                        <button class="action-btn ${userLiked ? 'liked' : ''}" id="likeBtn">
-                            <span>❤️</span>
-                            <span>${userLiked ? 'Liked' : 'Like'}</span>
-                        </button>
-                    </div>
-
-                    <div class="comments-section">
-                        <div class="comments-header">
-                            <h3>Comments</h3>
-                            <span class="comment-count" id="commentCount">${commentsCount}</span>
-                        </div>
-
-                        ${currentUser ? `
-                            <div class="comment-form">
-                                <textarea id="commentInput" placeholder="Write a comment..."></textarea>
-                                <button onclick="submitComment()">Post Comment</button>
+                                <div class="post-meta">
+                                    <a href="single-post.html?id=${post.id}" class="read-more-link">
+                                        Read Full Article →
+                                    </a>
+                                </div>
                             </div>
-                        ` : `
-                            <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">
-                                <a href="login.html" style="color: var(--gold);">Login</a> to join the discussion
-                            </p>
-                        `}
-
-                        <div id="commentsList" class="comments-list">
-                            <div class="loading">
-                                <div class="spinner"></div>
-                                <p>Loading comments...</p>
-                            </div>
-                        </div>
-                    </div>
+                        `;
+                    }).join('')}
                 </div>
             `;
-
-            document.getElementById('likeBtn').addEventListener('click', handleLike);
         }
 
         // ============================================
-        // HANDLE LIKE
+        // INITIALIZE
         // ============================================
-        async function handleLike() {
-            if (!currentUser) {
-                if (confirm('Please login to like posts')) {
-                    window.location.href = 'login.html';
-                }
-                return;
-            }
-
-            try {
-                if (userLiked) {
-                    await supabaseClient
-                        .from('post_likes')
-                        .delete()
-                        .eq('post_id', postId)
-                        .eq('user_id', currentUser.id);
-                    userLiked = false;
-                } else {
-                    await supabaseClient
-                        .from('post_likes')
-                        .insert([{
-                            post_id: postId,
-                            user_id: currentUser.id
-                        }]);
-                    userLiked = true;
-                }
-
-                // Update like count
-                const { count } = await supabaseClient
-                    .from('post_likes')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('post_id', postId);
-
-                document.getElementById('likesCount').textContent = count;
-                
-                const btn = document.getElementById('likeBtn');
-                btn.classList.toggle('liked');
-                btn.innerHTML = userLiked ? 
-                    '<span>❤️</span><span>Liked</span>' : 
-                    '<span>❤️</span><span>Like</span>';
-
-            } catch (error) {
-                showAlert('Error updating like');
-            }
+        async function init() {
+            await checkAuth();
         }
 
-        // ============================================
-        // LOAD COMMENTS
-        // ============================================
-        async function loadComments() {
-            try {
-                const { data: comments, error } = await supabaseClient
-                    .from('comments')
-                    .select(`
-                        *,
-                        profiles:user_id (name)
-                    `)
-                    .eq('post_id', postId)
-                    .is('parent_comment_id', null)
-                    .order('created_at', { ascending: true });
-
-                if (error) throw error;
-
-                renderComments(comments || []);
-
-            } catch (error) {
-                console.error('Error loading comments:', error);
-                const commentsList = document.getElementById('commentsList');
-                if (commentsList) {
-                    commentsList.innerHTML = '<p class="no-comments">Error loading comments</p>';
-                }
-            }
-        }
-
-        // ============================================
-        // RENDER COMMENTS
-        // ============================================
-        function renderComments(comments) {
-            const commentsList = document.getElementById('commentsList');
-            if (!commentsList) return;
-
-            if (comments.length === 0) {
-                commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
-                return;
-            }
-
-            commentsList.innerHTML = comments.map(comment => {
-                const commentDate = new Date(comment.created_at).toLocaleString();
-                const authorName = comment.profiles?.name || 'User';
-                const authorInitial = authorName.charAt(0).toUpperCase();
-
-                return `
-                    <div class="comment">
-                        <div class="comment-header">
-                            <div class="comment-avatar">${authorInitial}</div>
-                            <span class="comment-author">${escapeHtml(authorName)}</span>
-                            <span class="comment-date">${commentDate}</span>
-                        </div>
-                        <div class="comment-content">${escapeHtml(comment.content)}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // ============================================
-        // SUBMIT COMMENT
-        // ============================================
-        window.submitComment = async () => {
-            if (!currentUser) {
-                showAlert('Please login to comment');
-                return;
-            }
-
-            const input = document.getElementById('commentInput');
-            const content = input.value.trim();
-
-            if (!content) {
-                showAlert('Please enter a comment');
-                return;
-            }
-
-            try {
-                const { error } = await supabaseClient
-                    .from('comments')
-                    .insert([{
-                        post_id: postId,
-                        user_id: currentUser.id,
-                        content: content
-                    }]);
-
-                if (error) throw error;
-
-                input.value = '';
-                await loadComments();
-                
-                // Update comment count
-                const { count } = await supabaseClient
-                    .from('comments')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('post_id', postId);
-                
-                document.getElementById('commentsCount').textContent = count;
-                document.getElementById('commentCount').textContent = count;
-                
-                showAlert('Comment posted!');
-
-            } catch (error) {
-                console.error('Error posting comment:', error);
-                showAlert('Error posting comment: ' + error.message);
-            }
-        };
+        init();
     </script>
 </body>
 </html>
