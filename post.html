@@ -7,8 +7,6 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#FFD700">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         /* ============================================ */
         /* RESET & BASE STYLES */
@@ -30,45 +28,17 @@
             --success: #4CAF50;
             --error: #F44336;
             --warning: #FFC107;
-            --info: #2196F3;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: linear-gradient(135deg, var(--bg-color) 0%, #0B1A33 100%);
             color: var(--text-color);
             min-height: 100vh;
             padding-bottom: 80px;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ============================================ */
-        /* CUSTOM SCROLLBAR */
-        /* ============================================ */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--dark-gray);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--electric-blue);
-        }
-
-        /* ============================================ */
-        /* TOP NAVIGATION */
-        /* ============================================ */
+        /* Navigation */
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
@@ -80,7 +50,6 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s ease;
         }
 
         .logo {
@@ -91,11 +60,6 @@
             font-weight: bold;
             color: var(--gold);
             cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
         }
 
         .logo img {
@@ -108,13 +72,6 @@
             flex-direction: column;
             gap: 6px;
             cursor: pointer;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background 0.3s ease;
-        }
-
-        .menu-toggle:hover {
-            background: var(--medium-gray);
         }
 
         .menu-toggle span {
@@ -122,7 +79,6 @@
             height: 3px;
             background: var(--gold);
             transition: all 0.3s ease;
-            border-radius: 3px;
         }
 
         .nav-links {
@@ -137,24 +93,6 @@
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.3s ease;
-            position: relative;
-            padding: 0.5rem 0;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gold);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after,
-        .nav-links a.active::after {
-            width: 100%;
         }
 
         .nav-links a:hover,
@@ -178,14 +116,11 @@
             font-size: 0.9rem;
             transition: all 0.3s ease;
             text-decoration: none;
-            font-weight: 500;
         }
 
         .login-btn:hover {
             background: var(--gold);
             color: var(--bg-color);
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
         }
 
         .logout-btn {
@@ -197,21 +132,17 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            font-weight: 500;
         }
 
         .logout-btn:hover {
             background: #F44336;
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
         }
 
         .user-greeting {
             color: var(--gold);
             font-size: 0.9rem;
             margin-right: 0.5rem;
-            font-weight: 500;
         }
 
         .theme-toggle {
@@ -220,30 +151,15 @@
             color: var(--text-secondary);
             font-size: 1.2rem;
             cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 0.3rem;
         }
 
-        .theme-toggle:hover {
-            transform: rotate(360deg);
-            background: var(--medium-gray);
-            color: var(--gold);
-        }
-
-        /* ============================================ */
-        /* BOTTOM NAVIGATION */
-        /* ============================================ */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg);
             border-top: 2px solid var(--gold);
             display: flex;
             justify-content: space-around;
@@ -258,16 +174,12 @@
             text-decoration: none;
             color: var(--text-secondary);
             font-size: 0.8rem;
-            transition: all 0.3s ease;
-            padding: 0.3rem 0.8rem;
-            border-radius: 30px;
+            transition: color 0.3s ease;
         }
 
         .nav-item:hover,
         .nav-item.active {
             color: var(--gold);
-            transform: translateY(-3px);
-            background: rgba(255, 215, 0, 0.1);
         }
 
         .nav-icon {
@@ -275,73 +187,36 @@
             margin-bottom: 0.2rem;
         }
 
-        /* ============================================ */
-        /* MAIN CONTAINER */
-        /* ============================================ */
         .container {
             max-width: 900px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
-        /* ============================================ */
-        /* PAGE HEADER */
-        /* ============================================ */
         .page-header {
             text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
-            border-radius: 30px;
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            margin-bottom: 2rem;
         }
 
         .page-title {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+            color: var(--gold);
             margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 1;
         }
 
         .page-subtitle {
             color: var(--text-secondary);
-            font-size: 1rem;
-            position: relative;
-            z-index: 1;
         }
 
-        /* ============================================ */
-        /* STATS ROW */
-        /* ============================================ */
+        /* Stats Row */
         .stats-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
-            padding: 1rem 1.5rem;
+            padding: 1rem;
             background: var(--card-bg);
-            border-radius: 50px;
+            border-radius: 16px;
             border: 1px solid var(--border-color);
             flex-wrap: wrap;
             gap: 1rem;
@@ -360,58 +235,38 @@
             font-size: 1.2rem;
         }
 
-        /* ============================================ */
-        /* SEARCH & FILTERS */
-        /* ============================================ */
-        .filters-section {
-            margin-bottom: 2rem;
-        }
-
+        /* Search & Filters */
         .search-container {
-            position: relative;
-            max-width: 500px;
-            margin: 0 auto 1rem;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 1rem;
+            margin-bottom: 1rem;
         }
 
         .search-input {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
+            padding: 1rem;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 50px;
+            border-radius: 8px;
             color: var(--text-color);
             font-size: 1rem;
-            transition: all 0.3s ease;
         }
 
         .search-input:focus {
             outline: none;
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
         }
 
         .category-filters {
             display: flex;
             gap: 0.8rem;
             flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 1rem;
+            margin-bottom: 2rem;
         }
 
         .category-btn {
-            padding: 0.5rem 1.2rem;
+            padding: 0.5rem 1rem;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 30px;
+            border-radius: 20px;
             color: var(--text-secondary);
             font-size: 0.85rem;
             cursor: pointer;
@@ -423,82 +278,41 @@
             background: var(--gold);
             color: var(--bg-color);
             border-color: var(--gold);
-            transform: translateY(-2px);
         }
 
-        /* ============================================ */
-        /* POSTS GRID */
-        /* ============================================ */
+        /* Posts Grid */
         .posts-grid {
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
 
-        /* ============================================ */
-        /* POST CARD */
-        /* ============================================ */
+        /* Post Card */
         .post-card {
             background: var(--card-bg);
-            border-radius: 24px;
-            padding: 2rem;
+            border-radius: 16px;
+            padding: 1.5rem;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .post-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .post-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             border-color: var(--gold);
-            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.1);
         }
 
-        .post-card:hover::before {
-            opacity: 1;
-        }
-
-        /* Post Watermark */
-        .post-card::after {
-            content: 'SUPREME MOTIVE';
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-size: 0.8rem;
-            color: rgba(255, 215, 0, 0.15);
-            transform: rotate(-5deg);
-            pointer-events: none;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        /* Post Header */
         .post-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
-            position: relative;
-            z-index: 1;
         }
 
         .post-avatar {
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             display: flex;
@@ -507,12 +321,6 @@
             color: var(--bg-color);
             font-weight: bold;
             font-size: 1.2rem;
-            border: 2px solid var(--gold);
-            transition: transform 0.3s ease;
-        }
-
-        .post-card:hover .post-avatar {
-            transform: scale(1.05);
         }
 
         .post-info {
@@ -522,129 +330,182 @@
         .post-author {
             color: var(--gold);
             font-weight: 600;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .admin-badge {
-            background: rgba(255, 215, 0, 0.2);
-            color: var(--gold);
-            font-size: 0.7rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            border: 1px solid var(--gold);
         }
 
         .post-date {
             color: var(--text-secondary);
             font-size: 0.85rem;
-            margin-top: 0.2rem;
         }
 
-        /* Post Title */
         .post-title {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: var(--gold);
-            margin-bottom: 1rem;
-            line-height: 1.3;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 0.5rem;
         }
 
         .post-title a {
             color: var(--gold);
             text-decoration: none;
-            transition: color 0.3s ease;
         }
 
         .post-title a:hover {
-            color: var(--electric-blue);
             text-decoration: underline;
         }
 
-        /* Post Image */
         .post-image {
             width: 100%;
-            max-height: 400px;
+            max-height: 300px;
             object-fit: cover;
-            border-radius: 16px;
+            border-radius: 12px;
             margin: 1rem 0;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease;
-            position: relative;
-            z-index: 1;
         }
 
-        .post-image:hover {
-            transform: scale(1.02);
-        }
-
-        /* Post Excerpt */
         .post-excerpt {
             color: var(--text-secondary);
-            line-height: 1.8;
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 1;
+            line-height: 1.6;
+            margin-bottom: 1rem;
         }
 
-        /* Post Meta */
-        .post-meta {
+        .post-stats {
             display: flex;
             gap: 1.5rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
+            margin: 1rem 0;
+            padding: 0.8rem 0;
             border-top: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            position: relative;
-            z-index: 1;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .meta-item {
+        .stat-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
-        }
-
-        .meta-icon {
-            font-size: 1rem;
-        }
-
-        /* Read More Link */
-        .read-more-link {
-            display: inline-flex;
-            align-items: center;
             gap: 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .stat-btn:hover {
+            color: var(--gold);
+        }
+
+        .stat-btn.liked {
+            color: var(--gold);
+        }
+
+        .read-more-link {
+            display: inline-block;
             color: var(--electric-blue);
             text-decoration: none;
             font-weight: 600;
-            margin-top: 1rem;
-            padding: 0.5rem 0;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
+            margin-top: 0.5rem;
         }
 
         .read-more-link:hover {
             color: var(--gold);
-            gap: 0.8rem;
         }
 
-        /* ============================================ */
-        /* LOADING STATES */
-        /* ============================================ */
+        /* Comments Section */
+        .comments-section {
+            margin-top: 1.5rem;
+        }
+
+        .comment-form {
+            margin-top: 1rem;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-form button {
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--bg-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            float: right;
+        }
+
+        .comments-list {
+            margin-top: 1rem;
+        }
+
+        .comment {
+            background: var(--bg-color);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid var(--gold);
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-color);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .comment-author {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .comment-date {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            margin-left: auto;
+        }
+
+        .comment-content {
+            color: var(--text-color);
+            margin-left: 2rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .no-comments {
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Loading */
         .loading {
             text-align: center;
-            padding: 4rem;
+            padding: 3rem;
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border: 3px solid var(--border-color);
             border-top-color: var(--gold);
             border-radius: 50%;
@@ -656,62 +517,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ============================================ */
-        /* ERROR STATES */
-        /* ============================================ */
-        .error-container {
-            text-align: center;
-            padding: 4rem;
-            background: var(--card-bg);
-            border-radius: 24px;
-            border: 1px solid var(--border-color);
-        }
-
-        .error-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        .error-title {
-            color: var(--error);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .error-message {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        /* ============================================ */
-        /* EMPTY STATE */
-        /* ============================================ */
-        .empty-state {
-            text-align: center;
-            padding: 4rem;
-            background: var(--card-bg);
-            border-radius: 24px;
-            border: 1px dashed var(--border-color);
-        }
-
-        .empty-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            color: var(--gold);
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-state p {
-            color: var(--text-secondary);
-        }
-
-        /* ============================================ */
-        /* ALERT NOTIFICATION */
-        /* ============================================ */
+        /* Alert */
         .alert {
             position: fixed;
             top: 80px;
@@ -719,16 +525,11 @@
             transform: translateX(-50%);
             background: var(--card-bg);
             border: 2px solid var(--gold);
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
             color: var(--text-color);
             z-index: 1000;
             animation: slideDown 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-weight: 500;
         }
 
         @keyframes slideDown {
@@ -742,40 +543,8 @@
             }
         }
 
-        /* ============================================ */
-        /* UTILITY CLASSES */
-        /* ============================================ */
         .hidden {
             display: none !important;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-2 {
-            margin-top: 0.5rem;
-        }
-
-        .mt-4 {
-            margin-top: 1rem;
-        }
-
-        .mb-2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
-
-        /* ============================================ */
-        /* RESPONSIVE DESIGN */
-        /* ============================================ */
-        @media (max-width: 1024px) {
-            .container {
-                max-width: 90%;
-            }
         }
 
         @media (max-width: 768px) {
@@ -785,18 +554,17 @@
 
             .nav-links {
                 position: fixed;
-                top: 70px;
+                top: 60px;
                 left: 0;
                 right: 0;
                 background: var(--card-bg);
                 flex-direction: column;
                 padding: 2rem;
-                gap: 1.5rem;
+                gap: 1rem;
                 transform: translateY(-150%);
                 transition: transform 0.3s ease;
                 border-bottom: 2px solid var(--gold);
                 z-index: 99;
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             }
 
             .nav-links.active {
@@ -808,96 +576,21 @@
                 width: 100%;
             }
 
-            .login-btn, .logout-btn {
+            .post-stats {
+                flex-wrap: wrap;
+            }
+
+            .comment-form button {
                 width: 100%;
-                text-align: center;
-            }
-
-            .page-title {
-                font-size: 1.8rem;
-            }
-
-            .post-title {
-                font-size: 1.4rem;
-            }
-
-            .post-card {
-                padding: 1.5rem;
-            }
-
-            .stats-row {
-                flex-direction: column;
-                align-items: flex-start;
-                border-radius: 20px;
-            }
-
-            .post-header {
-                flex-wrap: wrap;
-            }
-
-            .post-meta {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 0.8rem;
-            }
-
-            .post-card {
-                padding: 1.2rem;
-            }
-
-            .post-title {
-                font-size: 1.2rem;
-            }
-
-            .post-excerpt {
-                font-size: 0.9rem;
-            }
-
-            .category-btn {
-                padding: 0.4rem 1rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        /* ============================================ */
-        /* PRINT STYLES */
-        /* ============================================ */
-        @media print {
-            .top-nav, .bottom-nav, .auth-buttons, .filters-section, .theme-toggle {
-                display: none !important;
-            }
-
-            .post-card {
-                break-inside: avoid;
-                page-break-inside: avoid;
-                background: white;
-                color: black;
-                border: 1px solid #ccc;
-                box-shadow: none;
-            }
-
-            .post-card::after {
-                content: none;
-            }
-
-            .post-author, .post-title {
-                color: black;
+                float: none;
             }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- ============================================ -->
-    <!-- TOP NAVIGATION -->
-    <!-- ============================================ -->
     <nav class="top-nav">
-        <div class="logo" onclick="window.location.href='index.html'">
+        <div class="logo">
             <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
             <span>SupremeMotive</span>
         </div>
@@ -911,9 +604,6 @@
         <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
-            <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy</a>
-            <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
             
@@ -927,9 +617,6 @@
         </div>
     </nav>
 
-    <!-- ============================================ -->
-    <!-- BOTTOM NAVIGATION -->
-    <!-- ============================================ -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item">
             <span class="nav-icon">🏠</span>
@@ -949,54 +636,44 @@
         </a>
     </nav>
 
-    <!-- ============================================ -->
-    <!-- MAIN CONTENT -->
-    <!-- ============================================ -->
     <main class="container">
         <div class="page-header">
             <h1 class="page-title">📰 All Articles</h1>
-            <p class="page-subtitle">Discover inspiring stories and motivational content from our team</p>
+            <p class="page-subtitle">Discover inspiring stories and motivational content</p>
         </div>
 
         <div id="alertContainer"></div>
 
-        <div class="stats-row" id="statsRow">
+        <div class="stats-row">
             <div class="stat-item">
                 <span>📊</span>
-                <span>Total Articles: <span id="totalArticles" class="stat-value">0</span></span>
+                <span>Total: <span id="totalArticles" class="stat-value">0</span></span>
             </div>
             <div class="stat-item">
                 <span>❤️</span>
-                <span>Total Likes: <span id="totalLikes" class="stat-value">0</span></span>
+                <span>Likes: <span id="totalLikes" class="stat-value">0</span></span>
             </div>
             <div class="stat-item">
                 <span>💬</span>
-                <span>Total Comments: <span id="totalComments" class="stat-value">0</span></span>
-            </div>
-            <div class="stat-item">
-                <span>📅</span>
-                <span>This Month: <span id="thisMonth" class="stat-value">0</span></span>
+                <span>Comments: <span id="totalComments" class="stat-value">0</span></span>
             </div>
         </div>
 
-        <div class="filters-section">
-            <div class="search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" class="search-input" placeholder="Search articles by title...">
-            </div>
-            <div class="category-filters" id="categoryFilters">
-                <button class="category-btn active" data-category="all">All</button>
-                <button class="category-btn" data-category="motivation">Motivation</button>
-                <button class="category-btn" data-category="success">Success</button>
-                <button class="category-btn" data-category="life">Life</button>
-                <button class="category-btn" data-category="wisdom">Wisdom</button>
-            </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search articles...">
+        </div>
+
+        <div class="category-filters">
+            <button class="category-btn active" data-category="all">All</button>
+            <button class="category-btn" data-category="motivation">Motivation</button>
+            <button class="category-btn" data-category="success">Success</button>
+            <button class="category-btn" data-category="life">Life</button>
         </div>
 
         <div id="postsContainer">
             <div class="loading">
                 <div class="spinner"></div>
-                <p>Loading inspiring articles...</p>
+                <p>Loading articles...</p>
             </div>
         </div>
     </main>
@@ -1018,11 +695,12 @@
             'emmanuelamer6@gmail.com'
         ];
 
-        // State variables
+        // State
         let currentUser = null;
         let allPosts = [];
         let currentCategory = 'all';
         let searchTerm = '';
+        let userLikes = new Set();
 
         // DOM Elements
         const postsContainer = document.getElementById('postsContainer');
@@ -1038,7 +716,6 @@
         const totalArticlesSpan = document.getElementById('totalArticles');
         const totalLikesSpan = document.getElementById('totalLikes');
         const totalCommentsSpan = document.getElementById('totalComments');
-        const thisMonthSpan = document.getElementById('thisMonth');
         const categoryBtns = document.querySelectorAll('.category-btn');
 
         // ============================================
@@ -1100,11 +777,11 @@
         // ============================================
         // SHOW ALERT
         // ============================================
-        function showAlert(message, type = 'success') {
-            alertContainer.innerHTML = `<div class="alert">${type === 'success' ? '✅' : '❌'} ${message}</div>`;
+        function showAlert(message) {
+            alertContainer.innerHTML = `<div class="alert">${message}</div>`;
             setTimeout(() => {
                 alertContainer.innerHTML = '';
-            }, 3000);
+            }, 2000);
         }
 
         // ============================================
@@ -1132,12 +809,15 @@
                     loginBtn.classList.add('hidden');
                     logoutBtn.classList.remove('hidden');
                     userGreeting.classList.remove('hidden');
-                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}! 🎉`;
+                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
                     
                     if (ADMIN_EMAILS.includes(user.email)) {
                         adminLink.style.display = 'block';
                         adminLink.href = 'admin/admin-dashboard.html';
                     }
+                    
+                    // Load user likes
+                    await loadUserLikes();
                 } else {
                     loginBtn.classList.remove('hidden');
                     logoutBtn.classList.add('hidden');
@@ -1153,51 +833,63 @@
         // LOGOUT
         // ============================================
         logoutBtn.addEventListener('click', async () => {
-            try {
-                await supabaseClient.auth.signOut();
-                window.location.reload();
-            } catch (error) {
-                showAlert('Error logging out', 'error');
-            }
+            await supabaseClient.auth.signOut();
+            window.location.reload();
         });
 
         // ============================================
-        // LOAD ALL POSTS
+        // LOAD USER LIKES
+        // ============================================
+        async function loadUserLikes() {
+            if (!currentUser) return;
+
+            try {
+                const { data: likes } = await supabaseClient
+                    .from('post_likes')
+                    .select('post_id')
+                    .eq('user_id', currentUser.id);
+
+                if (likes) {
+                    userLikes = new Set(likes.map(l => l.post_id));
+                }
+            } catch (error) {
+                console.error('Error loading likes:', error);
+            }
+        }
+
+        // ============================================
+        // LOAD POSTS
         // ============================================
         async function loadPosts() {
             try {
                 postsContainer.innerHTML = `
                     <div class="loading">
                         <div class="spinner"></div>
-                        <p>Loading inspiring articles...</p>
+                        <p>Loading articles...</p>
                     </div>
                 `;
 
-                // Fetch all posts with author info
+                // Fetch all posts
                 const { data: posts, error } = await supabaseClient
                     .from('posts')
                     .select(`
                         *,
-                        profiles:created_by (id, name, email)
+                        profiles:created_by (name)
                     `)
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
-                console.log('✅ Posts loaded:', posts?.length || 0);
-
                 if (!posts || posts.length === 0) {
                     postsContainer.innerHTML = `
                         <div class="empty-state">
-                            <div class="empty-icon">📝</div>
-                            <h3>No Articles Yet</h3>
-                            <p>Check back soon for inspiring content from our team!</p>
+                            <p>No articles yet. Check back soon!</p>
                         </div>
                     `;
                     return;
                 }
 
-                // Get stats for each post (likes and comments)
+                // Get stats for each post
                 const postsWithStats = await Promise.all(posts.map(async (post) => {
                     const { count: likesCount } = await supabaseClient
                         .from('post_likes')
@@ -1224,10 +916,7 @@
                 console.error('Error loading posts:', error);
                 postsContainer.innerHTML = `
                     <div class="error-container">
-                        <div class="error-icon">❌</div>
-                        <h3 class="error-title">Error Loading Articles</h3>
-                        <p class="error-message">${error.message}</p>
-                        <button onclick="location.reload()" style="background: var(--gold); color: var(--bg-color); border: none; padding: 0.8rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 600;">Try Again</button>
+                        ❌ Error loading articles: ${error.message}
                     </div>
                 `;
             }
@@ -1238,18 +927,12 @@
         // ============================================
         function updateStats() {
             const total = allPosts.length;
-            const totalLikes = allPosts.reduce((sum, post) => sum + (post.likes_count || 0), 0);
-            const totalComments = allPosts.reduce((sum, post) => sum + (post.comments_count || 0), 0);
-            
-            // Count posts from this month
-            const now = new Date();
-            const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-            const thisMonthCount = allPosts.filter(post => new Date(post.created_at) >= firstDayOfMonth).length;
+            const totalLikes = allPosts.reduce((sum, p) => sum + p.likes_count, 0);
+            const totalComments = allPosts.reduce((sum, p) => sum + p.comments_count, 0);
 
             totalArticlesSpan.textContent = total;
             totalLikesSpan.textContent = totalLikes;
             totalCommentsSpan.textContent = totalComments;
-            thisMonthSpan.textContent = thisMonthCount;
         }
 
         // ============================================
@@ -1258,98 +941,262 @@
         function renderPosts() {
             let filteredPosts = [...allPosts];
 
-            // Apply category filter
             if (currentCategory !== 'all') {
-                filteredPosts = filteredPosts.filter(post => 
-                    post.category?.toLowerCase() === currentCategory.toLowerCase()
-                );
+                filteredPosts = filteredPosts.filter(p => p.category === currentCategory);
             }
 
-            // Apply search filter
             if (searchTerm) {
-                const term = searchTerm.toLowerCase();
-                filteredPosts = filteredPosts.filter(post => 
-                    post.title.toLowerCase().includes(term) ||
-                    post.content.toLowerCase().includes(term)
+                filteredPosts = filteredPosts.filter(p => 
+                    p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    p.content.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             }
 
             if (filteredPosts.length === 0) {
                 postsContainer.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">🔍</div>
-                        <h3>No Articles Found</h3>
-                        <p>Try adjusting your search or filter to find what you're looking for.</p>
+                        <p>No articles match your filters.</p>
                     </div>
                 `;
                 return;
             }
 
-            postsContainer.innerHTML = `
-                <div class="posts-grid">
-                    ${filteredPosts.map(post => {
-                        const date = new Date(post.created_at).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        });
-                        const authorName = post.profiles?.name || 'SupremeMotive Admin';
-                        const authorInitial = authorName.charAt(0).toUpperCase();
-                        const excerpt = post.content.substring(0, 250) + (post.content.length > 250 ? '...' : '');
+            postsContainer.innerHTML = filteredPosts.map(post => {
+                const date = new Date(post.created_at).toLocaleDateString();
+                const authorName = post.profiles?.name || 'Admin';
+                const authorInitial = authorName.charAt(0).toUpperCase();
+                const isLiked = userLikes.has(post.id);
+                const excerpt = post.content.substring(0, 200) + (post.content.length > 200 ? '...' : '');
 
-                        return `
-                            <article class="post-card" data-post-id="${post.id}">
-                                <div class="post-header">
-                                    <div class="post-avatar">${authorInitial}</div>
-                                    <div class="post-info">
-                                        <div class="post-author">
-                                            ${escapeHtml(authorName)}
-                                            ${ADMIN_EMAILS.includes(post.profiles?.email) ? '<span class="admin-badge">Admin</span>' : ''}
-                                        </div>
-                                        <div class="post-date">📅 ${date}</div>
-                                    </div>
-                                </div>
+                return `
+                    <div class="post-card" data-post-id="${post.id}">
+                        <div class="post-header">
+                            <div class="post-avatar">${authorInitial}</div>
+                            <div class="post-info">
+                                <div class="post-author">${authorName}</div>
+                                <div class="post-date">${date}</div>
+                            </div>
+                        </div>
 
-                                <h2 class="post-title">
-                                    <a href="single-post.html?id=${post.id}">${escapeHtml(post.title)}</a>
-                                </h2>
+                        <h2 class="post-title">
+                            <a href="single-post.html?id=${post.id}">${escapeHtml(post.title)}</a>
+                        </h2>
 
-                                ${post.image_url ? `
-                                    <img src="${post.image_url}" alt="${escapeHtml(post.title)}" class="post-image" 
-                                         onerror="this.style.display='none'">
-                                ` : ''}
+                        ${post.image_url ? `
+                            <img src="${post.image_url}" class="post-image" onerror="this.style.display='none'">
+                        ` : ''}
 
-                                <div class="post-excerpt">
-                                    ${escapeHtml(excerpt).replace(/\n/g, '<br>')}
-                                </div>
+                        <div class="post-excerpt">${escapeHtml(excerpt).replace(/\n/g, '<br>')}</div>
 
-                                <div class="post-meta">
-                                    <div class="meta-item">
-                                        <span class="meta-icon">❤️</span>
-                                        <span>${post.likes_count} likes</span>
-                                    </div>
-                                    <div class="meta-item">
-                                        <span class="meta-icon">💬</span>
-                                        <span>${post.comments_count} comments</span>
-                                    </div>
-                                    <div class="meta-item">
-                                        <span class="meta-icon">⏱️</span>
-                                        <span>${Math.ceil(post.content.length / 500)} min read</span>
-                                    </div>
-                                </div>
+                        <div class="post-stats">
+                            <button class="stat-btn like-btn ${isLiked ? 'liked' : ''}" onclick="handleLike('${post.id}')">
+                                <span>❤️</span>
+                                <span>${post.likes_count + (isLiked ? 1 : 0)}</span>
+                            </button>
+                            <button class="stat-btn" onclick="toggleComments('${post.id}')">
+                                <span>💬</span>
+                                <span>${post.comments_count}</span>
+                            </button>
+                        </div>
 
-                                <a href="single-post.html?id=${post.id}" class="read-more-link">
-                                    Read Full Article →
-                                </a>
-                            </article>
-                        `;
-                    }).join('')}
-                </div>
-            `;
+                        <a href="single-post.html?id=${post.id}" class="read-more-link">
+                            Read Full Article →
+                        </a>
+
+                        <div id="comments-${post.id}" class="comments-section hidden">
+                            <div class="comment-form">
+                                ${currentUser ? `
+                                    <textarea id="comment-input-${post.id}" placeholder="Write a comment..."></textarea>
+                                    <button onclick="addComment('${post.id}')">Post Comment</button>
+                                ` : `
+                                    <p style="color: var(--text-secondary); text-align: center;">
+                                        <a href="login.html" style="color: var(--gold);">Login</a> to comment
+                                    </p>
+                                `}
+                            </div>
+                            <div id="comments-list-${post.id}" class="comments-list"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Load comments for each post
+            filteredPosts.forEach(post => loadComments(post.id));
         }
 
         // ============================================
-        // FILTER HANDLERS
+        // HANDLE LIKE - WORKING
+        // ============================================
+        window.handleLike = async (postId) => {
+            if (!currentUser) {
+                if (confirm('Please login to like posts')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                const post = allPosts.find(p => p.id === postId);
+                const isLiked = userLikes.has(postId);
+
+                if (isLiked) {
+                    // Unlike
+                    await supabaseClient
+                        .from('post_likes')
+                        .delete()
+                        .eq('post_id', postId)
+                        .eq('user_id', currentUser.id);
+
+                    userLikes.delete(postId);
+                    post.likes_count--;
+                } else {
+                    // Like
+                    await supabaseClient
+                        .from('post_likes')
+                        .insert([{
+                            post_id: postId,
+                            user_id: currentUser.id
+                        }]);
+
+                    userLikes.add(postId);
+                    post.likes_count++;
+                }
+
+                // Update UI
+                const likeBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .like-btn`);
+                if (likeBtn) {
+                    likeBtn.classList.toggle('liked');
+                    likeBtn.innerHTML = `<span>❤️</span><span>${post.likes_count}</span>`;
+                }
+
+                // Update total likes
+                const totalLikes = allPosts.reduce((sum, p) => sum + p.likes_count, 0);
+                totalLikesSpan.textContent = totalLikes;
+
+            } catch (error) {
+                console.error('Error liking post:', error);
+                showAlert('Error updating like');
+            }
+        };
+
+        // ============================================
+        // TOGGLE COMMENTS - WORKING
+        // ============================================
+        window.toggleComments = (postId) => {
+            const commentsDiv = document.getElementById(`comments-${postId}`);
+            if (commentsDiv.classList.contains('hidden')) {
+                commentsDiv.classList.remove('hidden');
+            } else {
+                commentsDiv.classList.add('hidden');
+            }
+        };
+
+        // ============================================
+        // LOAD COMMENTS - WORKING
+        // ============================================
+        async function loadComments(postId) {
+            try {
+                const { data: comments, error } = await supabaseClient
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (name)
+                    `)
+                    .eq('post_id', postId)
+                    .is('parent_comment_id', null)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                renderComments(comments || [], postId);
+
+            } catch (error) {
+                console.error('Error loading comments:', error);
+            }
+        }
+
+        // ============================================
+        // RENDER COMMENTS - WORKING
+        // ============================================
+        function renderComments(comments, postId) {
+            const container = document.getElementById(`comments-list-${postId}`);
+            if (!container) return;
+
+            if (comments.length === 0) {
+                container.innerHTML = '<p class="no-comments">No comments yet</p>';
+                return;
+            }
+
+            container.innerHTML = comments.map(comment => {
+                const date = new Date(comment.created_at).toLocaleString();
+                const authorName = comment.profiles?.name || 'User';
+                const authorInitial = authorName.charAt(0).toUpperCase();
+
+                return `
+                    <div class="comment">
+                        <div class="comment-header">
+                            <div class="comment-avatar">${authorInitial}</div>
+                            <span class="comment-author">${escapeHtml(authorName)}</span>
+                            <span class="comment-date">${date}</span>
+                        </div>
+                        <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================
+        // ADD COMMENT - WORKING
+        // ============================================
+        window.addComment = async (postId) => {
+            if (!currentUser) {
+                showAlert('Please login to comment');
+                return;
+            }
+
+            const input = document.getElementById(`comment-input-${postId}`);
+            const content = input.value.trim();
+
+            if (!content) {
+                showAlert('Please enter a comment');
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('comments')
+                    .insert([{
+                        post_id: postId,
+                        user_id: currentUser.id,
+                        content: content
+                    }]);
+
+                if (error) throw error;
+
+                input.value = '';
+                await loadComments(postId);
+                
+                // Update comment count
+                const post = allPosts.find(p => p.id === postId);
+                if (post) {
+                    post.comments_count++;
+                    const commentBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .stat-btn:last-child`);
+                    if (commentBtn) {
+                        commentBtn.innerHTML = `<span>💬</span><span>${post.comments_count}</span>`;
+                    }
+                    totalCommentsSpan.textContent = allPosts.reduce((sum, p) => sum + p.comments_count, 0);
+                }
+                
+                showAlert('Comment posted!');
+
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                showAlert('Error posting comment');
+            }
+        };
+
+        // ============================================
+        // FILTERS
         // ============================================
         categoryBtns.forEach(btn => {
             btn.addEventListener('click', () => {
