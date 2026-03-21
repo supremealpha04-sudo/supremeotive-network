@@ -20,8 +20,6 @@
             --gold: #FFD700;
             --border-color: #333333;
             --electric-blue: #00F0FF;
-            --success: #4CAF50;
-            --error: #F44336;
         }
 
         body {
@@ -817,10 +815,12 @@
         }
 
         // ============================================
-        // LOAD COMMENTS
+        // LOAD COMMENTS - FIXED
         // ============================================
         async function loadComments() {
             try {
+                console.log('Loading comments for post:', postId);
+                
                 const { data: comments, error } = await supabaseClient
                     .from('comments')
                     .select(`
@@ -831,21 +831,25 @@
                     .is('parent_comment_id', null)
                     .order('created_at', { ascending: true });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error loading comments:', error);
+                    throw error;
+                }
 
+                console.log('Comments loaded:', comments);
                 renderComments(comments || []);
 
             } catch (error) {
                 console.error('Error loading comments:', error);
                 const commentsList = document.getElementById('commentsList');
                 if (commentsList) {
-                    commentsList.innerHTML = '<p class="no-comments">Error loading comments</p>';
+                    commentsList.innerHTML = '<p class="no-comments">Error loading comments. Please refresh.</p>';
                 }
             }
         }
 
         // ============================================
-        // RENDER COMMENTS
+        // RENDER COMMENTS - FIXED
         // ============================================
         function renderComments(comments) {
             const commentsList = document.getElementById('commentsList');
@@ -862,7 +866,7 @@
                 const authorInitial = authorName.charAt(0).toUpperCase();
 
                 return `
-                    <div class="comment">
+                    <div class="comment" data-comment-id="${comment.id}">
                         <div class="comment-header">
                             <div class="comment-avatar">${authorInitial}</div>
                             <span class="comment-author">${escapeHtml(authorName)}</span>
@@ -875,7 +879,7 @@
         }
 
         // ============================================
-        // SUBMIT COMMENT
+        // SUBMIT COMMENT - FIXED
         // ============================================
         window.submitComment = async () => {
             if (!currentUser) {
@@ -892,17 +896,27 @@
             }
 
             try {
-                const { error } = await supabaseClient
+                console.log('Submitting comment for post:', postId);
+                
+                const { data, error } = await supabaseClient
                     .from('comments')
                     .insert([{
                         post_id: postId,
                         user_id: currentUser.id,
                         content: content
-                    }]);
+                    }])
+                    .select();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error inserting comment:', error);
+                    throw error;
+                }
+
+                console.log('Comment inserted:', data);
 
                 input.value = '';
+                
+                // Reload comments
                 await loadComments();
                 
                 // Update comment count
@@ -914,7 +928,7 @@
                 document.getElementById('commentsCount').textContent = count;
                 document.getElementById('commentCount').textContent = count;
                 
-                showAlert('Comment posted!');
+                showAlert('Comment posted successfully!');
 
             } catch (error) {
                 console.error('Error posting comment:', error);
