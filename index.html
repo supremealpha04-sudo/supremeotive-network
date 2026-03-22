@@ -99,6 +99,96 @@
             color: var(--gold);
         }
 
+        /* PWA Install Prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--bg-color);
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .install-prompt-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .install-prompt-icon {
+            font-size: 2rem;
+        }
+
+        .install-prompt-text {
+            flex: 1;
+        }
+
+        .install-prompt-title {
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+
+        .install-prompt-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .install-prompt-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .install-btn {
+            background: var(--bg-color);
+            color: var(--gold);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-install-btn {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--bg-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-install-btn:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
         /* Notification Bell */
         .notification-container {
             position: relative;
@@ -553,6 +643,19 @@
                 right: 20px;
                 left: 20px;
             }
+
+            .install-prompt {
+                left: 10px;
+                right: 10px;
+                bottom: 70px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .install-prompt-buttons {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -660,7 +763,131 @@
         </div>
     </main>
 
+    <!-- PWA Install Prompt -->
+    <div id="installPrompt" class="install-prompt hidden">
+        <div class="install-prompt-content">
+            <div class="install-prompt-icon">📱</div>
+            <div class="install-prompt-text">
+                <div class="install-prompt-title">Install SupremeMotive</div>
+                <div class="install-prompt-subtitle">Get quick access and offline support</div>
+            </div>
+        </div>
+        <div class="install-prompt-buttons">
+            <button id="installBtn" class="install-btn">Install</button>
+            <button id="closeInstallBtn" class="close-install-btn">Not now</button>
+        </div>
+    </div>
+
     <script>
+        // ============================================
+        // PWA INSTALL PROMPT
+        // ============================================
+        let deferredPrompt;
+        const installPrompt = document.getElementById('installPrompt');
+        const installBtn = document.getElementById('installBtn');
+        const closeInstallBtn = document.getElementById('closeInstallBtn');
+
+        // Check if app is already installed
+        function isAppInstalled() {
+            // Check if app is running in standalone mode (installed)
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                                 window.navigator.standalone === true;
+            
+            // Check localStorage for dismiss
+            const dismissed = localStorage.getItem('installPromptDismissed');
+            
+            if (isStandalone) {
+                installPrompt.classList.add('hidden');
+                return true;
+            }
+            
+            if (dismissed === 'true') {
+                installPrompt.classList.add('hidden');
+                return false;
+            }
+            
+            return false;
+        }
+
+        // Show install prompt
+        function showInstallPrompt() {
+            // Don't show if already installed or dismissed
+            if (isAppInstalled()) return;
+            
+            // Don't show on mobile browsers that don't support PWA
+            if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
+            
+            installPrompt.classList.remove('hidden');
+        }
+
+        // Hide install prompt
+        function hideInstallPrompt() {
+            installPrompt.classList.add('hidden');
+        }
+
+        // Handle install button click
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                // If no deferred prompt, provide download instructions
+                const userAgent = navigator.userAgent.toLowerCase();
+                
+                if (userAgent.includes('android')) {
+                    alert('To install: Tap the menu (⋮) → "Install app" or "Add to Home screen"');
+                } else if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
+                    alert('To install: Tap Share (□↑) → "Add to Home Screen"');
+                } else {
+                    alert('To install: Look for the install icon in the address bar');
+                }
+                hideInstallPrompt();
+                return;
+            }
+            
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+                hideInstallPrompt();
+            } else {
+                console.log('User dismissed the install prompt');
+                // Store that user dismissed the prompt
+                localStorage.setItem('installPromptDismissed', 'true');
+                hideInstallPrompt();
+            }
+            
+            // Clear the deferredPrompt
+            deferredPrompt = null;
+        });
+
+        // Handle close button click
+        closeInstallBtn.addEventListener('click', () => {
+            localStorage.setItem('installPromptDismissed', 'true');
+            hideInstallPrompt();
+        });
+
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Show custom install prompt
+            showInstallPrompt();
+        });
+
+        // Listen for app installed event
+        window.addEventListener('appinstalled', () => {
+            console.log('SupremeMotive was installed');
+            deferredPrompt = null;
+            hideInstallPrompt();
+            
+            // Show success message
+            showAlert('Thank you for installing SupremeMotive! 🎉', 'success');
+        });
+
         // ============================================
         // PWA & OFFLINE DETECTION
         // ============================================
@@ -1429,6 +1656,9 @@
             await checkAuth();
             await loadQuotes();
             requestNotificationPermission();
+            
+            // Check if app is installed on page load
+            isAppInstalled();
         }
 
         init();
