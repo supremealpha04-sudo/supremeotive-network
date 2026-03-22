@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Daily Quotes</title>
-    <link rel="icon" type="image/png" href="file_00000000f25071f5a01e8c22ec168ef4.png">
+    <link rel="icon" type="image/png" href="logo.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#FFD700">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SupremeMotive">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -26,6 +27,8 @@
             --gold: #FFD700;
             --border-color: #333333;
             --electric-blue: #00F0FF;
+            --success: #4CAF50;
+            --error: #F44336;
         }
 
         body {
@@ -36,6 +39,7 @@
             padding-bottom: 80px;
         }
 
+        /* Top Navigation */
         .top-nav {
             background: var(--card-bg);
             padding: 1rem 2rem;
@@ -93,6 +97,132 @@
         .nav-links a:hover,
         .nav-links a.active {
             color: var(--gold);
+        }
+
+        /* Notification Bell */
+        .notification-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-bell {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.3rem;
+        }
+
+        .notification-bell:hover {
+            color: var(--gold);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: var(--error);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Notification Dropdown */
+        .notification-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 380px;
+            max-height: 500px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notification-header h3 {
+            color: var(--gold);
+            font-size: 1rem;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .mark-read-btn, .settings-btn {
+            background: none;
+            border: none;
+            color: var(--electric-blue);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0.3rem;
+        }
+
+        .mark-read-btn:hover, .settings-btn:hover {
+            color: var(--gold);
+        }
+
+        .notification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: var(--border-color);
+        }
+
+        .notification-item.unread {
+            background: rgba(255, 215, 0, 0.05);
+            border-left: 3px solid var(--gold);
+        }
+
+        .notification-title {
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .notification-message {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+            line-height: 1.4;
+        }
+
+        .notification-time {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+        }
+
+        .loading-notifications {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
         }
 
         .auth-buttons {
@@ -417,6 +547,12 @@
                 min-width: calc(50% - 0.3rem);
                 font-size: 0.85rem;
             }
+
+            .notification-dropdown {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -443,6 +579,30 @@
             <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
+            
+            <!-- Notification Bell -->
+            <div class="notification-container">
+                <button class="notification-bell" id="notificationBell">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <span id="notificationBadge" class="notification-badge hidden">0</span>
+                
+                <!-- Notification Dropdown -->
+                <div id="notificationDropdown" class="notification-dropdown hidden">
+                    <div class="notification-header">
+                        <h3>Notifications</h3>
+                        <div class="notification-actions">
+                            <button id="markAllRead" class="mark-read-btn">Mark all read</button>
+                            <button id="notificationSettingsBtn" class="settings-btn">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="notificationList" class="notification-list">
+                        <div class="loading-notifications">Loading...</div>
+                    </div>
+                </div>
+            </div>
             
             <!-- Auth Buttons -->
             <div class="auth-buttons" id="authButtons">
@@ -587,6 +747,8 @@
         let quotes = [];
         let userLikes = new Set();
         let userSaves = new Set();
+        let notifications = [];
+        let unreadCount = 0;
 
         // DOM Elements
         const quotesContainer = document.getElementById('quotesContainer');
@@ -599,6 +761,14 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const userGreeting = document.getElementById('userGreeting');
         const categoryBtns = document.querySelectorAll('.category-btn');
+        
+        // Notification Elements
+        const notificationBell = document.getElementById('notificationBell');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        const notificationList = document.getElementById('notificationList');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const markAllReadBtn = document.getElementById('markAllRead');
+        const notificationSettingsBtn = document.getElementById('notificationSettingsBtn');
 
         // ============================================
         // THEME TOGGLE
@@ -671,13 +841,11 @@
         // ============================================
         function updateAuthUI(user) {
             if (user) {
-                // User is logged in
                 loginBtn.classList.add('hidden');
                 logoutBtn.classList.remove('hidden');
                 userGreeting.classList.remove('hidden');
                 userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
                 
-                // Check if admin
                 if (ADMIN_EMAILS.includes(user.email)) {
                     adminLink.style.display = 'block';
                     adminLink.href = 'admin/admin-dashboard.html';
@@ -685,7 +853,6 @@
                     adminLink.style.display = 'none';
                 }
             } else {
-                // User is logged out
                 loginBtn.classList.remove('hidden');
                 logoutBtn.classList.add('hidden');
                 userGreeting.classList.add('hidden');
@@ -700,12 +867,11 @@
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
-                
-                // Update UI based on auth state
                 updateAuthUI(user);
-
                 if (user) {
                     await loadUserInteractions();
+                    await loadNotifications();
+                    subscribeToNotifications();
                 }
             } catch (error) {
                 console.error('Auth error:', error);
@@ -740,7 +906,6 @@
             if (!currentUser) return;
 
             try {
-                // Load REAL likes from database
                 const { data: likes } = await supabaseClient
                     .from('quote_likes')
                     .select('quote_id')
@@ -750,7 +915,6 @@
                     userLikes = new Set(likes.map(l => l.quote_id));
                 }
 
-                // Load saves
                 const { data: saves } = await supabaseClient
                     .from('quote_saves')
                     .select('quote_id')
@@ -765,11 +929,186 @@
         }
 
         // ============================================
-        // LOAD QUOTES WITH OFFLINE SUPPORT
+        // NOTIFICATION FUNCTIONS
         // ============================================
+        
+        // Load notifications
+        async function loadNotifications() {
+            if (!currentUser) return;
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('notifications')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(50);
+                    
+                if (error) throw error;
+                
+                notifications = data || [];
+                updateNotificationUI();
+                
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+            }
+        }
+
+        // Update notification UI
+        function updateNotificationUI() {
+            unreadCount = notifications.filter(n => !n.is_read).length;
+            
+            if (unreadCount > 0) {
+                notificationBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                notificationBadge.classList.remove('hidden');
+            } else {
+                notificationBadge.classList.add('hidden');
+            }
+            
+            if (notifications.length === 0) {
+                notificationList.innerHTML = '<div class="loading-notifications">No notifications yet</div>';
+                return;
+            }
+            
+            notificationList.innerHTML = notifications.map(notification => `
+                <div class="notification-item ${!notification.is_read ? 'unread' : ''}" 
+                     data-id="${notification.id}" 
+                     data-content-id="${notification.content_id}"
+                     data-type="${notification.type}">
+                    <div class="notification-title">${escapeHtml(notification.title)}</div>
+                    <div class="notification-message">${escapeHtml(notification.message)}</div>
+                    <div class="notification-time">${formatTimeAgo(notification.created_at)}</div>
+                </div>
+            `).join('');
+            
+            // Add click handlers
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.addEventListener('click', () => handleNotificationClick(item));
+            });
+        }
+
+        // Handle notification click
+        async function handleNotificationClick(element) {
+            const notificationId = element.dataset.id;
+            const contentType = element.dataset.type;
+            const contentId = element.dataset.contentId;
+            
+            await markNotificationAsRead(notificationId);
+            
+            switch(contentType) {
+                case 'new_post':
+                    window.location.href = `post.html?id=${contentId}`;
+                    break;
+                case 'new_quote':
+                    window.location.href = `index.html?quote=${contentId}`;
+                    break;
+                case 'new_ebook':
+                    window.location.href = `ebooks.html?id=${contentId}`;
+                    break;
+                case 'comment_reply':
+                case 'like':
+                    window.location.href = `post.html?id=${contentId}`;
+                    break;
+                case 'unlock_approved':
+                    window.location.href = `ebooks.html?id=${contentId}`;
+                    break;
+                default:
+                    window.location.reload();
+            }
+        }
+
+        // Mark notification as read
+        async function markNotificationAsRead(notificationId) {
+            try {
+                await supabaseClient
+                    .from('notifications')
+                    .update({ is_read: true })
+                    .eq('id', notificationId);
+                    
+                const notification = notifications.find(n => n.id === notificationId);
+                if (notification) notification.is_read = true;
+                updateNotificationUI();
+                
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+
+        // Mark all as read
+        async function markAllAsRead() {
+            try {
+                await supabaseClient
+                    .from('notifications')
+                    .update({ is_read: true })
+                    .eq('user_id', currentUser.id);
+                    
+                notifications.forEach(n => n.is_read = true);
+                updateNotificationUI();
+                showAlert('All notifications marked as read');
+                
+            } catch (error) {
+                console.error('Error marking all as read:', error);
+                showAlert('Error marking notifications', 'error');
+            }
+        }
+
+        // Subscribe to real-time notifications
+        function subscribeToNotifications() {
+            if (!currentUser) return;
+            
+            const subscription = supabaseClient
+                .channel('notifications')
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'notifications',
+                    filter: `user_id=eq.${currentUser.id}`
+                }, (payload) => {
+                    notifications.unshift(payload.new);
+                    updateNotificationUI();
+                    
+                    // Show browser notification
+                    if (Notification.permission === 'granted') {
+                        new Notification(payload.new.title, {
+                            body: payload.new.message,
+                            icon: '/logo.png'
+                        });
+                    }
+                })
+                .subscribe();
+                
+            return subscription;
+        }
+
+        // Request notification permission
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+        }
+
+        // Format time ago
+        function formatTimeAgo(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+            return date.toLocaleDateString();
+        }
+
+        // ============================================
+        // QUOTE FUNCTIONS
+        // ============================================
+        
         async function loadQuotes() {
             try {
-                // Try to load from network first
                 const { data, error } = await supabaseClient
                     .from('quotes')
                     .select('*')
@@ -779,10 +1118,8 @@
 
                 if (data && data.length > 0) {
                     quotes = data;
-                    // Cache quotes for offline use
                     localStorage.setItem('cachedQuotes', JSON.stringify(data));
                 } else {
-                    // If no data from network, try cache
                     const cached = localStorage.getItem('cachedQuotes');
                     if (cached) {
                         quotes = JSON.parse(cached);
@@ -795,7 +1132,6 @@
 
             } catch (error) {
                 console.error('Error loading quotes:', error);
-                // On error, load from cache or samples
                 const cached = localStorage.getItem('cachedQuotes');
                 if (cached) {
                     quotes = JSON.parse(cached);
@@ -810,68 +1146,42 @@
             }
         }
 
-        // ============================================
-        // GET REAL LIKE COUNT
-        // ============================================
         async function getLikeCount(quoteId) {
             try {
-                const { count, error } = await supabaseClient
+                const { count } = await supabaseClient
                     .from('quote_likes')
                     .select('*', { count: 'exact', head: true })
                     .eq('quote_id', quoteId);
-                
-                if (error) throw error;
                 return count || 0;
             } catch (error) {
-                console.error('Error getting like count:', error);
                 return 0;
             }
         }
 
-        // ============================================
-        // SHARE QUOTE - WORKING PERFECTLY
-        // ============================================
         window.shareQuote = (quoteId) => {
             const quote = quotes.find(q => q.id === quoteId);
-            
-            // Create share text with quote, author, and site link
             const shareText = `"${quote.text}" — ${quote.author}`;
             const shareUrl = window.location.href;
-            const fullMessage = `${shareText}\n\nShared from SupremeMotive\n${shareUrl}`;
             
             if (navigator.share) {
-                // Mobile share with Web Share API
                 navigator.share({
                     title: 'SupremeMotive Quote',
                     text: shareText,
                     url: shareUrl
-                }).then(() => {
-                    showAlert('Shared successfully!');
-                }).catch((error) => {
-                    console.log('Share cancelled or failed:', error);
-                    // Fallback to copy
-                    copyToClipboard(fullMessage);
-                });
+                }).catch(() => copyToClipboard(`${shareText}\n\nShared from SupremeMotive\n${shareUrl}`));
             } else {
-                // Desktop fallback - copy to clipboard
-                copyToClipboard(fullMessage);
+                copyToClipboard(`${shareText}\n\nShared from SupremeMotive\n${shareUrl}`);
             }
         };
 
-        // ============================================
-        // COPY TO CLIPBOARD
-        // ============================================
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                showAlert('Quote copied to clipboard! Share it anywhere.');
+                showAlert('Quote copied to clipboard!');
             }).catch(() => {
-                showAlert('Could not copy quote. Please try again.');
+                showAlert('Could not copy quote');
             });
         }
 
-        // ============================================
-        // RENDER QUOTES
-        // ============================================
         async function renderQuotes() {
             let filteredQuotes = [...quotes];
 
@@ -880,15 +1190,10 @@
             }
 
             if (filteredQuotes.length === 0) {
-                quotesContainer.innerHTML = `
-                    <div class="loading">
-                        <p>No quotes in this category</p>
-                    </div>
-                `;
+                quotesContainer.innerHTML = `<div class="loading"><p>No quotes in this category</p></div>`;
                 return;
             }
 
-            // Get real like counts for all quotes (if online)
             let quotesWithLikes = filteredQuotes;
             if (navigator.onLine) {
                 quotesWithLikes = await Promise.all(filteredQuotes.map(async (quote) => {
@@ -896,11 +1201,7 @@
                     return { ...quote, likeCount };
                 }));
             } else {
-                // Use cached like counts or 0 when offline
-                quotesWithLikes = filteredQuotes.map(quote => ({
-                    ...quote,
-                    likeCount: 0
-                }));
+                quotesWithLikes = filteredQuotes.map(quote => ({ ...quote, likeCount: 0 }));
             }
 
             quotesContainer.innerHTML = quotesWithLikes.map(quote => {
@@ -935,9 +1236,6 @@
             }).join('');
         }
 
-        // ============================================
-        // HANDLE LIKE - REAL LIKE
-        // ============================================
         window.handleLike = async (quoteId) => {
             if (!currentUser) {
                 if (confirm('Please login to like quotes')) {
@@ -953,38 +1251,24 @@
 
             try {
                 if (userLikes.has(quoteId)) {
-                    // Unlike - remove from database
                     await supabaseClient
                         .from('quote_likes')
                         .delete()
                         .eq('quote_id', quoteId)
                         .eq('user_id', currentUser.id);
-
                     userLikes.delete(quoteId);
                 } else {
-                    // Like - add to database
                     await supabaseClient
                         .from('quote_likes')
-                        .insert([{ 
-                            quote_id: quoteId, 
-                            user_id: currentUser.id 
-                        }]);
-
+                        .insert([{ quote_id: quoteId, user_id: currentUser.id }]);
                     userLikes.add(quoteId);
                 }
-
-                // Re-render to show updated count
                 renderQuotes();
-
             } catch (error) {
-                console.error('Error liking quote:', error);
                 showAlert('Error updating like');
             }
         };
 
-        // ============================================
-        // HANDLE SAVE
-        // ============================================
         window.handleSave = async (quoteId) => {
             if (!currentUser) {
                 if (confirm('Please login to save quotes')) {
@@ -1005,58 +1289,39 @@
                         .delete()
                         .eq('quote_id', quoteId)
                         .eq('user_id', currentUser.id);
-
                     userSaves.delete(quoteId);
                     showAlert('Quote removed from saved');
                 } else {
                     await supabaseClient
                         .from('quote_saves')
-                        .insert([{ 
-                            quote_id: quoteId, 
-                            user_id: currentUser.id 
-                        }]);
-
+                        .insert([{ quote_id: quoteId, user_id: currentUser.id }]);
                     userSaves.add(quoteId);
                     showAlert('Quote saved!');
                 }
-
                 renderQuotes();
-
             } catch (error) {
-                console.error('Error saving quote:', error);
                 showAlert('Error saving quote');
             }
         };
 
-        // ============================================
-        // DOWNLOAD QUOTE - EXACTLY LIKE YOUR DESIGN
-        // ============================================
         window.downloadQuote = (quoteId) => {
             const quote = quotes.find(q => q.id === quoteId);
-            
-            // Create canvas with exact dimensions from your design
             const canvas = document.createElement('canvas');
             canvas.width = 380;
             canvas.height = 380;
             const ctx = canvas.getContext('2d');
 
-            // Black background
             ctx.fillStyle = '#000000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Opening quote mark - top left
             ctx.font = 'bold 50px Georgia, serif';
             ctx.fillStyle = '#FFFFFF';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
             ctx.fillText('“', 25, 20);
 
-            // Quote text - centered, 28px bold
             ctx.font = 'bold 28px Arial, Helvetica, sans-serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
             
-            // Word wrap for long quotes
             const words = quote.text.split(' ');
             let line = '';
             let lines = [];
@@ -1074,51 +1339,33 @@
             }
             lines.push(line);
 
-            // Draw quote lines
             lines.forEach((line, index) => {
                 ctx.fillText(line, 190, y + (index * 40));
             });
 
-            // Closing quote mark - bottom right
             ctx.font = 'bold 50px Georgia, serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'right';
-            ctx.textBaseline = 'bottom';
             ctx.fillText('”', 355, 300);
 
-            // Tag at bottom right - dashed border with "supreme motive"
             const tagText = 'supreme motive';
-            
-            // Draw dashed rectangle
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.setLineDash([5, 5]);
-            ctx.lineWidth = 2;
-            
-            // Measure text for rectangle size
             ctx.font = '14px Arial, Helvetica, sans-serif';
             const textWidth = ctx.measureText(tagText).width;
-            const rectX = 380 - textWidth - 30; // 380 width - text width - padding
+            const rectX = 380 - textWidth - 30;
             const rectY = 340;
             const rectWidth = textWidth + 24;
             const rectHeight = 30;
             
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.setLineDash([5, 5]);
             ctx.strokeRect(rectX, rectY, rectWidth, rectHeight);
-            
-            // Draw tag text
             ctx.fillStyle = '#FFFFFF';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
             ctx.fillText(tagText, rectX + 12, rectY + 15);
 
-            // Reset line dash
-            ctx.setLineDash([]);
-
-            // Download
             const link = document.createElement('a');
             link.download = `suprememotive-${quote.category}-quote.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.95);
             link.click();
-            
             showAlert('Quote downloaded!');
         };
 
@@ -1135,12 +1382,53 @@
         });
 
         // ============================================
+        // NOTIFICATION EVENT HANDLERS
+        // ============================================
+        notificationBell.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle('hidden');
+            if (!notificationDropdown.classList.contains('hidden')) {
+                loadNotifications();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!notificationBell.contains(e.target) && !notificationDropdown.contains(e.target)) {
+                notificationDropdown.classList.add('hidden');
+            }
+        });
+
+        if (markAllReadBtn) {
+            markAllReadBtn.addEventListener('click', markAllAsRead);
+        }
+
+        if (notificationSettingsBtn) {
+            notificationSettingsBtn.addEventListener('click', () => {
+                window.location.href = 'profile.html?tab=notifications';
+            });
+        }
+
+        // ============================================
+        // ESCAPE HTML
+        // ============================================
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // ============================================
         // INITIALIZE
         // ============================================
         async function init() {
             initTheme();
             await checkAuth();
             await loadQuotes();
+            requestNotificationPermission();
         }
 
         init();
