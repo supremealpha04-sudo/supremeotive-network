@@ -29,7 +29,6 @@
             padding-bottom: 80px;
         }
 
-        /* Navigation */
         .top-nav {
             background: var(--card-bg);
             padding: 1rem 2rem;
@@ -173,7 +172,6 @@
             padding: 0 1rem;
         }
 
-        /* Post Card */
         .post-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -244,7 +242,6 @@
             margin: 1rem 0;
         }
 
-        /* Content with Read More - EXPANDS WITHIN CARD */
         .post-content-wrapper {
             position: relative;
         }
@@ -294,7 +291,6 @@
             color: var(--gold);
         }
 
-        /* Post Stats */
         .post-stats {
             display: flex;
             gap: 1.5rem;
@@ -324,7 +320,6 @@
             color: var(--gold);
         }
 
-        /* Comments Section */
         .comments-section {
             margin-top: 1rem;
         }
@@ -383,7 +378,6 @@
             margin-top: 1rem;
         }
 
-        /* Main Comment */
         .comment {
             background: var(--bg-color);
             border-radius: 10px;
@@ -451,7 +445,6 @@
             color: var(--gold);
         }
 
-        /* Reply Form */
         .reply-form {
             margin-top: 0.5rem;
             margin-left: 2.5rem;
@@ -480,27 +473,11 @@
             font-size: 0.75rem;
         }
 
-        /* Reply Comment */
         .reply {
             margin-left: 2.5rem;
             margin-top: 0.5rem;
             padding-left: 0.8rem;
             border-left: 2px solid var(--gold);
-        }
-
-        .reply .comment-header {
-            margin-bottom: 0.2rem;
-        }
-
-        .reply .comment-avatar {
-            width: 25px;
-            height: 25px;
-            font-size: 0.7rem;
-        }
-
-        .reply .comment-content {
-            margin-left: 2rem;
-            font-size: 0.8rem;
         }
 
         .no-comments {
@@ -510,7 +487,6 @@
             font-size: 0.85rem;
         }
 
-        /* Loading */
         .loading {
             text-align: center;
             padding: 2rem;
@@ -872,6 +848,7 @@
                 const isLiked = userLikes.has(post.id);
                 const needsReadMore = post.content.length > 400;
                 const collapsedClass = needsReadMore ? 'collapsed' : '';
+                const likeCount = post.likes_count + (isLiked ? 1 : 0);
 
                 return `
                     <div class="post-card" data-post-id="${post.id}">
@@ -901,9 +878,9 @@
                         </div>
 
                         <div class="post-stats">
-                            <button class="stat-btn like-btn ${isLiked ? 'liked' : ''}" onclick="handleLike('${post.id}')">
+                            <button class="stat-btn like-btn ${isLiked ? 'liked' : ''}" onclick="handleLike('${post.id}')" id="likeBtn-${post.id}">
                                 <span>❤️</span>
-                                <span id="likeCount-${post.id}">${post.likes_count + (isLiked ? 1 : 0)}</span>
+                                <span id="likeCount-${post.id}">${likeCount}</span>
                             </button>
                             <button class="stat-btn" onclick="toggleComments('${post.id}')">
                                 <span>💬</span>
@@ -941,7 +918,7 @@
         }
 
         // ============================================
-        // TOGGLE READ MORE - EXPANDS WITHIN CARD
+        // TOGGLE READ MORE
         // ============================================
         window.toggleReadMore = (postId) => {
             const contentDiv = document.getElementById(`postContent-${postId}`);
@@ -957,7 +934,7 @@
         };
 
         // ============================================
-        // HANDLE LIKE - WORKING
+        // HANDLE LIKE - FAST AND WORKING
         // ============================================
         window.handleLike = async (postId) => {
             if (!currentUser) {
@@ -970,34 +947,35 @@
             try {
                 const post = allPosts.find(p => p.id === postId);
                 const isLiked = userLikes.has(postId);
-
+                const likeSpan = document.getElementById(`likeCount-${postId}`);
+                const likeBtn = document.getElementById(`likeBtn-${postId}`);
+                
                 if (isLiked) {
-                    await supabaseClient
+                    // OPTIMISTIC UI UPDATE - immediate visual feedback
+                    likeSpan.textContent = parseInt(likeSpan.textContent) - 1;
+                    likeBtn.classList.remove('liked');
+                    userLikes.delete(postId);
+                    post.likes_count--;
+                    
+                    // Background database update
+                    supabaseClient
                         .from('post_likes')
                         .delete()
                         .eq('post_id', postId)
-                        .eq('user_id', currentUser.id);
-                    userLikes.delete(postId);
-                    post.likes_count--;
+                        .eq('user_id', currentUser.id)
+                        .catch(err => console.error('Unlike error:', err));
                 } else {
-                    await supabaseClient
-                        .from('post_likes')
-                        .insert([{
-                            post_id: postId,
-                            user_id: currentUser.id
-                        }]);
+                    // OPTIMISTIC UI UPDATE - immediate visual feedback
+                    likeSpan.textContent = parseInt(likeSpan.textContent) + 1;
+                    likeBtn.classList.add('liked');
                     userLikes.add(postId);
                     post.likes_count++;
-                }
-
-                const likeSpan = document.getElementById(`likeCount-${postId}`);
-                likeSpan.textContent = post.likes_count;
-                
-                const likeBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .like-btn`);
-                if (userLikes.has(postId)) {
-                    likeBtn.classList.add('liked');
-                } else {
-                    likeBtn.classList.remove('liked');
+                    
+                    // Background database update
+                    supabaseClient
+                        .from('post_likes')
+                        .insert([{ post_id: postId, user_id: currentUser.id }])
+                        .catch(err => console.error('Like error:', err));
                 }
 
             } catch (error) {
