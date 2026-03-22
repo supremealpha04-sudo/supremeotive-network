@@ -3,11 +3,6 @@
   "outputDirectory": ".",
   "devCommand": null,
   "installCommand": null,
-  "functions": {
-    "api/**/*.js": {
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",
