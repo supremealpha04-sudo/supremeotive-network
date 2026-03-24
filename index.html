@@ -82,7 +82,7 @@
 
         .nav-links {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -99,94 +99,25 @@
             color: var(--gold);
         }
 
-        /* PWA Install Prompt */
-        .install-prompt {
-            position: fixed;
-            bottom: 80px;
-            left: 20px;
-            right: 20px;
+        /* Install Button */
+        .install-btn {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             color: var(--bg-color);
-            padding: 1rem;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .install-prompt-content {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-        }
-
-        .install-prompt-icon {
-            font-size: 2rem;
-        }
-
-        .install-prompt-text {
-            flex: 1;
-        }
-
-        .install-prompt-title {
-            font-weight: bold;
-            margin-bottom: 0.2rem;
-        }
-
-        .install-prompt-subtitle {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
-
-        .install-prompt-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .install-btn {
-            background: var(--bg-color);
-            color: var(--gold);
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: bold;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
         .install-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .close-install-btn {
-            background: rgba(0, 0, 0, 0.2);
-            color: var(--bg-color);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .close-install-btn:hover {
-            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
 
         /* Notification Bell */
@@ -537,6 +468,91 @@
             margin-right: 0.5rem;
         }
 
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            color: var(--bg-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 99;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Install Prompt Banner */
+        .install-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 2px solid var(--gold);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 101;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .install-banner.show {
+            transform: translateY(0);
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .install-banner-icon {
+            font-size: 2rem;
+        }
+
+        .install-banner-text h4 {
+            color: var(--gold);
+            margin-bottom: 0.2rem;
+        }
+
+        .install-banner-text p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .install-banner-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .install-banner-close:hover {
+            color: var(--gold);
+        }
+
         .loading {
             text-align: center;
             padding: 2rem;
@@ -644,17 +660,10 @@
                 left: 20px;
             }
 
-            .install-prompt {
-                left: 10px;
-                right: 10px;
-                bottom: 70px;
+            .install-banner {
                 flex-direction: column;
+                gap: 1rem;
                 text-align: center;
-            }
-
-            .install-prompt-buttons {
-                width: 100%;
-                justify-content: center;
             }
         }
     </style>
@@ -682,6 +691,12 @@
             <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
+            
+            <!-- Install Button -->
+            <button id="installButton" class="install-btn hidden">
+                <i class="fas fa-download"></i>
+                <span>Install App</span>
+            </button>
             
             <!-- Notification Bell -->
             <div class="notification-container">
@@ -763,129 +778,118 @@
         </div>
     </main>
 
-    <!-- PWA Install Prompt -->
-    <div id="installPrompt" class="install-prompt hidden">
-        <div class="install-prompt-content">
-            <div class="install-prompt-icon">📱</div>
-            <div class="install-prompt-text">
-                <div class="install-prompt-title">Install SupremeMotive</div>
-                <div class="install-prompt-subtitle">Get quick access and offline support</div>
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Install Banner -->
+    <div id="installBanner" class="install-banner">
+        <div class="install-banner-content">
+            <div class="install-banner-icon">📱</div>
+            <div class="install-banner-text">
+                <h4>Install SupremeMotive App</h4>
+                <p>Get daily motivation faster with our app</p>
             </div>
         </div>
-        <div class="install-prompt-buttons">
-            <button id="installBtn" class="install-btn">Install</button>
-            <button id="closeInstallBtn" class="close-install-btn">Not now</button>
+        <div>
+            <button id="installBannerBtn" class="install-btn">Install Now</button>
+            <button id="closeBannerBtn" class="install-banner-close">✕</button>
         </div>
     </div>
 
     <script>
         // ============================================
-        // PWA INSTALL PROMPT
+        // PWA INSTALLATION
         // ============================================
         let deferredPrompt;
-        const installPrompt = document.getElementById('installPrompt');
-        const installBtn = document.getElementById('installBtn');
-        const closeInstallBtn = document.getElementById('closeInstallBtn');
+        const installButton = document.getElementById('installButton');
+        const installBanner = document.getElementById('installBanner');
+        const installBannerBtn = document.getElementById('installBannerBtn');
+        const closeBannerBtn = document.getElementById('closeBannerBtn');
 
         // Check if app is already installed
         function isAppInstalled() {
-            // Check if app is running in standalone mode (installed)
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                                 window.navigator.standalone === true;
-            
-            // Check localStorage for dismiss
-            const dismissed = localStorage.getItem('installPromptDismissed');
-            
-            if (isStandalone) {
-                installPrompt.classList.add('hidden');
-                return true;
-            }
-            
-            if (dismissed === 'true') {
-                installPrompt.classList.add('hidden');
-                return false;
-            }
-            
-            return false;
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true;
         }
 
-        // Show install prompt
-        function showInstallPrompt() {
-            // Don't show if already installed or dismissed
-            if (isAppInstalled()) return;
-            
-            // Don't show on mobile browsers that don't support PWA
-            if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
-            
-            installPrompt.classList.remove('hidden');
+        // Hide install UI if app is already installed
+        if (isAppInstalled()) {
+            installButton.classList.add('hidden');
+            installBanner.classList.remove('show');
         }
 
-        // Hide install prompt
-        function hideInstallPrompt() {
-            installPrompt.classList.add('hidden');
-        }
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button in navbar
+            installButton.classList.remove('hidden');
+            
+            // Show install banner (if not dismissed before)
+            const bannerDismissed = localStorage.getItem('installBannerDismissed');
+            if (!bannerDismissed && !isAppInstalled()) {
+                setTimeout(() => {
+                    installBanner.classList.add('show');
+                }, 2000);
+            }
+        });
 
         // Handle install button click
-        installBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                // If no deferred prompt, provide download instructions
-                const userAgent = navigator.userAgent.toLowerCase();
-                
-                if (userAgent.includes('android')) {
-                    alert('To install: Tap the menu (⋮) → "Install app" or "Add to Home screen"');
-                } else if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
-                    alert('To install: Tap Share (□↑) → "Add to Home Screen"');
-                } else {
-                    alert('To install: Look for the install icon in the address bar');
-                }
-                hideInstallPrompt();
-                return;
-            }
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
             
-            // Show the install prompt
             deferredPrompt.prompt();
-            
-            // Wait for the user to respond to the prompt
             const { outcome } = await deferredPrompt.userChoice;
             
             if (outcome === 'accepted') {
                 console.log('User accepted the install prompt');
-                hideInstallPrompt();
-            } else {
-                console.log('User dismissed the install prompt');
-                // Store that user dismissed the prompt
-                localStorage.setItem('installPromptDismissed', 'true');
-                hideInstallPrompt();
+                installButton.classList.add('hidden');
+                installBanner.classList.remove('show');
             }
-            
-            // Clear the deferredPrompt
             deferredPrompt = null;
         });
 
-        // Handle close button click
-        closeInstallBtn.addEventListener('click', () => {
-            localStorage.setItem('installPromptDismissed', 'true');
-            hideInstallPrompt();
+        // Handle install banner button
+        installBannerBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installButton.classList.add('hidden');
+                    installBanner.classList.remove('show');
+                }
+                deferredPrompt = null;
+            }
+            installBanner.classList.remove('show');
         });
 
-        // Listen for beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
-            e.preventDefault();
-            // Stash the event so it can be triggered later
-            deferredPrompt = e;
-            // Show custom install prompt
-            showInstallPrompt();
+        // Close banner
+        closeBannerBtn.addEventListener('click', () => {
+            installBanner.classList.remove('show');
+            localStorage.setItem('installBannerDismissed', 'true');
         });
 
-        // Listen for app installed event
-        window.addEventListener('appinstalled', () => {
-            console.log('SupremeMotive was installed');
-            deferredPrompt = null;
-            hideInstallPrompt();
-            
-            // Show success message
-            showAlert('Thank you for installing SupremeMotive! 🎉', 'success');
+        // ============================================
+        // BACK TO TOP BUTTON
+        // ============================================
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
 
         // ============================================
@@ -1656,9 +1660,6 @@
             await checkAuth();
             await loadQuotes();
             requestNotificationPermission();
-            
-            // Check if app is installed on page load
-            isAppInstalled();
         }
 
         init();
