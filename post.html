@@ -775,7 +775,7 @@
         }
 
         // ============================================
-        // LOAD POSTS
+        // LOAD POSTS - FIXED JOIN
         // ============================================
         async function loadPosts() {
             try {
@@ -786,11 +786,15 @@
                     </div>
                 `;
 
+                // Fix: Properly join profiles using created_by
                 const { data: posts, error } = await supabaseClient
                     .from('posts')
                     .select(`
                         *,
-                        profiles:created_by (name)
+                        profiles:created_by (
+                            name,
+                            profile_image_url
+                        )
                     `)
                     .order('created_at', { ascending: false });
 
@@ -838,12 +842,13 @@
         }
 
         // ============================================
-        // RENDER POSTS
+        // RENDER POSTS - FIXED AUTHOR IMAGE
         // ============================================
         function renderPosts() {
             postsContainer.innerHTML = allPosts.map(post => {
                 const date = new Date(post.created_at).toLocaleDateString();
                 const authorName = post.profiles?.name || 'Admin';
+                const authorImage = post.profiles?.profile_image_url;
                 const authorInitial = authorName.charAt(0).toUpperCase();
                 const isLiked = userLikes.has(post.id);
                 const needsReadMore = post.content.length > 400;
@@ -853,7 +858,10 @@
                 return `
                     <div class="post-card" data-post-id="${post.id}">
                         <div class="post-header">
-                            <div class="post-avatar">${authorInitial}</div>
+                            ${authorImage ? 
+                                `<img src="${authorImage}" class="post-avatar" style="object-fit: cover;">` : 
+                                `<div class="post-avatar">${authorInitial}</div>`
+                            }
                             <div class="post-info">
                                 <div class="post-author">${escapeHtml(authorName)}</div>
                                 <div class="post-date">📅 ${date}</div>
@@ -934,7 +942,7 @@
         };
 
         // ============================================
-        // HANDLE LIKE - FAST AND WORKING
+        // HANDLE LIKE - WORKING WITH DATABASE
         // ============================================
         window.handleLike = async (postId) => {
             if (!currentUser) {
@@ -944,42 +952,41 @@
                 return;
             }
 
+            const post = allPosts.find(p => p.id === postId);
+            const isLiked = userLikes.has(postId);
+            const likeSpan = document.getElementById(`likeCount-${postId}`);
+            const likeBtn = document.getElementById(`likeBtn-${postId}`);
+            
             try {
-                const post = allPosts.find(p => p.id === postId);
-                const isLiked = userLikes.has(postId);
-                const likeSpan = document.getElementById(`likeCount-${postId}`);
-                const likeBtn = document.getElementById(`likeBtn-${postId}`);
-                
                 if (isLiked) {
-                    // OPTIMISTIC UI UPDATE - immediate visual feedback
-                    likeSpan.textContent = parseInt(likeSpan.textContent) - 1;
-                    likeBtn.classList.remove('liked');
-                    userLikes.delete(postId);
-                    post.likes_count--;
-                    
-                    // Background database update
-                    supabaseClient
+                    // Unlike
+                    const { error } = await supabaseClient
                         .from('post_likes')
                         .delete()
                         .eq('post_id', postId)
-                        .eq('user_id', currentUser.id)
-                        .catch(err => console.error('Unlike error:', err));
+                        .eq('user_id', currentUser.id);
+                    
+                    if (error) throw error;
+                    
+                    userLikes.delete(postId);
+                    post.likes_count--;
+                    likeSpan.textContent = post.likes_count;
+                    likeBtn.classList.remove('liked');
                 } else {
-                    // OPTIMISTIC UI UPDATE - immediate visual feedback
-                    likeSpan.textContent = parseInt(likeSpan.textContent) + 1;
-                    likeBtn.classList.add('liked');
+                    // Like
+                    const { error } = await supabaseClient
+                        .from('post_likes')
+                        .insert([{ post_id: postId, user_id: currentUser.id }]);
+                    
+                    if (error) throw error;
+                    
                     userLikes.add(postId);
                     post.likes_count++;
-                    
-                    // Background database update
-                    supabaseClient
-                        .from('post_likes')
-                        .insert([{ post_id: postId, user_id: currentUser.id }])
-                        .catch(err => console.error('Like error:', err));
+                    likeSpan.textContent = post.likes_count;
+                    likeBtn.classList.add('liked');
                 }
-
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Like error:', error);
                 showAlert('Error updating like');
             }
         };
@@ -997,15 +1004,19 @@
         };
 
         // ============================================
-        // LOAD COMMENTS
+        // LOAD COMMENTS - FIXED
         // ============================================
         async function loadComments(postId) {
             try {
+                // Get main comments
                 const { data: comments, error } = await supabaseClient
                     .from('comments')
                     .select(`
                         *,
-                        profiles:user_id (name)
+                        profiles:user_id (
+                            name,
+                            profile_image_url
+                        )
                     `)
                     .eq('post_id', postId)
                     .is('parent_comment_id', null)
@@ -1013,12 +1024,16 @@
 
                 if (error) throw error;
 
+                // Get replies for each comment
                 const commentsWithReplies = await Promise.all((comments || []).map(async (comment) => {
                     const { data: replies } = await supabaseClient
                         .from('comments')
                         .select(`
                             *,
-                            profiles:user_id (name)
+                            profiles:user_id (
+                                name,
+                                profile_image_url
+                            )
                         `)
                         .eq('parent_comment_id', comment.id)
                         .order('created_at', { ascending: true });
@@ -1031,11 +1046,15 @@
 
             } catch (error) {
                 console.error('Error loading comments:', error);
+                const container = document.getElementById(`commentsList-${postId}`);
+                if (container) {
+                    container.innerHTML = '<p class="no-comments">Error loading comments</p>';
+                }
             }
         }
 
         // ============================================
-        // RENDER COMMENTS
+        // RENDER COMMENTS - FIXED WITH IMAGES
         // ============================================
         function renderComments(postId) {
             const container = document.getElementById(`commentsList-${postId}`);
@@ -1051,12 +1070,16 @@
             container.innerHTML = comments.map(comment => {
                 const date = new Date(comment.created_at).toLocaleString();
                 const authorName = comment.profiles?.name || 'User';
+                const authorImage = comment.profiles?.profile_image_url;
                 const authorInitial = authorName.charAt(0).toUpperCase();
 
                 return `
                     <div class="comment" data-comment-id="${comment.id}">
                         <div class="comment-header">
-                            <div class="comment-avatar">${authorInitial}</div>
+                            ${authorImage ? 
+                                `<img src="${authorImage}" class="comment-avatar" style="object-fit: cover;">` : 
+                                `<div class="comment-avatar">${authorInitial}</div>`
+                            }
                             <span class="comment-author">${escapeHtml(authorName)}</span>
                             <span class="comment-date">${date}</span>
                         </div>
@@ -1077,11 +1100,15 @@
                                 ${comment.replies.map(reply => {
                                     const replyDate = new Date(reply.created_at).toLocaleString();
                                     const replyAuthor = reply.profiles?.name || 'User';
+                                    const replyImage = reply.profiles?.profile_image_url;
                                     const replyInitial = replyAuthor.charAt(0).toUpperCase();
                                     return `
                                         <div class="reply">
                                             <div class="comment-header">
-                                                <div class="comment-avatar" style="width: 25px; height: 25px;">${replyInitial}</div>
+                                                ${replyImage ? 
+                                                    `<img src="${replyImage}" class="comment-avatar" style="width: 25px; height: 25px; object-fit: cover;">` : 
+                                                    `<div class="comment-avatar" style="width: 25px; height: 25px;">${replyInitial}</div>`
+                                                }
                                                 <span class="comment-author" style="font-size: 0.8rem;">${escapeHtml(replyAuthor)}</span>
                                                 <span class="comment-date">${replyDate}</span>
                                             </div>
@@ -1114,13 +1141,15 @@
             }
 
             try {
-                await supabaseClient
+                const { error } = await supabaseClient
                     .from('comments')
                     .insert([{
                         post_id: postId,
                         user_id: currentUser.id,
                         content: content
                     }]);
+
+                if (error) throw error;
 
                 input.value = '';
                 await loadComments(postId);
@@ -1169,7 +1198,7 @@
             }
 
             try {
-                await supabaseClient
+                const { error } = await supabaseClient
                     .from('comments')
                     .insert([{
                         post_id: postId,
@@ -1177,6 +1206,8 @@
                         content: content,
                         parent_comment_id: commentId
                     }]);
+
+                if (error) throw error;
 
                 input.value = '';
                 document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
