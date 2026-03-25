@@ -321,7 +321,6 @@
 
         .btn-progress { background: var(--electric-blue); color: var(--bg-color); }
         .btn-resolve { background: var(--success); color: white; }
-        .btn-reject { background: var(--error); color: white; }
 
         .empty-state {
             text-align: center;
@@ -467,15 +466,11 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const roleBadge = document.getElementById('roleBadge');
 
-        // Show alert
         function showAlert(message, type = 'success') {
             alertContainer.innerHTML = `<div class="alert">${type === 'success' ? '✅' : '❌'} ${message}</div>`;
-            setTimeout(() => {
-                alertContainer.innerHTML = '';
-            }, 3000);
+            setTimeout(() => alertContainer.innerHTML = '', 3000);
         }
 
-        // Escape HTML
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
             return unsafe
@@ -486,64 +481,30 @@
                 .replace(/'/g, '&#039;');
         }
 
-        // Check authentication
         async function checkAuth() {
             try {
                 const { data: { user }, error } = await supabaseClient.auth.getUser();
-                
                 if (error) throw error;
-                
                 if (!user) {
                     window.location.href = '../login.html';
                     return false;
                 }
-
                 currentUser = user;
-
-                // Check if user is admin
                 if (!ADMIN_EMAILS.includes(user.email)) {
                     window.location.href = '../index.html';
                     return false;
                 }
-
                 roleBadge.textContent = 'Support Admin';
                 return true;
             } catch (error) {
-                console.error('Auth error:', error);
                 window.location.href = '../login.html';
                 return false;
             }
         }
 
-        // Create support_tickets table if not exists (for safety)
-        async function ensureTableExists() {
-            try {
-                // Try to query the table - if it fails, we'll create it
-                const { error } = await supabaseClient
-                    .from('support_tickets')
-                    .select('count', { count: 'exact', head: true });
-                
-                if (error && error.code === '42P01') {
-                    // Table doesn't exist, create it via RPC
-                    const { error: rpcError } = await supabaseClient.rpc('create_support_tickets_table');
-                    if (rpcError) {
-                        console.log('Note: support_tickets table may not exist. Please run the SQL script.');
-                    }
-                }
-            } catch (error) {
-                console.log('Table check error:', error);
-            }
-        }
-
-        // Load tickets
         async function loadTickets() {
             try {
-                ticketsContainer.innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Loading tickets...</p>
-                    </div>
-                `;
+                ticketsContainer.innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading tickets...</p></div>`;
 
                 const { data, error } = await supabaseClient
                     .from('support_tickets')
@@ -567,7 +528,6 @@
             }
         }
 
-        // Update statistics
         function updateStats() {
             const total = allTickets.length;
             const pending = allTickets.filter(t => t.status === 'pending').length;
@@ -580,7 +540,6 @@
             resolvedTicketsSpan.textContent = resolved;
         }
 
-        // Render tickets
         function renderTickets() {
             let filtered = [...allTickets];
             if (currentFilter !== 'all') {
@@ -588,12 +547,7 @@
             }
 
             if (filtered.length === 0) {
-                ticketsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-ticket-alt" style="font-size: 3rem; opacity: 0.5;"></i>
-                        <p>No tickets found</p>
-                    </div>
-                `;
+                ticketsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-ticket-alt" style="font-size: 3rem; opacity: 0.5;"></i><p>No tickets found</p></div>`;
                 return;
             }
 
@@ -623,11 +577,11 @@
                                   placeholder="Write your response to the user..." rows="3"></textarea>
                         <div class="response-buttons">
                             ${ticket.status === 'pending' ? `
-                                <button class="response-btn btn-progress" onclick="updateTicket('${ticket.id}', 'in_progress', 'response-${ticket.id}')">
+                                <button class="response-btn btn-progress" onclick="updateTicket('${ticket.id}', 'in_progress')">
                                     <i class="fas fa-play"></i> Start Working
                                 </button>
                             ` : ''}
-                            <button class="response-btn btn-resolve" onclick="updateTicket('${ticket.id}', 'resolved', 'response-${ticket.id}')">
+                            <button class="response-btn btn-resolve" onclick="updateTicketWithResponse('${ticket.id}', 'resolved', 'response-${ticket.id}')">
                                 <i class="fas fa-check"></i> Resolve & Respond
                             </button>
                         </div>
@@ -636,8 +590,29 @@
             `).join('');
         }
 
-        // Update ticket
-        window.updateTicket = async (ticketId, newStatus, responseId) => {
+        // Update ticket status only
+        window.updateTicket = async (ticketId, newStatus) => {
+            try {
+                const updates = { 
+                    status: newStatus,
+                    updated_at: new Date()
+                };
+
+                const { error } = await supabaseClient
+                    .from('support_tickets')
+                    .update(updates)
+                    .eq('id', ticketId);
+
+                if (error) throw error;
+                showAlert(`Ticket updated to ${newStatus.replace('_', ' ')}!`);
+                await loadTickets();
+            } catch (error) {
+                showAlert('Error updating ticket: ' + error.message, 'error');
+            }
+        };
+
+        // Update ticket with response
+        window.updateTicketWithResponse = async (ticketId, newStatus, responseId) => {
             const response = document.getElementById(responseId).value.trim();
             
             try {
@@ -649,10 +624,6 @@
                 if (response) {
                     updates.admin_response = response;
                 }
-                
-                if (newStatus === 'resolved') {
-                    updates.resolved_at = new Date();
-                }
 
                 const { error } = await supabaseClient
                     .from('support_tickets')
@@ -663,13 +634,11 @@
                 
                 showAlert(`Ticket ${newStatus === 'resolved' ? 'resolved' : 'updated'} successfully!`);
                 await loadTickets();
-                
             } catch (error) {
                 showAlert('Error updating ticket: ' + error.message, 'error');
             }
         };
 
-        // Filter buttons
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
@@ -679,21 +648,15 @@
             });
         });
 
-        // Logout
         logoutBtn.addEventListener('click', async () => {
             await supabaseClient.auth.signOut();
             window.location.href = '../index.html';
         });
 
-        // Initialize
         async function init() {
             const isAuthed = await checkAuth();
-            if (isAuthed) {
-                await ensureTableExists();
-                await loadTickets();
-            }
+            if (isAuthed) await loadTickets();
         }
-
         init();
     </script>
 </body>
