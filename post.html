@@ -252,7 +252,6 @@
             font-size: 0.95rem;
             white-space: pre-wrap;
             word-wrap: break-word;
-            transition: max-height 0.3s ease;
         }
 
         .post-content.collapsed {
@@ -624,7 +623,6 @@
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Admin emails
         const ADMIN_EMAILS = [
             'supremealpha04@gmail.com',
             'suprememotive43@gmail.com',
@@ -636,7 +634,6 @@
         let currentUser = null;
         let allPosts = [];
         let userLikes = new Set();
-        let commentsData = {};
 
         // DOM Elements
         const postsContainer = document.getElementById('postsContainer');
@@ -649,9 +646,7 @@
         const logoutBtn = document.getElementById('logoutBtn');
         const userGreeting = document.getElementById('userGreeting');
 
-        // ============================================
-        // THEME TOGGLE
-        // ============================================
+        // Theme toggle
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
@@ -692,9 +687,7 @@
             }
         });
 
-        // ============================================
-        // MOBILE MENU
-        // ============================================
+        // Mobile menu
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
@@ -705,9 +698,6 @@
             });
         });
 
-        // ============================================
-        // SHOW ALERT
-        // ============================================
         function showAlert(message) {
             alertContainer.innerHTML = `<div class="alert">${message}</div>`;
             setTimeout(() => {
@@ -715,9 +705,17 @@
             }, 2000);
         }
 
-        // ============================================
-        // CHECK AUTH
-        // ============================================
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Check auth
         async function checkAuth() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
@@ -746,17 +744,7 @@
             }
         }
 
-        // ============================================
-        // LOGOUT
-        // ============================================
-        logoutBtn.addEventListener('click', async () => {
-            await supabaseClient.auth.signOut();
-            window.location.reload();
-        });
-
-        // ============================================
-        // LOAD USER LIKES
-        // ============================================
+        // Load user likes
         async function loadUserLikes() {
             if (!currentUser) return;
 
@@ -774,8 +762,14 @@
             }
         }
 
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
+
         // ============================================
-        // LOAD POSTS - FIXED JOIN
+        // LOAD POSTS
         // ============================================
         async function loadPosts() {
             try {
@@ -786,7 +780,6 @@
                     </div>
                 `;
 
-                // Fix: Properly join profiles using created_by
                 const { data: posts, error } = await supabaseClient
                     .from('posts')
                     .select(`
@@ -842,13 +835,12 @@
         }
 
         // ============================================
-        // RENDER POSTS - FIXED AUTHOR IMAGE
+        // RENDER POSTS
         // ============================================
         function renderPosts() {
             postsContainer.innerHTML = allPosts.map(post => {
                 const date = new Date(post.created_at).toLocaleDateString();
                 const authorName = post.profiles?.name || 'Admin';
-                const authorImage = post.profiles?.profile_image_url;
                 const authorInitial = authorName.charAt(0).toUpperCase();
                 const isLiked = userLikes.has(post.id);
                 const needsReadMore = post.content.length > 400;
@@ -858,10 +850,7 @@
                 return `
                     <div class="post-card" data-post-id="${post.id}">
                         <div class="post-header">
-                            ${authorImage ? 
-                                `<img src="${authorImage}" class="post-avatar" style="object-fit: cover;">` : 
-                                `<div class="post-avatar">${authorInitial}</div>`
-                            }
+                            <div class="post-avatar">${authorInitial}</div>
                             <div class="post-info">
                                 <div class="post-author">${escapeHtml(authorName)}</div>
                                 <div class="post-date">📅 ${date}</div>
@@ -886,13 +875,13 @@
                         </div>
 
                         <div class="post-stats">
-                            <button class="stat-btn like-btn ${isLiked ? 'liked' : ''}" onclick="handleLike('${post.id}')" id="likeBtn-${post.id}">
+                            <button class="stat-btn like-btn ${isLiked ? 'liked' : ''}" onclick="handleLike('${post.id}')">
                                 <span>❤️</span>
-                                <span id="likeCount-${post.id}">${likeCount}</span>
+                                <span>${likeCount}</span>
                             </button>
-                            <button class="stat-btn" onclick="toggleComments('${post.id}')">
+                            <button class="stat-btn" onclick="loadAndShowComments('${post.id}')">
                                 <span>💬</span>
-                                <span id="commentCount-${post.id}">${post.comments_count}</span>
+                                <span>${post.comments_count}</span>
                             </button>
                         </div>
 
@@ -920,9 +909,6 @@
                     </div>
                 `;
             }).join('');
-
-            // Load comments for each post
-            allPosts.forEach(post => loadComments(post.id));
         }
 
         // ============================================
@@ -942,7 +928,7 @@
         };
 
         // ============================================
-        // HANDLE LIKE - WORKING WITH DATABASE
+        // HANDLE LIKE
         // ============================================
         window.handleLike = async (postId) => {
             if (!currentUser) {
@@ -952,39 +938,32 @@
                 return;
             }
 
-            const post = allPosts.find(p => p.id === postId);
-            const isLiked = userLikes.has(postId);
-            const likeSpan = document.getElementById(`likeCount-${postId}`);
-            const likeBtn = document.getElementById(`likeBtn-${postId}`);
-            
             try {
+                const post = allPosts.find(p => p.id === postId);
+                const isLiked = userLikes.has(postId);
+                
                 if (isLiked) {
-                    // Unlike
-                    const { error } = await supabaseClient
+                    await supabaseClient
                         .from('post_likes')
                         .delete()
                         .eq('post_id', postId)
                         .eq('user_id', currentUser.id);
-                    
-                    if (error) throw error;
-                    
                     userLikes.delete(postId);
                     post.likes_count--;
-                    likeSpan.textContent = post.likes_count;
-                    likeBtn.classList.remove('liked');
                 } else {
-                    // Like
-                    const { error } = await supabaseClient
+                    await supabaseClient
                         .from('post_likes')
                         .insert([{ post_id: postId, user_id: currentUser.id }]);
-                    
-                    if (error) throw error;
-                    
                     userLikes.add(postId);
                     post.likes_count++;
-                    likeSpan.textContent = post.likes_count;
-                    likeBtn.classList.add('liked');
                 }
+                
+                // Refresh the specific post's like button
+                const likeBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .like-btn`);
+                const likeCountSpan = likeBtn.querySelector('span:last-child');
+                likeBtn.classList.toggle('liked', userLikes.has(postId));
+                likeCountSpan.textContent = post.likes_count;
+
             } catch (error) {
                 console.error('Like error:', error);
                 showAlert('Error updating like');
@@ -992,11 +971,12 @@
         };
 
         // ============================================
-        // TOGGLE COMMENTS
+        // LOAD AND SHOW COMMENTS
         // ============================================
-        window.toggleComments = (postId) => {
+        window.loadAndShowComments = async (postId) => {
             const commentsDiv = document.getElementById(`comments-${postId}`);
             if (commentsDiv.classList.contains('hidden')) {
+                await loadComments(postId);
                 commentsDiv.classList.remove('hidden');
             } else {
                 commentsDiv.classList.add('hidden');
@@ -1004,15 +984,22 @@
         };
 
         // ============================================
-        // LOAD COMMENTS - FIXED
+        // LOAD COMMENTS - FIXED WORKING VERSION
         // ============================================
         async function loadComments(postId) {
             try {
-                // Get main comments
+                const commentsListDiv = document.getElementById(`commentsList-${postId}`);
+                commentsListDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading comments...</p></div>';
+
+                // Get main comments with user profiles
                 const { data: comments, error } = await supabaseClient
                     .from('comments')
                     .select(`
-                        *,
+                        id,
+                        content,
+                        created_at,
+                        user_id,
+                        parent_comment_id,
                         profiles:user_id (
                             name,
                             profile_image_url
@@ -1024,12 +1011,20 @@
 
                 if (error) throw error;
 
+                if (!comments || comments.length === 0) {
+                    commentsListDiv.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
+                    return;
+                }
+
                 // Get replies for each comment
-                const commentsWithReplies = await Promise.all((comments || []).map(async (comment) => {
-                    const { data: replies } = await supabaseClient
+                const commentsWithReplies = await Promise.all(comments.map(async (comment) => {
+                    const { data: replies, error: replyError } = await supabaseClient
                         .from('comments')
                         .select(`
-                            *,
+                            id,
+                            content,
+                            created_at,
+                            user_id,
                             profiles:user_id (
                                 name,
                                 profile_image_url
@@ -1038,48 +1033,39 @@
                         .eq('parent_comment_id', comment.id)
                         .order('created_at', { ascending: true });
 
-                    return { ...comment, replies: replies || [] };
+                    if (replyError) throw replyError;
+
+                    return {
+                        ...comment,
+                        replies: replies || []
+                    };
                 }));
 
-                commentsData[postId] = commentsWithReplies;
-                renderComments(postId);
+                renderComments(commentsWithReplies, postId);
 
             } catch (error) {
                 console.error('Error loading comments:', error);
-                const container = document.getElementById(`commentsList-${postId}`);
-                if (container) {
-                    container.innerHTML = '<p class="no-comments">Error loading comments</p>';
-                }
+                document.getElementById(`commentsList-${postId}`).innerHTML = 
+                    '<p class="no-comments">Error loading comments. Please refresh.</p>';
             }
         }
 
         // ============================================
-        // RENDER COMMENTS - FIXED WITH IMAGES
+        // RENDER COMMENTS
         // ============================================
-        function renderComments(postId) {
+        function renderComments(comments, postId) {
             const container = document.getElementById(`commentsList-${postId}`);
             if (!container) return;
-
-            const comments = commentsData[postId] || [];
-
-            if (comments.length === 0) {
-                container.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
-                return;
-            }
 
             container.innerHTML = comments.map(comment => {
                 const date = new Date(comment.created_at).toLocaleString();
                 const authorName = comment.profiles?.name || 'User';
-                const authorImage = comment.profiles?.profile_image_url;
                 const authorInitial = authorName.charAt(0).toUpperCase();
 
                 return `
                     <div class="comment" data-comment-id="${comment.id}">
                         <div class="comment-header">
-                            ${authorImage ? 
-                                `<img src="${authorImage}" class="comment-avatar" style="object-fit: cover;">` : 
-                                `<div class="comment-avatar">${authorInitial}</div>`
-                            }
+                            <div class="comment-avatar">${authorInitial}</div>
                             <span class="comment-author">${escapeHtml(authorName)}</span>
                             <span class="comment-date">${date}</span>
                         </div>
@@ -1100,15 +1086,11 @@
                                 ${comment.replies.map(reply => {
                                     const replyDate = new Date(reply.created_at).toLocaleString();
                                     const replyAuthor = reply.profiles?.name || 'User';
-                                    const replyImage = reply.profiles?.profile_image_url;
                                     const replyInitial = replyAuthor.charAt(0).toUpperCase();
                                     return `
                                         <div class="reply">
                                             <div class="comment-header">
-                                                ${replyImage ? 
-                                                    `<img src="${replyImage}" class="comment-avatar" style="width: 25px; height: 25px; object-fit: cover;">` : 
-                                                    `<div class="comment-avatar" style="width: 25px; height: 25px;">${replyInitial}</div>`
-                                                }
+                                                <div class="comment-avatar" style="width: 25px; height: 25px;">${replyInitial}</div>
                                                 <span class="comment-author" style="font-size: 0.8rem;">${escapeHtml(replyAuthor)}</span>
                                                 <span class="comment-date">${replyDate}</span>
                                             </div>
@@ -1157,12 +1139,13 @@
                 // Update comment count
                 const post = allPosts.find(p => p.id === postId);
                 post.comments_count++;
-                document.getElementById(`commentCount-${postId}`).textContent = post.comments_count;
+                const commentBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .stat-btn:last-child span:last-child`);
+                if (commentBtn) commentBtn.textContent = post.comments_count;
                 
                 showAlert('Comment posted!');
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error posting comment:', error);
                 showAlert('Error posting comment');
             }
         };
@@ -1216,28 +1199,16 @@
                 // Update comment count
                 const post = allPosts.find(p => p.id === postId);
                 post.comments_count++;
-                document.getElementById(`commentCount-${postId}`).textContent = post.comments_count;
+                const commentBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .stat-btn:last-child span:last-child`);
+                if (commentBtn) commentBtn.textContent = post.comments_count;
                 
                 showAlert('Reply posted!');
 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error posting reply:', error);
                 showAlert('Error posting reply');
             }
         };
-
-        // ============================================
-        // ESCAPE HTML
-        // ============================================
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return unsafe
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
 
         // ============================================
         // INITIALIZE
