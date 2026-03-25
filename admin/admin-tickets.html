@@ -121,6 +121,13 @@
             color: var(--error);
             border-radius: 12px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--error);
+            color: white;
         }
 
         .main-content {
@@ -154,12 +161,24 @@
             border-radius: 15px;
             text-align: center;
             border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--gold);
         }
 
         .stat-value {
             font-size: 2rem;
             font-weight: bold;
             color: var(--gold);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
         }
 
         .filters {
@@ -199,6 +218,11 @@
             padding: 1.5rem;
             margin-bottom: 1rem;
             border-left: 4px solid var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .ticket-item:hover {
+            transform: translateX(5px);
         }
 
         .ticket-header {
@@ -207,6 +231,7 @@
             align-items: center;
             margin-bottom: 1rem;
             flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .ticket-subject {
@@ -219,6 +244,7 @@
             padding: 0.3rem 1rem;
             border-radius: 20px;
             font-size: 0.8rem;
+            font-weight: 600;
         }
 
         .status-pending { background: rgba(255, 193, 7, 0.1); color: var(--warning); border: 1px solid var(--warning); }
@@ -238,6 +264,17 @@
             color: var(--text-secondary);
             line-height: 1.6;
             margin-bottom: 1rem;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .admin-response {
+            background: rgba(0, 240, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--electric-blue);
         }
 
         .response-form {
@@ -255,11 +292,18 @@
             color: var(--text-color);
             margin-bottom: 0.5rem;
             resize: vertical;
+            font-family: inherit;
+        }
+
+        .response-textarea:focus {
+            outline: none;
+            border-color: var(--gold);
         }
 
         .response-buttons {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .response-btn {
@@ -268,16 +312,41 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
 
-        .btn-approve { background: var(--success); color: white; }
+        .response-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-progress { background: var(--electric-blue); color: var(--bg-color); }
+        .btn-resolve { background: var(--success); color: white; }
         .btn-reject { background: var(--error); color: white; }
-        .btn-resolve { background: var(--electric-blue); color: var(--bg-color); }
 
         .empty-state {
             text-align: center;
             padding: 3rem;
             color: var(--text-secondary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .alert {
@@ -289,6 +358,7 @@
             border: 2px solid var(--gold);
             border-radius: 8px;
             padding: 0.8rem 1.5rem;
+            color: var(--text-color);
             z-index: 1000;
             animation: slideDown 0.3s ease;
         }
@@ -305,8 +375,8 @@
             .sidebar-logo { font-size: 0; }
             .sidebar-logo::before { content: 'SM'; font-size: 1.5rem; }
             .role-badge, .sidebar-nav a span { display: none; }
-            .sidebar-nav a { justify-content: center; }
-            .main-content { margin-left: 70px; }
+            .sidebar-nav a { justify-content: center; padding: 1rem; }
+            .main-content { margin-left: 70px; padding: 1rem; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -316,7 +386,7 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">SupremeMotive</div>
-                <div class="role-badge">Support Admin</div>
+                <div class="role-badge" id="roleBadge">Loading...</div>
             </div>
             <ul class="sidebar-nav">
                 <li><a href="admin-dashboard.html"><i>📊</i><span>Dashboard</span></a></li>
@@ -338,19 +408,19 @@
             <div class="stats-grid" id="statsGrid">
                 <div class="stat-card">
                     <div class="stat-value" id="totalTickets">0</div>
-                    <div>Total Tickets</div>
+                    <div class="stat-label">Total Tickets</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="pendingTickets">0</div>
-                    <div>Pending</div>
+                    <div class="stat-label">Pending</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="inProgressTickets">0</div>
-                    <div>In Progress</div>
+                    <div class="stat-label">In Progress</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="resolvedTickets">0</div>
-                    <div>Resolved</div>
+                    <div class="stat-label">Resolved</div>
                 </div>
             </div>
 
@@ -362,7 +432,10 @@
             </div>
 
             <div class="tickets-container" id="ticketsContainer">
-                <div class="loading">Loading tickets...</div>
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading tickets...</p>
+                </div>
             </div>
         </main>
     </div>
@@ -372,52 +445,142 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const ADMIN_EMAILS = ['supremealpha04@gmail.com', 'suprememotive43@gmail.com', 'sandrakukk055@gmail.com', 'emmanuelamer6@gmail.com'];
+
+        const ADMIN_EMAILS = [
+            'supremealpha04@gmail.com',
+            'suprememotive43@gmail.com',
+            'sandrakukk055@gmail.com',
+            'emmanuelamer6@gmail.com'
+        ];
 
         let allTickets = [];
         let currentFilter = 'all';
+        let currentUser = null;
 
         const ticketsContainer = document.getElementById('ticketsContainer');
         const alertContainer = document.getElementById('alertContainer');
-        const totalTickets = document.getElementById('totalTickets');
-        const pendingTickets = document.getElementById('pendingTickets');
-        const inProgressTickets = document.getElementById('inProgressTickets');
-        const resolvedTickets = document.getElementById('resolvedTickets');
+        const totalTicketsSpan = document.getElementById('totalTickets');
+        const pendingTicketsSpan = document.getElementById('pendingTickets');
+        const inProgressTicketsSpan = document.getElementById('inProgressTickets');
+        const resolvedTicketsSpan = document.getElementById('resolvedTickets');
         const filterBtns = document.querySelectorAll('.filter-btn');
         const logoutBtn = document.getElementById('logoutBtn');
+        const roleBadge = document.getElementById('roleBadge');
 
-        async function checkAuth() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user || !ADMIN_EMAILS.includes(user.email)) {
-                window.location.href = '../index.html';
-                return false;
-            }
-            return true;
+        // Show alert
+        function showAlert(message, type = 'success') {
+            alertContainer.innerHTML = `<div class="alert">${type === 'success' ? '✅' : '❌'} ${message}</div>`;
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
         }
 
+        // Escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Check authentication
+        async function checkAuth() {
+            try {
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                
+                if (error) throw error;
+                
+                if (!user) {
+                    window.location.href = '../login.html';
+                    return false;
+                }
+
+                currentUser = user;
+
+                // Check if user is admin
+                if (!ADMIN_EMAILS.includes(user.email)) {
+                    window.location.href = '../index.html';
+                    return false;
+                }
+
+                roleBadge.textContent = 'Support Admin';
+                return true;
+            } catch (error) {
+                console.error('Auth error:', error);
+                window.location.href = '../login.html';
+                return false;
+            }
+        }
+
+        // Create support_tickets table if not exists (for safety)
+        async function ensureTableExists() {
+            try {
+                // Try to query the table - if it fails, we'll create it
+                const { error } = await supabaseClient
+                    .from('support_tickets')
+                    .select('count', { count: 'exact', head: true });
+                
+                if (error && error.code === '42P01') {
+                    // Table doesn't exist, create it via RPC
+                    const { error: rpcError } = await supabaseClient.rpc('create_support_tickets_table');
+                    if (rpcError) {
+                        console.log('Note: support_tickets table may not exist. Please run the SQL script.');
+                    }
+                }
+            } catch (error) {
+                console.log('Table check error:', error);
+            }
+        }
+
+        // Load tickets
         async function loadTickets() {
             try {
+                ticketsContainer.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading tickets...</p>
+                    </div>
+                `;
+
                 const { data, error } = await supabaseClient
                     .from('support_tickets')
                     .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
+
                 allTickets = data || [];
                 updateStats();
                 renderTickets();
+
             } catch (error) {
-                showAlert('Error loading tickets: ' + error.message);
+                console.error('Error loading tickets:', error);
+                ticketsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <p>Error loading tickets: ${error.message}</p>
+                        <p style="margin-top: 1rem;">Make sure the support_tickets table exists in your database.</p>
+                    </div>
+                `;
             }
         }
 
+        // Update statistics
         function updateStats() {
-            totalTickets.textContent = allTickets.length;
-            pendingTickets.textContent = allTickets.filter(t => t.status === 'pending').length;
-            inProgressTickets.textContent = allTickets.filter(t => t.status === 'in_progress').length;
-            resolvedTickets.textContent = allTickets.filter(t => t.status === 'resolved').length;
+            const total = allTickets.length;
+            const pending = allTickets.filter(t => t.status === 'pending').length;
+            const inProgress = allTickets.filter(t => t.status === 'in_progress').length;
+            const resolved = allTickets.filter(t => t.status === 'resolved').length;
+
+            totalTicketsSpan.textContent = total;
+            pendingTicketsSpan.textContent = pending;
+            inProgressTicketsSpan.textContent = inProgress;
+            resolvedTicketsSpan.textContent = resolved;
         }
 
+        // Render tickets
         function renderTickets() {
             let filtered = [...allTickets];
             if (currentFilter !== 'all') {
@@ -425,7 +588,12 @@
             }
 
             if (filtered.length === 0) {
-                ticketsContainer.innerHTML = '<div class="empty-state">No tickets found</div>';
+                ticketsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-ticket-alt" style="font-size: 3rem; opacity: 0.5;"></i>
+                        <p>No tickets found</p>
+                    </div>
+                `;
                 return;
             }
 
@@ -433,38 +601,58 @@
                 <div class="ticket-item" data-id="${ticket.id}">
                     <div class="ticket-header">
                         <span class="ticket-subject">${escapeHtml(ticket.subject)}</span>
-                        <span class="ticket-status status-${ticket.status}">${ticket.status.replace('_', ' ')}</span>
+                        <span class="ticket-status status-${ticket.status}">${ticket.status.replace('_', ' ').toUpperCase()}</span>
                     </div>
                     <div class="ticket-meta">
                         <span><i class="fas fa-user"></i> ${escapeHtml(ticket.user_email)}</span>
-                        <span><i class="fas fa-flag"></i> ${ticket.priority.toUpperCase()}</span>
+                        <span><i class="fas fa-flag"></i> Priority: ${ticket.priority?.toUpperCase() || 'MEDIUM'}</span>
                         <span><i class="far fa-calendar"></i> ${new Date(ticket.created_at).toLocaleString()}</span>
                     </div>
-                    <div class="ticket-message">${escapeHtml(ticket.message)}</div>
+                    <div class="ticket-message">
+                        <strong>Message:</strong><br>
+                        ${escapeHtml(ticket.message)}
+                    </div>
                     ${ticket.admin_response ? `
-                        <div style="background: rgba(0, 240, 255, 0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                            <strong style="color: var(--electric-blue);">Admin Response:</strong><br>
+                        <div class="admin-response">
+                            <strong><i class="fas fa-reply"></i> Admin Response:</strong><br>
                             ${escapeHtml(ticket.admin_response)}
                         </div>
                     ` : ''}
                     <div class="response-form">
-                        <textarea id="response-${ticket.id}" class="response-textarea" placeholder="Write your response..." rows="3"></textarea>
+                        <textarea id="response-${ticket.id}" class="response-textarea" 
+                                  placeholder="Write your response to the user..." rows="3"></textarea>
                         <div class="response-buttons">
-                            <button class="response-btn btn-approve" onclick="updateTicket('${ticket.id}', 'in_progress', 'response-${ticket.id}')">Start Working</button>
-                            <button class="response-btn btn-resolve" onclick="updateTicket('${ticket.id}', 'resolved', 'response-${ticket.id}')">Resolve & Respond</button>
+                            ${ticket.status === 'pending' ? `
+                                <button class="response-btn btn-progress" onclick="updateTicket('${ticket.id}', 'in_progress', 'response-${ticket.id}')">
+                                    <i class="fas fa-play"></i> Start Working
+                                </button>
+                            ` : ''}
+                            <button class="response-btn btn-resolve" onclick="updateTicket('${ticket.id}', 'resolved', 'response-${ticket.id}')">
+                                <i class="fas fa-check"></i> Resolve & Respond
+                            </button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
+        // Update ticket
         window.updateTicket = async (ticketId, newStatus, responseId) => {
             const response = document.getElementById(responseId).value.trim();
             
             try {
-                const updates = { status: newStatus };
-                if (response) updates.admin_response = response;
-                if (newStatus === 'resolved') updates.resolved_at = new Date();
+                const updates = { 
+                    status: newStatus,
+                    updated_at: new Date()
+                };
+                
+                if (response) {
+                    updates.admin_response = response;
+                }
+                
+                if (newStatus === 'resolved') {
+                    updates.resolved_at = new Date();
+                }
 
                 const { error } = await supabaseClient
                     .from('support_tickets')
@@ -472,28 +660,16 @@
                     .eq('id', ticketId);
 
                 if (error) throw error;
+                
                 showAlert(`Ticket ${newStatus === 'resolved' ? 'resolved' : 'updated'} successfully!`);
                 await loadTickets();
+                
             } catch (error) {
-                showAlert('Error updating ticket: ' + error.message);
+                showAlert('Error updating ticket: ' + error.message, 'error');
             }
         };
 
-        function showAlert(message) {
-            alertContainer.innerHTML = `<div class="alert">${message}</div>`;
-            setTimeout(() => alertContainer.innerHTML = '', 3000);
-        }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-
+        // Filter buttons
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
@@ -503,15 +679,21 @@
             });
         });
 
+        // Logout
         logoutBtn.addEventListener('click', async () => {
             await supabaseClient.auth.signOut();
             window.location.href = '../index.html';
         });
 
+        // Initialize
         async function init() {
-            const authed = await checkAuth();
-            if (authed) await loadTickets();
+            const isAuthed = await checkAuth();
+            if (isAuthed) {
+                await ensureTableExists();
+                await loadTickets();
+            }
         }
+
         init();
     </script>
 </body>
