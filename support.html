@@ -35,6 +35,7 @@
             padding-bottom: 80px;
         }
 
+        /* Navigation */
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
@@ -200,6 +201,7 @@
             padding: 0 2rem;
         }
 
+        /* Hero Section */
         .hero-section {
             text-align: center;
             margin-bottom: 3rem;
@@ -246,6 +248,7 @@
             z-index: 1;
         }
 
+        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -285,6 +288,7 @@
             font-size: 0.9rem;
         }
 
+        /* Support Options */
         .section-title {
             font-size: 2rem;
             color: var(--gold);
@@ -318,8 +322,6 @@
             padding: 2rem;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
             text-align: center;
         }
 
@@ -357,7 +359,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
-            text-decoration: none;
         }
 
         .support-btn.whatsapp {
@@ -380,7 +381,8 @@
             box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
 
-        .contact-section {
+        /* Create Ticket Form */
+        .ticket-form-section {
             background: var(--card-bg);
             border-radius: 30px;
             padding: 2.5rem;
@@ -388,28 +390,18 @@
             border: 1px solid var(--border-color);
         }
 
-        .contact-header {
+        .ticket-form-header {
             text-align: center;
             margin-bottom: 2rem;
         }
 
-        .contact-header h2 {
+        .ticket-form-header h2 {
             color: var(--gold);
             font-size: 1.8rem;
             margin-bottom: 0.5rem;
         }
 
-        .contact-header p {
-            color: var(--text-secondary);
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .contact-form {
+        .ticket-form {
             background: var(--bg-color);
             padding: 2rem;
             border-radius: 20px;
@@ -449,7 +441,11 @@
             resize: vertical;
         }
 
-        .send-btn {
+        select.form-control {
+            cursor: pointer;
+        }
+
+        .submit-btn {
             width: 100%;
             padding: 1rem;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
@@ -466,95 +462,60 @@
             transition: all 0.3s ease;
         }
 
-        .send-btn:hover {
+        .submit-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
 
-        .admin-card {
-            background: var(--bg-color);
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        .admin-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 2rem;
-            color: var(--bg-color);
-            font-weight: bold;
-            border: 3px solid var(--gold);
-        }
-
-        .admin-name {
-            font-size: 1.3rem;
-            color: var(--gold);
-            margin-bottom: 0.3rem;
-        }
-
-        .admin-title {
-            color: var(--electric-blue);
-            margin-bottom: 1rem;
-        }
-
-        .response-time {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid var(--gold);
-            border-radius: 30px;
-            padding: 0.5rem 1rem;
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            color: var(--gold);
-        }
-
-        .contact-methods {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .contact-method {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .contact-method:hover {
-            transform: translateY(-3px);
-            border-color: var(--gold);
-            color: var(--gold);
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* Ticket History */
-        .ticket-history {
-            margin-top: 3rem;
-            padding: 2rem;
+        .ticket-history-section {
             background: var(--card-bg);
-            border-radius: 20px;
+            border-radius: 30px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
             border: 1px solid var(--border-color);
         }
 
-        .ticket-history h3 {
+        .ticket-history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .ticket-history-header h2 {
             color: var(--gold);
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.4rem 1rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--gold);
+            color: var(--bg-color);
+            border-color: var(--gold);
         }
 
         .ticket-list {
@@ -566,35 +527,37 @@
         .ticket-item {
             background: var(--bg-color);
             border-radius: 12px;
-            padding: 1rem;
-            border-left: 3px solid var(--gold);
+            padding: 1.2rem;
+            border-left: 4px solid var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .ticket-item:hover {
+            transform: translateX(5px);
+            background: var(--card-bg);
+        }
+
+        .ticket-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 0.8rem;
             flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .ticket-info {
-            flex: 1;
+            gap: 0.5rem;
         }
 
         .ticket-subject {
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--gold);
-            margin-bottom: 0.3rem;
-        }
-
-        .ticket-date {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
         }
 
         .ticket-status {
             padding: 0.3rem 1rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
+            text-transform: uppercase;
         }
 
         .status-pending {
@@ -603,12 +566,93 @@
             border: 1px solid var(--warning);
         }
 
+        .status-in_progress {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--electric-blue);
+            border: 1px solid var(--electric-blue);
+        }
+
         .status-resolved {
             background: rgba(76, 175, 80, 0.1);
             color: var(--success);
             border: 1px solid var(--success);
         }
 
+        .status-closed {
+            background: rgba(176, 176, 176, 0.1);
+            color: var(--text-secondary);
+            border: 1px solid var(--text-secondary);
+        }
+
+        .ticket-message {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .ticket-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .ticket-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .ticket-priority {
+            font-size: 0.8rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .priority-low {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .priority-medium {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning);
+        }
+
+        .priority-high {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+        }
+
+        .admin-response {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 240, 255, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--electric-blue);
+        }
+
+        .admin-response-label {
+            color: var(--electric-blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-response-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Donation Section */
         .donation-section {
             margin-bottom: 3rem;
             padding: 2rem;
@@ -671,7 +715,7 @@
 
         .payment-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
         }
 
@@ -757,6 +801,7 @@
             border-radius: 16px;
         }
 
+        /* FAQ Section */
         .faq-section {
             margin-bottom: 3rem;
         }
@@ -846,6 +891,12 @@
             display: none !important;
         }
 
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
         @media (max-width: 768px) {
             .menu-toggle {
                 display: flex;
@@ -870,8 +921,14 @@
                 transform: translateY(0);
             }
 
-            .contact-grid {
-                grid-template-columns: 1fr;
+            .ticket-history-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .ticket-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
             .hero-title {
@@ -943,13 +1000,13 @@
     <main class="container">
         <section class="hero-section">
             <h1 class="hero-title">How Can We Help You?</h1>
-            <p class="hero-subtitle">We're here to support you 24/7. Choose from our support options below or contact us directly.</p>
+            <p class="hero-subtitle">We're here to support you 24/7. Create a support ticket and our team will respond within 24 hours.</p>
         </section>
 
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon">⏱️</div>
-                <div class="stat-number" id="avgResponse">15 min</div>
+                <div class="stat-number" id="avgResponse">24 hrs</div>
                 <div class="stat-label">Avg Response Time</div>
             </div>
             <div class="stat-card">
@@ -969,12 +1026,66 @@
             </div>
         </div>
 
-        <h2 class="section-title">Get Support</h2>
+        <!-- Create Ticket Form -->
+        <section class="ticket-form-section" id="ticketFormSection">
+            <div class="ticket-form-header">
+                <h2>📝 Create Support Ticket</h2>
+                <p>Describe your issue and our team will assist you</p>
+            </div>
+
+            <div class="ticket-form">
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input type="text" id="subject" class="form-control" placeholder="Brief summary of your issue" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea id="message" class="form-control" placeholder="Please describe your issue in detail..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority" class="form-control">
+                        <option value="low">Low - General Question</option>
+                        <option value="medium">Medium - Need Help</option>
+                        <option value="high">High - Urgent Issue</option>
+                    </select>
+                </div>
+
+                <button class="submit-btn" id="submitTicketBtn">
+                    <i class="fas fa-paper-plane"></i> Submit Ticket
+                </button>
+            </div>
+        </section>
+
+        <!-- Ticket History -->
+        <section class="ticket-history-section" id="ticketHistorySection">
+            <div class="ticket-history-header">
+                <h2>📋 Your Support Tickets</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="pending">Pending</button>
+                    <button class="filter-btn" data-filter="in_progress">In Progress</button>
+                    <button class="filter-btn" data-filter="resolved">Resolved</button>
+                </div>
+            </div>
+
+            <div id="ticketList" class="ticket-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading tickets...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Support Options -->
+        <h2 class="section-title">Quick Support</h2>
         <div class="support-grid">
             <div class="support-card">
                 <div class="support-icon">💬</div>
                 <h3>Live Chat</h3>
-                <p>Chat instantly with our support team. Get answers in minutes.</p>
+                <p>Chat instantly with our support team on WhatsApp.</p>
                 <button class="support-btn whatsapp" onclick="startLiveChat()">
                     <i class="fab fa-whatsapp"></i> Start Chat
                 </button>
@@ -983,7 +1094,7 @@
             <div class="support-card">
                 <div class="support-icon">📧</div>
                 <h3>Email Support</h3>
-                <p>Send us a message and we'll get back to you within 24 hours.</p>
+                <p>Send us an email and we'll respond within 24 hours.</p>
                 <button class="support-btn email" onclick="emailSupport()">
                     <i class="fas fa-envelope"></i> Email Us
                 </button>
@@ -992,81 +1103,14 @@
             <div class="support-card">
                 <div class="support-icon">❓</div>
                 <h3>FAQ</h3>
-                <p>Find answers to common questions in our knowledge base.</p>
+                <p>Find answers to common questions instantly.</p>
                 <button class="support-btn faq" onclick="scrollToFAQ()">
                     <i class="fas fa-question-circle"></i> Browse FAQ
                 </button>
             </div>
         </div>
 
-        <section class="contact-section">
-            <div class="contact-header">
-                <h2>📞 Contact Admin Directly</h2>
-                <p>Need personalized help? Our admin team is ready to assist you.</p>
-            </div>
-
-            <div class="contact-grid">
-                <div class="contact-form">
-                    <h3 style="color: var(--gold); margin-bottom: 1.5rem;">Create Support Ticket</h3>
-                    
-                    <div class="form-group">
-                        <label for="subject">Subject *</label>
-                        <input type="text" id="subject" class="form-control" placeholder="What's this about?" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message">Message *</label>
-                        <textarea id="message" class="form-control" placeholder="Describe your issue in detail..." required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="priority">Priority</label>
-                        <select id="priority" class="form-control">
-                            <option value="low">Low - General Inquiry</option>
-                            <option value="medium">Medium - Need Help</option>
-                            <option value="high">High - Urgent Issue</option>
-                        </select>
-                    </div>
-
-                    <button class="send-btn" id="submitTicketBtn">
-                        <i class="fas fa-paper-plane"></i> Submit Ticket
-                    </button>
-                </div>
-
-                <div class="admin-card">
-                    <div class="admin-avatar">AD</div>
-                    <h3 class="admin-name">Admin On-Duty</h3>
-                    <div class="admin-title">Support Manager</div>
-                    <div class="response-time">
-                        ⏱️ Usually replies in 15 minutes
-                    </div>
-                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-                        Our admin is available 24/7 to help with any issues you're experiencing.
-                    </p>
-                    
-                    <div class="contact-methods">
-                        <a href="#" class="contact-method" onclick="copyAdminNumber(event)" title="Copy WhatsApp Number">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                        <a href="#" class="contact-method" onclick="emailAdmin(event)" title="Email Admin">
-                            <i class="fas fa-envelope"></i>
-                        </a>
-                        <a href="#" class="contact-method" onclick="telegramAdmin(event)" title="Telegram">
-                            <i class="fab fa-telegram"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Ticket History -->
-        <div class="ticket-history" id="ticketHistory">
-            <h3>📋 Your Support Tickets</h3>
-            <div id="ticketList" class="ticket-list">
-                <div class="loading"><div class="spinner"></div><p>Loading tickets...</p></div>
-            </div>
-        </div>
-
+        <!-- Donation Section -->
         <div class="donation-section">
             <div class="donation-header">
                 <h2>💝 Support Our Mission</h2>
@@ -1101,15 +1145,6 @@
                         </div>
                         <button class="copy-btn" onclick="copyToClipboard('123456789', this)">Copy Account</button>
                     </div>
-                    <div class="payment-card">
-                        <div class="currency-icon">£</div>
-                        <h3 class="currency-name">British Pound (GBP)</h3>
-                        <div class="account-details">
-                            <div class="account-number">GB123456789</div>
-                            <div class="account-name">SupremeMotive UK</div>
-                        </div>
-                        <button class="copy-btn" onclick="copyToClipboard('GB123456789', this)">Copy Account</button>
-                    </div>
                 </div>
             </div>
 
@@ -1126,12 +1161,6 @@
                         <h3 class="currency-name">Ethereum (ETH)</h3>
                         <div class="crypto-address">0x742d35Cc6634C0532925a3b844Bc454e4438f44e</div>
                         <button class="copy-btn" onclick="copyToClipboard('0x742d35Cc6634C0532925a3b844Bc454e4438f44e', this)">Copy Address</button>
-                    </div>
-                    <div class="payment-card">
-                        <div class="currency-icon">💵</div>
-                        <h3 class="currency-name">USDT (TRC-20)</h3>
-                        <div class="crypto-address">TXYZ123456789abcdefghijklmnopqrstuvwxyz</div>
-                        <button class="copy-btn" onclick="copyToClipboard('TXYZ123456789abcdefghijklmnopqrstuvwxyz', this)">Copy Address</button>
                     </div>
                 </div>
             </div>
@@ -1158,6 +1187,7 @@
             </div>
         </div>
 
+        <!-- FAQ Section -->
         <section class="faq-section" id="faq">
             <h2 class="section-title">Frequently Asked Questions</h2>
             <div class="faq-grid">
@@ -1166,16 +1196,21 @@
                     <div class="faq-answer">Click "Unlock" on any paid ebook. You'll be connected via WhatsApp to complete payment. Once approved, the ebook will be available in your library.</div>
                 </div>
                 <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">How do I create a support ticket?<span class="faq-toggle">➕</span></div>
+                    <div class="faq-answer">Fill out the form above with your subject and message. Our support team will respond within 24 hours.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFAQ(this)">
                     <div class="faq-question">How can I donate/support?<span class="faq-toggle">➕</span></div>
-                    <div class="faq-answer">Use bank transfers (NGN, USD, GBP), cryptocurrency (BTC, ETH, USDT), or PayPal/Patreon. Details in the Support Our Mission section.</div>
+                    <div class="faq-answer">Use bank transfers (NGN, USD), cryptocurrency (BTC, ETH), or PayPal/Patreon. Details in the Support Our Mission section.</div>
                 </div>
                 <div class="faq-item" onclick="toggleFAQ(this)">
                     <div class="faq-question">How long does unlock approval take?<span class="faq-toggle">➕</span></div>
-                    <div class="faq-answer">Typically 24-48 hours after payment confirmation.</div>
+                    <div class="faq-answer">Typically 24-48 hours after payment confirmation. You'll receive a notification once approved.</div>
                 </div>
             </div>
         </section>
 
+        <!-- Still Need Help -->
         <section style="text-align: center; margin: 3rem 0; padding: 2rem; background: var(--card-bg); border-radius: 20px;">
             <h3 style="color: var(--gold); margin-bottom: 1rem;">Still Need Help?</h3>
             <p style="color: var(--text-secondary); margin-bottom: 2rem;">We're here for you 24/7. Don't hesitate to reach out.</p>
@@ -1188,6 +1223,9 @@
     <div id="alertContainer" class="hidden"></div>
 
     <script>
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
@@ -1195,9 +1233,12 @@
         const ADMIN_WHATSAPP = '2347012315620';
         const ADMIN_EMAIL = 'admin@suprememotive.com';
 
+        // State
         let currentUser = null;
         let allTickets = [];
+        let currentFilter = 'all';
 
+        // DOM Elements
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
         const themeToggle = document.getElementById('themeToggle');
@@ -1209,9 +1250,13 @@
         const ticketList = document.getElementById('ticketList');
         const totalTicketsSpan = document.getElementById('totalTickets');
         const solvedTodaySpan = document.getElementById('solvedToday');
+        const filterBtns = document.querySelectorAll('.filter-btn');
 
         const ADMIN_EMAILS = ['supremealpha04@gmail.com', 'suprememotive43@gmail.com', 'sandrakukk055@gmail.com', 'emmanuelamer6@gmail.com'];
 
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
@@ -1252,43 +1297,78 @@
             }
         });
 
-        menuToggle.addEventListener('click', () => { navLinks.classList.toggle('active'); });
-        navLinks.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { navLinks.classList.remove('active'); }); });
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
 
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // ============================================
+        // SHOW ALERT
+        // ============================================
         function showAlert(message) {
             alertContainer.classList.remove('hidden');
             alertContainer.innerHTML = `<div class="alert">${message}</div>`;
-            setTimeout(() => { alertContainer.innerHTML = ''; alertContainer.classList.add('hidden'); }, 3000);
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+                alertContainer.classList.add('hidden');
+            }, 3000);
         }
 
+        // ============================================
+        // CHECK AUTH
+        // ============================================
         async function checkAuth() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
+                
                 if (user) {
                     loginBtn.classList.add('hidden');
                     logoutBtn.classList.remove('hidden');
                     userGreeting.classList.remove('hidden');
                     userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
+                    
                     if (ADMIN_EMAILS.includes(user.email)) {
                         adminLink.style.display = 'block';
                         adminLink.href = 'admin/admin-dashboard.html';
                     }
+                    
                     await loadTickets();
                 } else {
                     loginBtn.classList.remove('hidden');
                     logoutBtn.classList.add('hidden');
                     userGreeting.classList.add('hidden');
                     adminLink.style.display = 'none';
-                    document.getElementById('ticketHistory').classList.add('hidden');
+                    document.getElementById('ticketHistorySection').classList.add('hidden');
+                    document.getElementById('ticketFormSection').classList.add('hidden');
                 }
-            } catch (error) { console.error('Auth error:', error); }
+            } catch (error) {
+                console.error('Auth error:', error);
+            }
         }
 
-        logoutBtn.addEventListener('click', async () => { await supabaseClient.auth.signOut(); window.location.reload(); });
+        // ============================================
+        // LOGOUT
+        // ============================================
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
 
+        // ============================================
+        // LOAD TICKETS
+        // ============================================
         async function loadTickets() {
             if (!currentUser) return;
+            
             try {
                 const { data: tickets, error } = await supabaseClient
                     .from('support_tickets')
@@ -1297,42 +1377,103 @@
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
+                
                 allTickets = tickets || [];
                 
+                // Update stats
                 totalTicketsSpan.textContent = allTickets.length;
-                const todaySolved = allTickets.filter(t => t.status === 'resolved' && new Date(t.updated_at).toDateString() === new Date().toDateString()).length;
+                const todaySolved = allTickets.filter(t => 
+                    t.status === 'resolved' && 
+                    new Date(t.updated_at).toDateString() === new Date().toDateString()
+                ).length;
                 solvedTodaySpan.textContent = todaySolved;
-
+                
                 renderTickets();
-            } catch (error) { console.error('Error loading tickets:', error); }
+                
+            } catch (error) {
+                console.error('Error loading tickets:', error);
+                showAlert('Error loading tickets: ' + error.message);
+            }
         }
 
+        // ============================================
+        // RENDER TICKETS
+        // ============================================
         function renderTickets() {
             if (!ticketList) return;
-            if (allTickets.length === 0) {
-                ticketList.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No support tickets yet. Create one above!</p>';
+            
+            let filteredTickets = [...allTickets];
+            if (currentFilter !== 'all') {
+                filteredTickets = filteredTickets.filter(t => t.status === currentFilter);
+            }
+            
+            if (filteredTickets.length === 0) {
+                ticketList.innerHTML = `
+                    <div class="empty-state">
+                        <p>No support tickets found. Create one above!</p>
+                    </div>
+                `;
                 return;
             }
-            ticketList.innerHTML = allTickets.map(ticket => `
+            
+            ticketList.innerHTML = filteredTickets.map(ticket => `
                 <div class="ticket-item">
-                    <div class="ticket-info">
+                    <div class="ticket-header">
                         <div class="ticket-subject">${escapeHtml(ticket.subject)}</div>
-                        <div class="ticket-date">${new Date(ticket.created_at).toLocaleString()}</div>
+                        <span class="ticket-status status-${ticket.status}">${ticket.status.replace('_', ' ')}</span>
                     </div>
-                    <span class="ticket-status status-${ticket.status}">${ticket.status}</span>
+                    
+                    <div class="ticket-message">
+                        ${escapeHtml(ticket.message.substring(0, 150))}${ticket.message.length > 150 ? '...' : ''}
+                    </div>
+                    
+                    <div class="ticket-footer">
+                        <div class="ticket-date">
+                            <i class="far fa-calendar-alt"></i>
+                            ${new Date(ticket.created_at).toLocaleString()}
+                        </div>
+                        <span class="ticket-priority priority-${ticket.priority}">${ticket.priority.toUpperCase()}</span>
+                    </div>
+                    
+                    ${ticket.admin_response ? `
+                        <div class="admin-response">
+                            <div class="admin-response-label">
+                                <i class="fas fa-reply"></i> Admin Response:
+                            </div>
+                            <div class="admin-response-text">
+                                ${escapeHtml(ticket.admin_response)}
+                            </div>
+                        </div>
+                    ` : ''}
                 </div>
             `).join('');
         }
 
+        // ============================================
+        // SUBMIT TICKET
+        // ============================================
         window.submitTicket = async () => {
             if (!currentUser) {
-                if (confirm('Please login to create a support ticket')) { window.location.href = 'login.html'; }
+                if (confirm('Please login to create a support ticket')) {
+                    window.location.href = 'login.html';
+                }
                 return;
             }
+            
             const subject = document.getElementById('subject').value.trim();
             const message = document.getElementById('message').value.trim();
             const priority = document.getElementById('priority').value;
-            if (!subject || !message) { showAlert('Please fill in both subject and message'); return; }
+            
+            if (!subject || !message) {
+                showAlert('Please fill in both subject and message');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitTicketBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            
             try {
                 const { error } = await supabaseClient
                     .from('support_tickets')
@@ -1344,16 +1485,45 @@
                         priority: priority,
                         status: 'pending'
                     }]);
+                
                 if (error) throw error;
-                showAlert('✅ Support ticket created! Admin will respond within 24 hours.');
+                
+                showAlert('✅ Support ticket created successfully! Admin will respond within 24 hours.');
+                
+                // Clear form
                 document.getElementById('subject').value = '';
                 document.getElementById('message').value = '';
+                document.getElementById('priority').value = 'medium';
+                
+                // Reload tickets
                 await loadTickets();
-            } catch (error) { showAlert('Error creating ticket: ' + error.message); }
+                
+            } catch (error) {
+                console.error('Error creating ticket:', error);
+                showAlert('Error creating ticket: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
         };
-
+        
         document.getElementById('submitTicketBtn').addEventListener('click', window.submitTicket);
 
+        // ============================================
+        // FILTER TICKETS
+        // ============================================
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderTickets();
+            });
+        });
+
+        // ============================================
+        // DONATION FUNCTIONS
+        // ============================================
         window.switchDonationTab = (tab) => {
             document.querySelectorAll('.donation-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1366,34 +1536,76 @@
                 button.classList.add('copied');
                 const original = button.innerHTML;
                 button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                setTimeout(() => { button.classList.remove('copied'); button.innerHTML = original; }, 2000);
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.innerHTML = original;
+                }, 2000);
                 showAlert('Copied to clipboard!');
             }).catch(() => showAlert('Failed to copy'));
         };
 
+        // ============================================
+        // SUPPORT FUNCTIONS
+        // ============================================
         window.startLiveChat = () => {
             let text = `*Live Chat Request - SupremeMotive*\n\nHi, I need assistance with...`;
             if (currentUser) text += `\n\n*User:* ${currentUser.email}`;
             window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
         };
 
-        window.emailSupport = () => { window.location.href = 'mailto:support@suprememotive.com?subject=Support%20Request'; };
-        window.scrollToFAQ = () => { document.getElementById('faq').scrollIntoView({ behavior: 'smooth' }); };
-        window.contactAdmin = () => {
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-            let text = `*Support Request - SupremeMotive*\n\n*Subject:* ${subject}\n*Message:* ${message}`;
-            if (currentUser) text += `\n*User:* ${currentUser.email}`;
-            window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(text)}`, '_blank');
+        window.emailSupport = () => {
+            window.location.href = 'mailto:support@suprememotive.com?subject=Support%20Request';
         };
-        window.copyAdminNumber = (e) => { e.preventDefault(); navigator.clipboard.writeText(ADMIN_WHATSAPP).then(() => showAlert('Admin number copied!')); };
-        window.emailAdmin = (e) => { e.preventDefault(); window.location.href = `mailto:${ADMIN_EMAIL}?subject=Admin%20Assistance`; };
-        window.telegramAdmin = (e) => { e.preventDefault(); window.open('https://t.me/suprememotive_admin', '_blank'); };
-        window.toggleFAQ = (element) => { element.classList.toggle('active'); const toggle = element.querySelector('.faq-toggle'); toggle.textContent = element.classList.contains('active') ? '✕' : '➕'; };
 
-        function escapeHtml(text) { if (!text) return ''; return text.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+        window.scrollToFAQ = () => {
+            document.getElementById('faq').scrollIntoView({ behavior: 'smooth' });
+        };
 
-        async function init() { initTheme(); await checkAuth(); }
+        window.copyAdminNumber = (e) => {
+            e.preventDefault();
+            navigator.clipboard.writeText(ADMIN_WHATSAPP).then(() => showAlert('Admin number copied!'));
+        };
+
+        window.emailAdmin = (e) => {
+            e.preventDefault();
+            window.location.href = `mailto:${ADMIN_EMAIL}?subject=Admin%20Assistance`;
+        };
+
+        window.telegramAdmin = (e) => {
+            e.preventDefault();
+            window.open('https://t.me/suprememotive_admin', '_blank');
+        };
+
+        // ============================================
+        // FAQ TOGGLE
+        // ============================================
+        window.toggleFAQ = (element) => {
+            element.classList.toggle('active');
+            const toggle = element.querySelector('.faq-toggle');
+            toggle.textContent = element.classList.contains('active') ? '✕' : '➕';
+        };
+
+        // ============================================
+        // ESCAPE HTML
+        // ============================================
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // ============================================
+        // INITIALIZE
+        // ============================================
+        async function init() {
+            initTheme();
+            await checkAuth();
+        }
+
         init();
     </script>
 </body>
