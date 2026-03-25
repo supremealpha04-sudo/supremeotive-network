@@ -579,13 +579,13 @@
             <a href="about.html">About</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
-            
+
             <div class="auth-buttons">
                 <span id="userGreeting" class="user-greeting hidden"></span>
                 <a href="login.html" class="login-btn" id="loginBtn">Login</a>
                 <button class="logout-btn hidden" id="logoutBtn">Logout</button>
             </div>
-            
+
             <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
     </nav>
@@ -720,18 +720,18 @@
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
-                
+
                 if (user) {
                     loginBtn.classList.add('hidden');
                     logoutBtn.classList.remove('hidden');
                     userGreeting.classList.remove('hidden');
                     userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
-                    
+
                     if (ADMIN_EMAILS.includes(user.email)) {
                         adminLink.style.display = 'block';
                         adminLink.href = 'admin/admin-dashboard.html';
                     }
-                    
+
                     await loadUserLikes();
                 } else {
                     loginBtn.classList.remove('hidden');
@@ -917,7 +917,7 @@
         window.toggleReadMore = (postId) => {
             const contentDiv = document.getElementById(`postContent-${postId}`);
             const btn = contentDiv.parentElement.querySelector('.read-more-btn');
-            
+
             if (contentDiv.classList.contains('collapsed')) {
                 contentDiv.classList.remove('collapsed');
                 btn.innerHTML = '<span>Show Less</span> <span>▲</span>';
@@ -941,7 +941,7 @@
             try {
                 const post = allPosts.find(p => p.id === postId);
                 const isLiked = userLikes.has(postId);
-                
+
                 if (isLiked) {
                     await supabaseClient
                         .from('post_likes')
@@ -957,8 +957,8 @@
                     userLikes.add(postId);
                     post.likes_count++;
                 }
-                
-                // Refresh the specific post's like button
+
+                // Update UI
                 const likeBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .like-btn`);
                 const likeCountSpan = likeBtn.querySelector('span:last-child');
                 likeBtn.classList.toggle('liked', userLikes.has(postId));
@@ -984,64 +984,74 @@
         };
 
         // ============================================
-        // LOAD COMMENTS - FIXED WORKING VERSION
+        // LOAD COMMENTS - FIXED VERSION
         // ============================================
         async function loadComments(postId) {
             try {
                 const commentsListDiv = document.getElementById(`commentsList-${postId}`);
                 commentsListDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading comments...</p></div>';
 
-                // Get main comments with user profiles
-                const { data: comments, error } = await supabaseClient
+                // Get all comments for this post
+                const { data: allComments, error } = await supabaseClient
                     .from('comments')
                     .select(`
                         id,
                         content,
                         created_at,
                         user_id,
-                        parent_comment_id,
-                        profiles:user_id (
-                            name,
-                            profile_image_url
-                        )
+                        parent_comment_id
                     `)
                     .eq('post_id', postId)
-                    .is('parent_comment_id', null)
                     .order('created_at', { ascending: true });
 
                 if (error) throw error;
 
-                if (!comments || comments.length === 0) {
+                if (!allComments || allComments.length === 0) {
                     commentsListDiv.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
                     return;
                 }
 
-                // Get replies for each comment
-                const commentsWithReplies = await Promise.all(comments.map(async (comment) => {
-                    const { data: replies, error: replyError } = await supabaseClient
-                        .from('comments')
-                        .select(`
-                            id,
-                            content,
-                            created_at,
-                            user_id,
-                            profiles:user_id (
-                                name,
-                                profile_image_url
-                            )
-                        `)
-                        .eq('parent_comment_id', comment.id)
-                        .order('created_at', { ascending: true });
+                // Get user profiles for each comment
+                const userIds = [...new Set(allComments.map(c => c.user_id))];
+                const { data: profiles, error: profileError } = await supabaseClient
+                    .from('profiles')
+                    .select('id, name')
+                    .in('id', userIds);
 
-                    if (replyError) throw replyError;
+                if (profileError) {
+                    console.error('Error loading profiles:', profileError);
+                }
 
-                    return {
+                const userMap = new Map();
+                if (profiles) {
+                    profiles.forEach(p => userMap.set(p.id, p.name));
+                }
+
+                // Organize comments into tree structure
+                const commentMap = new Map();
+                const rootComments = [];
+
+                allComments.forEach(comment => {
+                    const commentWithUser = {
                         ...comment,
-                        replies: replies || []
+                        author_name: userMap.get(comment.user_id) || 'User',
+                        replies: []
                     };
-                }));
+                    commentMap.set(comment.id, commentWithUser);
+                });
 
-                renderComments(commentsWithReplies, postId);
+                allComments.forEach(comment => {
+                    if (comment.parent_comment_id) {
+                        const parent = commentMap.get(comment.parent_comment_id);
+                        if (parent) {
+                            parent.replies.push(commentMap.get(comment.id));
+                        }
+                    } else {
+                        rootComments.push(commentMap.get(comment.id));
+                    }
+                });
+
+                renderComments(rootComments, postId);
 
             } catch (error) {
                 console.error('Error loading comments:', error);
@@ -1057,9 +1067,14 @@
             const container = document.getElementById(`commentsList-${postId}`);
             if (!container) return;
 
+            if (comments.length === 0) {
+                container.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
+                return;
+            }
+
             container.innerHTML = comments.map(comment => {
                 const date = new Date(comment.created_at).toLocaleString();
-                const authorName = comment.profiles?.name || 'User';
+                const authorName = comment.author_name || 'User';
                 const authorInitial = authorName.charAt(0).toUpperCase();
 
                 return `
@@ -1085,7 +1100,7 @@
                             <div class="replies">
                                 ${comment.replies.map(reply => {
                                     const replyDate = new Date(reply.created_at).toLocaleString();
-                                    const replyAuthor = reply.profiles?.name || 'User';
+                                    const replyAuthor = reply.author_name || 'User';
                                     const replyInitial = replyAuthor.charAt(0).toUpperCase();
                                     return `
                                         <div class="reply">
@@ -1135,13 +1150,13 @@
 
                 input.value = '';
                 await loadComments(postId);
-                
+
                 // Update comment count
                 const post = allPosts.find(p => p.id === postId);
                 post.comments_count++;
                 const commentBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .stat-btn:last-child span:last-child`);
                 if (commentBtn) commentBtn.textContent = post.comments_count;
-                
+
                 showAlert('Comment posted!');
 
             } catch (error) {
@@ -1195,13 +1210,13 @@
                 input.value = '';
                 document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
                 await loadComments(postId);
-                
+
                 // Update comment count
                 const post = allPosts.find(p => p.id === postId);
                 post.comments_count++;
                 const commentBtn = document.querySelector(`.post-card[data-post-id="${postId}"] .stat-btn:last-child span:last-child`);
                 if (commentBtn) commentBtn.textContent = post.comments_count;
-                
+
                 showAlert('Reply posted!');
 
             } catch (error) {
