@@ -7,7 +7,6 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Keep all your existing styles - they are good */
         * {
             margin: 0;
             padding: 0;
@@ -34,7 +33,6 @@
             padding-bottom: 80px;
         }
 
-        /* Navigation (keep your existing styles) */
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
@@ -143,33 +141,6 @@
             font-size: 1.2rem;
             cursor: pointer;
             padding: 0.3rem;
-        }
-
-        .notification-icon {
-            position: relative;
-            cursor: pointer;
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-        }
-
-        .notification-icon:hover {
-            color: var(--gold);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--error);
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 50%;
-            display: none;
-        }
-
-        .notification-badge.show {
-            display: block;
         }
 
         .bottom-nav {
@@ -461,13 +432,11 @@
 
         .modal-video {
             width: 100%;
-            max-height: 500px;
         }
 
         .modal-video video {
             width: 100%;
-            height: auto;
-            max-height: 500px;
+            max-height: 400px;
         }
 
         .modal-actions {
@@ -620,70 +589,15 @@
             border-left: 2px solid var(--gold);
         }
 
-        .notifications-dropdown {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            width: 350px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--gold);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            display: none;
-        }
-
-        .notifications-dropdown.show {
-            display: block;
-        }
-
-        .notifications-header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 600;
-            color: var(--gold);
-        }
-
-        .notifications-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .notification-item {
-            padding: 0.8rem 1rem;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .notification-item:hover {
-            background: var(--border-color);
-        }
-
-        .notification-item.unread {
-            background: rgba(255, 215, 0, 0.05);
-        }
-
-        .notification-title {
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-        }
-
-        .notification-message {
-            font-size: 0.85rem;
+        .no-comments {
+            text-align: center;
             color: var(--text-secondary);
-        }
-
-        .notification-time {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 0.2rem;
+            padding: 1.5rem;
         }
 
         .loading {
             text-align: center;
             padding: 3rem;
-            grid-column: 1 / -1;
         }
 
         .spinner {
@@ -740,12 +654,6 @@
             .videos-grid {
                 grid-template-columns: 1fr;
             }
-
-            .notifications-dropdown {
-                width: calc(100vw - 40px);
-                right: 20px;
-                left: 20px;
-            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -774,11 +682,6 @@
                 <span id="userGreeting" class="user-greeting hidden"></span>
                 <a href="login.html" class="login-btn" id="loginBtn">Login</a>
                 <button class="logout-btn hidden" id="logoutBtn">Logout</button>
-            </div>
-            
-            <div class="notification-icon" id="notificationIcon">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge" id="notificationBadge">0</span>
             </div>
             
             <button class="theme-toggle" id="themeToggle">🌙</button>
@@ -866,24 +769,12 @@
                         <h3>Comments</h3>
                         <span id="modalCommentCount">0</span>
                     </div>
-                    <div class="comment-form" id="commentForm">
+                    <div class="comment-form">
                         <textarea id="commentInput" placeholder="Write a comment..."></textarea>
                         <button onclick="addComment()">Post Comment</button>
                     </div>
                     <div id="modalCommentsList" class="comments-list"></div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notifications Dropdown -->
-    <div class="notifications-dropdown" id="notificationsDropdown">
-        <div class="notifications-header">
-            Notifications
-        </div>
-        <div class="notifications-list" id="notificationsList">
-            <div class="notification-item">
-                <div class="notification-title">No new notifications</div>
             </div>
         </div>
     </div>
@@ -895,7 +786,7 @@
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
         const ADMIN_EMAILS = [
@@ -936,13 +827,6 @@
         const modalDownloadBtn = document.getElementById('modalDownloadBtn');
         const modalLikeCount = document.getElementById('modalLikeCount');
         const modalCommentCount = document.getElementById('modalCommentCount');
-        const notificationIcon = document.getElementById('notificationIcon');
-        const notificationsDropdown = document.getElementById('notificationsDropdown');
-        const notificationsList = document.getElementById('notificationsList');
-        const notificationBadge = document.getElementById('notificationBadge');
-
-        let unreadNotifications = 0;
-        let notifications = [];
 
         // ============================================
         // THEME TOGGLE
@@ -1001,58 +885,6 @@
         });
 
         // ============================================
-        // NOTIFICATIONS
-        // ============================================
-        notificationIcon.addEventListener('click', () => {
-            notificationsDropdown.classList.toggle('show');
-            if (unreadNotifications > 0) {
-                unreadNotifications = 0;
-                notificationBadge.classList.remove('show');
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!notificationIcon.contains(e.target) && !notificationsDropdown.contains(e.target)) {
-                notificationsDropdown.classList.remove('show');
-            }
-        });
-
-        function addNotification(title, message) {
-            notifications.unshift({
-                id: Date.now(),
-                title,
-                message,
-                time: new Date(),
-                read: false
-            });
-            unreadNotifications++;
-            notificationBadge.textContent = unreadNotifications;
-            notificationBadge.classList.add('show');
-            renderNotifications();
-        }
-
-        function renderNotifications() {
-            if (notifications.length === 0) {
-                notificationsList.innerHTML = '<div class="notification-item"><div class="notification-title">No notifications</div></div>';
-                return;
-            }
-
-            notificationsList.innerHTML = notifications.slice(0, 20).map(notif => `
-                <div class="notification-item ${!notif.read ? 'unread' : ''}" onclick="markNotificationRead('${notif.id}')">
-                    <div class="notification-title">${escapeHtml(notif.title)}</div>
-                    <div class="notification-message">${escapeHtml(notif.message)}</div>
-                    <div class="notification-time">${new Date(notif.time).toLocaleString()}</div>
-                </div>
-            `).join('');
-        }
-
-        window.markNotificationRead = (id) => {
-            const notif = notifications.find(n => n.id == id);
-            if (notif) notif.read = true;
-            renderNotifications();
-        };
-
-        // ============================================
         // SHOW ALERT
         // ============================================
         function showAlert(message, type = 'success') {
@@ -1080,7 +912,7 @@
         // ============================================
         async function checkAuth() {
             try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
+                const { data: { user } } = await supabase.auth.getUser();
                 currentUser = user;
                 
                 if (user) {
@@ -1110,7 +942,7 @@
         // LOGOUT
         // ============================================
         logoutBtn.addEventListener('click', async () => {
-            await supabaseClient.auth.signOut();
+            await supabase.auth.signOut();
             window.location.reload();
         });
 
@@ -1121,7 +953,7 @@
             if (!currentUser) return;
 
             try {
-                const { data: likes } = await supabaseClient
+                const { data: likes } = await supabase
                     .from('video_likes')
                     .select('video_id')
                     .eq('user_id', currentUser.id);
@@ -1146,7 +978,7 @@
                     </div>
                 `;
 
-                const { data: videos, error } = await supabaseClient
+                const { data: videos, error } = await supabase
                     .from('videos')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -1164,17 +996,17 @@
 
                 // Get stats for each video
                 const videosWithStats = await Promise.all(videos.map(async (video) => {
-                    const { count: likesCount } = await supabaseClient
+                    const { count: likesCount } = await supabase
                         .from('video_likes')
                         .select('*', { count: 'exact', head: true })
                         .eq('video_id', video.id);
 
-                    const { count: commentsCount } = await supabaseClient
+                    const { count: commentsCount } = await supabase
                         .from('video_comments')
                         .select('*', { count: 'exact', head: true })
                         .eq('video_id', video.id);
 
-                    const { count: viewsCount } = await supabaseClient
+                    const { count: viewsCount } = await supabase
                         .from('video_views')
                         .select('*', { count: 'exact', head: true })
                         .eq('video_id', video.id);
@@ -1291,8 +1123,9 @@
 
             currentVideo = video;
 
+            // Record view
             if (currentUser) {
-                await supabaseClient
+                await supabase
                     .from('video_views')
                     .insert([{
                         video_id: videoId,
@@ -1337,7 +1170,7 @@
 
             try {
                 if (userLikes.has(videoId)) {
-                    await supabaseClient
+                    await supabase
                         .from('video_likes')
                         .delete()
                         .eq('video_id', videoId)
@@ -1346,7 +1179,7 @@
                     userLikes.delete(videoId);
                     video.likes_count--;
                 } else {
-                    await supabaseClient
+                    await supabase
                         .from('video_likes')
                         .insert([{
                             video_id: videoId,
@@ -1355,10 +1188,6 @@
 
                     userLikes.add(videoId);
                     video.likes_count++;
-
-                    if (video.user_id !== currentUser.id) {
-                        addNotification('New Like', `${currentUser.email} liked your video "${video.title}"`);
-                    }
                 }
 
                 filterAndRenderVideos();
@@ -1425,15 +1254,15 @@
         modalDownloadBtn.addEventListener('click', downloadVideo);
 
         // ============================================
-        // LOAD VIDEO COMMENTS - FIXED
+        // LOAD VIDEO COMMENTS
         // ============================================
         async function loadVideoComments(videoId) {
             try {
                 const commentsList = document.getElementById('modalCommentsList');
                 commentsList.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading comments...</p></div>';
 
-                // Try to fetch comments from video_comments table
-                let { data: comments, error } = await supabaseClient
+                // Fetch comments
+                const { data: comments, error } = await supabase
                     .from('video_comments')
                     .select('*')
                     .eq('video_id', videoId)
@@ -1441,21 +1270,22 @@
                     .order('created_at', { ascending: true });
 
                 if (error) {
-                    console.log('video_comments table might not exist, using fallback');
-                    comments = [];
+                    console.log('Error loading comments:', error);
+                    commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
+                    return;
                 }
 
-                // If no comments table or no comments, show empty state
                 if (!comments || comments.length === 0) {
                     commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
                     return;
                 }
 
-                // Get user names for comments
-                const commentsWithUsers = await Promise.all(comments.map(async (comment) => {
+                // Get user names and replies
+                const commentsWithDetails = await Promise.all(comments.map(async (comment) => {
+                    // Get user name
                     let userName = 'User';
                     if (comment.user_id) {
-                        const { data: profile } = await supabaseClient
+                        const { data: profile } = await supabase
                             .from('profiles')
                             .select('name')
                             .eq('id', comment.user_id)
@@ -1464,32 +1294,29 @@
                     }
                     
                     // Get replies
-                    let replies = [];
-                    const { data: replyData } = await supabaseClient
+                    const { data: replies } = await supabase
                         .from('video_comments')
                         .select('*')
                         .eq('parent_comment_id', comment.id)
                         .order('created_at', { ascending: true });
                     
-                    if (replyData && replyData.length > 0) {
-                        replies = await Promise.all(replyData.map(async (reply) => {
-                            let replyName = 'User';
-                            if (reply.user_id) {
-                                const { data: profile } = await supabaseClient
-                                    .from('profiles')
-                                    .select('name')
-                                    .eq('id', reply.user_id)
-                                    .single();
-                                if (profile) replyName = profile.name;
-                            }
-                            return { ...reply, user_name: replyName };
-                        }));
-                    }
+                    const repliesWithNames = await Promise.all((replies || []).map(async (reply) => {
+                        let replyName = 'User';
+                        if (reply.user_id) {
+                            const { data: profile } = await supabase
+                                .from('profiles')
+                                .select('name')
+                                .eq('id', reply.user_id)
+                                .single();
+                            if (profile) replyName = profile.name;
+                        }
+                        return { ...reply, user_name: replyName };
+                    }));
                     
-                    return { ...comment, user_name: userName, replies };
+                    return { ...comment, user_name: userName, replies: repliesWithNames };
                 }));
 
-                renderVideoComments(commentsWithUsers);
+                renderVideoComments(commentsWithDetails);
 
             } catch (error) {
                 console.error('Error loading comments:', error);
@@ -1501,16 +1328,11 @@
         }
 
         // ============================================
-        // RENDER VIDEO COMMENTS - FIXED
+        // RENDER VIDEO COMMENTS
         // ============================================
         function renderVideoComments(comments) {
             const commentsList = document.getElementById('modalCommentsList');
             if (!commentsList) return;
-
-            if (comments.length === 0) {
-                commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
-                return;
-            }
 
             commentsList.innerHTML = comments.map(comment => {
                 const commentDate = new Date(comment.created_at).toLocaleString();
@@ -1527,11 +1349,11 @@
                         <div class="comment-content">${escapeHtml(comment.content)}</div>
                         ${currentUser ? `
                             <div class="comment-actions">
-                                <button class="reply-btn" onclick="showVideoReplyForm('${comment.id}')">💬 Reply</button>
+                                <button class="reply-btn" onclick="showReplyForm('${comment.id}')">💬 Reply</button>
                             </div>
-                            <div id="videoReplyForm-${comment.id}" class="reply-form hidden">
-                                <input type="text" id="videoReplyInput-${comment.id}" placeholder="Write a reply...">
-                                <button onclick="submitVideoReply('${comment.id}')">Reply</button>
+                            <div id="replyForm-${comment.id}" class="reply-form hidden">
+                                <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
+                                <button onclick="submitReply('${comment.id}')">Reply</button>
                             </div>
                         ` : ''}
                         ${comment.replies && comment.replies.length > 0 ? `
@@ -1559,7 +1381,7 @@
         }
 
         // ============================================
-        // ADD COMMENT - FIXED
+        // ADD COMMENT
         // ============================================
         window.addComment = async () => {
             if (!currentUser) {
@@ -1578,7 +1400,7 @@
             }
 
             try {
-                const { error } = await supabaseClient
+                const { error } = await supabase
                     .from('video_comments')
                     .insert([{
                         video_id: currentVideo.id,
@@ -1587,8 +1409,7 @@
                     }]);
 
                 if (error) {
-                    console.error('Error inserting comment:', error);
-                    showAlert('Comment feature coming soon!', 'warning');
+                    showAlert('Error posting comment', 'error');
                     return;
                 }
 
@@ -1599,10 +1420,6 @@
                 modalCommentCount.textContent = currentVideo.comments_count;
                 filterAndRenderVideos();
 
-                if (currentVideo.user_id !== currentUser.id) {
-                    addNotification('New Comment', `${currentUser.email} commented on "${currentVideo.title}"`);
-                }
-
                 showAlert('Comment posted!');
 
             } catch (error) {
@@ -1612,22 +1429,22 @@
         };
 
         // ============================================
-        // SHOW VIDEO REPLY FORM
+        // SHOW REPLY FORM
         // ============================================
-        window.showVideoReplyForm = (commentId) => {
-            const form = document.getElementById(`videoReplyForm-${commentId}`);
+        window.showReplyForm = (commentId) => {
+            const form = document.getElementById(`replyForm-${commentId}`);
             if (form) {
                 form.classList.toggle('hidden');
                 if (!form.classList.contains('hidden')) {
-                    document.getElementById(`videoReplyInput-${commentId}`).focus();
+                    document.getElementById(`replyInput-${commentId}`).focus();
                 }
             }
         };
 
         // ============================================
-        // SUBMIT VIDEO REPLY
+        // SUBMIT REPLY
         // ============================================
-        window.submitVideoReply = async (commentId) => {
+        window.submitReply = async (commentId) => {
             if (!currentUser) {
                 showAlert('Please login to reply');
                 return;
@@ -1635,7 +1452,7 @@
 
             if (!currentVideo) return;
 
-            const input = document.getElementById(`videoReplyInput-${commentId}`);
+            const input = document.getElementById(`replyInput-${commentId}`);
             const content = input.value.trim();
 
             if (!content) {
@@ -1644,7 +1461,7 @@
             }
 
             try {
-                const { error } = await supabaseClient
+                const { error } = await supabase
                     .from('video_comments')
                     .insert([{
                         video_id: currentVideo.id,
@@ -1654,12 +1471,12 @@
                     }]);
 
                 if (error) {
-                    showAlert('Reply feature coming soon!', 'warning');
+                    showAlert('Error posting reply', 'error');
                     return;
                 }
 
                 input.value = '';
-                document.getElementById(`videoReplyForm-${commentId}`).classList.add('hidden');
+                document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
                 await loadVideoComments(currentVideo.id);
                 
                 currentVideo.comments_count++;
