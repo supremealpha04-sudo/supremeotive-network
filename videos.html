@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* All your existing styles remain the same - keep them */
+        /* All styles remain the same as before */
         * {
             margin: 0;
             padding: 0;
@@ -34,7 +34,6 @@
             padding-bottom: 80px;
         }
 
-        /* Navigation (keep all your existing navigation styles) */
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
@@ -1425,15 +1424,14 @@
         modalDownloadBtn.addEventListener('click', downloadVideo);
 
         // ============================================
-        // LOAD VIDEO COMMENTS - FIXED
+        // LOAD VIDEO COMMENTS
         // ============================================
         async function loadVideoComments(videoId) {
             try {
                 const commentsList = document.getElementById('modalCommentsList');
                 commentsList.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading comments...</p></div>';
 
-                // Fetch comments from video_comments table
-                let { data: comments, error } = await supabaseClient
+                const { data: comments, error } = await supabaseClient
                     .from('video_comments')
                     .select('*')
                     .eq('video_id', videoId)
@@ -1441,7 +1439,7 @@
                     .order('created_at', { ascending: true });
 
                 if (error) {
-                    console.log('Error loading comments:', error);
+                    console.error('Error loading comments:', error);
                     commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
                     return;
                 }
@@ -1451,7 +1449,7 @@
                     return;
                 }
 
-                // Get user names for comments
+                // Get user names
                 const commentsWithUsers = await Promise.all(comments.map(async (comment) => {
                     let userName = 'User';
                     if (comment.user_id) {
@@ -1495,13 +1493,13 @@
                 console.error('Error loading comments:', error);
                 const commentsList = document.getElementById('modalCommentsList');
                 if (commentsList) {
-                    commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
+                    commentsList.innerHTML = '<p class="no-comments">Error loading comments</p>';
                 }
             }
         }
 
         // ============================================
-        // RENDER VIDEO COMMENTS - FIXED
+        // RENDER VIDEO COMMENTS
         // ============================================
         function renderVideoComments(comments) {
             const commentsList = document.getElementById('modalCommentsList');
@@ -1559,7 +1557,7 @@
         }
 
         // ============================================
-        // ADD COMMENT - FIXED
+        // ADD COMMENT
         // ============================================
         window.addComment = async () => {
             if (!currentUser) {
