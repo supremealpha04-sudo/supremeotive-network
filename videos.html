@@ -935,12 +935,13 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - USING supabaseClient
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabase = window.supabaseClient.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // USING supabaseClient AS REQUESTED
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
         const ADMIN_EMAILS = ['supremealpha04@gmail.com', 'suprememotive43@gmail.com', 'sandrakukk055@gmail.com', 'emmanuelamer6@gmail.com'];
@@ -1060,11 +1061,11 @@
         }
 
         // ============================================
-        // CHECK AUTH
+        // CHECK AUTH - USING supabaseClient
         // ============================================
         async function checkAuth() {
             try {
-                const { data: { user } } = await supabase.auth.getUser();
+                const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
                 
                 if (user) {
@@ -1091,20 +1092,20 @@
         }
 
         // ============================================
-        // LOGOUT
+        // LOGOUT - USING supabaseClient
         // ============================================
         logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.reload();
         });
 
         // ============================================
-        // LOAD USER LIKES
+        // LOAD USER LIKES - USING supabaseClient
         // ============================================
         async function loadUserLikes() {
             if (!currentUser) return;
             try {
-                const { data: likes } = await supabase
+                const { data: likes } = await supabaseClient
                     .from('video_likes')
                     .select('video_id')
                     .eq('user_id', currentUser.id);
@@ -1115,13 +1116,13 @@
         }
 
         // ============================================
-        // LOAD VIDEOS
+        // LOAD VIDEOS - USING supabaseClient
         // ============================================
         async function loadVideos() {
             try {
                 videosGrid.innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading videos...</p></div>`;
                 
-                let query = supabase.from('videos').select('*').order('created_at', { ascending: false });
+                let query = supabaseClient.from('videos').select('*').order('created_at', { ascending: false });
                 const { data: videos, error } = await query;
                 if (error) throw error;
                 if (!videos || videos.length === 0) {
@@ -1130,9 +1131,18 @@
                 }
 
                 const videosWithStats = await Promise.all(videos.map(async (video) => {
-                    const { count: likesCount } = await supabase.from('video_likes').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
-                    const { count: commentsCount } = await supabase.from('video_comments').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
-                    const { count: viewsCount } = await supabase.from('video_views').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
+                    const { count: likesCount } = await supabaseClient
+                        .from('video_likes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('video_id', video.id);
+                    const { count: commentsCount } = await supabaseClient
+                        .from('video_comments')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('video_id', video.id);
+                    const { count: viewsCount } = await supabaseClient
+                        .from('video_views')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('video_id', video.id);
                     return { ...video, likes_count: likesCount || 0, comments_count: commentsCount || 0, views_count: viewsCount || 0 };
                 }));
 
@@ -1225,7 +1235,9 @@
 
             // Record view
             if (currentUser) {
-                await supabase.from('video_views').upsert([{ video_id: videoId, user_id: currentUser.id }], { onConflict: 'video_id,user_id' });
+                await supabaseClient
+                    .from('video_views')
+                    .upsert([{ video_id: videoId, user_id: currentUser.id }], { onConflict: 'video_id,user_id' });
             }
             video.views_count = (video.views_count || 0) + 1;
 
@@ -1244,7 +1256,7 @@
         };
 
         // ============================================
-        // TOGGLE LIKE
+        // TOGGLE LIKE - USING supabaseClient
         // ============================================
         window.toggleLike = async (videoId) => {
             if (!currentUser) {
@@ -1256,11 +1268,17 @@
 
             try {
                 if (userLikes.has(videoId)) {
-                    await supabase.from('video_likes').delete().eq('video_id', videoId).eq('user_id', currentUser.id);
+                    await supabaseClient
+                        .from('video_likes')
+                        .delete()
+                        .eq('video_id', videoId)
+                        .eq('user_id', currentUser.id);
                     userLikes.delete(videoId);
                     video.likes_count--;
                 } else {
-                    await supabase.from('video_likes').insert([{ video_id: videoId, user_id: currentUser.id }]);
+                    await supabaseClient
+                        .from('video_likes')
+                        .insert([{ video_id: videoId, user_id: currentUser.id }]);
                     userLikes.add(videoId);
                     video.likes_count++;
                 }
@@ -1304,11 +1322,11 @@
         });
 
         // ============================================
-        // LOAD COMMENTS - Supports Infinite Nesting
+        // LOAD COMMENTS - USING supabaseClient
         // ============================================
         async function loadComments(videoId) {
             try {
-                const { data: comments, error } = await supabase
+                const { data: comments, error } = await supabaseClient
                     .from('video_comments')
                     .select(`
                         *,
@@ -1390,8 +1408,6 @@
                     const repliesContainer = document.createElement('div');
                     repliesContainer.className = 'replies';
                     container.appendChild(repliesContainer);
-                    const originalContainer = document.getElementById('commentsList');
-                    document.getElementById('commentsList').appendChild(repliesContainer);
                     renderCommentTreeInContainer(comment.children, repliesContainer, videoId, level + 1);
                 }
             });
@@ -1434,7 +1450,7 @@
         }
 
         // ============================================
-        // ADD COMMENT
+        // ADD COMMENT - USING supabaseClient
         // ============================================
         window.addComment = async () => {
             if (!currentUser) {
@@ -1448,11 +1464,13 @@
             if (!content) { showAlert('Please enter a comment'); return; }
 
             try {
-                await supabase.from('video_comments').insert([{
-                    video_id: currentVideo.id,
-                    user_id: currentUser.id,
-                    content: content
-                }]);
+                await supabaseClient
+                    .from('video_comments')
+                    .insert([{
+                        video_id: currentVideo.id,
+                        user_id: currentUser.id,
+                        content: content
+                    }]);
                 input.value = '';
                 await loadComments(currentVideo.id);
                 currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
@@ -1477,7 +1495,7 @@
         };
 
         // ============================================
-        // SUBMIT REPLY - Supports infinite nesting
+        // SUBMIT REPLY - USING supabaseClient
         // ============================================
         window.submitReply = async (commentId, videoId) => {
             if (!currentUser) { showAlert('Please login to reply'); return; }
@@ -1486,12 +1504,14 @@
             if (!content) { showAlert('Please enter a reply'); return; }
 
             try {
-                await supabase.from('video_comments').insert([{
-                    video_id: videoId,
-                    user_id: currentUser.id,
-                    content: content,
-                    parent_id: commentId
-                }]);
+                await supabaseClient
+                    .from('video_comments')
+                    .insert([{
+                        video_id: videoId,
+                        user_id: currentUser.id,
+                        content: content,
+                        parent_id: commentId
+                    }]);
                 input.value = '';
                 document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
                 await loadComments(videoId);
