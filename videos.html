@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Videos</title>
+    <title>SupremeMotive - Video Hub</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* All styles remain the same as before */
         * {
             margin: 0;
             padding: 0;
@@ -34,6 +33,7 @@
             padding-bottom: 80px;
         }
 
+        /* Navigation */
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
@@ -72,6 +72,7 @@
             width: 25px;
             height: 3px;
             background: var(--gold);
+            transition: all 0.3s ease;
         }
 
         .nav-links {
@@ -107,6 +108,7 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.9rem;
+            transition: all 0.3s ease;
             text-decoration: none;
         }
 
@@ -122,6 +124,8 @@
             padding: 0.4rem 1.2rem;
             border-radius: 20px;
             cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
         .logout-btn:hover {
@@ -142,33 +146,6 @@
             font-size: 1.2rem;
             cursor: pointer;
             padding: 0.3rem;
-        }
-
-        .notification-icon {
-            position: relative;
-            cursor: pointer;
-            font-size: 1.3rem;
-            color: var(--text-secondary);
-        }
-
-        .notification-icon:hover {
-            color: var(--gold);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--error);
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 50%;
-            display: none;
-        }
-
-        .notification-badge.show {
-            display: block;
         }
 
         .bottom-nav {
@@ -205,12 +182,14 @@
             margin-bottom: 0.2rem;
         }
 
+        /* Main Container */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
+        /* Header */
         .page-header {
             text-align: center;
             margin-bottom: 2rem;
@@ -226,6 +205,7 @@
             color: var(--text-secondary);
         }
 
+        /* Filters */
         .filters-bar {
             display: flex;
             gap: 1rem;
@@ -248,6 +228,7 @@
             border: 1px solid var(--border-color);
             border-radius: 30px;
             color: var(--text-color);
+            font-size: 0.95rem;
         }
 
         .search-box i {
@@ -291,34 +272,38 @@
             cursor: pointer;
         }
 
+        /* Videos Grid */
         .videos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 1.5rem;
         }
 
+        /* Video Card */
         .video-card {
             background: var(--card-bg);
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .video-card:hover {
             transform: translateY(-5px);
             border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
         }
 
-        .video-container {
+        .video-thumbnail-container {
             position: relative;
             width: 100%;
             padding-top: 56.25%;
             background: #000;
-            cursor: pointer;
+            overflow: hidden;
         }
 
-        video {
+        .video-thumbnail {
             position: absolute;
             top: 0;
             left: 0;
@@ -341,20 +326,31 @@
             transition: opacity 0.3s ease;
         }
 
-        .video-container:hover .play-overlay {
+        .video-card:hover .play-overlay {
             opacity: 1;
         }
 
         .play-icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: rgba(255, 215, 0, 0.9);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: var(--bg-color);
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: white;
         }
 
         .video-info {
@@ -362,16 +358,20 @@
         }
 
         .video-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
+            font-weight: 600;
             color: var(--gold);
             margin-bottom: 0.3rem;
-            font-weight: 600;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .video-meta {
             display: flex;
             gap: 1rem;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             margin-bottom: 0.5rem;
         }
@@ -404,6 +404,7 @@
             color: var(--gold);
         }
 
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -411,10 +412,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             align-items: center;
             justify-content: center;
             z-index: 2000;
+            backdrop-filter: blur(5px);
         }
 
         .modal.show {
@@ -423,19 +425,21 @@
 
         .modal-content {
             max-width: 90vw;
+            width: 1000px;
             max-height: 90vh;
             background: var(--card-bg);
             border-radius: 20px;
             overflow: hidden;
             border: 1px solid var(--gold);
-            width: 1000px;
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -452,24 +456,49 @@
             cursor: pointer;
         }
 
+        .close-btn:hover {
+            color: var(--error);
+        }
+
         .modal-body {
-            padding: 1rem;
-            max-height: 70vh;
+            flex: 1;
             overflow-y: auto;
+            padding: 1rem;
         }
 
-        .modal-video {
+        /* Video Player */
+        .video-player-container {
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .video-player {
             width: 100%;
             max-height: 500px;
+            outline: none;
         }
 
-        .modal-video video {
-            width: 100%;
-            height: auto;
-            max-height: 500px;
+        /* Video Info */
+        .video-info-section {
+            margin-bottom: 1rem;
         }
 
-        .modal-actions {
+        .video-info-section h3 {
+            color: var(--gold);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Video Actions */
+        .video-actions {
             display: flex;
             gap: 1rem;
             margin: 1rem 0;
@@ -478,7 +507,7 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .modal-action-btn {
+        .action-btn {
             flex: 1;
             padding: 0.6rem;
             background: var(--card-bg);
@@ -493,11 +522,18 @@
             transition: all 0.3s ease;
         }
 
-        .modal-action-btn:hover {
+        .action-btn:hover {
             border-color: var(--gold);
             color: var(--gold);
         }
 
+        .action-btn.liked {
+            background: var(--gold);
+            color: var(--bg-color);
+            border-color: var(--gold);
+        }
+
+        /* Comments Section */
         .comments-section {
             margin-top: 1rem;
         }
@@ -507,6 +543,10 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
+        }
+
+        .comments-header h4 {
+            color: var(--gold);
         }
 
         .comment-form {
@@ -523,6 +563,12 @@
             resize: vertical;
             min-height: 80px;
             margin-bottom: 0.5rem;
+            font-family: inherit;
+        }
+
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: var(--gold);
         }
 
         .comment-form button {
@@ -533,13 +579,24 @@
             border-radius: 8px;
             cursor: pointer;
             float: right;
+            font-weight: 600;
+        }
+
+        .comments-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        /* Comment Thread - Supports Infinite Replies */
+        .comment-thread {
+            margin-bottom: 1rem;
         }
 
         .comment {
             background: var(--bg-color);
             border-radius: 12px;
             padding: 1rem;
-            margin-bottom: 1rem;
             border-left: 3px solid var(--gold);
         }
 
@@ -551,8 +608,8 @@
         }
 
         .comment-avatar {
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             display: flex;
@@ -560,12 +617,13 @@
             justify-content: center;
             color: var(--bg-color);
             font-weight: bold;
+            font-size: 0.8rem;
         }
 
         .comment-author {
             color: var(--gold);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .comment-date {
@@ -576,14 +634,14 @@
 
         .comment-content {
             color: var(--text-color);
-            margin-left: 2.8rem;
+            margin-left: 2.5rem;
             font-size: 0.9rem;
             line-height: 1.5;
             margin-bottom: 0.5rem;
         }
 
         .comment-actions {
-            margin-left: 2.8rem;
+            margin-left: 2.5rem;
             display: flex;
             gap: 1rem;
         }
@@ -592,102 +650,71 @@
             background: none;
             border: none;
             color: var(--electric-blue);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .reply-btn:hover {
+            color: var(--gold);
         }
 
         .reply-form {
-            margin-top: 0.5rem;
-            margin-left: 2.8rem;
+            margin-top: 0.8rem;
+            margin-left: 2.5rem;
             display: flex;
             gap: 0.5rem;
         }
 
         .reply-form input {
             flex: 1;
-            padding: 0.5rem;
+            padding: 0.6rem;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             color: var(--text-color);
+            font-size: 0.85rem;
         }
 
-        .reply {
-            margin-left: 3rem;
-            margin-top: 0.5rem;
-            padding-left: 1rem;
+        .reply-form button {
+            background: var(--electric-blue);
+            color: var(--bg-color);
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Nested Replies - Supports Infinite Depth */
+        .replies {
+            margin-left: 2.5rem;
+            margin-top: 0.8rem;
+            padding-left: 0.8rem;
             border-left: 2px solid var(--gold);
         }
 
-        .notifications-dropdown {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            width: 350px;
+        .reply {
+            margin-bottom: 0.8rem;
+        }
+
+        .reply:last-child {
+            margin-bottom: 0;
+        }
+
+        .reply .comment {
             background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--gold);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            display: none;
-        }
-
-        .notifications-dropdown.show {
-            display: block;
-        }
-
-        .notifications-header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            font-weight: 600;
-            color: var(--gold);
-        }
-
-        .notifications-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .notification-item {
-            padding: 0.8rem 1rem;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .notification-item:hover {
-            background: var(--border-color);
-        }
-
-        .notification-item.unread {
-            background: rgba(255, 215, 0, 0.05);
-        }
-
-        .notification-title {
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-        }
-
-        .notification-message {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .notification-time {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-top: 0.2rem;
+            border-left: 2px solid var(--electric-blue);
         }
 
         .loading {
             text-align: center;
-            padding: 3rem;
-            grid-column: 1 / -1;
+            padding: 2rem;
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border: 3px solid var(--border-color);
             border-top-color: var(--gold);
             border-radius: 50%;
@@ -697,6 +724,31 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        .alert {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            color: var(--text-color);
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
         }
 
         .hidden {
@@ -740,10 +792,12 @@
                 grid-template-columns: 1fr;
             }
 
-            .notifications-dropdown {
-                width: calc(100vw - 40px);
-                right: 20px;
-                left: 20px;
+            .replies {
+                margin-left: 0.8rem;
+            }
+
+            .reply-form {
+                flex-direction: column;
             }
         }
     </style>
@@ -775,11 +829,6 @@
                 <button class="logout-btn hidden" id="logoutBtn">Logout</button>
             </div>
             
-            <div class="notification-icon" id="notificationIcon">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge" id="notificationBadge">0</span>
-            </div>
-            
             <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
     </nav>
@@ -806,7 +855,7 @@
     <main class="container">
         <div class="page-header">
             <h1 class="page-title">🎬 Motivational Videos</h1>
-            <p class="page-subtitle">Watch inspiring content to fuel your journey</p>
+            <p class="page-subtitle">Watch, learn, and grow with our collection of inspiring videos</p>
         </div>
 
         <div id="alertContainer"></div>
@@ -825,7 +874,7 @@
             </div>
             <select class="sort-select" id="sortSelect">
                 <option value="latest">Latest</option>
-                <option value="popular">Most Popular</option>
+                <option value="popular">Most Viewed</option>
                 <option value="most_liked">Most Liked</option>
             </select>
         </div>
@@ -846,43 +895,40 @@
                 <button class="close-btn" id="closeModalBtn">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="modal-video">
-                    <video id="modalVideo" controls></video>
+                <div class="video-player-container">
+                    <video id="videoPlayer" class="video-player" controls></video>
                 </div>
-                <div class="modal-actions">
-                    <button class="modal-action-btn" id="modalLikeBtn">
-                        <i class="fas fa-heart"></i> <span id="modalLikeCount">0</span>
+                
+                <div class="video-info-section">
+                    <h3 id="modalVideoTitle"></h3>
+                    <p id="modalVideoDescription" class="video-description"></p>
+                </div>
+                
+                <div class="video-actions">
+                    <button class="action-btn" id="likeBtn">
+                        <i class="fas fa-heart"></i> <span id="likeCount">0</span>
                     </button>
-                    <button class="modal-action-btn" id="modalShareBtn">
+                    <button class="action-btn" id="shareBtn">
                         <i class="fas fa-share-alt"></i> Share
                     </button>
-                    <button class="modal-action-btn" id="modalDownloadBtn">
+                    <button class="action-btn" id="downloadBtn">
                         <i class="fas fa-download"></i> Download
                     </button>
                 </div>
+                
                 <div class="comments-section">
                     <div class="comments-header">
-                        <h3>Comments</h3>
-                        <span id="modalCommentCount">0</span>
+                        <h4>Comments</h4>
+                        <span id="commentCount">0</span>
                     </div>
-                    <div class="comment-form" id="commentForm">
+                    
+                    <div class="comment-form" id="commentFormArea">
                         <textarea id="commentInput" placeholder="Write a comment..."></textarea>
                         <button onclick="addComment()">Post Comment</button>
                     </div>
-                    <div id="modalCommentsList" class="comments-list"></div>
+                    
+                    <div id="commentsList" class="comments-list"></div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notifications Dropdown -->
-    <div class="notifications-dropdown" id="notificationsDropdown">
-        <div class="notifications-header">
-            Notifications
-        </div>
-        <div class="notifications-list" id="notificationsList">
-            <div class="notification-item">
-                <div class="notification-title">No new notifications</div>
             </div>
         </div>
     </div>
@@ -894,24 +940,20 @@
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
-        const ADMIN_EMAILS = [
-            'supremealpha04@gmail.com',
-            'suprememotive43@gmail.com',
-            'sandrakukk055@gmail.com',
-            'emmanuelamer6@gmail.com'
-        ];
+        const ADMIN_EMAILS = ['supremealpha04@gmail.com', 'suprememotive43@gmail.com', 'sandrakukk055@gmail.com', 'emmanuelamer6@gmail.com'];
 
         // State
         let currentUser = null;
         let allVideos = [];
+        let currentVideo = null;
         let currentCategory = 'all';
         let searchTerm = '';
         let sortBy = 'latest';
-        let currentVideo = null;
         let userLikes = new Set();
+        let commentsCache = {};
 
         // DOM Elements
         const videosGrid = document.getElementById('videosGrid');
@@ -928,20 +970,15 @@
         const categoryBtns = document.querySelectorAll('.category-btn');
         const videoModal = document.getElementById('videoModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
+        const videoPlayer = document.getElementById('videoPlayer');
         const modalTitle = document.getElementById('modalTitle');
-        const modalVideo = document.getElementById('modalVideo');
-        const modalLikeBtn = document.getElementById('modalLikeBtn');
-        const modalShareBtn = document.getElementById('modalShareBtn');
-        const modalDownloadBtn = document.getElementById('modalDownloadBtn');
-        const modalLikeCount = document.getElementById('modalLikeCount');
-        const modalCommentCount = document.getElementById('modalCommentCount');
-        const notificationIcon = document.getElementById('notificationIcon');
-        const notificationsDropdown = document.getElementById('notificationsDropdown');
-        const notificationsList = document.getElementById('notificationsList');
-        const notificationBadge = document.getElementById('notificationBadge');
-
-        let unreadNotifications = 0;
-        let notifications = [];
+        const modalVideoTitle = document.getElementById('modalVideoTitle');
+        const modalVideoDescription = document.getElementById('modalVideoDescription');
+        const likeBtn = document.getElementById('likeBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const likeCountSpan = document.getElementById('likeCount');
+        const commentCountSpan = document.getElementById('commentCount');
 
         // ============================================
         // THEME TOGGLE
@@ -1000,62 +1037,10 @@
         });
 
         // ============================================
-        // NOTIFICATIONS
-        // ============================================
-        notificationIcon.addEventListener('click', () => {
-            notificationsDropdown.classList.toggle('show');
-            if (unreadNotifications > 0) {
-                unreadNotifications = 0;
-                notificationBadge.classList.remove('show');
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!notificationIcon.contains(e.target) && !notificationsDropdown.contains(e.target)) {
-                notificationsDropdown.classList.remove('show');
-            }
-        });
-
-        function addNotification(title, message) {
-            notifications.unshift({
-                id: Date.now(),
-                title,
-                message,
-                time: new Date(),
-                read: false
-            });
-            unreadNotifications++;
-            notificationBadge.textContent = unreadNotifications;
-            notificationBadge.classList.add('show');
-            renderNotifications();
-        }
-
-        function renderNotifications() {
-            if (notifications.length === 0) {
-                notificationsList.innerHTML = '<div class="notification-item"><div class="notification-title">No notifications</div></div>';
-                return;
-            }
-
-            notificationsList.innerHTML = notifications.slice(0, 20).map(notif => `
-                <div class="notification-item ${!notif.read ? 'unread' : ''}" onclick="markNotificationRead('${notif.id}')">
-                    <div class="notification-title">${escapeHtml(notif.title)}</div>
-                    <div class="notification-message">${escapeHtml(notif.message)}</div>
-                    <div class="notification-time">${new Date(notif.time).toLocaleString()}</div>
-                </div>
-            `).join('');
-        }
-
-        window.markNotificationRead = (id) => {
-            const notif = notifications.find(n => n.id == id);
-            if (notif) notif.read = true;
-            renderNotifications();
-        };
-
-        // ============================================
         // SHOW ALERT
         // ============================================
         function showAlert(message, type = 'success') {
-            alertContainer.innerHTML = `<div class="alert alert-${type}">${type === 'success' ? '✅' : '❌'} ${message}</div>`;
+            alertContainer.innerHTML = `<div class="alert">${type === 'success' ? '✅' : '❌'} ${message}</div>`;
             setTimeout(() => {
                 alertContainer.innerHTML = '';
             }, 3000);
@@ -1079,14 +1064,14 @@
         // ============================================
         async function checkAuth() {
             try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
+                const { data: { user } } = await supabase.auth.getUser();
                 currentUser = user;
                 
                 if (user) {
                     loginBtn.classList.add('hidden');
                     logoutBtn.classList.remove('hidden');
                     userGreeting.classList.remove('hidden');
-                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}! 🎉`;
+                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
                     
                     if (ADMIN_EMAILS.includes(user.email)) {
                         adminLink.style.display = 'block';
@@ -1109,7 +1094,7 @@
         // LOGOUT
         // ============================================
         logoutBtn.addEventListener('click', async () => {
-            await supabaseClient.auth.signOut();
+            await supabase.auth.signOut();
             window.location.reload();
         });
 
@@ -1118,16 +1103,12 @@
         // ============================================
         async function loadUserLikes() {
             if (!currentUser) return;
-
             try {
-                const { data: likes } = await supabaseClient
+                const { data: likes } = await supabase
                     .from('video_likes')
                     .select('video_id')
                     .eq('user_id', currentUser.id);
-
-                if (likes) {
-                    userLikes = new Set(likes.map(l => l.video_id));
-                }
+                if (likes) userLikes = new Set(likes.map(l => l.video_id));
             } catch (error) {
                 console.error('Error loading likes:', error);
             }
@@ -1138,52 +1119,21 @@
         // ============================================
         async function loadVideos() {
             try {
-                videosGrid.innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Loading videos...</p>
-                    </div>
-                `;
-
-                const { data: videos, error } = await supabaseClient
-                    .from('videos')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
+                videosGrid.innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading videos...</p></div>`;
+                
+                let query = supabase.from('videos').select('*').order('created_at', { ascending: false });
+                const { data: videos, error } = await query;
                 if (error) throw error;
-
                 if (!videos || videos.length === 0) {
-                    videosGrid.innerHTML = `
-                        <div class="loading">
-                            <p>No videos yet. Check back soon!</p>
-                        </div>
-                    `;
+                    videosGrid.innerHTML = `<div class="loading"><p>No videos yet. Check back soon!</p></div>`;
                     return;
                 }
 
-                // Get stats for each video
                 const videosWithStats = await Promise.all(videos.map(async (video) => {
-                    const { count: likesCount } = await supabaseClient
-                        .from('video_likes')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('video_id', video.id);
-
-                    const { count: commentsCount } = await supabaseClient
-                        .from('video_comments')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('video_id', video.id);
-
-                    const { count: viewsCount } = await supabaseClient
-                        .from('video_views')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('video_id', video.id);
-
-                    return {
-                        ...video,
-                        likes_count: likesCount || 0,
-                        comments_count: commentsCount || 0,
-                        views_count: viewsCount || 0
-                    };
+                    const { count: likesCount } = await supabase.from('video_likes').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
+                    const { count: commentsCount } = await supabase.from('video_comments').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
+                    const { count: viewsCount } = await supabase.from('video_views').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
+                    return { ...video, likes_count: likesCount || 0, comments_count: commentsCount || 0, views_count: viewsCount || 0 };
                 }));
 
                 allVideos = videosWithStats;
@@ -1191,11 +1141,7 @@
 
             } catch (error) {
                 console.error('Error loading videos:', error);
-                videosGrid.innerHTML = `
-                    <div class="loading">
-                        <p>Error loading videos: ${error.message}</p>
-                    </div>
-                `;
+                videosGrid.innerHTML = `<div class="loading"><p>Error loading videos: ${error.message}</p></div>`;
             }
         }
 
@@ -1204,30 +1150,16 @@
         // ============================================
         function filterAndRenderVideos() {
             let filtered = [...allVideos];
-
-            if (currentCategory !== 'all') {
-                filtered = filtered.filter(v => v.category === currentCategory);
-            }
-
+            if (currentCategory !== 'all') filtered = filtered.filter(v => v.category === currentCategory);
             if (searchTerm) {
                 const term = searchTerm.toLowerCase();
-                filtered = filtered.filter(v => 
-                    v.title.toLowerCase().includes(term) ||
-                    (v.description && v.description.toLowerCase().includes(term))
-                );
+                filtered = filtered.filter(v => v.title.toLowerCase().includes(term) || (v.description && v.description.toLowerCase().includes(term)));
             }
-
             switch(sortBy) {
-                case 'popular':
-                    filtered.sort((a, b) => (b.views_count || 0) - (a.views_count || 0));
-                    break;
-                case 'most_liked':
-                    filtered.sort((a, b) => (b.likes_count || 0) - (a.likes_count || 0));
-                    break;
-                default:
-                    filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                case 'popular': filtered.sort((a, b) => (b.views_count || 0) - (a.views_count || 0)); break;
+                case 'most_liked': filtered.sort((a, b) => (b.likes_count || 0) - (a.likes_count || 0)); break;
+                default: filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             }
-
             renderVideos(filtered);
         }
 
@@ -1236,27 +1168,23 @@
         // ============================================
         function renderVideos(videos) {
             if (videos.length === 0) {
-                videosGrid.innerHTML = `
-                    <div class="loading">
-                        <p>No videos match your filters.</p>
-                    </div>
-                `;
+                videosGrid.innerHTML = `<div class="loading"><p>No videos match your filters.</p></div>`;
                 return;
             }
 
             videosGrid.innerHTML = videos.map(video => {
                 const isLiked = userLikes.has(video.id);
                 const date = new Date(video.created_at).toLocaleDateString();
+                const duration = video.duration ? formatDuration(video.duration) : '';
 
                 return `
-                    <div class="video-card" data-video-id="${video.id}">
-                        <div class="video-container" onclick="openVideo('${video.id}')">
-                            <video src="${video.video_url}" poster="${video.thumbnail_url || ''}" preload="metadata"></video>
+                    <div class="video-card" onclick="openVideo('${video.id}')">
+                        <div class="video-thumbnail-container">
+                            <img src="${video.thumbnail_url || 'https://via.placeholder.com/400x225?text=No+Thumbnail'}" class="video-thumbnail" onerror="this.src='https://via.placeholder.com/400x225?text=Video'">
                             <div class="play-overlay">
-                                <div class="play-icon">
-                                    <i class="fas fa-play"></i>
-                                </div>
+                                <div class="play-icon"><i class="fas fa-play"></i></div>
                             </div>
+                            ${duration ? `<span class="video-duration">${duration}</span>` : ''}
                         </div>
                         <div class="video-info">
                             <h3 class="video-title">${escapeHtml(video.title)}</h3>
@@ -1265,13 +1193,13 @@
                                 <span><i class="fas fa-calendar"></i> ${date}</span>
                             </div>
                             <div class="video-stats">
-                                <button class="stat-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${video.id}')">
+                                <button class="stat-btn ${isLiked ? 'liked' : ''}" onclick="event.stopPropagation(); toggleLike('${video.id}')">
                                     <i class="fas fa-heart"></i> ${video.likes_count}
                                 </button>
-                                <button class="stat-btn" onclick="openVideo('${video.id}')">
+                                <button class="stat-btn" onclick="event.stopPropagation(); openVideo('${video.id}')">
                                     <i class="fas fa-comment"></i> ${video.comments_count}
                                 </button>
-                                <button class="stat-btn" onclick="shareVideo('${video.id}')">
+                                <button class="stat-btn" onclick="event.stopPropagation(); shareVideo('${video.id}')">
                                     <i class="fas fa-share-alt"></i> Share
                                 </button>
                             </div>
@@ -1281,43 +1209,38 @@
             }).join('');
         }
 
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
         // ============================================
-        // OPEN VIDEO MODAL
+        // OPEN VIDEO
         // ============================================
         window.openVideo = async (videoId) => {
             const video = allVideos.find(v => v.id === videoId);
             if (!video) return;
-
             currentVideo = video;
 
+            // Record view
             if (currentUser) {
-                await supabaseClient
-                    .from('video_views')
-                    .insert([{
-                        video_id: videoId,
-                        user_id: currentUser.id
-                    }]).catch(e => console.log('View already recorded'));
+                await supabase.from('video_views').upsert([{ video_id: videoId, user_id: currentUser.id }], { onConflict: 'video_id,user_id' });
             }
-
             video.views_count = (video.views_count || 0) + 1;
-            
-            modalTitle.textContent = video.title;
-            modalVideo.src = video.video_url;
-            modalLikeCount.textContent = video.likes_count;
-            modalCommentCount.textContent = video.comments_count;
-            
-            const isLiked = userLikes.has(video.id);
-            modalLikeBtn.innerHTML = `<i class="fas fa-heart"></i> ${video.likes_count}`;
-            if (isLiked) {
-                modalLikeBtn.style.color = 'var(--gold)';
-            } else {
-                modalLikeBtn.style.color = '';
-            }
 
-            await loadVideoComments(videoId);
+            modalTitle.textContent = video.title;
+            modalVideoTitle.textContent = video.title;
+            modalVideoDescription.textContent = video.description || 'No description available.';
+            videoPlayer.src = video.video_url;
             
-            videoModal.classList.add('show');
+            likeCountSpan.textContent = video.likes_count;
+            const isLiked = userLikes.has(video.id);
+            likeBtn.classList.toggle('liked', isLiked);
+            
+            await loadComments(videoId);
             filterAndRenderVideos();
+            videoModal.classList.add('show');
         };
 
         // ============================================
@@ -1325,55 +1248,28 @@
         // ============================================
         window.toggleLike = async (videoId) => {
             if (!currentUser) {
-                if (confirm('Please login to like videos')) {
-                    window.location.href = 'login.html';
-                }
+                if (confirm('Please login to like videos')) window.location.href = 'login.html';
                 return;
             }
-
             const video = allVideos.find(v => v.id === videoId);
             if (!video) return;
 
             try {
                 if (userLikes.has(videoId)) {
-                    await supabaseClient
-                        .from('video_likes')
-                        .delete()
-                        .eq('video_id', videoId)
-                        .eq('user_id', currentUser.id);
-
+                    await supabase.from('video_likes').delete().eq('video_id', videoId).eq('user_id', currentUser.id);
                     userLikes.delete(videoId);
                     video.likes_count--;
                 } else {
-                    await supabaseClient
-                        .from('video_likes')
-                        .insert([{
-                            video_id: videoId,
-                            user_id: currentUser.id
-                        }]);
-
+                    await supabase.from('video_likes').insert([{ video_id: videoId, user_id: currentUser.id }]);
                     userLikes.add(videoId);
                     video.likes_count++;
-
-                    if (video.user_id !== currentUser.id) {
-                        addNotification('New Like', `${currentUser.email} liked your video "${video.title}"`);
-                    }
                 }
-
                 filterAndRenderVideos();
-                
-                if (videoModal.classList.contains('show') && currentVideo?.id === videoId) {
-                    modalLikeCount.textContent = video.likes_count;
-                    modalLikeBtn.innerHTML = `<i class="fas fa-heart"></i> ${video.likes_count}`;
-                    if (userLikes.has(videoId)) {
-                        modalLikeBtn.style.color = 'var(--gold)';
-                    } else {
-                        modalLikeBtn.style.color = '';
-                    }
+                if (currentVideo && currentVideo.id === videoId) {
+                    likeCountSpan.textContent = video.likes_count;
+                    likeBtn.classList.toggle('liked', userLikes.has(videoId));
                 }
-
             } catch (error) {
-                console.error('Error toggling like:', error);
                 showAlert('Error updating like', 'error');
             }
         };
@@ -1384,34 +1280,20 @@
         window.shareVideo = (videoId) => {
             const video = allVideos.find(v => v.id === videoId);
             if (!video) return;
-
             const url = `${window.location.origin}/videos.html?id=${videoId}`;
-            
             if (navigator.share) {
-                navigator.share({
-                    title: video.title,
-                    text: 'Check out this motivational video!',
-                    url: url
-                }).catch(() => {
-                    copyToClipboard(url);
-                });
+                navigator.share({ title: video.title, text: 'Check out this video!', url: url });
             } else {
-                copyToClipboard(url);
+                navigator.clipboard.writeText(url);
+                showAlert('Link copied to clipboard!');
             }
         };
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showAlert('Link copied to clipboard!');
-            });
-        }
 
         // ============================================
         // DOWNLOAD VIDEO
         // ============================================
-        window.downloadVideo = () => {
+        downloadBtn.addEventListener('click', () => {
             if (!currentVideo) return;
-            
             const link = document.createElement('a');
             link.href = currentVideo.video_url;
             link.download = `${currentVideo.title}.mp4`;
@@ -1419,103 +1301,111 @@
             link.click();
             document.body.removeChild(link);
             showAlert('Download started!');
-        };
-
-        modalDownloadBtn.addEventListener('click', downloadVideo);
+        });
 
         // ============================================
-        // LOAD VIDEO COMMENTS
+        // LOAD COMMENTS - Supports Infinite Nesting
         // ============================================
-        async function loadVideoComments(videoId) {
+        async function loadComments(videoId) {
             try {
-                const commentsList = document.getElementById('modalCommentsList');
-                commentsList.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading comments...</p></div>';
-
-                const { data: comments, error } = await supabaseClient
+                const { data: comments, error } = await supabase
                     .from('video_comments')
-                    .select('*')
+                    .select(`
+                        *,
+                        profiles:user_id (name)
+                    `)
                     .eq('video_id', videoId)
-                    .is('parent_comment_id', null)
                     .order('created_at', { ascending: true });
 
-                if (error) {
-                    console.error('Error loading comments:', error);
-                    commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
-                    return;
-                }
+                if (error) throw error;
 
-                if (!comments || comments.length === 0) {
-                    commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
-                    return;
-                }
+                // Build comment tree (supports infinite nesting)
+                const commentMap = new Map();
+                const rootComments = [];
 
-                // Get user names
-                const commentsWithUsers = await Promise.all(comments.map(async (comment) => {
-                    let userName = 'User';
-                    if (comment.user_id) {
-                        const { data: profile } = await supabaseClient
-                            .from('profiles')
-                            .select('name')
-                            .eq('id', comment.user_id)
-                            .single();
-                        if (profile) userName = profile.name;
+                comments?.forEach(comment => {
+                    commentMap.set(comment.id, { ...comment, children: [] });
+                });
+
+                comments?.forEach(comment => {
+                    const node = commentMap.get(comment.id);
+                    if (comment.parent_id && commentMap.has(comment.parent_id)) {
+                        commentMap.get(comment.parent_id).children.push(node);
+                    } else {
+                        rootComments.push(node);
                     }
-                    
-                    // Get replies
-                    let replies = [];
-                    const { data: replyData } = await supabaseClient
-                        .from('video_comments')
-                        .select('*')
-                        .eq('parent_comment_id', comment.id)
-                        .order('created_at', { ascending: true });
-                    
-                    if (replyData && replyData.length > 0) {
-                        replies = await Promise.all(replyData.map(async (reply) => {
-                            let replyName = 'User';
-                            if (reply.user_id) {
-                                const { data: profile } = await supabaseClient
-                                    .from('profiles')
-                                    .select('name')
-                                    .eq('id', reply.user_id)
-                                    .single();
-                                if (profile) replyName = profile.name;
-                            }
-                            return { ...reply, user_name: replyName };
-                        }));
-                    }
-                    
-                    return { ...comment, user_name: userName, replies };
-                }));
+                });
 
-                renderVideoComments(commentsWithUsers);
+                renderCommentTree(rootComments, videoId);
+                commentCountSpan.textContent = comments?.length || 0;
 
             } catch (error) {
                 console.error('Error loading comments:', error);
-                const commentsList = document.getElementById('modalCommentsList');
-                if (commentsList) {
-                    commentsList.innerHTML = '<p class="no-comments">Error loading comments</p>';
-                }
             }
         }
 
         // ============================================
-        // RENDER VIDEO COMMENTS
+        // RENDER COMMENT TREE - Recursive for infinite nesting
         // ============================================
-        function renderVideoComments(comments) {
-            const commentsList = document.getElementById('modalCommentsList');
-            if (!commentsList) return;
+        function renderCommentTree(comments, videoId, level = 0) {
+            const container = document.getElementById('commentsList');
+            if (!container) return;
 
-            if (comments.length === 0) {
-                commentsList.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>';
-                return;
+            if (level === 0) {
+                if (comments.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--text-secondary);">No comments yet. Be the first!</p>';
+                    return;
+                }
+                container.innerHTML = '';
             }
 
-            commentsList.innerHTML = comments.map(comment => {
+            comments.forEach(comment => {
                 const commentDate = new Date(comment.created_at).toLocaleString();
-                const authorName = comment.user_name || 'User';
+                const authorName = comment.profiles?.name || 'User';
+                const authorInitial = authorName.charAt(0).toUpperCase();
+                const marginLeft = level * 20;
+
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment-thread';
+                commentDiv.innerHTML = `
+                    <div class="comment" data-comment-id="${comment.id}" style="${marginLeft ? `margin-left: ${marginLeft}px;` : ''}">
+                        <div class="comment-header">
+                            <div class="comment-avatar">${authorInitial}</div>
+                            <span class="comment-author">${escapeHtml(authorName)}</span>
+                            <span class="comment-date">${commentDate}</span>
+                        </div>
+                        <div class="comment-content">${escapeHtml(comment.content)}</div>
+                        <div class="comment-actions">
+                            ${currentUser ? `<button class="reply-btn" onclick="showReplyForm('${comment.id}')">💬 Reply</button>` : ''}
+                        </div>
+                        <div id="replyForm-${comment.id}" class="reply-form hidden">
+                            <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
+                            <button onclick="submitReply('${comment.id}', '${videoId}')">Reply</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(commentDiv);
+
+                if (comment.children && comment.children.length > 0) {
+                    const repliesContainer = document.createElement('div');
+                    repliesContainer.className = 'replies';
+                    container.appendChild(repliesContainer);
+                    const originalContainer = document.getElementById('commentsList');
+                    document.getElementById('commentsList').appendChild(repliesContainer);
+                    renderCommentTreeInContainer(comment.children, repliesContainer, videoId, level + 1);
+                }
+            });
+        }
+
+        function renderCommentTreeInContainer(comments, container, videoId, level) {
+            comments.forEach(comment => {
+                const commentDate = new Date(comment.created_at).toLocaleString();
+                const authorName = comment.profiles?.name || 'User';
                 const authorInitial = authorName.charAt(0).toUpperCase();
 
-                return `
+                const replyDiv = document.createElement('div');
+                replyDiv.className = 'reply';
+                replyDiv.innerHTML = `
                     <div class="comment" data-comment-id="${comment.id}">
                         <div class="comment-header">
                             <div class="comment-avatar">${authorInitial}</div>
@@ -1523,37 +1413,24 @@
                             <span class="comment-date">${commentDate}</span>
                         </div>
                         <div class="comment-content">${escapeHtml(comment.content)}</div>
-                        ${currentUser ? `
-                            <div class="comment-actions">
-                                <button class="reply-btn" onclick="showVideoReplyForm('${comment.id}')">💬 Reply</button>
-                            </div>
-                            <div id="videoReplyForm-${comment.id}" class="reply-form hidden">
-                                <input type="text" id="videoReplyInput-${comment.id}" placeholder="Write a reply...">
-                                <button onclick="submitVideoReply('${comment.id}')">Reply</button>
-                            </div>
-                        ` : ''}
-                        ${comment.replies && comment.replies.length > 0 ? `
-                            <div class="replies">
-                                ${comment.replies.map(reply => {
-                                    const replyDate = new Date(reply.created_at).toLocaleString();
-                                    const replyAuthor = reply.user_name || 'User';
-                                    const replyInitial = replyAuthor.charAt(0).toUpperCase();
-                                    return `
-                                        <div class="reply">
-                                            <div class="comment-header">
-                                                <div class="comment-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;">${replyInitial}</div>
-                                                <span class="comment-author" style="font-size: 0.85rem;">${escapeHtml(replyAuthor)}</span>
-                                                <span class="comment-date">${replyDate}</span>
-                                            </div>
-                                            <div class="comment-content">${escapeHtml(reply.content)}</div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        ` : ''}
+                        <div class="comment-actions">
+                            ${currentUser ? `<button class="reply-btn" onclick="showReplyForm('${comment.id}')">💬 Reply</button>` : ''}
+                        </div>
+                        <div id="replyForm-${comment.id}" class="reply-form hidden">
+                            <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
+                            <button onclick="submitReply('${comment.id}', '${videoId}')">Reply</button>
+                        </div>
                     </div>
                 `;
-            }).join('');
+                container.appendChild(replyDiv);
+
+                if (comment.children && comment.children.length > 0) {
+                    const subContainer = document.createElement('div');
+                    subContainer.className = 'replies';
+                    container.appendChild(subContainer);
+                    renderCommentTreeInContainer(comment.children, subContainer, videoId, level + 1);
+                }
+            });
         }
 
         // ============================================
@@ -1564,110 +1441,64 @@
                 showAlert('Please login to comment');
                 return;
             }
-
             if (!currentVideo) return;
 
             const input = document.getElementById('commentInput');
             const content = input.value.trim();
-
-            if (!content) {
-                showAlert('Please enter a comment');
-                return;
-            }
+            if (!content) { showAlert('Please enter a comment'); return; }
 
             try {
-                const { error } = await supabaseClient
-                    .from('video_comments')
-                    .insert([{
-                        video_id: currentVideo.id,
-                        user_id: currentUser.id,
-                        content: content
-                    }]);
-
-                if (error) {
-                    console.error('Error inserting comment:', error);
-                    showAlert('Error posting comment. Please try again.', 'error');
-                    return;
-                }
-
+                await supabase.from('video_comments').insert([{
+                    video_id: currentVideo.id,
+                    user_id: currentUser.id,
+                    content: content
+                }]);
                 input.value = '';
-                await loadVideoComments(currentVideo.id);
-                
-                currentVideo.comments_count++;
-                modalCommentCount.textContent = currentVideo.comments_count;
+                await loadComments(currentVideo.id);
+                currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
                 filterAndRenderVideos();
-
-                if (currentVideo.user_id !== currentUser.id) {
-                    addNotification('New Comment', `${currentUser.email} commented on "${currentVideo.title}"`);
-                }
-
                 showAlert('Comment posted!');
-
             } catch (error) {
-                console.error('Error posting comment:', error);
                 showAlert('Error posting comment', 'error');
             }
         };
 
         // ============================================
-        // SHOW VIDEO REPLY FORM
+        // SHOW REPLY FORM
         // ============================================
-        window.showVideoReplyForm = (commentId) => {
-            const form = document.getElementById(`videoReplyForm-${commentId}`);
+        window.showReplyForm = (commentId) => {
+            const form = document.getElementById(`replyForm-${commentId}`);
             if (form) {
                 form.classList.toggle('hidden');
                 if (!form.classList.contains('hidden')) {
-                    document.getElementById(`videoReplyInput-${commentId}`).focus();
+                    document.getElementById(`replyInput-${commentId}`).focus();
                 }
             }
         };
 
         // ============================================
-        // SUBMIT VIDEO REPLY
+        // SUBMIT REPLY - Supports infinite nesting
         // ============================================
-        window.submitVideoReply = async (commentId) => {
-            if (!currentUser) {
-                showAlert('Please login to reply');
-                return;
-            }
-
-            if (!currentVideo) return;
-
-            const input = document.getElementById(`videoReplyInput-${commentId}`);
+        window.submitReply = async (commentId, videoId) => {
+            if (!currentUser) { showAlert('Please login to reply'); return; }
+            const input = document.getElementById(`replyInput-${commentId}`);
             const content = input.value.trim();
-
-            if (!content) {
-                showAlert('Please enter a reply');
-                return;
-            }
+            if (!content) { showAlert('Please enter a reply'); return; }
 
             try {
-                const { error } = await supabaseClient
-                    .from('video_comments')
-                    .insert([{
-                        video_id: currentVideo.id,
-                        user_id: currentUser.id,
-                        content: content,
-                        parent_comment_id: commentId
-                    }]);
-
-                if (error) {
-                    showAlert('Error posting reply', 'error');
-                    return;
-                }
-
+                await supabase.from('video_comments').insert([{
+                    video_id: videoId,
+                    user_id: currentUser.id,
+                    content: content,
+                    parent_id: commentId
+                }]);
                 input.value = '';
-                document.getElementById(`videoReplyForm-${commentId}`).classList.add('hidden');
-                await loadVideoComments(currentVideo.id);
-                
-                currentVideo.comments_count++;
-                modalCommentCount.textContent = currentVideo.comments_count;
+                document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
+                await loadComments(videoId);
+                currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
                 filterAndRenderVideos();
-
                 showAlert('Reply posted!');
-
             } catch (error) {
-                console.error('Error posting reply:', error);
                 showAlert('Error posting reply', 'error');
             }
         };
@@ -1675,27 +1506,20 @@
         // ============================================
         // MODAL CONTROLS
         // ============================================
-        modalLikeBtn.addEventListener('click', () => {
-            if (currentVideo) {
-                toggleLike(currentVideo.id);
-            }
+        likeBtn.addEventListener('click', () => {
+            if (currentVideo) toggleLike(currentVideo.id);
         });
-
-        modalShareBtn.addEventListener('click', () => {
-            if (currentVideo) {
-                shareVideo(currentVideo.id);
-            }
+        shareBtn.addEventListener('click', () => {
+            if (currentVideo) shareVideo(currentVideo.id);
         });
-
         closeModalBtn.addEventListener('click', () => {
             videoModal.classList.remove('show');
-            modalVideo.pause();
+            videoPlayer.pause();
         });
-
         window.addEventListener('click', (e) => {
             if (e.target === videoModal) {
                 videoModal.classList.remove('show');
-                modalVideo.pause();
+                videoPlayer.pause();
             }
         });
 
@@ -1710,12 +1534,10 @@
                 filterAndRenderVideos();
             });
         });
-
         searchInput.addEventListener('input', (e) => {
             searchTerm = e.target.value;
             filterAndRenderVideos();
         });
-
         sortSelect.addEventListener('change', (e) => {
             sortBy = e.target.value;
             filterAndRenderVideos();
@@ -1729,7 +1551,6 @@
             await checkAuth();
             await loadVideos();
         }
-
         init();
     </script>
 </body>
