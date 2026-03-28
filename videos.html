@@ -189,7 +189,6 @@
             padding: 0 1rem;
         }
 
-        /* Header */
         .page-header {
             text-align: center;
             margin-bottom: 2rem;
@@ -279,7 +278,6 @@
             gap: 1.5rem;
         }
 
-        /* Video Card */
         .video-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -469,7 +467,6 @@
             outline: none;
         }
 
-        /* Video Info */
         .video-info-section {
             margin-bottom: 1rem;
         }
@@ -486,7 +483,6 @@
             line-height: 1.5;
         }
 
-        /* Video Actions */
         .video-actions {
             display: flex;
             gap: 1rem;
@@ -532,14 +528,17 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .comments-header h4 {
             color: var(--gold);
+            font-size: 1.1rem;
         }
 
         .comment-form {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .comment-form textarea {
@@ -572,13 +571,13 @@
         }
 
         .comments-list {
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
             padding-right: 0.5rem;
         }
 
-        /* Comment Thread - Supports Infinite Replies */
-        .comment-item {
+        /* Comment Thread */
+        .comment-thread {
             margin-bottom: 1rem;
         }
 
@@ -587,6 +586,7 @@
             border-radius: 12px;
             padding: 1rem;
             border-left: 3px solid var(--gold);
+            margin-bottom: 0.5rem;
         }
 
         .comment-header {
@@ -594,6 +594,7 @@
             align-items: center;
             gap: 0.8rem;
             margin-bottom: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .comment-avatar {
@@ -675,17 +676,27 @@
             font-weight: 600;
         }
 
-        /* Nested Replies - Supports Infinite Depth */
+        /* Nested Replies */
         .replies {
-            margin-left: 2.5rem;
+            margin-left: 2rem;
             margin-top: 0.5rem;
-            padding-left: 0.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--gold);
         }
 
-        .replies .comment {
+        .reply {
+            margin-bottom: 0.5rem;
+        }
+
+        .reply .comment {
             background: var(--card-bg);
             border-left: 2px solid var(--electric-blue);
-            margin-top: 0.5rem;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 2rem;
         }
 
         .loading {
@@ -774,11 +785,16 @@
             }
 
             .replies {
-                margin-left: 1rem;
+                margin-left: 0.5rem;
+                padding-left: 0.5rem;
             }
 
             .reply-form {
                 flex-direction: column;
+            }
+
+            .comment-content {
+                margin-left: 0;
             }
         }
     </style>
@@ -916,12 +932,12 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - USING supabaseClient
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin emails
         const ADMIN_EMAILS = ['supremealpha04@gmail.com', 'suprememotive43@gmail.com', 'sandrakukk055@gmail.com', 'emmanuelamer6@gmail.com'];
@@ -934,6 +950,7 @@
         let searchTerm = '';
         let sortBy = 'latest';
         let userLikes = new Set();
+        let currentComments = [];
 
         // DOM Elements
         const videosGrid = document.getElementById('videosGrid');
@@ -1044,7 +1061,7 @@
         // ============================================
         async function checkAuth() {
             try {
-                const { data: { user } } = await supabase.auth.getUser();
+                const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
                 
                 if (user) {
@@ -1074,7 +1091,7 @@
         // LOGOUT
         // ============================================
         logoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.reload();
         });
 
@@ -1084,7 +1101,7 @@
         async function loadUserLikes() {
             if (!currentUser) return;
             try {
-                const { data: likes } = await supabase
+                const { data: likes } = await supabaseClient
                     .from('video_likes')
                     .select('video_id')
                     .eq('user_id', currentUser.id);
@@ -1101,8 +1118,11 @@
             try {
                 videosGrid.innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading videos...</p></div>`;
                 
-                let query = supabase.from('videos').select('*').order('created_at', { ascending: false });
-                const { data: videos, error } = await query;
+                const { data: videos, error } = await supabaseClient
+                    .from('videos')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                    
                 if (error) throw error;
                 if (!videos || videos.length === 0) {
                     videosGrid.innerHTML = `<div class="loading"><p>No videos yet. Check back soon!</p></div>`;
@@ -1110,9 +1130,18 @@
                 }
 
                 const videosWithStats = await Promise.all(videos.map(async (video) => {
-                    const { count: likesCount } = await supabase.from('video_likes').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
-                    const { count: commentsCount } = await supabase.from('video_comments').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
-                    const { count: viewsCount } = await supabase.from('video_views').select('*', { count: 'exact', head: true }).eq('video_id', video.id);
+                    const { count: likesCount } = await supabaseClient
+                        .from('video_likes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('video_id', video.id);
+                    const { count: commentsCount } = await supabaseClient
+                        .from('video_comments')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('video_id', video.id);
+                    const { count: viewsCount } = await supabaseClient
+                        .from('video_views')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('video_id', video.id);
                     return { ...video, likes_count: likesCount || 0, comments_count: commentsCount || 0, views_count: viewsCount || 0 };
                 }));
 
@@ -1143,9 +1172,6 @@
             renderVideos(filtered);
         }
 
-        // ============================================
-        // RENDER VIDEOS
-        // ============================================
         function renderVideos(videos) {
             if (videos.length === 0) {
                 videosGrid.innerHTML = `<div class="loading"><p>No videos match your filters.</p></div>`;
@@ -1197,7 +1223,7 @@
 
             // Record view
             if (currentUser) {
-                await supabase.from('video_views').upsert([{ video_id: videoId, user_id: currentUser.id }], { onConflict: 'video_id,user_id' });
+                await supabaseClient.from('video_views').upsert([{ video_id: videoId, user_id: currentUser.id }], { onConflict: 'video_id,user_id' });
             }
             video.views_count = (video.views_count || 0) + 1;
 
@@ -1228,11 +1254,11 @@
 
             try {
                 if (userLikes.has(videoId)) {
-                    await supabase.from('video_likes').delete().eq('video_id', videoId).eq('user_id', currentUser.id);
+                    await supabaseClient.from('video_likes').delete().eq('video_id', videoId).eq('user_id', currentUser.id);
                     userLikes.delete(videoId);
                     video.likes_count--;
                 } else {
-                    await supabase.from('video_likes').insert([{ video_id: videoId, user_id: currentUser.id }]);
+                    await supabaseClient.from('video_likes').insert([{ video_id: videoId, user_id: currentUser.id }]);
                     userLikes.add(videoId);
                     video.likes_count++;
                 }
@@ -1276,29 +1302,40 @@
         });
 
         // ============================================
-        // LOAD COMMENTS - FIXED WORKING VERSION
+        // LOAD COMMENTS - FIXED WITH PROPER JOIN
         // ============================================
         async function loadComments(videoId) {
             try {
-                const { data: comments, error } = await supabase
+                // Fetch comments with user profiles
+                const { data: comments, error } = await supabaseClient
                     .from('video_comments')
                     .select(`
                         *,
-                        profiles:user_id (name)
+                        profiles:user_id (
+                            name,
+                            email
+                        )
                     `)
                     .eq('video_id', videoId)
                     .order('created_at', { ascending: true });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error loading comments:', error);
+                    return;
+                }
 
                 console.log('Comments loaded:', comments);
 
-                // Build comment tree
+                // Build comment tree (supports infinite nesting)
                 const commentMap = new Map();
                 const rootComments = [];
 
                 comments?.forEach(comment => {
-                    commentMap.set(comment.id, { ...comment, children: [] });
+                    commentMap.set(comment.id, { 
+                        ...comment, 
+                        children: [],
+                        profiles: comment.profiles || { name: 'User' }
+                    });
                 });
 
                 comments?.forEach(comment => {
@@ -1310,29 +1347,29 @@
                     }
                 });
 
+                currentComments = rootComments;
                 renderComments(rootComments);
                 commentCountSpan.textContent = comments?.length || 0;
 
             } catch (error) {
                 console.error('Error loading comments:', error);
-                document.getElementById('commentsList').innerHTML = '<p style="text-align:center; color:var(--error);">Error loading comments</p>';
+                document.getElementById('commentsList').innerHTML = '<div class="no-comments">Error loading comments</div>';
             }
         }
 
         // ============================================
-        // RENDER COMMENTS - Recursive with working replies
+        // RENDER COMMENTS - Recursive for infinite nesting
         // ============================================
-        function renderComments(comments, containerId = 'commentsList', level = 0) {
-            const container = document.getElementById(containerId);
+        function renderComments(comments, level = 0) {
+            const container = document.getElementById('commentsList');
             if (!container) return;
 
             if (level === 0) {
+                if (comments.length === 0) {
+                    container.innerHTML = '<div class="no-comments">No comments yet. Be the first!</div>';
+                    return;
+                }
                 container.innerHTML = '';
-            }
-
-            if (comments.length === 0 && level === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding: 2rem;">No comments yet. Be the first to comment!</p>';
-                return;
             }
 
             comments.forEach(comment => {
@@ -1342,8 +1379,8 @@
                 const marginLeft = level * 20;
 
                 const commentDiv = document.createElement('div');
-                commentDiv.className = 'comment-item';
-                commentDiv.style.marginLeft = `${marginLeft}px`;
+                commentDiv.className = 'comment-thread';
+                commentDiv.style.marginLeft = marginLeft ? `${marginLeft}px` : '';
                 commentDiv.innerHTML = `
                     <div class="comment" data-comment-id="${comment.id}">
                         <div class="comment-header">
@@ -1357,7 +1394,7 @@
                         </div>
                         <div id="replyForm-${comment.id}" class="reply-form hidden">
                             <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
-                            <button onclick="submitReply('${comment.id}', '${currentVideo.id}')">Reply</button>
+                            <button onclick="submitReply('${comment.id}', '${currentVideo?.id}')">Reply</button>
                         </div>
                     </div>
                 `;
@@ -1367,12 +1404,12 @@
                     const repliesContainer = document.createElement('div');
                     repliesContainer.className = 'replies';
                     container.appendChild(repliesContainer);
-                    renderCommentsRecursive(comment.children, repliesContainer, level + 1);
+                    renderCommentsInContainer(comment.children, repliesContainer, level + 1);
                 }
             });
         }
 
-        function renderCommentsRecursive(comments, container, level) {
+        function renderCommentsInContainer(comments, container, level) {
             comments.forEach(comment => {
                 const commentDate = new Date(comment.created_at).toLocaleString();
                 const authorName = comment.profiles?.name || 'User';
@@ -1393,7 +1430,7 @@
                         </div>
                         <div id="replyForm-${comment.id}" class="reply-form hidden">
                             <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
-                            <button onclick="submitReply('${comment.id}', '${currentVideo.id}')">Reply</button>
+                            <button onclick="submitReply('${comment.id}', '${currentVideo?.id}')">Reply</button>
                         </div>
                     </div>
                 `;
@@ -1403,7 +1440,7 @@
                     const subContainer = document.createElement('div');
                     subContainer.className = 'replies';
                     container.appendChild(subContainer);
-                    renderCommentsRecursive(comment.children, subContainer, level + 1);
+                    renderCommentsInContainer(comment.children, subContainer, level + 1);
                 }
             });
         }
@@ -1423,7 +1460,7 @@
             if (!content) { showAlert('Please enter a comment'); return; }
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('video_comments')
                     .insert([{
                         video_id: currentVideo.id,
@@ -1462,12 +1499,14 @@
         // ============================================
         window.submitReply = async (commentId, videoId) => {
             if (!currentUser) { showAlert('Please login to reply'); return; }
+            if (!videoId) return;
+
             const input = document.getElementById(`replyInput-${commentId}`);
             const content = input.value.trim();
             if (!content) { showAlert('Please enter a reply'); return; }
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('video_comments')
                     .insert([{
                         video_id: videoId,
