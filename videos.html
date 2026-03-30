@@ -33,7 +33,6 @@
             padding-bottom: 80px;
         }
 
-        /* Navigation */
         .top-nav {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
@@ -182,7 +181,6 @@
             margin-bottom: 0.2rem;
         }
 
-        /* Main Container */
         .container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -204,7 +202,6 @@
             color: var(--text-secondary);
         }
 
-        /* Filters */
         .filters-bar {
             display: flex;
             gap: 1rem;
@@ -271,7 +268,6 @@
             cursor: pointer;
         }
 
-        /* Videos Grid */
         .videos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -349,10 +345,6 @@
             font-weight: 600;
             color: var(--gold);
             margin-bottom: 0.3rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
         .video-meta {
@@ -391,7 +383,6 @@
             color: var(--gold);
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -403,7 +394,6 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            backdrop-filter: blur(5px);
         }
 
         .modal.show {
@@ -416,10 +406,8 @@
             max-height: 90vh;
             background: var(--card-bg);
             border-radius: 20px;
-            overflow: hidden;
+            overflow-y: auto;
             border: 1px solid var(--gold);
-            display: flex;
-            flex-direction: column;
         }
 
         .modal-header {
@@ -428,6 +416,10 @@
             align-items: center;
             padding: 1rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
         }
 
         .modal-header h2 {
@@ -448,12 +440,9 @@
         }
 
         .modal-body {
-            flex: 1;
-            overflow-y: auto;
             padding: 1rem;
         }
 
-        /* Video Player */
         .video-player-container {
             background: #000;
             border-radius: 12px;
@@ -518,7 +507,6 @@
             border-color: var(--gold);
         }
 
-        /* Comments Section */
         .comments-section {
             margin-top: 1rem;
         }
@@ -534,7 +522,6 @@
 
         .comments-header h4 {
             color: var(--gold);
-            font-size: 1.1rem;
         }
 
         .comment-form {
@@ -576,17 +563,12 @@
             padding-right: 0.5rem;
         }
 
-        /* Comment Thread */
-        .comment-thread {
-            margin-bottom: 1rem;
-        }
-
         .comment {
             background: var(--bg-color);
             border-radius: 12px;
             padding: 1rem;
+            margin-bottom: 1rem;
             border-left: 3px solid var(--gold);
-            margin-bottom: 0.5rem;
         }
 
         .comment-header {
@@ -594,7 +576,6 @@
             align-items: center;
             gap: 0.8rem;
             margin-bottom: 0.5rem;
-            flex-wrap: wrap;
         }
 
         .comment-avatar {
@@ -676,7 +657,6 @@
             font-weight: 600;
         }
 
-        /* Nested Replies */
         .replies {
             margin-left: 2rem;
             margin-top: 0.5rem;
@@ -685,18 +665,11 @@
         }
 
         .reply {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
         }
 
-        .reply .comment {
-            background: var(--card-bg);
-            border-left: 2px solid var(--electric-blue);
-        }
-
-        .no-comments {
-            text-align: center;
-            color: var(--text-secondary);
-            padding: 2rem;
+        .reply:last-child {
+            margin-bottom: 0;
         }
 
         .loading {
@@ -791,10 +764,6 @@
 
             .reply-form {
                 flex-direction: column;
-            }
-
-            .comment-content {
-                margin-left: 0;
             }
         }
     </style>
@@ -921,10 +890,15 @@
                     
                     <div class="comment-form" id="commentFormArea">
                         <textarea id="commentInput" placeholder="Write a comment..."></textarea>
-                        <button onclick="addComment()">Post Comment</button>
+                        <button onclick="submitMainComment()">Post Comment</button>
                     </div>
                     
-                    <div id="commentsList" class="comments-list"></div>
+                    <div id="commentsList" class="comments-list">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Loading comments...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -950,7 +924,6 @@
         let searchTerm = '';
         let sortBy = 'latest';
         let userLikes = new Set();
-        let currentComments = [];
 
         // DOM Elements
         const videosGrid = document.getElementById('videosGrid');
@@ -1172,6 +1145,9 @@
             renderVideos(filtered);
         }
 
+        // ============================================
+        // RENDER VIDEOS
+        // ============================================
         function renderVideos(videos) {
             if (videos.length === 0) {
                 videosGrid.innerHTML = `<div class="loading"><p>No videos match your filters.</p></div>`;
@@ -1302,40 +1278,27 @@
         });
 
         // ============================================
-        // LOAD COMMENTS - FIXED WITH PROPER JOIN
+        // LOAD COMMENTS - WORKING
         // ============================================
         async function loadComments(videoId) {
             try {
-                // Fetch comments with user profiles
                 const { data: comments, error } = await supabaseClient
                     .from('video_comments')
                     .select(`
                         *,
-                        profiles:user_id (
-                            name,
-                            email
-                        )
+                        profiles:user_id (name)
                     `)
                     .eq('video_id', videoId)
                     .order('created_at', { ascending: true });
 
-                if (error) {
-                    console.error('Error loading comments:', error);
-                    return;
-                }
+                if (error) throw error;
 
-                console.log('Comments loaded:', comments);
-
-                // Build comment tree (supports infinite nesting)
+                // Build comment tree
                 const commentMap = new Map();
                 const rootComments = [];
 
                 comments?.forEach(comment => {
-                    commentMap.set(comment.id, { 
-                        ...comment, 
-                        children: [],
-                        profiles: comment.profiles || { name: 'User' }
-                    });
+                    commentMap.set(comment.id, { ...comment, children: [] });
                 });
 
                 comments?.forEach(comment => {
@@ -1347,29 +1310,28 @@
                     }
                 });
 
-                currentComments = rootComments;
                 renderComments(rootComments);
                 commentCountSpan.textContent = comments?.length || 0;
 
             } catch (error) {
                 console.error('Error loading comments:', error);
-                document.getElementById('commentsList').innerHTML = '<div class="no-comments">Error loading comments</div>';
+                document.getElementById('commentsList').innerHTML = '<div class="loading"><p>Error loading comments</p></div>';
             }
         }
 
         // ============================================
-        // RENDER COMMENTS - Recursive for infinite nesting
+        // RENDER COMMENTS - RECURSIVE
         // ============================================
-        function renderComments(comments, level = 0) {
-            const container = document.getElementById('commentsList');
-            if (!container) return;
+        function renderComments(comments, container = null, level = 0) {
+            const commentsList = container || document.getElementById('commentsList');
+            if (!commentsList) return;
 
             if (level === 0) {
                 if (comments.length === 0) {
-                    container.innerHTML = '<div class="no-comments">No comments yet. Be the first!</div>';
+                    commentsList.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding:2rem;">No comments yet. Be the first!</p>';
                     return;
                 }
-                container.innerHTML = '';
+                commentsList.innerHTML = '';
             }
 
             comments.forEach(comment => {
@@ -1379,76 +1341,41 @@
                 const marginLeft = level * 20;
 
                 const commentDiv = document.createElement('div');
-                commentDiv.className = 'comment-thread';
-                commentDiv.style.marginLeft = marginLeft ? `${marginLeft}px` : '';
+                commentDiv.className = 'comment';
+                commentDiv.setAttribute('data-comment-id', comment.id);
+                if (marginLeft) commentDiv.style.marginLeft = `${marginLeft}px`;
+                
                 commentDiv.innerHTML = `
-                    <div class="comment" data-comment-id="${comment.id}">
-                        <div class="comment-header">
-                            <div class="comment-avatar">${authorInitial}</div>
-                            <span class="comment-author">${escapeHtml(authorName)}</span>
-                            <span class="comment-date">${commentDate}</span>
-                        </div>
-                        <div class="comment-content">${escapeHtml(comment.content)}</div>
-                        <div class="comment-actions">
-                            ${currentUser ? `<button class="reply-btn" onclick="showReplyForm('${comment.id}')">💬 Reply</button>` : ''}
-                        </div>
-                        <div id="replyForm-${comment.id}" class="reply-form hidden">
-                            <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
-                            <button onclick="submitReply('${comment.id}', '${currentVideo?.id}')">Reply</button>
-                        </div>
+                    <div class="comment-header">
+                        <div class="comment-avatar">${authorInitial}</div>
+                        <span class="comment-author">${escapeHtml(authorName)}</span>
+                        <span class="comment-date">${commentDate}</span>
+                    </div>
+                    <div class="comment-content">${escapeHtml(comment.content)}</div>
+                    <div class="comment-actions">
+                        ${currentUser ? `<button class="reply-btn" onclick="showReplyForm('${comment.id}')">💬 Reply</button>` : ''}
+                    </div>
+                    <div id="replyForm-${comment.id}" class="reply-form hidden">
+                        <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
+                        <button onclick="submitReply('${comment.id}')">Reply</button>
                     </div>
                 `;
-                container.appendChild(commentDiv);
+                
+                commentsList.appendChild(commentDiv);
 
                 if (comment.children && comment.children.length > 0) {
                     const repliesContainer = document.createElement('div');
                     repliesContainer.className = 'replies';
-                    container.appendChild(repliesContainer);
-                    renderCommentsInContainer(comment.children, repliesContainer, level + 1);
-                }
-            });
-        }
-
-        function renderCommentsInContainer(comments, container, level) {
-            comments.forEach(comment => {
-                const commentDate = new Date(comment.created_at).toLocaleString();
-                const authorName = comment.profiles?.name || 'User';
-                const authorInitial = authorName.charAt(0).toUpperCase();
-
-                const replyDiv = document.createElement('div');
-                replyDiv.className = 'reply';
-                replyDiv.innerHTML = `
-                    <div class="comment" data-comment-id="${comment.id}">
-                        <div class="comment-header">
-                            <div class="comment-avatar">${authorInitial}</div>
-                            <span class="comment-author">${escapeHtml(authorName)}</span>
-                            <span class="comment-date">${commentDate}</span>
-                        </div>
-                        <div class="comment-content">${escapeHtml(comment.content)}</div>
-                        <div class="comment-actions">
-                            ${currentUser ? `<button class="reply-btn" onclick="showReplyForm('${comment.id}')">💬 Reply</button>` : ''}
-                        </div>
-                        <div id="replyForm-${comment.id}" class="reply-form hidden">
-                            <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
-                            <button onclick="submitReply('${comment.id}', '${currentVideo?.id}')">Reply</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(replyDiv);
-
-                if (comment.children && comment.children.length > 0) {
-                    const subContainer = document.createElement('div');
-                    subContainer.className = 'replies';
-                    container.appendChild(subContainer);
-                    renderCommentsInContainer(comment.children, subContainer, level + 1);
+                    commentsList.appendChild(repliesContainer);
+                    renderComments(comment.children, repliesContainer, level + 1);
                 }
             });
         }
 
         // ============================================
-        // ADD COMMENT
+        // SUBMIT MAIN COMMENT
         // ============================================
-        window.addComment = async () => {
+        window.submitMainComment = async () => {
             if (!currentUser) {
                 showAlert('Please login to comment');
                 return;
@@ -1460,23 +1387,17 @@
             if (!content) { showAlert('Please enter a comment'); return; }
 
             try {
-                const { error } = await supabaseClient
-                    .from('video_comments')
-                    .insert([{
-                        video_id: currentVideo.id,
-                        user_id: currentUser.id,
-                        content: content
-                    }]);
-
-                if (error) throw error;
-
+                await supabaseClient.from('video_comments').insert([{
+                    video_id: currentVideo.id,
+                    user_id: currentUser.id,
+                    content: content
+                }]);
                 input.value = '';
                 await loadComments(currentVideo.id);
                 currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
                 filterAndRenderVideos();
                 showAlert('Comment posted!');
             } catch (error) {
-                console.error('Error posting comment:', error);
                 showAlert('Error posting comment', 'error');
             }
         };
@@ -1495,36 +1416,33 @@
         };
 
         // ============================================
-        // SUBMIT REPLY - Supports infinite nesting
+        // SUBMIT REPLY
         // ============================================
-        window.submitReply = async (commentId, videoId) => {
-            if (!currentUser) { showAlert('Please login to reply'); return; }
-            if (!videoId) return;
+        window.submitReply = async (commentId) => {
+            if (!currentUser) {
+                showAlert('Please login to reply');
+                return;
+            }
+            if (!currentVideo) return;
 
             const input = document.getElementById(`replyInput-${commentId}`);
             const content = input.value.trim();
             if (!content) { showAlert('Please enter a reply'); return; }
 
             try {
-                const { error } = await supabaseClient
-                    .from('video_comments')
-                    .insert([{
-                        video_id: videoId,
-                        user_id: currentUser.id,
-                        content: content,
-                        parent_id: commentId
-                    }]);
-
-                if (error) throw error;
-
+                await supabaseClient.from('video_comments').insert([{
+                    video_id: currentVideo.id,
+                    user_id: currentUser.id,
+                    content: content,
+                    parent_id: commentId
+                }]);
                 input.value = '';
                 document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
-                await loadComments(videoId);
+                await loadComments(currentVideo.id);
                 currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
                 filterAndRenderVideos();
                 showAlert('Reply posted!');
             } catch (error) {
-                console.error('Error posting reply:', error);
                 showAlert('Error posting reply', 'error');
             }
         };
