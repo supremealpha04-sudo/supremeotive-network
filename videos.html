@@ -406,6 +406,8 @@
             border-radius: 20px;
             overflow-y: auto;
             border: 1px solid var(--gold);
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-header {
@@ -439,6 +441,8 @@
 
         .modal-body {
             padding: 1rem;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .video-player-container {
@@ -505,80 +509,133 @@
             border-color: var(--gold);
         }
 
+        /* ENLARGED COMMENTS SECTION */
         .comments-section {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
+            background: var(--bg-color);
+            border-radius: 16px;
+            padding: 1rem;
         }
 
         .comments-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid var(--gold);
         }
 
         .comments-header h4 {
             color: var(--gold);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
+        .comment-count-badge {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: var(--gold);
+        }
+
+        /* ENLARGED COMMENT FORM */
         .comment-form {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1rem;
         }
 
         .comment-form textarea {
             width: 100%;
-            padding: 0.8rem;
+            padding: 1rem;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             color: var(--text-color);
             resize: vertical;
-            min-height: 80px;
-            margin-bottom: 0.5rem;
+            min-height: 100px;
+            margin-bottom: 0.8rem;
             font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
         .comment-form textarea:focus {
             outline: none;
             border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
         }
 
         .comment-form button {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             color: var(--bg-color);
             border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.7rem 2rem;
+            border-radius: 30px;
             cursor: pointer;
             float: right;
             font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
+        .comment-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        /* ENLARGED COMMENTS LIST */
         .comments-list {
-            max-height: 500px;
+            max-height: 600px;
             overflow-y: auto;
-            padding-right: 0.5rem;
+            padding-right: 0.8rem;
         }
 
+        .comments-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .comments-list::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .comments-list::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        /* ENLARGED COMMENT CARD */
         .comment {
-            background: var(--bg-color);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 3px solid var(--gold);
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            border-left: 4px solid var(--gold);
+            transition: all 0.3s ease;
+        }
+
+        .comment:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .comment-header {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.5rem;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
         }
 
         .comment-avatar {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             display: flex;
@@ -586,31 +643,31 @@
             justify-content: center;
             color: var(--bg-color);
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 1rem;
         }
 
         .comment-author {
             color: var(--gold);
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 1rem;
         }
 
         .comment-date {
             color: var(--text-secondary);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             margin-left: auto;
         }
 
         .comment-content {
             color: var(--text-color);
-            margin-left: 2.5rem;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 0.5rem;
+            margin-left: 3rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
         }
 
         .comment-actions {
-            margin-left: 2.5rem;
+            margin-left: 3rem;
             display: flex;
             gap: 1rem;
         }
@@ -619,49 +676,107 @@
             background: none;
             border: none;
             color: var(--electric-blue);
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: color 0.3s ease;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
         }
 
         .reply-btn:hover {
             color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
         }
 
         .reply-form {
-            margin-top: 0.8rem;
-            margin-left: 2.5rem;
+            margin-top: 1rem;
+            margin-left: 3rem;
             display: flex;
-            gap: 0.5rem;
+            gap: 0.8rem;
         }
 
         .reply-form input {
             flex: 1;
-            padding: 0.6rem;
-            background: var(--card-bg);
+            padding: 0.7rem 1rem;
+            background: var(--bg-color);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 10px;
             color: var(--text-color);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+        }
+
+        .reply-form input:focus {
+            outline: none;
+            border-color: var(--gold);
         }
 
         .reply-form button {
             background: var(--electric-blue);
             color: var(--bg-color);
             border: none;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
+            padding: 0.7rem 1.2rem;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
+            transition: all 0.3s ease;
         }
 
+        .reply-form button:hover {
+            background: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        /* ENLARGED REPLIES SECTION */
         .replies {
-            margin-left: 2rem;
-            margin-top: 0.5rem;
+            margin-left: 3rem;
+            margin-top: 1rem;
             padding-left: 1rem;
-            border-left: 2px solid var(--gold);
+            border-left: 3px solid var(--gold);
         }
 
+        .replies .comment {
+            background: var(--bg-color);
+            border-left: 3px solid var(--electric-blue);
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+
+        .replies .comment .comment-avatar {
+            width: 32px;
+            height: 32px;
+            font-size: 0.8rem;
+        }
+
+        .replies .comment .comment-content {
+            margin-left: 2.5rem;
+            font-size: 0.9rem;
+        }
+
+        .replies .comment .comment-actions {
+            margin-left: 2.5rem;
+        }
+
+        .replies .reply-form {
+            margin-left: 2.5rem;
+        }
+
+        /* Empty State */
+        .empty-comments {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            background: var(--card-bg);
+            border-radius: 16px;
+        }
+
+        .empty-comments i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gold);
+            opacity: 0.5;
+        }
+
+        /* Loading */
         .loading {
             text-align: center;
             padding: 2rem;
@@ -748,8 +863,20 @@
             }
 
             .replies {
-                margin-left: 0.5rem;
+                margin-left: 1rem;
                 padding-left: 0.5rem;
+            }
+
+            .comment-content,
+            .comment-actions,
+            .reply-form {
+                margin-left: 0.5rem;
+            }
+
+            .comment-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -870,12 +997,14 @@
                 
                 <div class="comments-section">
                     <div class="comments-header">
-                        <h4>Comments</h4>
-                        <span id="commentCount">0</span>
+                        <h4>
+                            <i class="fas fa-comments"></i> Comments
+                            <span class="comment-count-badge" id="commentCount">0</span>
+                        </h4>
                     </div>
                     
                     <div class="comment-form" id="commentFormArea">
-                        <textarea id="commentInput" placeholder="Write a comment..."></textarea>
+                        <textarea id="commentInput" placeholder="Share your thoughts..."></textarea>
                         <button onclick="submitMainComment()">Post Comment</button>
                     </div>
                     
@@ -892,7 +1021,7 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION - FIXED
+        // SUPABASE CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
@@ -1264,11 +1393,10 @@
         });
 
         // ============================================
-        // LOAD COMMENTS - FIXED
+        // LOAD COMMENTS
         // ============================================
         async function loadComments(videoId) {
             try {
-                // First get the comments
                 const { data: comments, error } = await supabaseClient
                     .from('video_comments')
                     .select('*')
@@ -1277,7 +1405,6 @@
 
                 if (error) throw error;
 
-                // Then get user profiles separately
                 if (comments && comments.length > 0) {
                     const userIds = [...new Set(comments.map(c => c.user_id))];
                     const { data: profiles } = await supabaseClient
@@ -1288,13 +1415,11 @@
                     const profileMap = new Map();
                     profiles?.forEach(p => profileMap.set(p.id, p));
 
-                    // Attach profiles to comments
                     const commentsWithProfiles = comments.map(c => ({
                         ...c,
                         profiles: profileMap.get(c.user_id) || { name: 'User' }
                     }));
 
-                    // Build comment tree
                     const commentMap = new Map();
                     const rootComments = [];
 
@@ -1325,7 +1450,7 @@
         }
 
         // ============================================
-        // RENDER COMMENTS - RECURSIVE
+        // RENDER COMMENTS
         // ============================================
         function renderComments(comments, container = null, level = 0) {
             const commentsList = container || document.getElementById('commentsList');
@@ -1333,7 +1458,12 @@
 
             if (level === 0) {
                 if (comments.length === 0) {
-                    commentsList.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding:2rem;">No comments yet. Be the first!</p>';
+                    commentsList.innerHTML = `
+                        <div class="empty-comments">
+                            <i class="fas fa-comment-dots"></i>
+                            <p>No comments yet. Be the first to share your thoughts!</p>
+                        </div>
+                    `;
                     return;
                 }
                 commentsList.innerHTML = '';
@@ -1358,7 +1488,7 @@
                     </div>
                     <div class="comment-content">${escapeHtml(comment.content)}</div>
                     <div class="comment-actions">
-                        ${currentUser ? `<button class="reply-btn" onclick="showReplyForm('${comment.id}')">💬 Reply</button>` : ''}
+                        ${currentUser ? `<button class="reply-btn" onclick="showReplyForm('${comment.id}')"><i class="fas fa-reply"></i> Reply</button>` : ''}
                     </div>
                     <div id="replyForm-${comment.id}" class="reply-form hidden">
                         <input type="text" id="replyInput-${comment.id}" placeholder="Write a reply...">
