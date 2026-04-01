@@ -400,6 +400,23 @@
             border: 1px solid var(--error);
         }
 
+        /* Action Buttons */
+        .action-btn {
+            background: var(--electric-blue);
+            color: var(--bg-color);
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
         /* Loading */
         .loading {
             text-align: center;
@@ -688,9 +705,7 @@
                         </tr>
                     </thead>
                     <tbody id="unlocks-table-body">
-                        <tr>
-                            <td colspan="5" class="loading">Loading...</td>
-                        </tr>
+                        <tr><td colspan="5" class="loading">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -712,9 +727,7 @@
                         </tr>
                     </thead>
                     <tbody id="comments-table-body">
-                        <tr>
-                            <td colspan="5" class="loading">Loading...</td>
-                        </tr>
+                        <tr><td colspan="5" class="loading">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -723,12 +736,13 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - USING supabaseClient
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // USING supabaseClient AS REQUESTED
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Admin role mapping with ALL admin types
         const ADMIN_ROLES = {
@@ -792,10 +806,21 @@
             }, 3000);
         }
 
-        // Check authentication and admin status
+        // Escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Check authentication and admin status - USING supabaseClient
         async function checkAdmin() {
             try {
-                const { data: { user }, error } = await supabase.auth.getUser();
+                const { data: { user }, error } = await supabaseClient.auth.getUser();
                 
                 if (error) throw error;
 
@@ -848,70 +873,70 @@
             return icons[role] || 'fa-user-shield';
         }
 
-        // Load dashboard statistics
+        // Load dashboard statistics - USING supabaseClient
         async function loadStats() {
             try {
                 // Get total users
-                const { count: totalUsers } = await supabase
+                const { count: totalUsers } = await supabaseClient
                     .from('profiles')
                     .select('*', { count: 'exact', head: true });
 
                 // Get total posts
-                const { count: totalPosts } = await supabase
+                const { count: totalPosts } = await supabaseClient
                     .from('posts')
                     .select('*', { count: 'exact', head: true });
 
                 // Get total quotes
-                const { count: totalQuotes } = await supabase
+                const { count: totalQuotes } = await supabaseClient
                     .from('quotes')
                     .select('*', { count: 'exact', head: true });
 
                 // Get total videos
-                const { count: totalVideos } = await supabase
+                const { count: totalVideos } = await supabaseClient
                     .from('videos')
                     .select('*', { count: 'exact', head: true });
 
                 // Get total ebooks
-                const { count: totalEbooks } = await supabase
+                const { count: totalEbooks } = await supabaseClient
                     .from('ebooks')
                     .select('*', { count: 'exact', head: true });
 
                 // Get total likes across all content
-                const { count: totalLikes } = await supabase
+                const { count: postLikes } = await supabaseClient
                     .from('post_likes')
                     .select('*', { count: 'exact', head: true });
                 
-                const { count: quoteLikes } = await supabase
+                const { count: quoteLikes } = await supabaseClient
                     .from('quote_likes')
                     .select('*', { count: 'exact', head: true });
                 
-                const { count: videoLikes } = await supabase
+                const { count: videoLikes } = await supabaseClient
                     .from('video_likes')
                     .select('*', { count: 'exact', head: true });
 
                 // Get total comments
-                const { count: totalComments } = await supabase
+                const { count: postComments } = await supabaseClient
                     .from('comments')
                     .select('*', { count: 'exact', head: true });
                 
-                const { count: videoComments } = await supabase
+                const { count: videoComments } = await supabaseClient
                     .from('video_comments')
                     .select('*', { count: 'exact', head: true });
 
                 // Get pending unlocks
-                const { count: pendingUnlocks } = await supabase
+                const { count: pendingUnlocks } = await supabaseClient
                     .from('unlocks')
                     .select('*', { count: 'exact', head: true })
                     .eq('status', 'pending');
 
                 // Get approved unlocks
-                const { count: approvedUnlocks } = await supabase
+                const { count: approvedUnlocks } = await supabaseClient
                     .from('unlocks')
                     .select('*', { count: 'exact', head: true })
                     .eq('status', 'approved');
 
-                const totalLikesCount = (totalLikes || 0) + (quoteLikes || 0) + (videoLikes || 0);
-                const totalCommentsCount = (totalComments || 0) + (videoComments || 0);
+                const totalLikesCount = (postLikes || 0) + (quoteLikes || 0) + (videoLikes || 0);
+                const totalCommentsCount = (postComments || 0) + (videoComments || 0);
 
                 const statsContainer = document.getElementById('stats-container');
                 statsContainer.innerHTML = `
@@ -981,10 +1006,10 @@
             }
         }
 
-        // Load users by country
+        // Load users by country - USING supabaseClient
         async function loadUsersByCountry() {
             try {
-                const { data: profiles, error } = await supabase
+                const { data: profiles, error } = await supabaseClient
                     .from('profiles')
                     .select('country');
 
@@ -1009,7 +1034,7 @@
 
                 countryList.innerHTML = sortedCountries.map(([country, count]) => `
                     <div class="country-item">
-                        <span class="country-name">${country}</span>
+                        <span class="country-name">${escapeHtml(country)}</span>
                         <span class="country-count">${count}</span>
                     </div>
                 `).join('');
@@ -1018,10 +1043,10 @@
             }
         }
 
-        // Load recent unlock requests
+        // Load recent unlock requests - USING supabaseClient
         async function loadRecentUnlocks() {
             try {
-                const { data: unlocks, error } = await supabase
+                const { data: unlocks, error } = await supabaseClient
                     .from('unlocks')
                     .select('*')
                     .order('created_at', { ascending: false })
@@ -1032,23 +1057,23 @@
                 const tableBody = document.getElementById('unlocks-table-body');
                 
                 if (!unlocks || unlocks.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No unlock requests</td></tr>';
+                    tableBody.innerHTML = '发展<td colspan="5" style="text-align: center; padding: 2rem;">No unlock requests</td></tr>';
                     return;
                 }
 
                 // Get user and ebook details for each unlock
                 const unlocksWithDetails = await Promise.all(unlocks.map(async (unlock) => {
-                    const { data: profile } = await supabase
+                    const { data: profile } = await supabaseClient
                         .from('profiles')
                         .select('name, email')
                         .eq('id', unlock.user_id)
-                        .single();
+                        .maybeSingle();
 
-                    const { data: ebook } = await supabase
+                    const { data: ebook } = await supabaseClient
                         .from('ebooks')
                         .select('title')
                         .eq('id', unlock.ebook_id)
-                        .single();
+                        .maybeSingle();
 
                     return {
                         ...unlock,
@@ -1075,10 +1100,10 @@
             }
         }
 
-        // Load recent comments
+        // Load recent comments - USING supabaseClient
         async function loadRecentComments() {
             try {
-                const { data: comments, error } = await supabase
+                const { data: comments, error } = await supabaseClient
                     .from('comments')
                     .select(`
                         *,
@@ -1104,7 +1129,7 @@
                         <td>${escapeHtml(comment.posts?.title || 'Unknown')}</td>
                         <td>${new Date(comment.created_at).toLocaleString()}</td>
                         <td>
-                            <button class="action-btn view-btn" onclick="viewComment('${comment.id}')" style="background: var(--electric-blue); color: var(--bg-color); padding: 0.3rem 0.8rem; border-radius: 6px; border: none; cursor: pointer;">
+                            <button class="action-btn" onclick="viewComment('${comment.id}')">
                                 <i class="fas fa-eye"></i> View
                             </button>
                         </td>
@@ -1117,24 +1142,13 @@
 
         // View comment
         window.viewComment = (commentId) => {
-            alert(`Comment ID: ${commentId}\nFull content will be available in the comment management section.`);
+            alert(`Comment ID: ${commentId}\nThis feature will be expanded in future updates.`);
         };
 
-        // Escape HTML
-        function escapeHtml(unsafe) {
-            if (!unsafe) return '';
-            return unsafe
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
-        // Logout
+        // Logout - USING supabaseClient
         logoutBtn.addEventListener('click', async () => {
             try {
-                await supabase.auth.signOut();
+                await supabaseClient.auth.signOut();
                 window.location.href = '../index.html';
             } catch (error) {
                 showAlert('Error logging out: ' + error.message, 'error');
