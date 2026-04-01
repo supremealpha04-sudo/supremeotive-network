@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Admin Dashboard</title>
+    <link rel="icon" type="image/png" href="../logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -21,6 +23,10 @@
             --electric-blue: #00F0FF;
             --success: #4CAF50;
             --error: #F44336;
+            --warning: #FFC107;
+            --info: #2196F3;
+            --purple: #9C27B0;
+            --cyan: #00BCD4;
         }
 
         body {
@@ -45,6 +51,7 @@
             position: fixed;
             height: 100vh;
             overflow-y: auto;
+            transition: all 0.3s ease;
         }
 
         .sidebar-header {
@@ -71,12 +78,12 @@
             font-size: 0.9rem;
             font-weight: 600;
             display: inline-block;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
-        .admin-name {
+        .admin-email {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             word-break: break-all;
         }
 
@@ -93,12 +100,13 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 1rem 1.5rem;
+            padding: 0.9rem 1.2rem;
             color: var(--text-color);
             text-decoration: none;
             border-radius: 12px;
             transition: all 0.3s ease;
             font-weight: 500;
+            font-size: 0.95rem;
         }
 
         .sidebar-nav a:hover {
@@ -113,7 +121,7 @@
         }
 
         .sidebar-nav a i {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             width: 24px;
             text-align: center;
         }
@@ -129,11 +137,11 @@
 
         .logout-btn {
             width: 100%;
-            padding: 1rem;
+            padding: 0.8rem;
             background: rgba(244, 67, 54, 0.1);
             border: 1px solid var(--error);
             color: var(--error);
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
             display: flex;
@@ -163,16 +171,21 @@
             margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .content-header h1 {
             color: var(--gold);
             font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
 
         .date-display {
             color: var(--text-secondary);
-            font-size: 1rem;
+            font-size: 0.9rem;
             background: var(--card-bg);
             padding: 0.5rem 1rem;
             border-radius: 30px;
@@ -182,14 +195,14 @@
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
         .stat-card {
             background: var(--card-bg);
-            padding: 1.8rem;
+            padding: 1.5rem;
             border-radius: 20px;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
@@ -221,12 +234,12 @@
 
         .stat-icon {
             font-size: 2rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             color: var(--gold);
         }
 
         .stat-value {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--electric-blue);
             margin-bottom: 0.3rem;
@@ -234,7 +247,7 @@
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -266,7 +279,7 @@
         /* Country List */
         .country-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 0.8rem;
             max-height: 300px;
             overflow-y: auto;
@@ -289,7 +302,7 @@
 
         .country-item {
             background: var(--bg-color);
-            padding: 0.8rem 1rem;
+            padding: 0.7rem 1rem;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
@@ -313,7 +326,7 @@
             color: var(--bg-color);
             padding: 0.2rem 0.6rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
         }
 
@@ -346,31 +359,33 @@
             color: var(--gold);
             font-weight: 600;
             border-bottom: 2px solid var(--border-color);
+            font-size: 0.9rem;
         }
 
         .admin-table td {
             padding: 1rem;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-color);
+            font-size: 0.9rem;
         }
 
         .admin-table tr:hover td {
-            background: var(--border-color);
+            background: rgba(255, 215, 0, 0.05);
         }
 
         .status-badge {
             display: inline-block;
-            padding: 0.3rem 1rem;
+            padding: 0.25rem 0.8rem;
             border-radius: 30px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
         }
 
         .status-pending {
             background: rgba(255, 193, 7, 0.1);
-            color: #FFC107;
-            border: 1px solid #FFC107;
+            color: var(--warning);
+            border: 1px solid var(--warning);
         }
 
         .status-approved {
@@ -383,40 +398,6 @@
             background: rgba(244, 67, 54, 0.1);
             color: var(--error);
             border: 1px solid var(--error);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .action-btn {
-            padding: 0.4rem 1rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .approve-btn {
-            background: var(--success);
-            color: white;
-        }
-
-        .reject-btn {
-            background: var(--error);
-            color: white;
-        }
-
-        .view-btn {
-            background: var(--electric-blue);
-            color: var(--bg-color);
         }
 
         /* Loading */
@@ -473,6 +454,12 @@
             color: var(--error);
         }
 
+        .alert-info {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid var(--info);
+            color: var(--info);
+        }
+
         /* Hidden */
         .hidden {
             display: none !important;
@@ -498,19 +485,19 @@
             }
 
             .role-badge,
-            .admin-name,
+            .admin-email,
             .sidebar-nav a span {
                 display: none;
             }
 
             .sidebar-nav a {
                 justify-content: center;
-                padding: 1rem;
+                padding: 0.9rem;
             }
 
             .sidebar-nav a i {
                 margin: 0;
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
 
             .sidebar-footer {
@@ -551,43 +538,55 @@
             <div class="sidebar-header">
                 <div class="sidebar-logo">SupremeMotive</div>
                 <div id="role-badge" class="role-badge">Loading...</div>
-                <div id="admin-name" class="admin-name"></div>
+                <div id="admin-email" class="admin-email"></div>
             </div>
 
             <ul class="sidebar-nav">
                 <li>
                     <a href="admin-dashboard.html" class="active">
-                        <i>📊</i>
+                        <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li id="posts-menu">
                     <a href="post-admin.html">
-                        <i>📝</i>
+                        <i class="fas fa-newspaper"></i>
                         <span>Post Management</span>
                     </a>
                 </li>
                 <li id="quotes-menu">
                     <a href="admin-quotes.html">
-                        <i>💬</i>
+                        <i class="fas fa-quote-right"></i>
                         <span>Quote Management</span>
+                    </a>
+                </li>
+                <li id="videos-menu">
+                    <a href="admin-videos.html">
+                        <i class="fas fa-video"></i>
+                        <span>Video Management</span>
                     </a>
                 </li>
                 <li id="ebooks-menu">
                     <a href="ebook-admin.html">
-                        <i>📚</i>
+                        <i class="fas fa-book"></i>
                         <span>Ebook Management</span>
                     </a>
                 </li>
                 <li id="unlocks-menu">
                     <a href="unlock-admin.html">
-                        <i>🔓</i>
+                        <i class="fas fa-unlock-alt"></i>
                         <span>Unlock Requests</span>
+                    </a>
+                </li>
+                <li id="users-menu">
+                    <a href="users-admin.html">
+                        <i class="fas fa-users"></i>
+                        <span>User Management</span>
                     </a>
                 </li>
                 <li>
                     <a href="../index.html">
-                        <i>🏠</i>
+                        <i class="fas fa-home"></i>
                         <span>View Site</span>
                     </a>
                 </li>
@@ -595,7 +594,7 @@
 
             <div class="sidebar-footer">
                 <button id="logout-btn" class="logout-btn">
-                    <i>🚪</i>
+                    <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </button>
             </div>
@@ -604,7 +603,10 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="content-header">
-                <h1>Dashboard Overview</h1>
+                <h1>
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard Overview
+                </h1>
                 <div id="current-date" class="date-display"></div>
             </div>
 
@@ -621,7 +623,10 @@
             <!-- Charts Section -->
             <div class="charts-section">
                 <div class="chart-card">
-                    <h3 class="chart-title">🌍 Users by Country</h3>
+                    <h3 class="chart-title">
+                        <i class="fas fa-globe-africa"></i>
+                        Users by Country
+                    </h3>
                     <div id="country-list" class="country-list">
                         <div class="loading">
                             <div class="spinner"></div>
@@ -629,22 +634,37 @@
                     </div>
                 </div>
                 <div class="chart-card">
-                    <h3 class="chart-title">📊 Quick Stats</h3>
+                    <h3 class="chart-title">
+                        <i class="fas fa-chart-simple"></i>
+                        Platform Statistics
+                    </h3>
                     <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-color); border-radius: 8px;">
-                            <span>Total Quotes:</span>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: var(--bg-color); border-radius: 10px;">
+                            <span><i class="fas fa-quote-right"></i> Total Quotes:</span>
                             <span style="color: var(--gold); font-weight: bold;" id="total-quotes">0</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-color); border-radius: 8px;">
-                            <span>Total Posts:</span>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: var(--bg-color); border-radius: 10px;">
+                            <span><i class="fas fa-newspaper"></i> Total Posts:</span>
                             <span style="color: var(--gold); font-weight: bold;" id="total-posts">0</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-color); border-radius: 8px;">
-                            <span>Total Ebooks:</span>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: var(--bg-color); border-radius: 10px;">
+                            <span><i class="fas fa-video"></i> Total Videos:</span>
+                            <span style="color: var(--gold); font-weight: bold;" id="total-videos">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: var(--bg-color); border-radius: 10px;">
+                            <span><i class="fas fa-book"></i> Total Ebooks:</span>
                             <span style="color: var(--gold); font-weight: bold;" id="total-ebooks">0</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--bg-color); border-radius: 8px;">
-                            <span>Pending Unlocks:</span>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: var(--bg-color); border-radius: 10px;">
+                            <span><i class="fas fa-heart"></i> Total Likes:</span>
+                            <span style="color: var(--gold); font-weight: bold;" id="total-likes">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: var(--bg-color); border-radius: 10px;">
+                            <span><i class="fas fa-comment"></i> Total Comments:</span>
+                            <span style="color: var(--gold); font-weight: bold;" id="total-comments">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding: 0.8rem; background: var(--bg-color); border-radius: 10px;">
+                            <span><i class="fas fa-clock"></i> Pending Unlocks:</span>
                             <span style="color: var(--warning); font-weight: bold;" id="pending-unlocks">0</span>
                         </div>
                     </div>
@@ -653,7 +673,10 @@
 
             <!-- Recent Unlock Requests -->
             <div class="table-section">
-                <h3 class="section-title">🔓 Recent Unlock Requests</h3>
+                <h3 class="section-title">
+                    <i class="fas fa-unlock-alt"></i>
+                    Recent Unlock Requests
+                </h3>
                 <table class="admin-table">
                     <thead>
                         <tr>
@@ -671,6 +694,30 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Recent Comments -->
+            <div class="table-section">
+                <h3 class="section-title">
+                    <i class="fas fa-comment-dots"></i>
+                    Recent Comments
+                </h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Content</th>
+                            <th>Post</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comments-table-body">
+                        <tr>
+                            <td colspan="5" class="loading">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </main>
     </div>
 
@@ -681,28 +728,32 @@
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Admin role mapping
+        // Admin role mapping with ALL admin types
         const ADMIN_ROLES = {
             'supremealpha04@gmail.com': {
                 role: 'super_admin',
-                name: 'Super Admin',
-                menus: ['posts', 'quotes', 'ebooks', 'unlocks']
+                name: '👑 Super Admin',
+                color: '#FFD700',
+                menus: ['posts', 'quotes', 'videos', 'ebooks', 'unlocks', 'users']
             },
             'suprememotive43@gmail.com': {
                 role: 'post_admin',
-                name: 'Post Admin',
+                name: '📝 Post Admin',
+                color: '#4CAF50',
                 menus: ['posts', 'quotes']
             },
             'sandrakukk055@gmail.com': {
                 role: 'ebook_admin',
-                name: 'Ebook Admin',
+                name: '📚 Ebook Admin',
+                color: '#00F0FF',
                 menus: ['ebooks']
             },
             'emmanuelamer6@gmail.com': {
                 role: 'unlock_admin',
-                name: 'Unlock Admin',
+                name: '🔓 Unlock Admin',
+                color: '#FFC107',
                 menus: ['unlocks']
             }
         };
@@ -712,7 +763,7 @@
 
         // DOM Elements
         const roleBadge = document.getElementById('role-badge');
-        const adminName = document.getElementById('admin-name');
+        const adminEmail = document.getElementById('admin-email');
         const logoutBtn = document.getElementById('logout-btn');
         const alertContainer = document.getElementById('alert-container');
         const currentDate = document.getElementById('current-date');
@@ -720,8 +771,10 @@
         // Menu elements
         const postsMenu = document.getElementById('posts-menu');
         const quotesMenu = document.getElementById('quotes-menu');
+        const videosMenu = document.getElementById('videos-menu');
         const ebooksMenu = document.getElementById('ebooks-menu');
         const unlocksMenu = document.getElementById('unlocks-menu');
+        const usersMenu = document.getElementById('users-menu');
 
         // Set current date
         currentDate.textContent = new Date().toLocaleDateString('en-US', {
@@ -733,7 +786,7 @@
 
         // Show alert
         function showAlert(message, type) {
-            alertContainer.innerHTML = `<div class="alert alert-${type}">${type === 'success' ? '✅' : '❌'} ${message}</div>`;
+            alertContainer.innerHTML = `<div class="alert alert-${type}">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'} ${message}</div>`;
             setTimeout(() => {
                 alertContainer.innerHTML = '';
             }, 3000);
@@ -742,7 +795,7 @@
         // Check authentication and admin status
         async function checkAdmin() {
             try {
-                const { data: { user }, error } = await supabaseClient.auth.getUser();
+                const { data: { user }, error } = await supabase.auth.getUser();
                 
                 if (error) throw error;
 
@@ -763,15 +816,18 @@
 
                 userRole = adminConfig.role;
 
-                // Display admin info
-                roleBadge.textContent = adminConfig.name;
-                adminName.textContent = user.email;
+                // Display admin info with color
+                roleBadge.innerHTML = `<i class="fas ${getRoleIcon(userRole)}"></i> ${adminConfig.name}`;
+                roleBadge.style.background = `linear-gradient(135deg, ${adminConfig.color}, ${adminConfig.color}80)`;
+                adminEmail.textContent = user.email;
 
                 // Show appropriate menus based on role
                 postsMenu.style.display = adminConfig.menus.includes('posts') ? 'block' : 'none';
                 quotesMenu.style.display = adminConfig.menus.includes('quotes') ? 'block' : 'none';
+                videosMenu.style.display = adminConfig.menus.includes('videos') ? 'block' : 'none';
                 ebooksMenu.style.display = adminConfig.menus.includes('ebooks') ? 'block' : 'none';
                 unlocksMenu.style.display = adminConfig.menus.includes('unlocks') ? 'block' : 'none';
+                usersMenu.style.display = adminConfig.menus.includes('users') ? 'block' : 'none';
 
                 return true;
             } catch (error) {
@@ -781,79 +837,133 @@
             }
         }
 
+        // Get role icon
+        function getRoleIcon(role) {
+            const icons = {
+                'super_admin': 'fa-crown',
+                'post_admin': 'fa-newspaper',
+                'ebook_admin': 'fa-book',
+                'unlock_admin': 'fa-unlock-alt'
+            };
+            return icons[role] || 'fa-user-shield';
+        }
+
         // Load dashboard statistics
         async function loadStats() {
             try {
                 // Get total users
-                const { count: totalUsers } = await supabaseClient
+                const { count: totalUsers } = await supabase
                     .from('profiles')
                     .select('*', { count: 'exact', head: true });
 
                 // Get total posts
-                const { count: totalPosts } = await supabaseClient
+                const { count: totalPosts } = await supabase
                     .from('posts')
                     .select('*', { count: 'exact', head: true });
 
                 // Get total quotes
-                const { count: totalQuotes } = await supabaseClient
+                const { count: totalQuotes } = await supabase
                     .from('quotes')
                     .select('*', { count: 'exact', head: true });
 
+                // Get total videos
+                const { count: totalVideos } = await supabase
+                    .from('videos')
+                    .select('*', { count: 'exact', head: true });
+
                 // Get total ebooks
-                const { count: totalEbooks } = await supabaseClient
+                const { count: totalEbooks } = await supabase
                     .from('ebooks')
                     .select('*', { count: 'exact', head: true });
 
+                // Get total likes across all content
+                const { count: totalLikes } = await supabase
+                    .from('post_likes')
+                    .select('*', { count: 'exact', head: true });
+                
+                const { count: quoteLikes } = await supabase
+                    .from('quote_likes')
+                    .select('*', { count: 'exact', head: true });
+                
+                const { count: videoLikes } = await supabase
+                    .from('video_likes')
+                    .select('*', { count: 'exact', head: true });
+
+                // Get total comments
+                const { count: totalComments } = await supabase
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true });
+                
+                const { count: videoComments } = await supabase
+                    .from('video_comments')
+                    .select('*', { count: 'exact', head: true });
+
                 // Get pending unlocks
-                const { count: pendingUnlocks } = await supabaseClient
+                const { count: pendingUnlocks } = await supabase
                     .from('unlocks')
                     .select('*', { count: 'exact', head: true })
                     .eq('status', 'pending');
 
                 // Get approved unlocks
-                const { count: approvedUnlocks } = await supabaseClient
+                const { count: approvedUnlocks } = await supabase
                     .from('unlocks')
                     .select('*', { count: 'exact', head: true })
                     .eq('status', 'approved');
 
+                const totalLikesCount = (totalLikes || 0) + (quoteLikes || 0) + (videoLikes || 0);
+                const totalCommentsCount = (totalComments || 0) + (videoComments || 0);
+
                 const statsContainer = document.getElementById('stats-container');
                 statsContainer.innerHTML = `
                     <div class="stat-card">
-                        <div class="stat-icon">👥</div>
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
                         <div class="stat-value">${totalUsers || 0}</div>
                         <div class="stat-label">Total Users</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">📝</div>
+                        <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
                         <div class="stat-value">${totalPosts || 0}</div>
                         <div class="stat-label">Total Posts</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">💬</div>
+                        <div class="stat-icon"><i class="fas fa-quote-right"></i></div>
                         <div class="stat-value">${totalQuotes || 0}</div>
                         <div class="stat-label">Total Quotes</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">📚</div>
+                        <div class="stat-icon"><i class="fas fa-video"></i></div>
+                        <div class="stat-value">${totalVideos || 0}</div>
+                        <div class="stat-label">Total Videos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-book"></i></div>
                         <div class="stat-value">${totalEbooks || 0}</div>
                         <div class="stat-label">Total Ebooks</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-value">${pendingUnlocks || 0}</div>
-                        <div class="stat-label">Pending Unlocks</div>
+                        <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                        <div class="stat-value">${totalLikesCount}</div>
+                        <div class="stat-label">Total Likes</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-value">${approvedUnlocks || 0}</div>
-                        <div class="stat-label">Approved Unlocks</div>
+                        <div class="stat-icon"><i class="fas fa-comment"></i></div>
+                        <div class="stat-value">${totalCommentsCount}</div>
+                        <div class="stat-label">Total Comments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-value">${pendingUnlocks || 0}</div>
+                        <div class="stat-label">Pending Unlocks</div>
                     </div>
                 `;
 
                 // Update quick stats
                 document.getElementById('total-quotes').textContent = totalQuotes || 0;
                 document.getElementById('total-posts').textContent = totalPosts || 0;
+                document.getElementById('total-videos').textContent = totalVideos || 0;
                 document.getElementById('total-ebooks').textContent = totalEbooks || 0;
+                document.getElementById('total-likes').textContent = totalLikesCount;
+                document.getElementById('total-comments').textContent = totalCommentsCount;
                 document.getElementById('pending-unlocks').textContent = pendingUnlocks || 0;
 
                 // Load users by country
@@ -861,6 +971,9 @@
                 
                 // Load recent unlocks
                 await loadRecentUnlocks();
+                
+                // Load recent comments
+                await loadRecentComments();
 
             } catch (error) {
                 console.error('Stats error:', error);
@@ -871,7 +984,7 @@
         // Load users by country
         async function loadUsersByCountry() {
             try {
-                const { data: profiles, error } = await supabaseClient
+                const { data: profiles, error } = await supabase
                     .from('profiles')
                     .select('country');
 
@@ -890,7 +1003,7 @@
                 const countryList = document.getElementById('country-list');
                 
                 if (sortedCountries.length === 0) {
-                    countryList.innerHTML = '<p style="color: var(--text-secondary);">No user data</p>';
+                    countryList.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No user data available</p>';
                     return;
                 }
 
@@ -908,7 +1021,7 @@
         // Load recent unlock requests
         async function loadRecentUnlocks() {
             try {
-                const { data: unlocks, error } = await supabaseClient
+                const { data: unlocks, error } = await supabase
                     .from('unlocks')
                     .select('*')
                     .order('created_at', { ascending: false })
@@ -925,13 +1038,13 @@
 
                 // Get user and ebook details for each unlock
                 const unlocksWithDetails = await Promise.all(unlocks.map(async (unlock) => {
-                    const { data: profile } = await supabaseClient
+                    const { data: profile } = await supabase
                         .from('profiles')
                         .select('name, email')
                         .eq('id', unlock.user_id)
                         .single();
 
-                    const { data: ebook } = await supabaseClient
+                    const { data: ebook } = await supabase
                         .from('ebooks')
                         .select('title')
                         .eq('id', unlock.ebook_id)
@@ -946,10 +1059,10 @@
 
                 tableBody.innerHTML = unlocksWithDetails.map(unlock => `
                     <tr>
-                        <td>${unlock.profiles?.name || 'Unknown'}</td>
-                        <td>${unlock.profiles?.email || 'Unknown'}</td>
-                        <td>${unlock.ebooks?.title || 'Unknown'}</td>
-                        <td>${new Date(unlock.created_at).toLocaleDateString()}</td>
+                        <td><strong>${escapeHtml(unlock.profiles?.name || 'Unknown')}</strong></td>
+                        <td>${escapeHtml(unlock.profiles?.email || 'Unknown')}</td>
+                        <td>${escapeHtml(unlock.ebooks?.title || 'Unknown')}</td>
+                        <td>${new Date(unlock.created_at).toLocaleString()}</td>
                         <td>
                             <span class="status-badge status-${unlock.status}">
                                 ${unlock.status}
@@ -962,10 +1075,66 @@
             }
         }
 
+        // Load recent comments
+        async function loadRecentComments() {
+            try {
+                const { data: comments, error } = await supabase
+                    .from('comments')
+                    .select(`
+                        *,
+                        profiles:user_id (name, email),
+                        posts:post_id (title)
+                    `)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (error) throw error;
+
+                const tableBody = document.getElementById('comments-table-body');
+                
+                if (!comments || comments.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No comments yet</td></tr>';
+                    return;
+                }
+
+                tableBody.innerHTML = comments.map(comment => `
+                    <tr>
+                        <td><strong>${escapeHtml(comment.profiles?.name || 'Unknown')}</strong><br><small>${escapeHtml(comment.profiles?.email || '')}</small></td>
+                        <td style="max-width: 300px;">${escapeHtml(comment.content.substring(0, 100))}${comment.content.length > 100 ? '...' : ''}</td>
+                        <td>${escapeHtml(comment.posts?.title || 'Unknown')}</td>
+                        <td>${new Date(comment.created_at).toLocaleString()}</td>
+                        <td>
+                            <button class="action-btn view-btn" onclick="viewComment('${comment.id}')" style="background: var(--electric-blue); color: var(--bg-color); padding: 0.3rem 0.8rem; border-radius: 6px; border: none; cursor: pointer;">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Comments error:', error);
+            }
+        }
+
+        // View comment
+        window.viewComment = (commentId) => {
+            alert(`Comment ID: ${commentId}\nFull content will be available in the comment management section.`);
+        };
+
+        // Escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // Logout
         logoutBtn.addEventListener('click', async () => {
             try {
-                await supabaseClient.auth.signOut();
+                await supabase.auth.signOut();
                 window.location.href = '../index.html';
             } catch (error) {
                 showAlert('Error logging out: ' + error.message, 'error');
