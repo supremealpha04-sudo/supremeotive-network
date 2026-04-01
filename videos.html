@@ -21,8 +21,6 @@
             --gold: #FFD700;
             --border-color: #333333;
             --electric-blue: #00F0FF;
-            --success: #4CAF50;
-            --error: #F44336;
         }
 
         body {
@@ -668,10 +666,6 @@
             margin-bottom: 0.8rem;
         }
 
-        .reply:last-child {
-            margin-bottom: 0;
-        }
-
         .loading {
             text-align: center;
             padding: 2rem;
@@ -1278,10 +1272,14 @@
         });
 
         // ============================================
-        // LOAD COMMENTS - FIXED
+        // LOAD COMMENTS - FIXED VERSION
         // ============================================
         async function loadComments(videoId) {
             try {
+                const commentsList = document.getElementById('commentsList');
+                commentsList.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading comments...</p></div>';
+                
+                // Fetch all comments for this video
                 const { data: comments, error } = await supabaseClient
                     .from('video_comments')
                     .select(`
@@ -1291,19 +1289,15 @@
                     .eq('video_id', videoId)
                     .order('created_at', { ascending: true });
 
-                if (error) {
-                    console.error('Error fetching comments:', error);
-                    document.getElementById('commentsList').innerHTML = '<div class="loading"><p>Error loading comments. Please refresh.</p></div>';
-                    return;
-                }
+                if (error) throw error;
 
                 if (!comments || comments.length === 0) {
-                    document.getElementById('commentsList').innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding:2rem;">No comments yet. Be the first!</p>';
-                    commentCountSpan.textContent = 0;
+                    commentsList.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding:2rem;">No comments yet. Be the first!</p>';
+                    commentCountSpan.textContent = '0';
                     return;
                 }
 
-                // Build comment tree (parent-child relationship)
+                // Build comment tree
                 const commentMap = new Map();
                 const rootComments = [];
 
@@ -1320,26 +1314,22 @@
                     }
                 });
 
-                renderCommentsTree(rootComments);
+                // Render comments recursively
+                commentsList.innerHTML = '';
+                renderCommentTree(rootComments, commentsList, 0);
                 commentCountSpan.textContent = comments.length;
 
             } catch (error) {
                 console.error('Error loading comments:', error);
-                document.getElementById('commentsList').innerHTML = '<div class="loading"><p>Error loading comments</p></div>';
+                const commentsList = document.getElementById('commentsList');
+                commentsList.innerHTML = `<p style="text-align:center; color:var(--error); padding:2rem;">Error loading comments: ${error.message}</p>`;
             }
         }
 
         // ============================================
-        // RENDER COMMENTS TREE - RECURSIVE
+        // RENDER COMMENT TREE - RECURSIVE
         // ============================================
-        function renderCommentsTree(comments, container = null, level = 0) {
-            const commentsList = container || document.getElementById('commentsList');
-            if (!commentsList) return;
-
-            if (level === 0) {
-                commentsList.innerHTML = '';
-            }
-
+        function renderCommentTree(comments, container, level) {
             comments.forEach(comment => {
                 const commentDate = new Date(comment.created_at).toLocaleString();
                 const authorName = comment.profiles?.name || 'User';
@@ -1348,8 +1338,10 @@
 
                 const commentDiv = document.createElement('div');
                 commentDiv.className = 'comment';
+                if (marginLeft > 0) {
+                    commentDiv.style.marginLeft = `${marginLeft}px`;
+                }
                 commentDiv.setAttribute('data-comment-id', comment.id);
-                if (marginLeft) commentDiv.style.marginLeft = `${marginLeft}px`;
                 
                 commentDiv.innerHTML = `
                     <div class="comment-header">
@@ -1367,13 +1359,13 @@
                     </div>
                 `;
                 
-                commentsList.appendChild(commentDiv);
+                container.appendChild(commentDiv);
 
                 if (comment.children && comment.children.length > 0) {
                     const repliesContainer = document.createElement('div');
                     repliesContainer.className = 'replies';
-                    commentsList.appendChild(repliesContainer);
-                    renderCommentsTree(comment.children, repliesContainer, level + 1);
+                    container.appendChild(repliesContainer);
+                    renderCommentTree(comment.children, repliesContainer, level + 1);
                 }
             });
         }
@@ -1393,18 +1385,24 @@
             if (!content) { showAlert('Please enter a comment'); return; }
 
             try {
-                const { error } = await supabaseClient.from('video_comments').insert([{
-                    video_id: currentVideo.id,
-                    user_id: currentUser.id,
-                    content: content
-                }]);
+                const { error } = await supabaseClient
+                    .from('video_comments')
+                    .insert([{
+                        video_id: currentVideo.id,
+                        user_id: currentUser.id,
+                        content: content
+                    }]);
+
                 if (error) throw error;
-                
+
                 input.value = '';
                 await loadComments(currentVideo.id);
+                
+                // Update comment count
                 currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
                 filterAndRenderVideos();
                 showAlert('Comment posted!');
+                
             } catch (error) {
                 console.error('Error posting comment:', error);
                 showAlert('Error posting comment: ' + error.message, 'error');
@@ -1439,20 +1437,26 @@
             if (!content) { showAlert('Please enter a reply'); return; }
 
             try {
-                const { error } = await supabaseClient.from('video_comments').insert([{
-                    video_id: currentVideo.id,
-                    user_id: currentUser.id,
-                    content: content,
-                    parent_id: commentId
-                }]);
+                const { error } = await supabaseClient
+                    .from('video_comments')
+                    .insert([{
+                        video_id: currentVideo.id,
+                        user_id: currentUser.id,
+                        content: content,
+                        parent_id: commentId
+                    }]);
+
                 if (error) throw error;
-                
+
                 input.value = '';
                 document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
                 await loadComments(currentVideo.id);
+                
+                // Update comment count
                 currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
                 filterAndRenderVideos();
                 showAlert('Reply posted!');
+                
             } catch (error) {
                 console.error('Error posting reply:', error);
                 showAlert('Error posting reply: ' + error.message, 'error');
