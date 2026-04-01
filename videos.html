@@ -662,10 +662,6 @@
             border-left: 2px solid var(--gold);
         }
 
-        .reply {
-            margin-bottom: 0.8rem;
-        }
-
         .loading {
             text-align: center;
             padding: 2rem;
@@ -754,10 +750,6 @@
             .replies {
                 margin-left: 0.5rem;
                 padding-left: 0.5rem;
-            }
-
-            .reply-form {
-                flex-direction: column;
             }
         }
     </style>
@@ -900,7 +892,7 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIGURATION
+        // SUPABASE CONFIGURATION - FIXED
         // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
@@ -1272,64 +1264,81 @@
         });
 
         // ============================================
-        // LOAD COMMENTS - FIXED VERSION
+        // LOAD COMMENTS - FIXED
         // ============================================
         async function loadComments(videoId) {
             try {
-                const commentsList = document.getElementById('commentsList');
-                commentsList.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading comments...</p></div>';
-                
-                // Fetch all comments for this video
+                // First get the comments
                 const { data: comments, error } = await supabaseClient
                     .from('video_comments')
-                    .select(`
-                        *,
-                        profiles:user_id (name)
-                    `)
+                    .select('*')
                     .eq('video_id', videoId)
                     .order('created_at', { ascending: true });
 
                 if (error) throw error;
 
-                if (!comments || comments.length === 0) {
-                    commentsList.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding:2rem;">No comments yet. Be the first!</p>';
-                    commentCountSpan.textContent = '0';
-                    return;
+                // Then get user profiles separately
+                if (comments && comments.length > 0) {
+                    const userIds = [...new Set(comments.map(c => c.user_id))];
+                    const { data: profiles } = await supabaseClient
+                        .from('profiles')
+                        .select('id, name')
+                        .in('id', userIds);
+
+                    const profileMap = new Map();
+                    profiles?.forEach(p => profileMap.set(p.id, p));
+
+                    // Attach profiles to comments
+                    const commentsWithProfiles = comments.map(c => ({
+                        ...c,
+                        profiles: profileMap.get(c.user_id) || { name: 'User' }
+                    }));
+
+                    // Build comment tree
+                    const commentMap = new Map();
+                    const rootComments = [];
+
+                    commentsWithProfiles.forEach(comment => {
+                        commentMap.set(comment.id, { ...comment, children: [] });
+                    });
+
+                    commentsWithProfiles.forEach(comment => {
+                        const node = commentMap.get(comment.id);
+                        if (comment.parent_id && commentMap.has(comment.parent_id)) {
+                            commentMap.get(comment.parent_id).children.push(node);
+                        } else {
+                            rootComments.push(node);
+                        }
+                    });
+
+                    renderComments(rootComments);
+                    commentCountSpan.textContent = comments.length;
+                } else {
+                    renderComments([]);
+                    commentCountSpan.textContent = 0;
                 }
-
-                // Build comment tree
-                const commentMap = new Map();
-                const rootComments = [];
-
-                comments.forEach(comment => {
-                    commentMap.set(comment.id, { ...comment, children: [] });
-                });
-
-                comments.forEach(comment => {
-                    const node = commentMap.get(comment.id);
-                    if (comment.parent_id && commentMap.has(comment.parent_id)) {
-                        commentMap.get(comment.parent_id).children.push(node);
-                    } else {
-                        rootComments.push(node);
-                    }
-                });
-
-                // Render comments recursively
-                commentsList.innerHTML = '';
-                renderCommentTree(rootComments, commentsList, 0);
-                commentCountSpan.textContent = comments.length;
 
             } catch (error) {
                 console.error('Error loading comments:', error);
-                const commentsList = document.getElementById('commentsList');
-                commentsList.innerHTML = `<p style="text-align:center; color:var(--error); padding:2rem;">Error loading comments: ${error.message}</p>`;
+                document.getElementById('commentsList').innerHTML = '<div class="loading"><p>Error loading comments. Please refresh.</p></div>';
             }
         }
 
         // ============================================
-        // RENDER COMMENT TREE - RECURSIVE
+        // RENDER COMMENTS - RECURSIVE
         // ============================================
-        function renderCommentTree(comments, container, level) {
+        function renderComments(comments, container = null, level = 0) {
+            const commentsList = container || document.getElementById('commentsList');
+            if (!commentsList) return;
+
+            if (level === 0) {
+                if (comments.length === 0) {
+                    commentsList.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding:2rem;">No comments yet. Be the first!</p>';
+                    return;
+                }
+                commentsList.innerHTML = '';
+            }
+
             comments.forEach(comment => {
                 const commentDate = new Date(comment.created_at).toLocaleString();
                 const authorName = comment.profiles?.name || 'User';
@@ -1338,10 +1347,8 @@
 
                 const commentDiv = document.createElement('div');
                 commentDiv.className = 'comment';
-                if (marginLeft > 0) {
-                    commentDiv.style.marginLeft = `${marginLeft}px`;
-                }
                 commentDiv.setAttribute('data-comment-id', comment.id);
+                if (marginLeft) commentDiv.style.marginLeft = `${marginLeft}px`;
                 
                 commentDiv.innerHTML = `
                     <div class="comment-header">
@@ -1359,13 +1366,13 @@
                     </div>
                 `;
                 
-                container.appendChild(commentDiv);
+                commentsList.appendChild(commentDiv);
 
                 if (comment.children && comment.children.length > 0) {
                     const repliesContainer = document.createElement('div');
                     repliesContainer.className = 'replies';
-                    container.appendChild(repliesContainer);
-                    renderCommentTree(comment.children, repliesContainer, level + 1);
+                    commentsList.appendChild(repliesContainer);
+                    renderComments(comment.children, repliesContainer, level + 1);
                 }
             });
         }
@@ -1385,27 +1392,18 @@
             if (!content) { showAlert('Please enter a comment'); return; }
 
             try {
-                const { error } = await supabaseClient
-                    .from('video_comments')
-                    .insert([{
-                        video_id: currentVideo.id,
-                        user_id: currentUser.id,
-                        content: content
-                    }]);
-
-                if (error) throw error;
-
+                await supabaseClient.from('video_comments').insert([{
+                    video_id: currentVideo.id,
+                    user_id: currentUser.id,
+                    content: content
+                }]);
                 input.value = '';
                 await loadComments(currentVideo.id);
-                
-                // Update comment count
                 currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
                 filterAndRenderVideos();
                 showAlert('Comment posted!');
-                
             } catch (error) {
-                console.error('Error posting comment:', error);
-                showAlert('Error posting comment: ' + error.message, 'error');
+                showAlert('Error posting comment', 'error');
             }
         };
 
@@ -1437,29 +1435,20 @@
             if (!content) { showAlert('Please enter a reply'); return; }
 
             try {
-                const { error } = await supabaseClient
-                    .from('video_comments')
-                    .insert([{
-                        video_id: currentVideo.id,
-                        user_id: currentUser.id,
-                        content: content,
-                        parent_id: commentId
-                    }]);
-
-                if (error) throw error;
-
+                await supabaseClient.from('video_comments').insert([{
+                    video_id: currentVideo.id,
+                    user_id: currentUser.id,
+                    content: content,
+                    parent_id: commentId
+                }]);
                 input.value = '';
                 document.getElementById(`replyForm-${commentId}`).classList.add('hidden');
                 await loadComments(currentVideo.id);
-                
-                // Update comment count
                 currentVideo.comments_count = (currentVideo.comments_count || 0) + 1;
                 filterAndRenderVideos();
                 showAlert('Reply posted!');
-                
             } catch (error) {
-                console.error('Error posting reply:', error);
-                showAlert('Error posting reply: ' + error.message, 'error');
+                showAlert('Error posting reply', 'error');
             }
         };
 
