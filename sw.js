@@ -1,5 +1,5 @@
-const CACHE_NAME = 'suprememotive-v1';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'suprememotive-v2';
+const urlsToCache = [
   '/',
   '/index.html',
   '/about.html',
@@ -11,165 +11,96 @@ const ASSETS_TO_CACHE = [
   '/profile.html',
   '/ebooks.html',
   '/post.html',
+  '/videos.html',
+  '/video-player.html',
+  '/admin/admin-dashboard.html',
+  '/admin/post-admin.html',
+  '/admin/ebook-admin.html',
+  '/admin/video-admin.html',
+  '/admin/unlock-admin.html',
+  '/admin/admin-quotes.html',
   '/logo.png',
   '/manifest.json'
 ];
 
-// Install event - cache assets
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Caching app assets');
-        return cache.addAll(ASSETS_TO_CACHE);
+      .then(cache => {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
       })
-      .then(() => self.skipWaiting())
+      .catch(err => console.error('Cache add error:', err))
   );
+  self.skipWaiting();
 });
 
-// Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) {
+            console.log('Deleting old cache:', cache);
+            return caches.delete(cache);
           }
         })
       );
-    }).then(() => self.clients.claim())
+    })
   );
+  self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
-self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin)) {
+self.addEventListener('fetch', event => {
+  const requestUrl = new URL(event.request.url);
+
+  // Skip cross-origin requests and API calls
+  if (!requestUrl.origin.startsWith(self.location.origin) ||
+      requestUrl.pathname.startsWith('/api/') ||
+      requestUrl.pathname.includes('supabase.co')) {
     return;
   }
 
-  // Handle API requests differently
-  if (event.request.url.includes('supabase.co')) {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          return response;
-        })
-        .catch(() => {
-          return new Response(
-            JSON.stringify({ error: 'You are offline' }),
-            {
-              status: 503,
-              headers: { 'Content-Type': 'application/json' }
-            }
-          );
-        })
-    );
-    return;
-  }
-
-  // For HTML pages - network first, fallback to cache
+  // For HTML pages – network first, fallback to cache
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
-        .then((response) => {
-          // Cache the latest version
+        .then(response => {
           const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
+          caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, responseClone);
           });
           return response;
         })
-        .catch(() => {
-          return caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-              return cachedResponse;
-            }
-            // If no cache, return offline page
-            return caches.match('/offline.html');
-          });
-        })
+        .catch(() => caches.match(event.request)
+          .then(cached => {
+            if (cached) return cached;
+            return caches.match('/index.html');
+          })
+        )
     );
     return;
   }
 
-  // For assets - cache first, network fallback
+  // For static assets – cache first, network fallback
   event.respondWith(
     caches.match(event.request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        return fetch(event.request).then((response) => {
-          // Don't cache if not a success response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response;
-          }
-          // Cache the fetched file
+      .then(cached => {
+        if (cached) return cached;
+        return fetch(event.request).then(response => {
+          if (!response || response.status !== 200) return response;
           const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
+          caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, responseClone);
           });
           return response;
         });
       })
       .catch(() => {
-        // If both cache and network fail, return a fallback
-        if (event.request.url.match(/\.(jpg|jpeg|png|gif|svg)$/)) {
+        if (event.request.url.match(/\.(jpg|jpeg|png|gif|svg|webp)$/)) {
           return caches.match('/logo.png');
         }
-        return new Response('Offline', { status: 503 });
+        return new Response('Offline content not available', { status: 503 });
       })
   );
-});
-
-// Background sync for offline actions
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-likes') {
-    event.waitUntil(syncLikes());
-  }
-});
-
-async function syncLikes() {
-  try {
-    const db = await openDB();
-    const offlineLikes = await db.getAll('offlineLikes');
-    
-    for (const like of offlineLikes) {
-      try {
-        await fetch(like.url, {
-          method: like.method,
-          headers: like.headers,
-          body: JSON.stringify(like.body)
-        });
-        await db.delete('offlineLikes', like.id);
-      } catch (error) {
-        console.error('Failed to sync like:', error);
-      }
-    }
-  } catch (error) {
-    console.error('Sync failed:', error);
-  }
-}
-
-// IndexedDB helper for offline storage
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open('SupremeMotiveDB', 1);
-    
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-    
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
-      if (!db.objectStoreNames.contains('offlineLikes')) {
-        db.createObjectStore('offlineLikes', { keyPath: 'id', autoIncrement: true });
-      }
-      if (!db.objectStoreNames.contains('offlineQuotes')) {
-        db.createObjectStore('offlineQuotes', { keyPath: 'id' });
-      }
-    };
-  });
-}
+});fl 
