@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - My Profile</title>
-    <link rel="icon" type="image/png" href="logo.png">
+    <title>SupremeMotive - Privacy Policy</title>
+    <link rel="icon" type="file_00000000f25071f5a01e8c22ec168ef4.png" href="logo.png">
     <style>
         * {
             margin: 0;
@@ -20,8 +20,6 @@
             --gold: #FFD700;
             --border-color: #333333;
             --electric-blue: #00F0FF;
-            --success: #4CAF50;
-            --error: #F44336;
         }
 
         body {
@@ -32,6 +30,7 @@
             padding-bottom: 80px;
         }
 
+        /* Light mode */
         body.light-mode {
             --bg-color: #F5F5F5;
             --card-bg: #FFFFFF;
@@ -190,250 +189,169 @@
         .container {
             max-width: 1000px;
             margin: 2rem auto;
-            padding: 0 1rem;
+            padding: 0 2rem;
         }
 
-        /* Profile Header */
-        .profile-header {
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            border-radius: 20px;
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
             padding: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: var(--bg-color);
-        }
-
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            background: var(--bg-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 3rem;
-            border: 3px solid white;
-        }
-
-        .profile-name {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-email {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 15px;
+            background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
+            border-radius: 30px;
             border: 1px solid var(--border-color);
-            text-align: center;
-            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--gold);
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
         }
 
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--gold);
+        .page-title {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .stat-label {
+        .last-updated {
             color: var(--text-secondary);
             font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Sections */
-        .section {
+        /* Content Card */
+        .content-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-card h2 {
+            color: var(--gold);
+            margin: 2rem 0 1rem;
+            font-size: 1.5rem;
+        }
+
+        .content-card h2:first-child {
+            margin-top: 0;
+        }
+
+        .content-card h3 {
+            color: var(--electric-blue);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.2rem;
+        }
+
+        .content-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .content-card ul, 
+        .content-card ol {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        .content-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        .content-card strong {
+            color: var(--gold);
+        }
+
+        .content-card a {
+            color: var(--electric-blue);
+            text-decoration: none;
+        }
+
+        .content-card a:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 2rem 0;
+        }
+
+        /* Table of Contents */
+        .toc {
             background: var(--card-bg);
             border-radius: 15px;
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             border: 1px solid var(--border-color);
         }
 
-        .section-title {
-            font-size: 1.3rem;
+        .toc h3 {
             color: var(--gold);
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
         }
 
-        /* Form */
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.8rem;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        textarea.form-control {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .btn-save {
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--bg-color);
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        /* Ebooks Grid */
-        .ebooks-grid {
+        .toc ul {
+            list-style: none;
+            margin: 0;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
         }
 
-        .ebook-item {
-            background: var(--bg-color);
-            border-radius: 10px;
-            padding: 1rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .ebook-item:hover {
-            border-color: var(--gold);
-            transform: translateX(4px);
-        }
-
-        .ebook-cover-small {
-            width: 50px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-
-        .ebook-info-small {
-            flex: 1;
-        }
-
-        .ebook-title-small {
-            font-weight: bold;
+        .toc li {
             margin-bottom: 0.3rem;
         }
 
-        .ebook-date {
-            font-size: 0.8rem;
+        .toc a {
             color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 0.3rem 0;
         }
 
-        .read-btn {
-            background: var(--gold);
-            color: var(--bg-color);
-            border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
+        .toc a:hover {
+            color: var(--gold);
         }
 
-        /* Alert */
-        .alert {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--card-bg);
-            border: 2px solid var(--gold);
-            border-radius: 8px;
-            padding: 0.8rem 1.5rem;
-            color: var(--text-color);
-            z-index: 1000;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -20px);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Loading */
-        .loading {
+        /* Footer */
+        .footer {
             text-align: center;
             padding: 2rem;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
         }
 
         /* Responsive */
@@ -461,11 +379,15 @@
                 transform: translateY(0);
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
+            .page-title {
+                font-size: 2rem;
             }
 
-            .ebooks-grid {
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .toc ul {
                 grid-template-columns: 1fr;
             }
         }
@@ -475,7 +397,7 @@
 <body>
     <nav class="top-nav">
         <div class="logo">
-            <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
+            <img src="file_00000000f25071f5a01e8c22ec168ef4.png" alt="SupremeMotive" onerror="this.style.display='none'">
             <span>SupremeMotive</span>
         </div>
 
@@ -489,7 +411,7 @@
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
-            <a href="privacy.html">Privacy</a>
+            <a href="privacy.html" class="active">Privacy</a>
             <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
@@ -513,20 +435,171 @@
             <span class="nav-icon">📚</span>
             <span>Ebooks</span>
         </a>
-        <a href="profile.html" class="nav-item active">
+        <a href="profile.html" class="nav-item">
             <span class="nav-icon">👤</span>
             <span>Profile</span>
         </a>
     </nav>
 
     <main class="container">
-        <div id="alertContainer"></div>
-        <div id="profileContent">
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading profile...</p>
-            </div>
+        <div class="page-header">
+            <h1 class="page-title">Privacy Policy</h1>
+            <p class="last-updated">Last Updated: March 2026</p>
         </div>
+
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><a href="#introduction">1. Introduction</a></li>
+                <li><a href="#information">2. Information We Collect</a></li>
+                <li><a href="#usage">3. How We Use Your Information</a></li>
+                <li><a href="#cookies">4. Cookies and Tracking</a></li>
+                <li><a href="#sharing">5. Information Sharing</a></li>
+                <li><a href="#security">6. Data Security</a></li>
+                <li><a href="#rights">7. Your Rights</a></li>
+                <li><a href="#children">8. Children's Privacy</a></li>
+                <li><a href="#changes">9. Changes to Policy</a></li>
+                <li><a href="#contact">10. Contact Us</a></li>
+            </ul>
+        </div>
+
+        <div class="content-card">
+            <section id="introduction">
+                <h2>1. Introduction</h2>
+                <p>Welcome to SupremeMotive ("we," "our," or "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.</p>
+                <div class="info-box">
+                    <p><strong>🌟 Our Commitment:</strong> We believe in transparency and want you to understand exactly how we handle your data. Please read this policy carefully.</p>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="information">
+                <h2>2. Information We Collect</h2>
+                
+                <h3>2.1 Personal Information</h3>
+                <p>When you register for an account, we collect:</p>
+                <ul>
+                    <li><strong>Name:</strong> To personalize your experience</li>
+                    <li><strong>Email address:</strong> For account verification and communication</li>
+                    <li><strong>Country:</strong> To understand our global community</li>
+                    <li><strong>Age:</strong> To ensure age-appropriate content</li>
+                    <li><strong>Profile picture:</strong> Optional, to personalize your profile</li>
+                    <li><strong>Bio:</strong> Optional, to share with the community</li>
+                </ul>
+
+                <h3>2.2 Automatically Collected Information</h3>
+                <p>When you use our services, we automatically collect:</p>
+                <ul>
+                    <li><strong>Usage Data:</strong> Posts you view, like, save, and comment on</li>
+                    <li><strong>Device Information:</strong> Browser type, device type, operating system</li>
+                    <li><strong>Log Data:</strong> IP address, access times, pages viewed</li>
+                </ul>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="usage">
+                <h2>3. How We Use Your Information</h2>
+                <p>We use your information for the following purposes:</p>
+                <ul>
+                    <li><strong>Account Management:</strong> Create and manage your account</li>
+                    <li><strong>Personalization:</strong> Customize your experience and content</li>
+                    <li><strong>Communication:</strong> Send important updates and notifications</li>
+                    <li><strong>Analytics:</strong> Understand how users interact with our platform</li>
+                    <li><strong>Improvement:</strong> Enhance our services and develop new features</li>
+                    <li><strong>Security:</strong> Protect against unauthorized access and abuse</li>
+                </ul>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="cookies">
+                <h2>4. Cookies and Tracking Technologies</h2>
+                <p>We use cookies and similar tracking technologies to:</p>
+                <ul>
+                    <li>Keep you logged in to your account</li>
+                    <li>Remember your preferences (like dark/light mode)</li>
+                    <li>Understand how you use our platform</li>
+                    <li>Improve user experience</li>
+                </ul>
+                <p>You can control cookies through your browser settings. However, disabling cookies may affect your ability to use certain features.</p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="sharing">
+                <h2>5. Information Sharing</h2>
+                <p>We do not sell your personal information. We may share information in these limited circumstances:</p>
+                <ul>
+                    <li><strong>With your consent:</strong> When you explicitly agree to sharing</li>
+                    <li><strong>Service providers:</strong> Trusted third parties who assist in operating our platform</li>
+                    <li><strong>Legal requirements:</strong> When required by law or to protect rights</li>
+                </ul>
+                <div class="info-box">
+                    <p><strong>🔒 Note:</strong> Your public profile information (name, bio, country) is visible to other users as part of the community experience.</p>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="security">
+                <h2>6. Data Security</h2>
+                <p>We implement industry-standard security measures to protect your information:</p>
+                <ul>
+                    <li>Encryption of data in transit (SSL/TLS)</li>
+                    <li>Secure password hashing</li>
+                    <li>Regular security audits</li>
+                    <li>Access controls and authentication</li>
+                </ul>
+                <p>However, no method of transmission over the Internet is 100% secure. We strive to protect your information but cannot guarantee absolute security.</p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="rights">
+                <h2>7. Your Rights</h2>
+                <p>Depending on your location, you may have the following rights:</p>
+                <ul>
+                    <li><strong>Access:</strong> Request a copy of your data</li>
+                    <li><strong>Correction:</strong> Update inaccurate information</li>
+                    <li><strong>Deletion:</strong> Request account deletion</li>
+                    <li><strong>Export:</strong> Receive your data in portable format</li>
+                    <li><strong>Opt-out:</strong> Withdraw consent for certain processing</li>
+                </ul>
+                <p>To exercise these rights, contact us at <a href="mailto:suprememotive43@gmail.com">suprememotive43@gmail.com</a></p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="children">
+                <h2>8. Children's Privacy</h2>
+                <p>Our services are not directed to individuals under the age of 13. We do not knowingly collect personal information from children under 13. If you become aware that a child has provided us with personal information, please contact us.</p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="changes">
+                <h2>9. Changes to This Policy</h2>
+                <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last Updated" date. You are advised to review this policy periodically for any changes.</p>
+            </section>
+
+            <div class="divider"></div>
+
+            <section id="contact">
+                <h2>10. Contact Us</h2>
+                <p>If you have questions about this Privacy Policy, please contact us:</p>
+                <ul>
+                    <li><strong>Email:</strong> <a href="mailto:suprememotive43@gmail.com">suprememotive43@gmail.com</a></li>
+                    <li><strong>Through our website:</strong> <a href="contact.html">Contact Form</a></li>
+                    <li><strong>Address:</strong> 123 Motivation Lane, Inspiration City, IC 12345</li>
+                </ul>
+            </section>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2026 SupremeMotive. All rights reserved. | <a href="terms.html">Terms of Service</a> | <a href="privacy.html">Privacy Policy</a></p>
+        </footer>
     </main>
 
     <script>
@@ -543,13 +616,7 @@
         ];
 
         let currentUser = null;
-        let userProfile = null;
-        let userUnlocks = [];
-        let userSavedEbooks = [];
-        let paymentHistory = [];
 
-        const profileContent = document.getElementById('profileContent');
-        const alertContainer = document.getElementById('alertContainer');
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
         const themeToggle = document.getElementById('themeToggle');
@@ -586,13 +653,6 @@
             });
         });
 
-        function showAlert(message, isError = false) {
-            alertContainer.innerHTML = `<div class="alert" style="border-color: ${isError ? '#F44336' : 'var(--gold)'}">${message}</div>`;
-            setTimeout(() => {
-                alertContainer.innerHTML = '';
-            }, 3000);
-        }
-
         async function checkAuth() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
@@ -608,21 +668,11 @@
                         adminLink.style.display = 'block';
                         adminLink.href = 'admin/admin-dashboard.html';
                     }
-                    
-                    await loadProfile();
-                    await loadUserData();
                 } else {
                     loginBtn.classList.remove('hidden');
                     logoutBtn.classList.add('hidden');
                     userGreeting.classList.add('hidden');
                     adminLink.style.display = 'none';
-                    profileContent.innerHTML = `
-                        <div class="section" style="text-align: center;">
-                            <h3>Please Login</h3>
-                            <p style="margin: 1rem 0;">You need to be logged in to view your profile.</p>
-                            <a href="login.html" class="btn-save" style="display: inline-block; text-decoration: none;">Login Now</a>
-                        </div>
-                    `;
                 }
             } catch (error) {
                 console.error('Auth error:', error);
@@ -634,274 +684,8 @@
             window.location.reload();
         });
 
-        async function loadProfile() {
-            try {
-                let { data: profile, error } = await supabaseClient
-                    .from('profiles')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .maybeSingle();
-
-                if (error && error.code !== 'PGRST116') {
-                    console.error('Profile error:', error);
-                }
-
-                if (!profile) {
-                    const newProfileData = {
-                        user_id: currentUser.id,
-                        email: currentUser.email,
-                        name: currentUser.email.split('@')[0],
-                        full_name: currentUser.email.split('@')[0],
-                        total_purchases: 0,
-                        total_spent_stars: 0,
-                        created_at: new Date(),
-                        updated_at: new Date()
-                    };
-                    
-                    const { data: newProfile, error: insertError } = await supabaseClient
-                        .from('profiles')
-                        .insert([newProfileData])
-                        .select()
-                        .single();
-
-                    if (insertError) {
-                        console.error('Error creating profile:', insertError);
-                        userProfile = { user_id: currentUser.id, email: currentUser.email, name: currentUser.email.split('@')[0] };
-                    } else {
-                        userProfile = newProfile;
-                    }
-                } else {
-                    userProfile = profile;
-                }
-                
-                return userProfile;
-            } catch (error) {
-                console.error('Error loading profile:', error);
-                userProfile = { user_id: currentUser?.id, email: currentUser?.email, name: currentUser?.email?.split('@')[0] };
-                return userProfile;
-            }
-        }
-
-        async function loadUserData() {
-            try {
-                const { data: unlocks } = await supabaseClient
-                    .from('unlocks')
-                    .select(`*, ebook:ebooks(*)`)
-                    .eq('user_id', currentUser.id)
-                    .eq('status', 'approved')
-                    .order('created_at', { ascending: false });
-
-                userUnlocks = unlocks || [];
-
-                const { data: saved } = await supabaseClient
-                    .from('saved_ebooks')
-                    .select(`*, ebook:ebooks(*)`)
-                    .eq('user_id', currentUser.id);
-
-                userSavedEbooks = saved || [];
-
-                const { data: payments } = await supabaseClient
-                    .from('stars_payments')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .eq('status', 'completed')
-                    .order('created_at', { ascending: false })
-                    .limit(10);
-
-                paymentHistory = payments || [];
-
-                renderProfile();
-
-            } catch (error) {
-                console.error('Error loading user data:', error);
-                renderProfile();
-            }
-        }
-
-        async function updateProfile(updates) {
-            try {
-                const { error } = await supabaseClient
-                    .from('profiles')
-                    .update({ ...updates, updated_at: new Date() })
-                    .eq('user_id', currentUser.id);
-
-                if (error) throw error;
-                
-                showAlert('Profile updated successfully!');
-                await loadProfile();
-                renderProfile();
-            } catch (error) {
-                console.error('Update error:', error);
-                showAlert('Error updating profile: ' + error.message, true);
-            }
-        }
-
-        function renderProfile() {
-            if (!userProfile && !currentUser) {
-                profileContent.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading...</p></div>';
-                return;
-            }
-
-            const displayName = userProfile?.name || userProfile?.full_name || currentUser?.email?.split('@')[0] || 'User';
-            const telegramUsername = userProfile?.telegram_username || '';
-            const bio = userProfile?.bio || '';
-            const totalStarsSpent = userProfile?.total_spent_stars || 0;
-            const totalPurchases = userProfile?.total_purchases || 0;
-            const totalUnlocked = userUnlocks.length;
-            const totalSaved = userSavedEbooks.length;
-
-            profileContent.innerHTML = `
-                <div class="profile-header">
-                    <div class="profile-avatar">👤</div>
-                    <div class="profile-name">${escapeHtml(displayName)}</div>
-                    <div class="profile-email">${escapeHtml(currentUser?.email || '')}</div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">📚</div>
-                        <div class="stat-value">${totalUnlocked}</div>
-                        <div class="stat-label">Ebooks Unlocked</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-value">${totalStarsSpent}</div>
-                        <div class="stat-label">Stars Spent</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-value">${totalPurchases}</div>
-                        <div class="stat-label">Total Purchases</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🔖</div>
-                        <div class="stat-value">${totalSaved}</div>
-                        <div class="stat-label">Saved Ebooks</div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <div class="section-title"><span>✏️</span> Edit Profile</div>
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="fullNameInput" class="form-control" value="${escapeHtml(displayName)}" placeholder="Enter your full name">
-                    </div>
-                    <div class="form-group">
-                        <label>Telegram Username</label>
-                        <input type="text" id="telegramInput" class="form-control" value="${escapeHtml(telegramUsername)}" placeholder="@username">
-                    </div>
-                    <div class="form-group">
-                        <label>Bio</label>
-                        <textarea id="bioInput" class="form-control" placeholder="Tell us about yourself...">${escapeHtml(bio)}</textarea>
-                    </div>
-                    <button class="btn-save" onclick="window.saveProfileChanges()">Save Changes</button>
-                </div>
-
-                <div class="section">
-                    <div class="section-title"><span>📖</span> My Unlocked Ebooks</div>
-                    ${userUnlocks.length === 0 ? `
-                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">You haven't unlocked any ebooks yet. <a href="ebooks.html" style="color: var(--gold);">Browse the library</a> to get started!</p>
-                    ` : `
-                        <div class="ebooks-grid">
-                            ${userUnlocks.map(unlock => `
-                                <div class="ebook-item">
-                                    <img src="${unlock.ebook?.cover_url || 'https://via.placeholder.com/50x70'}" class="ebook-cover-small" onerror="this.src='https://via.placeholder.com/50x70'">
-                                    <div class="ebook-info-small">
-                                        <div class="ebook-title-small">${escapeHtml(unlock.ebook?.title || 'Unknown')}</div>
-                                        <div class="ebook-date">Unlocked: ${new Date(unlock.created_at).toLocaleDateString()}</div>
-                                    </div>
-                                    <button class="read-btn" onclick="window.readEbook('${unlock.ebook_id}')">Read</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-
-                <div class="section">
-                    <div class="section-title"><span>🔖</span> Saved for Later</div>
-                    ${userSavedEbooks.length === 0 ? `
-                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No saved ebooks. Click the save button on any ebook to add it here!</p>
-                    ` : `
-                        <div class="ebooks-grid">
-                            ${userSavedEbooks.map(saved => `
-                                <div class="ebook-item">
-                                    <img src="${saved.ebook?.cover_url || 'https://via.placeholder.com/50x70'}" class="ebook-cover-small" onerror="this.src='https://via.placeholder.com/50x70'">
-                                    <div class="ebook-info-small">
-                                        <div class="ebook-title-small">${escapeHtml(saved.ebook?.title || 'Unknown')}</div>
-                                        <div class="ebook-date">Saved: ${new Date(saved.saved_at).toLocaleDateString()}</div>
-                                    </div>
-                                    <button class="read-btn" onclick="window.readEbook('${saved.ebook_id}')">Read</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
-
-                <div class="section">
-                    <div class="section-title"><span>💳</span> Recent Payments</div>
-                    ${paymentHistory.length === 0 ? `
-                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No payment history yet.</p>
-                    ` : `
-                        <div style="overflow-x: auto;">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <th style="padding: 0.8rem; text-align: left;">Ebook</th>
-                                        <th style="padding: 0.8rem; text-align: left;">Stars</th>
-                                        <th style="padding: 0.8rem; text-align: left;">Date</th>
-                                        <th style="padding: 0.8rem; text-align: left;">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${paymentHistory.map(payment => `
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 0.8rem;">${escapeHtml(payment.ebook_title || 'Unknown')}</td>
-                                            <td style="padding: 0.8rem;">⭐ ${payment.stars_amount}</td>
-                                            <td style="padding: 0.8rem;">${new Date(payment.created_at).toLocaleDateString()}</td>
-                                            <td style="padding: 0.8rem; color: var(--success);">✅ Completed</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    `}
-                </div>
-            `;
-        }
-
-        window.saveProfileChanges = async () => {
-            const fullName = document.getElementById('fullNameInput')?.value;
-            const telegramUsername = document.getElementById('telegramInput')?.value;
-            const bio = document.getElementById('bioInput')?.value;
-
-            const updates = {
-                name: fullName,
-                full_name: fullName,
-                telegram_username: telegramUsername,
-                bio: bio,
-                updated_at: new Date()
-            };
-
-            await updateProfile(updates);
-        };
-
-        window.readEbook = (ebookId) => {
-            window.open(`ebook-reader.html?id=${ebookId}`, '_blank');
-        };
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        async function init() {
-            initTheme();
-            await checkAuth();
-        }
-
-        init();
+        initTheme();
+        checkAuth();
     </script>
 </body>
 </html>
