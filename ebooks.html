@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - Ebook Library</title>
     <style>
         * {
@@ -21,6 +21,7 @@
             --electric-blue: #00F0FF;
             --success: #4CAF50;
             --error: #F44336;
+            --telegram: #27A5E7;
         }
 
         body {
@@ -522,8 +523,8 @@
         }
 
         .telegram-payment-info {
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--electric-blue);
+            background: rgba(39, 165, 231, 0.1);
+            border: 1px solid var(--telegram);
             border-radius: 10px;
             padding: 1rem;
             margin: 1rem 0;
@@ -534,18 +535,25 @@
 
         .telegram-icon {
             font-size: 2rem;
-            color: var(--electric-blue);
+            color: var(--telegram);
         }
 
         .stars-amount {
             background: var(--bg-color);
-            padding: 0.8rem;
+            padding: 1rem;
             border-radius: 8px;
             margin: 1rem 0;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             text-align: center;
             color: var(--gold);
             font-weight: bold;
+        }
+
+        .payment-status {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin: 1rem 0;
         }
 
         .modal-actions {
@@ -557,10 +565,10 @@
         .btn-primary {
             flex: 1;
             padding: 0.8rem;
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            background: var(--telegram);
             border: none;
             border-radius: 8px;
-            color: var(--bg-color);
+            color: white;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -678,7 +686,7 @@
     <main class="container">
         <div class="header">
             <h1>Ebook Library</h1>
-            <p>Expand your mind with our collection</p>
+            <p>Expand your mind with our collection — Pay with Telegram Stars ⭐</p>
         </div>
 
         <!-- Search Bar -->
@@ -736,10 +744,15 @@
 
             <div class="telegram-payment-info">
                 <span class="telegram-icon">⭐</span>
-                <span>Pay securely with Telegram Stars</span>
+                <span>Secure payment with Telegram Stars</span>
             </div>
 
             <div class="stars-amount" id="starsAmount"></div>
+            
+            <div class="payment-status" id="paymentStatusMsg">
+                🔹 Click the button below to pay with Telegram Stars.<br>
+                ✅ After successful payment, your ebook will unlock automatically.
+            </div>
 
             <div class="modal-actions">
                 <button class="btn-primary" id="payWithStarsBtn">
@@ -762,6 +775,9 @@
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Telegram Bot Configuration - REPLACE WITH YOUR ACTUAL BOT USERNAME
+        const TELEGRAM_BOT_USERNAME = 'SupremeMotiveBot'; // Change to your actual bot username
+        
         // Admin emails
         const ADMIN_EMAILS = [
             'supremealpha04@gmail.com',
@@ -769,9 +785,6 @@
             'sandrakukk055@gmail.com',
             'emmanuelamer6@gmail.com'
         ];
-
-        // Telegram Bot Configuration (Replace with your actual bot username)
-        const TELEGRAM_BOT_USERNAME = 'SupremeMotiveBot';
 
         // State
         let currentUser = null;
@@ -790,7 +803,7 @@
                 description: 'A powerful guide to reclaiming your life and pursuing your purpose with unwavering determination.',
                 cover_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400',
                 category: 'motivation',
-                price: 4.99,
+                stars_price: 150,
                 is_paid: true,
                 tag: 'Mm'
             },
@@ -800,17 +813,17 @@
                 description: 'Transform your thinking and unlock your full potential with proven psychological strategies.',
                 cover_url: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400',
                 category: 'mindset',
-                price: 9.99,
+                stars_price: 250,
                 is_paid: true,
                 tag: 'Mm'
             },
             {
                 id: '3',
                 title: 'Success Habits',
-                description: 'Daily routines of the worlds most successful people.',
+                description: 'Daily routines of the worlds most successful people — FREE ebook!',
                 cover_url: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400',
                 category: 'success',
-                price: 0,
+                stars_price: 0,
                 is_paid: false,
                 tag: 'Free'
             }
@@ -837,6 +850,7 @@
         const payWithStarsBtn = document.getElementById('payWithStarsBtn');
         const modalEbookInfo = document.getElementById('modalEbookInfo');
         const starsAmount = document.getElementById('starsAmount');
+        const paymentStatusMsg = document.getElementById('paymentStatusMsg');
 
         // ============================================
         // THEME TOGGLE
@@ -901,7 +915,7 @@
             alertContainer.innerHTML = `<div class="alert" style="border-color: ${isError ? '#F44336' : 'var(--gold)'}">${message}</div>`;
             setTimeout(() => {
                 alertContainer.innerHTML = '';
-            }, 3000);
+            }, 4000);
         }
 
         // ============================================
@@ -1035,9 +1049,8 @@
 
             ebooksGrid.innerHTML = filteredEbooks.map(ebook => {
                 const isUnlocked = !ebook.is_paid || userUnlocks.has(ebook.id);
-                const priceDisplay = ebook.is_paid ? `$${ebook.price}` : 'FREE';
+                const priceDisplay = ebook.is_paid ? `${ebook.stars_price || 100} ⭐ Stars` : 'FREE';
                 const priceClass = ebook.is_paid ? '' : 'free';
-                const starsCost = ebook.is_paid ? Math.ceil(ebook.price * 15) : 0;
                 
                 return `
                     <div class="ebook-card">
@@ -1046,14 +1059,14 @@
                         
                         <div class="ebook-info">
                             <div class="ebook-tag">
-                                <span>${ebook.tag || 'Eb'}</span> ${ebook.category.charAt(0).toUpperCase() + ebook.category.slice(1)}
+                                <span>${ebook.tag || 'Eb'}</span> ${ebook.category ? ebook.category.charAt(0).toUpperCase() + ebook.category.slice(1) : 'Ebook'}
                             </div>
                             
-                            <h3 class="ebook-title">${ebook.title}</h3>
-                            <p class="ebook-description">${ebook.description}</p>
+                            <h3 class="ebook-title">${escapeHtml(ebook.title)}</h3>
+                            <p class="ebook-description">${escapeHtml(ebook.description)}</p>
                             
                             <div class="ebook-price ${priceClass}">
-                                ${priceDisplay} ${ebook.is_paid ? `(${starsCost} ⭐)` : ''}
+                                ${priceDisplay}
                             </div>
 
                             <div class="ebook-actions">
@@ -1080,6 +1093,16 @@
         }
 
         // ============================================
+        // ESCAPE HTML
+        // ============================================
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ============================================
         // INITIATE TELEGRAM STARS PAYMENT
         // ============================================
         window.initiateStarsPayment = async (ebookId) => {
@@ -1094,46 +1117,46 @@
             if (!ebook || !ebook.is_paid) return;
 
             selectedEbook = ebook;
-            const starsCost = Math.ceil(ebook.price * 15);
+            const starsCost = ebook.stars_price || 100;
             
             modalEbookInfo.innerHTML = `
                 <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                     <img src="${ebook.cover_url}" alt="${ebook.title}" 
                          style="width: 60px; height: 80px; object-fit: cover; border-radius: 8px;">
                     <div>
-                        <h4 style="color: var(--gold);">${ebook.title}</h4>
-                        <p style="color: var(--text-secondary);">${ebook.price} USD</p>
+                        <h4 style="color: var(--gold);">${escapeHtml(ebook.title)}</h4>
+                        <p style="color: var(--text-secondary);">${starsCost} ⭐ Stars</p>
                     </div>
                 </div>
             `;
             
             starsAmount.innerHTML = `💰 ${starsCost} Telegram Stars`;
+            paymentStatusMsg.innerHTML = '🔹 Click the button below to pay with Telegram Stars.<br>✅ After successful payment, your ebook will unlock automatically.';
             paymentModal.classList.add('show');
         };
 
         // ============================================
-        // PROCESS PAYMENT & AUTO UNLOCK
+        // PROCESS TELEGRAM STARS PAYMENT WITH BOT API
         // ============================================
         payWithStarsBtn.addEventListener('click', async () => {
             if (!selectedEbook || !currentUser) return;
             
-            const starsCost = Math.ceil(selectedEbook.price * 15);
+            const starsCost = selectedEbook.stars_price || 100;
             const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             
             // Create payment record in database
-            const { data: paymentRecord, error: insertError } = await supabaseClient
+            const { error: insertError } = await supabaseClient
                 .from('stars_payments')
                 .insert([{
                     id: paymentId,
                     user_id: currentUser.id,
+                    user_email: currentUser.email,
                     ebook_id: selectedEbook.id,
+                    ebook_title: selectedEbook.title,
                     stars_amount: starsCost,
-                    amount_usd: selectedEbook.price,
                     status: 'pending',
                     created_at: new Date().toISOString()
-                }])
-                .select()
-                .single();
+                }]);
             
             if (insertError) {
                 console.error('Payment record error:', insertError);
@@ -1141,27 +1164,43 @@
                 return;
             }
             
-            // Create Telegram Stars invoice link
+            // Create Telegram Stars invoice link using bot username
+            // Format: https://t.me/BotUsername?start=payment_paymentId
             const invoiceLink = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=payment_${paymentId}`;
             
-            showAlert('Opening Telegram for payment...');
+            paymentStatusMsg.innerHTML = '🔄 Opening Telegram... Please complete the payment in the Telegram app.';
+            payWithStarsBtn.disabled = true;
+            payWithStarsBtn.textContent = 'Opening Telegram...';
+            
+            // Open Telegram chat with payment invoice
             window.open(invoiceLink, '_blank');
             
-            // Start polling for payment confirmation
+            // Start polling for payment confirmation from bot webhook
             if (activePaymentCheck) clearInterval(activePaymentCheck);
             
+            let attempts = 0;
+            const maxAttempts = 40; // 2 minutes (40 * 3 seconds)
+            
             activePaymentCheck = setInterval(async () => {
-                const { data: payment } = await supabaseClient
+                attempts++;
+                
+                const { data: payment, error } = await supabaseClient
                     .from('stars_payments')
                     .select('status')
                     .eq('id', paymentId)
                     .single();
                 
+                if (error) {
+                    console.error('Polling error:', error);
+                }
+                
                 if (payment && payment.status === 'completed') {
                     clearInterval(activePaymentCheck);
                     activePaymentCheck = null;
                     
-                    // Auto unlock ebook
+                    paymentStatusMsg.innerHTML = '✅ Payment confirmed! Unlocking ebook...';
+                    
+                    // Auto unlock ebook - insert into unlocks table
                     const { error: unlockError } = await supabaseClient
                         .from('unlocks')
                         .insert([{
@@ -1181,39 +1220,73 @@
                     } else if (unlockError.code !== '23505') {
                         showAlert('Unlock failed: ' + unlockError.message, true);
                     }
+                    
+                    payWithStarsBtn.disabled = false;
+                    payWithStarsBtn.textContent = 'Pay with Telegram Stars';
+                    
                 } else if (payment && payment.status === 'failed') {
                     clearInterval(activePaymentCheck);
                     activePaymentCheck = null;
                     showAlert('Payment failed or was cancelled.', true);
+                    paymentStatusMsg.innerHTML = '❌ Payment failed. Please try again.';
+                    payWithStarsBtn.disabled = false;
+                    payWithStarsBtn.textContent = 'Pay with Telegram Stars';
+                    
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(activePaymentCheck);
+                    activePaymentCheck = null;
+                    paymentStatusMsg.innerHTML = '⏰ Payment verification timeout. If you completed payment, please contact support.';
+                    payWithStarsBtn.disabled = false;
+                    payWithStarsBtn.textContent = 'Pay with Telegram Stars';
+                    showAlert('Payment verification timeout. Please contact support if you completed payment.', true);
+                } else {
+                    // Update status message to show waiting
+                    if (attempts % 5 === 0) {
+                        paymentStatusMsg.innerHTML = `⏳ Waiting for payment confirmation... (${Math.floor(attempts * 3 / 60)} min ${(attempts * 3) % 60} sec)`;
+                    }
                 }
             }, 3000);
             
-            // Auto timeout after 2 minutes
+            // Close modal after opening Telegram
             setTimeout(() => {
-                if (activePaymentCheck) {
-                    clearInterval(activePaymentCheck);
-                    activePaymentCheck = null;
-                    showAlert('Payment verification timeout. Please contact support if you completed payment.', true);
+                if (paymentModal.classList.contains('show')) {
+                    // Don't auto-close, let user close manually
                 }
-            }, 120000);
-            
-            paymentModal.classList.remove('show');
+            }, 1000);
         });
 
         // ============================================
         // CLOSE MODAL
         // ============================================
         closeModalBtn.addEventListener('click', () => {
+            if (activePaymentCheck) {
+                clearInterval(activePaymentCheck);
+                activePaymentCheck = null;
+            }
             paymentModal.classList.remove('show');
+            payWithStarsBtn.disabled = false;
+            payWithStarsBtn.textContent = 'Pay with Telegram Stars';
         });
 
         cancelModalBtn.addEventListener('click', () => {
+            if (activePaymentCheck) {
+                clearInterval(activePaymentCheck);
+                activePaymentCheck = null;
+            }
             paymentModal.classList.remove('show');
+            payWithStarsBtn.disabled = false;
+            payWithStarsBtn.textContent = 'Pay with Telegram Stars';
         });
 
         window.addEventListener('click', (e) => {
             if (e.target === paymentModal) {
+                if (activePaymentCheck) {
+                    clearInterval(activePaymentCheck);
+                    activePaymentCheck = null;
+                }
                 paymentModal.classList.remove('show');
+                payWithStarsBtn.disabled = false;
+                payWithStarsBtn.textContent = 'Pay with Telegram Stars';
             }
         });
 
