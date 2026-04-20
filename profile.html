@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - My Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SupremeMotive - Profile</title>
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
@@ -22,32 +22,37 @@
             --electric-blue: #00F0FF;
             --success: #4CAF50;
             --error: #F44336;
+            --telegram-blue: #27A5E7;
+            --telegram-bg: #17212B;
+            --telegram-card: #1F2A3A;
+            --online-green: #4CAF50;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-color) 0%, #0B1A33 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--telegram-bg);
             color: var(--text-color);
             min-height: 100vh;
-            padding-bottom: 80px;
         }
 
         body.light-mode {
-            --bg-color: #F5F5F5;
+            --bg-color: #FFFFFF;
             --card-bg: #FFFFFF;
-            --text-color: #333333;
+            --text-color: #222222;
             --text-secondary: #666666;
-            --border-color: #DDDDDD;
+            --border-color: #E0E0E0;
+            --telegram-bg: #F0F2F5;
+            --telegram-card: #FFFFFF;
         }
 
         /* Navigation */
         .top-nav {
-            background: var(--card-bg);
-            padding: 1rem 2rem;
+            background: var(--telegram-card);
+            padding: 0.8rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--gold);
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -57,13 +62,13 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: var(--gold);
         }
 
         .logo img {
-            height: 35px;
+            height: 32px;
             width: auto;
         }
 
@@ -159,11 +164,11 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--card-bg);
-            border-top: 2px solid var(--gold);
+            background: var(--telegram-card);
+            border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-around;
-            padding: 0.8rem;
+            padding: 0.6rem;
             z-index: 100;
         }
 
@@ -173,8 +178,9 @@
             align-items: center;
             text-decoration: none;
             color: var(--text-secondary);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             transition: color 0.3s ease;
+            padding: 0.3rem 0;
         }
 
         .nav-item:hover,
@@ -188,202 +194,370 @@
         }
 
         .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0;
         }
 
-        /* Profile Header */
-        .profile-header {
+        /* Telegram Style Profile Header */
+        .profile-cover {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
-            color: var(--bg-color);
+            height: 180px;
+            position: relative;
+        }
+
+        .profile-avatar-wrapper {
+            position: absolute;
+            bottom: -50px;
+            left: 24px;
         }
 
         .profile-avatar {
             width: 100px;
             height: 100px;
-            background: var(--bg-color);
+            background: var(--telegram-card);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1rem;
-            font-size: 3rem;
-            border: 3px solid white;
+            font-size: 3.5rem;
+            border: 4px solid var(--telegram-card);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .edit-avatar-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--gold);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--bg-color);
+        }
+
+        .profile-info {
+            padding: 60px 20px 20px;
+            background: var(--telegram-card);
+            border-radius: 20px 20px 0 0;
+            margin-top: -10px;
+        }
+
+        .profile-name-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
         }
 
         .profile-name {
             font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--text-color);
         }
 
-        .profile-email {
-            font-size: 1rem;
-            opacity: 0.9;
+        .profile-username {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
         }
 
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        .profile-bio {
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin: 12px 0;
+            padding: 8px 0;
         }
 
-        .stat-card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
+        /* Stats Cards - Telegram Style */
+        .stats-container {
+            display: flex;
+            gap: 16px;
+            padding: 20px;
+            background: var(--telegram-card);
+            margin-top: 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat-item-telegram {
+            flex: 1;
             text-align: center;
-            transition: all 0.3s ease;
+            padding: 12px;
+            background: rgba(39, 165, 231, 0.1);
+            border-radius: 16px;
         }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
+        .stat-value-telegram {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .stat-label-telegram {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 20px 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-header i {
+            font-size: 1.2rem;
+        }
+
+        /* List Items - Telegram Style */
+        .list-item {
+            background: var(--telegram-card);
+            margin: 0 12px 8px;
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .list-item:hover {
+            transform: translateX(4px);
             border-color: var(--gold);
         }
 
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--gold);
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Sections */
-        .section {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border-color);
-        }
-
-        .section-title {
-            font-size: 1.3rem;
-            color: var(--gold);
-            margin-bottom: 1rem;
+        .list-item-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(39, 165, 231, 0.15);
+            border-radius: 12px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
+            justify-content: center;
+            font-size: 1.3rem;
         }
 
-        /* Form */
-        .form-group {
-            margin-bottom: 1rem;
+        .list-item-content {
+            flex: 1;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
+        .list-item-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .list-item-subtitle {
+            font-size: 0.75rem;
             color: var(--text-secondary);
         }
 
-        .form-control {
-            width: 100%;
-            padding: 0.8rem;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-color);
-            font-size: 1rem;
+        .list-item-action {
+            color: var(--gold);
+            font-size: 0.85rem;
         }
 
-        .form-control:focus {
+        /* Edit Profile Modal - Telegram Style */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--telegram-card);
+            border-radius: 28px;
+            width: 90%;
+            max-width: 480px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: none;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-field {
+            margin-bottom: 20px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .form-field input,
+        .form-field textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus {
             outline: none;
             border-color: var(--gold);
         }
 
-        textarea.form-control {
+        .form-field textarea {
             min-height: 80px;
             resize: vertical;
         }
 
-        .btn-save {
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--bg-color);
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-
-        /* Ebooks Grid */
-        .ebooks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .ebook-item {
-            background: var(--bg-color);
-            border-radius: 10px;
-            padding: 1rem;
+        .modal-footer {
             display: flex;
-            gap: 1rem;
-            align-items: center;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            gap: 12px;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
         }
 
-        .ebook-item:hover {
-            border-color: var(--gold);
-            transform: translateX(4px);
-        }
-
-        .ebook-cover-small {
-            width: 50px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-
-        .ebook-info-small {
+        .btn-primary {
             flex: 1;
-        }
-
-        .ebook-title-small {
-            font-weight: bold;
-            margin-bottom: 0.3rem;
-        }
-
-        .ebook-date {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .read-btn {
             background: var(--gold);
             color: var(--bg-color);
             border: none;
-            padding: 0.3rem 0.8rem;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 0.8rem;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Ebooks Grid inside profile */
+        .ebooks-grid-telegram {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 12px 16px;
+            scrollbar-width: thin;
+        }
+
+        .ebooks-grid-telegram::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .ebook-card-telegram {
+            min-width: 140px;
+            background: var(--bg-color);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .ebook-card-telegram img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .ebook-card-telegram .info {
+            padding: 10px;
+        }
+
+        .ebook-card-telegram .title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .read-btn-sm {
+            background: var(--gold);
+            border: none;
+            padding: 6px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        /* Payment History Table */
+        .payments-list {
+            padding: 0 12px 20px;
+        }
+
+        .payment-item {
+            background: var(--bg-color);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         /* Alert */
@@ -392,13 +566,14 @@
             top: 80px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--card-bg);
-            border: 2px solid var(--gold);
-            border-radius: 8px;
-            padding: 0.8rem 1.5rem;
+            background: var(--telegram-card);
+            border-left: 4px solid var(--gold);
+            border-radius: 12px;
+            padding: 12px 20px;
             color: var(--text-color);
             z-index: 1000;
             animation: slideDown 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         @keyframes slideDown {
@@ -419,7 +594,7 @@
         /* Loading */
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
         }
 
         .spinner {
@@ -436,6 +611,12 @@
             to { transform: rotate(360deg); }
         }
 
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .menu-toggle {
@@ -444,10 +625,10 @@
 
             .nav-links {
                 position: fixed;
-                top: 70px;
+                top: 60px;
                 left: 0;
                 right: 0;
-                background: var(--card-bg);
+                background: var(--telegram-card);
                 flex-direction: column;
                 padding: 2rem;
                 gap: 1.5rem;
@@ -461,12 +642,12 @@
                 transform: translateY(0);
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
+            .profile-name {
+                font-size: 1.4rem;
             }
-
-            .ebooks-grid {
-                grid-template-columns: 1fr;
+            
+            .stats-container {
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -488,10 +669,9 @@
         <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
-            <a href="contact.html">Contact</a>
+            <a href="ebooks.html">Ebooks</a>
             <a href="privacy.html">Privacy</a>
             <a href="terms.html">Terms</a>
-            <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
             
             <div class="auth-buttons">
@@ -529,18 +709,41 @@
         </div>
     </main>
 
+    <!-- Edit Profile Modal - Telegram Style -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-field">
+                    <label>Full Name</label>
+                    <input type="text" id="editName" placeholder="Your name">
+                </div>
+                <div class="form-field">
+                    <label>Telegram Username</label>
+                    <input type="text" id="editTelegram" placeholder="@username">
+                </div>
+                <div class="form-field">
+                    <label>Bio</label>
+                    <textarea id="editBio" placeholder="Tell something about yourself..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelEditBtn">Cancel</button>
+                <button class="btn-primary" id="saveEditBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const ADMIN_EMAILS = [
-            'supremealpha04@gmail.com',
-            'suprememotive43@gmail.com',
-            'sandrakukk055@gmail.com',
-            'emmanuelamer6@gmail.com'
-        ];
+        const ADMIN_EMAILS = ['supremealpha04@gmail.com', 'suprememotive43@gmail.com', 'sandrakukk055@gmail.com', 'emmanuelamer6@gmail.com'];
 
         let currentUser = null;
         let userProfile = null;
@@ -557,6 +760,13 @@
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const userGreeting = document.getElementById('userGreeting');
+        const editModal = document.getElementById('editModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const saveEditBtn = document.getElementById('saveEditBtn');
+        const editName = document.getElementById('editName');
+        const editTelegram = document.getElementById('editTelegram');
+        const editBio = document.getElementById('editBio');
 
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
@@ -576,39 +786,27 @@
             themeToggle.textContent = isLight ? '☀️' : '🌙';
         });
 
-        menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
-        });
+        menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+        navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => navLinks.classList.remove('active')));
 
         function showAlert(message, isError = false) {
-            alertContainer.innerHTML = `<div class="alert" style="border-color: ${isError ? '#F44336' : 'var(--gold)'}">${message}</div>`;
-            setTimeout(() => {
-                alertContainer.innerHTML = '';
-            }, 3000);
+            alertContainer.innerHTML = `<div class="alert" style="border-left-color: ${isError ? '#F44336' : 'var(--gold)'}">${message}</div>`;
+            setTimeout(() => alertContainer.innerHTML = '', 3000);
         }
 
         async function checkAuth() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
-                
                 if (user) {
                     loginBtn.classList.add('hidden');
                     logoutBtn.classList.remove('hidden');
                     userGreeting.classList.remove('hidden');
                     userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
-                    
                     if (ADMIN_EMAILS.includes(user.email)) {
                         adminLink.style.display = 'block';
                         adminLink.href = 'admin/admin-dashboard.html';
                     }
-                    
                     await loadProfile();
                     await loadUserData();
                 } else {
@@ -617,10 +815,11 @@
                     userGreeting.classList.add('hidden');
                     adminLink.style.display = 'none';
                     profileContent.innerHTML = `
-                        <div class="section" style="text-align: center;">
+                        <div class="empty-state">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
                             <h3>Please Login</h3>
                             <p style="margin: 1rem 0;">You need to be logged in to view your profile.</p>
-                            <a href="login.html" class="btn-save" style="display: inline-block; text-decoration: none;">Login Now</a>
+                            <a href="login.html" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 24px;">Login Now</a>
                         </div>
                     `;
                 }
@@ -636,16 +835,7 @@
 
         async function loadProfile() {
             try {
-                let { data: profile, error } = await supabaseClient
-                    .from('profiles')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .maybeSingle();
-
-                if (error && error.code !== 'PGRST116') {
-                    console.error('Profile error:', error);
-                }
-
+                let { data: profile, error } = await supabaseClient.from('profiles').select('*').eq('user_id', currentUser.id).maybeSingle();
                 if (!profile) {
                     const newProfileData = {
                         user_id: currentUser.id,
@@ -657,61 +847,26 @@
                         created_at: new Date(),
                         updated_at: new Date()
                     };
-                    
-                    const { data: newProfile, error: insertError } = await supabaseClient
-                        .from('profiles')
-                        .insert([newProfileData])
-                        .select()
-                        .single();
-
-                    if (insertError) {
-                        console.error('Error creating profile:', insertError);
-                        userProfile = { user_id: currentUser.id, email: currentUser.email, name: currentUser.email.split('@')[0] };
-                    } else {
-                        userProfile = newProfile;
-                    }
+                    const { data: newProfile } = await supabaseClient.from('profiles').insert([newProfileData]).select().single();
+                    userProfile = newProfile || newProfileData;
                 } else {
                     userProfile = profile;
                 }
-                
-                return userProfile;
             } catch (error) {
                 console.error('Error loading profile:', error);
                 userProfile = { user_id: currentUser?.id, email: currentUser?.email, name: currentUser?.email?.split('@')[0] };
-                return userProfile;
             }
         }
 
         async function loadUserData() {
             try {
-                const { data: unlocks } = await supabaseClient
-                    .from('unlocks')
-                    .select(`*, ebook:ebooks(*)`)
-                    .eq('user_id', currentUser.id)
-                    .eq('status', 'approved')
-                    .order('created_at', { ascending: false });
-
+                const { data: unlocks } = await supabaseClient.from('unlocks').select(`*, ebook:ebooks(*)`).eq('user_id', currentUser.id).eq('status', 'approved').order('created_at', { ascending: false });
                 userUnlocks = unlocks || [];
-
-                const { data: saved } = await supabaseClient
-                    .from('saved_ebooks')
-                    .select(`*, ebook:ebooks(*)`)
-                    .eq('user_id', currentUser.id);
-
+                const { data: saved } = await supabaseClient.from('saved_ebooks').select(`*, ebook:ebooks(*)`).eq('user_id', currentUser.id);
                 userSavedEbooks = saved || [];
-
-                const { data: payments } = await supabaseClient
-                    .from('stars_payments')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .eq('status', 'completed')
-                    .order('created_at', { ascending: false })
-                    .limit(10);
-
+                const { data: payments } = await supabaseClient.from('stars_payments').select('*').eq('user_id', currentUser.id).eq('status', 'completed').order('created_at', { ascending: false }).limit(10);
                 paymentHistory = payments || [];
-
                 renderProfile();
-
             } catch (error) {
                 console.error('Error loading user data:', error);
                 renderProfile();
@@ -720,21 +875,40 @@
 
         async function updateProfile(updates) {
             try {
-                const { error } = await supabaseClient
-                    .from('profiles')
-                    .update({ ...updates, updated_at: new Date() })
-                    .eq('user_id', currentUser.id);
-
+                const { error } = await supabaseClient.from('profiles').update({ ...updates, updated_at: new Date() }).eq('user_id', currentUser.id);
                 if (error) throw error;
-                
                 showAlert('Profile updated successfully!');
                 await loadProfile();
                 renderProfile();
             } catch (error) {
-                console.error('Update error:', error);
                 showAlert('Error updating profile: ' + error.message, true);
             }
         }
+
+        function openEditModal() {
+            editName.value = userProfile?.name || userProfile?.full_name || '';
+            editTelegram.value = userProfile?.telegram_username || '';
+            editBio.value = userProfile?.bio || '';
+            editModal.classList.add('show');
+        }
+
+        function closeEditModal() {
+            editModal.classList.remove('show');
+        }
+
+        saveEditBtn.addEventListener('click', async () => {
+            await updateProfile({
+                name: editName.value,
+                full_name: editName.value,
+                telegram_username: editTelegram.value,
+                bio: editBio.value
+            });
+            closeEditModal();
+        });
+
+        closeModalBtn.addEventListener('click', closeEditModal);
+        cancelEditBtn.addEventListener('click', closeEditModal);
+        window.addEventListener('click', (e) => { if (e.target === editModal) closeEditModal(); });
 
         function renderProfile() {
             if (!userProfile && !currentUser) {
@@ -743,151 +917,118 @@
             }
 
             const displayName = userProfile?.name || userProfile?.full_name || currentUser?.email?.split('@')[0] || 'User';
-            const telegramUsername = userProfile?.telegram_username || '';
-            const bio = userProfile?.bio || '';
+            const username = userProfile?.telegram_username || currentUser?.email?.split('@')[0];
+            const bio = userProfile?.bio || 'No bio yet. Tap edit to add one!';
             const totalStarsSpent = userProfile?.total_spent_stars || 0;
             const totalPurchases = userProfile?.total_purchases || 0;
             const totalUnlocked = userUnlocks.length;
             const totalSaved = userSavedEbooks.length;
 
             profileContent.innerHTML = `
-                <div class="profile-header">
-                    <div class="profile-avatar">👤</div>
-                    <div class="profile-name">${escapeHtml(displayName)}</div>
-                    <div class="profile-email">${escapeHtml(currentUser?.email || '')}</div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">📚</div>
-                        <div class="stat-value">${totalUnlocked}</div>
-                        <div class="stat-label">Ebooks Unlocked</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⭐</div>
-                        <div class="stat-value">${totalStarsSpent}</div>
-                        <div class="stat-label">Stars Spent</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-value">${totalPurchases}</div>
-                        <div class="stat-label">Total Purchases</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">🔖</div>
-                        <div class="stat-value">${totalSaved}</div>
-                        <div class="stat-label">Saved Ebooks</div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <div class="section-title"><span>✏️</span> Edit Profile</div>
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="fullNameInput" class="form-control" value="${escapeHtml(displayName)}" placeholder="Enter your full name">
-                    </div>
-                    <div class="form-group">
-                        <label>Telegram Username</label>
-                        <input type="text" id="telegramInput" class="form-control" value="${escapeHtml(telegramUsername)}" placeholder="@username">
-                    </div>
-                    <div class="form-group">
-                        <label>Bio</label>
-                        <textarea id="bioInput" class="form-control" placeholder="Tell us about yourself...">${escapeHtml(bio)}</textarea>
-                    </div>
-                    <button class="btn-save" onclick="window.saveProfileChanges()">Save Changes</button>
-                </div>
-
-                <div class="section">
-                    <div class="section-title"><span>📖</span> My Unlocked Ebooks</div>
-                    ${userUnlocks.length === 0 ? `
-                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">You haven't unlocked any ebooks yet. <a href="ebooks.html" style="color: var(--gold);">Browse the library</a> to get started!</p>
-                    ` : `
-                        <div class="ebooks-grid">
-                            ${userUnlocks.map(unlock => `
-                                <div class="ebook-item">
-                                    <img src="${unlock.ebook?.cover_url || 'https://via.placeholder.com/50x70'}" class="ebook-cover-small" onerror="this.src='https://via.placeholder.com/50x70'">
-                                    <div class="ebook-info-small">
-                                        <div class="ebook-title-small">${escapeHtml(unlock.ebook?.title || 'Unknown')}</div>
-                                        <div class="ebook-date">Unlocked: ${new Date(unlock.created_at).toLocaleDateString()}</div>
-                                    </div>
-                                    <button class="read-btn" onclick="window.readEbook('${unlock.ebook_id}')">Read</button>
-                                </div>
-                            `).join('')}
+                <div class="profile-cover">
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar">
+                            ${displayName.charAt(0).toUpperCase()}
                         </div>
-                    `}
+                        <button class="edit-avatar-btn" onclick="openEditModal()">✏️</button>
+                    </div>
+                </div>
+                
+                <div class="profile-info">
+                    <div class="profile-name-section">
+                        <h1 class="profile-name">${escapeHtml(displayName)}</h1>
+                        <button class="edit-avatar-btn" style="position: relative; background: var(--gold);" onclick="openEditModal()">Edit</button>
+                    </div>
+                    <div class="profile-username">@${escapeHtml(username)}</div>
+                    <div class="profile-bio">${escapeHtml(bio)}</div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title"><span>🔖</span> Saved for Later</div>
-                    ${userSavedEbooks.length === 0 ? `
-                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No saved ebooks. Click the save button on any ebook to add it here!</p>
-                    ` : `
-                        <div class="ebooks-grid">
-                            ${userSavedEbooks.map(saved => `
-                                <div class="ebook-item">
-                                    <img src="${saved.ebook?.cover_url || 'https://via.placeholder.com/50x70'}" class="ebook-cover-small" onerror="this.src='https://via.placeholder.com/50x70'">
-                                    <div class="ebook-info-small">
-                                        <div class="ebook-title-small">${escapeHtml(saved.ebook?.title || 'Unknown')}</div>
-                                        <div class="ebook-date">Saved: ${new Date(saved.saved_at).toLocaleDateString()}</div>
-                                    </div>
-                                    <button class="read-btn" onclick="window.readEbook('${saved.ebook_id}')">Read</button>
+                <div class="stats-container">
+                    <div class="stat-item-telegram">
+                        <div class="stat-value-telegram">${totalUnlocked}</div>
+                        <div class="stat-label-telegram">Ebooks</div>
+                    </div>
+                    <div class="stat-item-telegram">
+                        <div class="stat-value-telegram">${totalStarsSpent}</div>
+                        <div class="stat-label-telegram">Stars Spent</div>
+                    </div>
+                    <div class="stat-item-telegram">
+                        <div class="stat-value-telegram">${totalPurchases}</div>
+                        <div class="stat-label-telegram">Purchases</div>
+                    </div>
+                    <div class="stat-item-telegram">
+                        <div class="stat-value-telegram">${totalSaved}</div>
+                        <div class="stat-label-telegram">Saved</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <i>📖</i> My Ebooks
+                </div>
+                ${userUnlocks.length === 0 ? `
+                    <div class="empty-state">
+                        <p>No ebooks unlocked yet.</p>
+                        <a href="ebooks.html" style="color: var(--gold);">Browse library →</a>
+                    </div>
+                ` : `
+                    <div class="ebooks-grid-telegram">
+                        ${userUnlocks.slice(0, 6).map(unlock => `
+                            <div class="ebook-card-telegram">
+                                <img src="${unlock.ebook?.cover_url || 'https://via.placeholder.com/140x100'}" onerror="this.src='https://via.placeholder.com/140x100'">
+                                <div class="info">
+                                    <div class="title">${escapeHtml(unlock.ebook?.title?.substring(0, 20) || 'Unknown')}</div>
+                                    <button class="read-btn-sm" onclick="readEbook('${unlock.ebook_id}')">Read →</button>
                                 </div>
-                            `).join('')}
-                        </div>
-                    `}
-                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${userUnlocks.length > 6 ? `<div style="text-align: center; padding: 8px;"><a href="ebooks.html" style="color: var(--gold); font-size: 0.85rem;">+${userUnlocks.length - 6} more →</a></div>` : ''}
+                `}
 
-                <div class="section">
-                    <div class="section-title"><span>💳</span> Recent Payments</div>
+                <div class="section-header">
+                    <i>⭐</i> Recent Payments
+                </div>
+                <div class="payments-list">
                     ${paymentHistory.length === 0 ? `
-                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No payment history yet.</p>
-                    ` : `
-                        <div style="overflow-x: auto;">
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <th style="padding: 0.8rem; text-align: left;">Ebook</th>
-                                        <th style="padding: 0.8rem; text-align: left;">Stars</th>
-                                        <th style="padding: 0.8rem; text-align: left;">Date</th>
-                                        <th style="padding: 0.8rem; text-align: left;">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${paymentHistory.map(payment => `
-                                        <tr style="border-bottom: 1px solid var(--border-color);">
-                                            <td style="padding: 0.8rem;">${escapeHtml(payment.ebook_title || 'Unknown')}</td>
-                                            <td style="padding: 0.8rem;">⭐ ${payment.stars_amount}</td>
-                                            <td style="padding: 0.8rem;">${new Date(payment.created_at).toLocaleDateString()}</td>
-                                            <td style="padding: 0.8rem; color: var(--success);">✅ Completed</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
+                        <div class="empty-state">
+                            <p>No payment history yet.</p>
                         </div>
-                    `}
+                    ` : paymentHistory.slice(0, 5).map(payment => `
+                        <div class="payment-item">
+                            <div>
+                                <div style="font-weight: 500;">${escapeHtml(payment.ebook_title || 'Unknown')}</div>
+                                <div style="font-size: 0.7rem; color: var(--text-secondary);">${new Date(payment.created_at).toLocaleDateString()}</div>
+                            </div>
+                            <div style="color: var(--gold); font-weight: 600;">⭐ ${payment.stars_amount}</div>
+                        </div>
+                    `).join('')}
                 </div>
+
+                <div class="section-header">
+                    <i>🔖</i> Saved for Later
+                </div>
+                ${userSavedEbooks.length === 0 ? `
+                    <div class="empty-state">
+                        <p>No saved ebooks.</p>
+                    </div>
+                ` : `
+                    <div class="ebooks-grid-telegram">
+                        ${userSavedEbooks.slice(0, 6).map(saved => `
+                            <div class="ebook-card-telegram">
+                                <img src="${saved.ebook?.cover_url || 'https://via.placeholder.com/140x100'}" onerror="this.src='https://via.placeholder.com/140x100'">
+                                <div class="info">
+                                    <div class="title">${escapeHtml(saved.ebook?.title?.substring(0, 20) || 'Unknown')}</div>
+                                    <button class="read-btn-sm" onclick="readEbook('${saved.ebook_id}')">Read →</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `}
             `;
         }
 
-        window.saveProfileChanges = async () => {
-            const fullName = document.getElementById('fullNameInput')?.value;
-            const telegramUsername = document.getElementById('telegramInput')?.value;
-            const bio = document.getElementById('bioInput')?.value;
-
-            const updates = {
-                name: fullName,
-                full_name: fullName,
-                telegram_username: telegramUsername,
-                bio: bio,
-                updated_at: new Date()
-            };
-
-            await updateProfile(updates);
-        };
-
-        window.readEbook = (ebookId) => {
-            window.open(`ebook-reader.html?id=${ebookId}`, '_blank');
-        };
+        window.readEbook = (ebookId) => window.open(`ebook-reader.html?id=${ebookId}`, '_blank');
+        window.openEditModal = openEditModal;
 
         function escapeHtml(text) {
             if (!text) return '';
