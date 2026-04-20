@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SupremeMotive - Manage Ebooks</title>
+    <title>SupremeMotive - Manage Ebooks (Telegram Stars)</title>
     <style>
         * {
             margin: 0;
@@ -25,6 +25,7 @@
             --error: #F44336;
             --warning: #FFC107;
             --info: #2196F3;
+            --telegram: #27A5E7;
         }
 
         body {
@@ -356,8 +357,8 @@
         }
 
         .price-badge {
-            background: var(--electric-blue);
-            color: var(--primary-black);
+            background: var(--telegram);
+            color: white;
             padding: 0.3rem 1rem;
             border-radius: 30px;
             font-size: 0.9rem;
@@ -574,9 +575,15 @@
         }
 
         .price-input span {
-            color: var(--gold);
+            color: var(--telegram);
             font-size: 1.2rem;
             font-weight: bold;
+        }
+
+        .stars-hint {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
         }
 
         /* File Upload */
@@ -943,25 +950,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="price">Price ($) *</label>
+                        <label for="starsPrice">⭐ Telegram Stars Price *</label>
                         <div class="price-input">
-                            <span>$</span>
-                            <input type="number" id="price" class="form-control" step="0.01" min="0" value="0" required>
+                            <span>⭐</span>
+                            <input type="number" id="starsPrice" class="form-control" step="10" min="0" value="100" required placeholder="Enter price in Stars (e.g., 100, 250, 500)">
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="currency">Currency</label>
-                        <select id="currency" class="form-control">
-                            <option value="USD">USD - US Dollar</option>
-                            <option value="EUR">EUR - Euro</option>
-                            <option value="GBP">GBP - British Pound</option>
-                        </select>
+                        <div class="stars-hint">💰 Set the price in Telegram Stars (minimum 100 stars). Examples: 100⭐, 250⭐, 500⭐, 1000⭐</div>
                     </div>
 
                     <div class="form-group checkbox-group">
                         <input type="checkbox" id="isPaid">
-                        <label for="isPaid">This is a paid ebook</label>
+                        <label for="isPaid">This is a paid ebook (requires Stars payment)</label>
                     </div>
 
                     <div class="form-group">
@@ -1035,30 +1034,20 @@
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0'
 
-        // Initialize Supabase
         const supabase = createClient(
             'https://dzcykpbfykajhoutzhpf.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg'
         )
 
-        // Admin emails
-        const ADMIN_EMAILS = [
-            'supremealpha04@gmail.com',
-            'sandrakukk055@gmail.com'
-        ]
-
-        // State
+        const ADMIN_EMAILS = ['supremealpha04@gmail.com', 'suprememotive43@gmail.com', 'sandrakukk055@gmail.com', 'emmanuelamer6@gmail.com']
         let currentUser = null
         let allEbooks = []
         let selectedEbookId = null
-        
-        // File state
         let selectedCoverFile = null
         let selectedPdfFile = null
         let existingCoverUrl = null
         let existingPdfUrl = null
 
-        // DOM Elements
         const ebooksGrid = document.getElementById('ebooksGrid')
         const totalEbooks = document.getElementById('totalEbooks')
         const freeEbooks = document.getElementById('freeEbooks')
@@ -1069,16 +1058,13 @@
         const logoutBtn = document.getElementById('logoutBtn')
         const alertContainer = document.getElementById('alertContainer')
         const newEbookBtn = document.getElementById('newEbookBtn')
-        
-        // Modal elements
         const ebookModal = document.getElementById('ebookModal')
         const modalTitle = document.getElementById('modalTitle')
         const ebookForm = document.getElementById('ebookForm')
         const ebookIdInput = document.getElementById('ebookId')
         const titleInput = document.getElementById('title')
         const descriptionInput = document.getElementById('description')
-        const priceInput = document.getElementById('price')
-        const currencySelect = document.getElementById('currency')
+        const starsPriceInput = document.getElementById('starsPrice')
         const isPaidCheckbox = document.getElementById('isPaid')
         const coverFileInput = document.getElementById('coverFile')
         const pdfFileInput = document.getElementById('pdfFile')
@@ -1094,517 +1080,136 @@
         const submitBtn = document.getElementById('submitBtn')
         const closeModalBtn = document.getElementById('closeModalBtn')
         const cancelBtn = document.getElementById('cancelBtn')
-        
-        // Delete modal elements
         const deleteModal = document.getElementById('deleteModal')
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn')
         const cancelDeleteBtn = document.getElementById('cancelDeleteBtn')
         const closeDeleteModalBtn = document.getElementById('closeDeleteModalBtn')
 
-        // Show alert
         function showAlert(message, type) {
-            alertContainer.innerHTML = `
-                <div class="alert alert-${type}">
-                    <i>${type === 'success' ? '✅' : '❌'}</i>
-                    <span>${message}</span>
-                </div>
-            `
-            setTimeout(() => {
-                alertContainer.innerHTML = ''
-            }, 3000)
+            alertContainer.innerHTML = `<div class="alert alert-${type}"><i>${type === 'success' ? '✅' : '❌'}</i><span>${message}</span></div>`
+            setTimeout(() => alertContainer.innerHTML = '', 3000)
         }
 
-        // Check authentication
         async function checkAuth() {
             try {
-                const { data: { user }, error } = await supabase.auth.getUser()
-                
-                if (error) throw error
-                if (!user) throw new Error('Not authenticated')
-
+                const { data: { user } } = await supabase.auth.getUser()
+                if (!user || !ADMIN_EMAILS.includes(user.email)) { window.location.href = '../login.html'; return false }
                 currentUser = user
-
-                // Check if user is ebook admin
-                if (!ADMIN_EMAILS.includes(user.email)) {
-                    window.location.href = '../index.html'
-                    return false
-                }
-
                 return true
-            } catch (error) {
-                console.error('Auth error:', error)
-                window.location.href = '../login.html'
-                return false
-            }
+            } catch { window.location.href = '../login.html'; return false }
         }
 
-        // Load ebooks
         async function loadEbooks() {
-            try {
-                ebooksGrid.innerHTML = `
-                    <div class="loading">
-                        <div class="spinner"></div>
-                        <p>Loading ebooks...</p>
-                    </div>
-                `
-
-                const { data, error } = await supabase
-                    .from('ebooks')
-                    .select('*')
-                    .order('created_at', { ascending: false })
-
-                if (error) throw error
-
-                allEbooks = data || []
-                
-                // Load unlock stats for each ebook
-                const ebooksWithStats = await Promise.all(allEbooks.map(async (ebook) => {
-                    const { count: pending } = await supabase
-                        .from('unlocks')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('ebook_id', ebook.id)
-                        .eq('status', 'pending')
-
-                    const { count: approved } = await supabase
-                        .from('unlocks')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('ebook_id', ebook.id)
-                        .eq('status', 'approved')
-
-                    return {
-                        ...ebook,
-                        pending_unlocks: pending || 0,
-                        approved_unlocks: approved || 0
-                    }
-                }))
-
-                allEbooks = ebooksWithStats
-                updateStats()
-                renderEbooks(allEbooks)
-
-            } catch (error) {
-                console.error('Load ebooks error:', error)
-                ebooksGrid.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">❌</div>
-                        <h3>Error Loading Ebooks</h3>
-                        <p>${error.message}</p>
-                    </div>
-                `
-            }
+            ebooksGrid.innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading ebooks...</p></div>`
+            const { data, error } = await supabase.from('ebooks').select('*').order('created_at', { ascending: false })
+            if (error) { ebooksGrid.innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div><h3>Error</h3><p>${error.message}</p></div>`; return }
+            allEbooks = data || []
+            const ebooksWithStats = await Promise.all(allEbooks.map(async (ebook) => {
+                const { count: pending } = await supabase.from('unlocks').select('*', { count: 'exact', head: true }).eq('ebook_id', ebook.id).eq('status', 'pending')
+                const { count: approved } = await supabase.from('unlocks').select('*', { count: 'exact', head: true }).eq('ebook_id', ebook.id).eq('status', 'approved')
+                return { ...ebook, pending_unlocks: pending || 0, approved_unlocks: approved || 0 }
+            }))
+            allEbooks = ebooksWithStats
+            totalEbooks.textContent = allEbooks.length
+            freeEbooks.textContent = allEbooks.filter(e => !e.is_paid).length
+            paidEbooks.textContent = allEbooks.filter(e => e.is_paid).length
+            totalUnlocks.textContent = allEbooks.reduce((sum, e) => sum + (e.approved_unlocks || 0), 0)
+            renderEbooks(allEbooks)
         }
 
-        // Update statistics
-        function updateStats() {
-            const total = allEbooks.length
-            const free = allEbooks.filter(e => !e.is_paid).length
-            const paid = allEbooks.filter(e => e.is_paid).length
-            const unlocks = allEbooks.reduce((sum, e) => sum + (e.approved_unlocks || 0), 0)
-
-            totalEbooks.textContent = total
-            freeEbooks.textContent = free
-            paidEbooks.textContent = paid
-            totalUnlocks.textContent = unlocks
-        }
-
-        // Render ebooks
         function renderEbooks(ebooks) {
-            if (ebooks.length === 0) {
-                ebooksGrid.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📚</div>
-                        <h3>No Ebooks Yet</h3>
-                        <p>Click "Add New Ebook" to create your first ebook.</p>
-                    </div>
-                `
-                return
-            }
-
-            ebooksGrid.innerHTML = ebooks.map(ebook => `
-                <div class="ebook-card" data-id="${ebook.id}">
-                    <img src="${ebook.cover_url}" alt="${escapeHtml(ebook.title)}" class="ebook-cover"
-                         onerror="this.src='https://via.placeholder.com/300x200?text=No+Cover'">
-                    
-                    <div class="ebook-info">
-                        <div class="ebook-header">
-                            <h3 class="ebook-title">${escapeHtml(ebook.title)}</h3>
-                            <span class="price-badge ${!ebook.is_paid ? 'free' : ''}">
-                                ${ebook.is_paid ? `$${ebook.price}` : 'FREE'}
-                            </span>
-                        </div>
-
-                        <p class="ebook-description">
-                            ${escapeHtml(ebook.description.substring(0, 100))}${ebook.description.length > 100 ? '...' : ''}
-                        </p>
-
-                        <div class="ebook-meta">
-                            <span><i>📅</i> ${new Date(ebook.created_at).toLocaleDateString()}</span>
-                            <span><i>💰</i> ${ebook.currency}</span>
-                        </div>
-
-                        <div class="unlock-stats">
-                            <div class="unlock-stat">
-                                <div class="count">${ebook.pending_unlocks || 0}</div>
-                                <div class="label">Pending</div>
-                            </div>
-                            <div class="unlock-stat">
-                                <div class="count">${ebook.approved_unlocks || 0}</div>
-                                <div class="label">Approved</div>
-                            </div>
-                            <div class="unlock-stat">
-                                <div class="count">${(ebook.pending_unlocks || 0) + (ebook.approved_unlocks || 0)}</div>
-                                <div class="label">Total</div>
-                            </div>
-                        </div>
-
-                        <div class="ebook-actions">
-                            <button class="view-btn" onclick="viewEbook('${ebook.id}')">
-                                <i>👁️</i> View
-                            </button>
-                            <button class="edit-btn" onclick="editEbook('${ebook.id}')">
-                                <i>✏️</i> Edit
-                            </button>
-                            <button class="delete-btn" onclick="showDeleteModal('${ebook.id}')">
-                                <i>🗑️</i> Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('')
+            if (ebooks.length === 0) { ebooksGrid.innerHTML = `<div class="empty-state"><div class="empty-icon">📚</div><h3>No Ebooks Yet</h3><p>Click "Add New Ebook" to create your first ebook.</p></div>`; return }
+            ebooksGrid.innerHTML = ebooks.map(ebook => `<div class="ebook-card" data-id="${ebook.id}">
+                <img src="${ebook.cover_url}" class="ebook-cover" onerror="this.src='https://via.placeholder.com/300x200?text=No+Cover'">
+                <div class="ebook-info">
+                    <div class="ebook-header"><h3 class="ebook-title">${escapeHtml(ebook.title)}</h3><span class="price-badge ${!ebook.is_paid ? 'free' : ''}">${ebook.is_paid ? `⭐ ${ebook.stars_price || 100} Stars` : 'FREE'}</span></div>
+                    <p class="ebook-description">${escapeHtml(ebook.description.substring(0, 100))}${ebook.description.length > 100 ? '...' : ''}</p>
+                    <div class="ebook-meta"><span><i>📅</i> ${new Date(ebook.created_at).toLocaleDateString()}</span></div>
+                    <div class="unlock-stats"><div class="unlock-stat"><div class="count">${ebook.pending_unlocks || 0}</div><div class="label">Pending</div></div><div class="unlock-stat"><div class="count">${ebook.approved_unlocks || 0}</div><div class="label">Approved</div></div></div>
+                    <div class="ebook-actions"><button class="view-btn" onclick="viewEbook('${ebook.id}')"><i>👁️</i> View</button><button class="edit-btn" onclick="editEbook('${ebook.id}')"><i>✏️</i> Edit</button><button class="delete-btn" onclick="showDeleteModal('${ebook.id}')"><i>🗑️</i> Delete</button></div>
+                </div></div>`).join('')
         }
 
-        // View ebook
-        window.viewEbook = (ebookId) => {
-            window.open(`../ebooks.html?id=${ebookId}`, '_blank')
-        }
-
-        // Edit ebook
-        window.editEbook = async (ebookId) => {
-            const ebook = allEbooks.find(e => e.id === ebookId)
+        window.viewEbook = (id) => window.open(`../ebooks.html?id=${id}`, '_blank')
+        window.editEbook = async (id) => {
+            const ebook = allEbooks.find(e => e.id === id)
             if (!ebook) return
-
-            // Populate form
             ebookIdInput.value = ebook.id
             titleInput.value = ebook.title
             descriptionInput.value = ebook.description
-            priceInput.value = ebook.price
-            currencySelect.value = ebook.currency
+            starsPriceInput.value = ebook.stars_price || 100
             isPaidCheckbox.checked = ebook.is_paid
-
             existingCoverUrl = ebook.cover_url
             existingPdfUrl = ebook.pdf_url
+            if (ebook.cover_url) { coverPreviewImage.src = ebook.cover_url; coverFileName.textContent = 'Current cover'; coverFileSize.textContent = 'Existing'; coverPreview.classList.add('show') }
+            if (ebook.pdf_url) { pdfFileName.textContent = 'Current PDF'; pdfFileSize.textContent = 'Existing'; pdfPreview.classList.add('show') }
+            modalTitle.textContent = 'Edit Ebook'; submitBtn.textContent = 'Update Ebook'; ebookModal.classList.add('show')
+        }
+        window.showDeleteModal = (id) => { selectedEbookId = id; deleteModal.classList.add('show') }
 
-            // Show existing files
-            if (ebook.cover_url) {
-                coverPreviewImage.src = ebook.cover_url
-                coverFileName.textContent = 'Current cover image'
-                coverFileSize.textContent = 'Existing file'
-                coverPreview.classList.add('show')
-            }
-
-            if (ebook.pdf_url) {
-                pdfFileName.textContent = 'Current PDF file'
-                pdfFileSize.textContent = 'Existing file'
-                pdfPreview.classList.add('show')
-            }
-
-            modalTitle.textContent = 'Edit Ebook'
-            submitBtn.textContent = 'Update Ebook'
-            ebookModal.classList.add('show')
+        async function uploadFile(file, folder, userId) {
+            const timestamp = Date.now(), random = Math.random().toString(36).substring(2, 8), ext = file.name.split('.').pop()
+            const filePath = `${folder}/${userId}-${timestamp}-${random}.${ext}`
+            const { error } = await supabase.storage.from('suprememotive-assets').upload(filePath, file)
+            if (error) return { success: false, error: error.message }
+            const { data: { publicUrl } } = supabase.storage.from('suprememotive-assets').getPublicUrl(filePath)
+            return { success: true, url: publicUrl }
         }
 
-        // Show delete modal
-        window.showDeleteModal = (ebookId) => {
-            selectedEbookId = ebookId
-            deleteModal.classList.add('show')
-        }
-
-        // Handle form submission
         ebookForm.addEventListener('submit', async (e) => {
             e.preventDefault()
-
+            submitBtn.disabled = true; submitBtn.textContent = 'Saving...'
             try {
-                submitBtn.disabled = true
-                submitBtn.textContent = 'Saving...'
-
                 const ebookData = {
                     title: titleInput.value.trim(),
                     description: descriptionInput.value.trim(),
-                    price: parseFloat(priceInput.value),
-                    currency: currencySelect.value,
+                    stars_price: parseInt(starsPriceInput.value) || 0,
                     is_paid: isPaidCheckbox.checked,
+                    price: isPaidCheckbox.checked ? parseFloat(starsPriceInput.value) * 0.07 : 0,
+                    currency: 'Stars',
                     updated_at: new Date()
                 }
-
-                // Upload new cover if selected
-                if (selectedCoverFile) {
-                    const coverResult = await uploadFile(selectedCoverFile, 'ebook-covers', currentUser.id)
-                    if (coverResult.success) {
-                        ebookData.cover_url = coverResult.url
-                    } else {
-                        throw new Error('Cover upload failed: ' + coverResult.error)
-                    }
-                }
-
-                // Upload new PDF if selected
-                if (selectedPdfFile) {
-                    const pdfResult = await uploadFile(selectedPdfFile, 'ebook-pdfs', currentUser.id)
-                    if (pdfResult.success) {
-                        ebookData.pdf_url = pdfResult.url
-                    } else {
-                        throw new Error('PDF upload failed: ' + pdfResult.error)
-                    }
-                }
-
+                if (selectedCoverFile) { const result = await uploadFile(selectedCoverFile, 'ebook-covers', currentUser.id); if (result.success) ebookData.cover_url = result.url; else throw new Error('Cover upload failed') }
+                if (selectedPdfFile) { const result = await uploadFile(selectedPdfFile, 'ebook-pdfs', currentUser.id); if (result.success) ebookData.pdf_url = result.url; else throw new Error('PDF upload failed') }
                 const id = ebookIdInput.value
-
                 if (id) {
-                    // Update existing ebook
-                    const { error } = await supabase
-                        .from('ebooks')
-                        .update(ebookData)
-                        .eq('id', id)
-
+                    if (!ebookData.cover_url && existingCoverUrl) ebookData.cover_url = existingCoverUrl
+                    if (!ebookData.pdf_url && existingPdfUrl) ebookData.pdf_url = existingPdfUrl
+                    const { error } = await supabase.from('ebooks').update(ebookData).eq('id', id)
                     if (error) throw error
                     showAlert('Ebook updated successfully!', 'success')
                 } else {
-                    // Validate required files for new ebook
-                    if (!selectedCoverFile && !existingCoverUrl) {
-                        throw new Error('Cover image is required')
-                    }
-                    if (!selectedPdfFile && !existingPdfUrl) {
-                        throw new Error('PDF file is required')
-                    }
-
+                    if (!ebookData.cover_url && !existingCoverUrl) throw new Error('Cover image is required')
+                    if (!ebookData.pdf_url && !existingPdfUrl) throw new Error('PDF file is required')
                     ebookData.created_by = currentUser.id
-
-                    const { error } = await supabase
-                        .from('ebooks')
-                        .insert([ebookData])
-
+                    const { error } = await supabase.from('ebooks').insert([ebookData])
                     if (error) throw error
                     showAlert('Ebook created successfully!', 'success')
                 }
-
-                // Reset and close modal
-                resetForm()
-                ebookModal.classList.remove('show')
-                await loadEbooks()
-
-            } catch (error) {
-                showAlert('Error: ' + error.message, 'error')
-            } finally {
-                submitBtn.disabled = false
-                submitBtn.textContent = ebookIdInput.value ? 'Update Ebook' : 'Save Ebook'
-            }
+                resetForm(); ebookModal.classList.remove('show'); await loadEbooks()
+            } catch (error) { showAlert('Error: ' + error.message, 'error') }
+            finally { submitBtn.disabled = false; submitBtn.textContent = ebookIdInput.value ? 'Update Ebook' : 'Save Ebook' }
         })
 
-        // Upload file function
-        async function uploadFile(file, folder, userId) {
-            try {
-                const timestamp = Date.now()
-                const random = Math.random().toString(36).substring(2, 8)
-                const extension = file.name.split('.').pop()
-                const fileName = `${userId}-${timestamp}-${random}.${extension}`
-                const filePath = `${folder}/${fileName}`
+        function resetForm() { ebookForm.reset(); ebookIdInput.value = ''; starsPriceInput.value = '100'; selectedCoverFile = null; selectedPdfFile = null; existingCoverUrl = null; existingPdfUrl = null; coverPreview.classList.remove('show'); pdfPreview.classList.remove('show'); modalTitle.textContent = 'Add New Ebook'; submitBtn.textContent = 'Save Ebook' }
 
-                const { error } = await supabase.storage
-                    .from('suprememotive-assets')
-                    .upload(filePath, file)
+        coverFileInput.addEventListener('change', () => { const file = coverFileInput.files[0]; if (file) { if (file.size > 5 * 1024 * 1024) { showAlert('Cover too large (max 5MB)', 'error'); coverFileInput.value = ''; return } selectedCoverFile = file; const reader = new FileReader(); reader.onload = (e) => { coverPreviewImage.src = e.target.result; coverFileName.textContent = file.name; coverFileSize.textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`; coverPreview.classList.add('show') }; reader.readAsDataURL(file) } })
+        pdfFileInput.addEventListener('change', () => { const file = pdfFileInput.files[0]; if (file) { if (file.size > 20 * 1024 * 1024) { showAlert('PDF too large (max 20MB)', 'error'); pdfFileInput.value = ''; return } selectedPdfFile = file; pdfFileName.textContent = file.name; pdfFileSize.textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`; pdfPreview.classList.add('show') } })
+        removeCoverBtn.addEventListener('click', () => { coverFileInput.value = ''; selectedCoverFile = null; coverPreview.classList.remove('show') })
+        removePdfBtn.addEventListener('click', () => { pdfFileInput.value = ''; selectedPdfFile = null; pdfPreview.classList.remove('show') })
 
-                if (error) throw error
-
-                const { data: { publicUrl } } = supabase.storage
-                    .from('suprememotive-assets')
-                    .getPublicUrl(filePath)
-
-                return { success: true, url: publicUrl }
-            } catch (error) {
-                return { success: false, error: error.message }
-            }
-        }
-
-        // Reset form
-        function resetForm() {
-            ebookForm.reset()
-            ebookIdInput.value = ''
-            selectedCoverFile = null
-            selectedPdfFile = null
-            existingCoverUrl = null
-            existingPdfUrl = null
-            coverPreview.classList.remove('show')
-            pdfPreview.classList.remove('show')
-            modalTitle.textContent = 'Add New Ebook'
-            submitBtn.textContent = 'Save Ebook'
-        }
-
-        // Cover file selection
-        coverFileInput.addEventListener('change', () => {
-            const file = coverFileInput.files[0]
-            if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    showAlert('Cover image too large. Maximum size is 5MB', 'error')
-                    coverFileInput.value = ''
-                    return
-                }
-
-                selectedCoverFile = file
-                const reader = new FileReader()
-                reader.onload = (e) => {
-                    coverPreviewImage.src = e.target.result
-                    coverFileName.textContent = file.name
-                    coverFileSize.textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`
-                    coverPreview.classList.add('show')
-                }
-                reader.readAsDataURL(file)
-            }
-        })
-
-        // PDF file selection
-        pdfFileInput.addEventListener('change', () => {
-            const file = pdfFileInput.files[0]
-            if (file) {
-                if (file.size > 20 * 1024 * 1024) {
-                    showAlert('PDF too large. Maximum size is 20MB', 'error')
-                    pdfFileInput.value = ''
-                    return
-                }
-
-                selectedPdfFile = file
-                pdfFileName.textContent = file.name
-                pdfFileSize.textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`
-                pdfPreview.classList.add('show')
-            }
-        })
-
-        // Remove cover
-        removeCoverBtn.addEventListener('click', () => {
-            coverFileInput.value = ''
-            selectedCoverFile = null
-            coverPreview.classList.remove('show')
-        })
-
-        // Remove PDF
-        removePdfBtn.addEventListener('click', () => {
-            pdfFileInput.value = ''
-            selectedPdfFile = null
-            pdfPreview.classList.remove('show')
-        })
-
-        // Delete ebook
-        confirmDeleteBtn.addEventListener('click', async () => {
-            if (!selectedEbookId) return
-
-            try {
-                const { error } = await supabase
-                    .from('ebooks')
-                    .delete()
-                    .eq('id', selectedEbookId)
-
-                if (error) throw error
-
-                showAlert('Ebook deleted successfully!', 'success')
-                deleteModal.classList.remove('show')
-                await loadEbooks()
-
-            } catch (error) {
-                showAlert('Error deleting ebook: ' + error.message, 'error')
-            } finally {
-                selectedEbookId = null
-            }
-        })
-
-        // Filter ebooks
-        function filterEbooks() {
-            let filtered = [...allEbooks]
-            const searchTerm = searchInput.value.toLowerCase()
-            const type = typeFilter.value
-
-            if (searchTerm) {
-                filtered = filtered.filter(e => 
-                    e.title.toLowerCase().includes(searchTerm) ||
-                    e.description.toLowerCase().includes(searchTerm)
-                )
-            }
-
-            if (type === 'free') {
-                filtered = filtered.filter(e => !e.is_paid)
-            } else if (type === 'paid') {
-                filtered = filtered.filter(e => e.is_paid)
-            }
-
-            renderEbooks(filtered)
-        }
-
-        searchInput.addEventListener('input', filterEbooks)
-        typeFilter.addEventListener('change', filterEbooks)
-
-        // Modal controls
-        newEbookBtn.addEventListener('click', () => {
-            resetForm()
-            ebookModal.classList.add('show')
-        })
-
-        closeModalBtn.addEventListener('click', () => {
-            ebookModal.classList.remove('show')
-            resetForm()
-        })
-
-        cancelBtn.addEventListener('click', () => {
-            ebookModal.classList.remove('show')
-            resetForm()
-        })
-
-        closeDeleteModalBtn.addEventListener('click', () => {
-            deleteModal.classList.remove('show')
-            selectedEbookId = null
-        })
-
-        cancelDeleteBtn.addEventListener('click', () => {
-            deleteModal.classList.remove('show')
-            selectedEbookId = null
-        })
-
-        window.addEventListener('click', (e) => {
-            if (e.target === ebookModal) {
-                ebookModal.classList.remove('show')
-                resetForm()
-            }
-            if (e.target === deleteModal) {
-                deleteModal.classList.remove('show')
-                selectedEbookId = null
-            }
-        })
-
-        // Logout
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await supabase.auth.signOut()
-                window.location.href = '../index.html'
-            } catch (error) {
-                showAlert('Error logging out', 'error')
-            }
-        })
-
-        // Escape HTML
-        function escapeHtml(unsafe) {
-            if (!unsafe) return ''
-            return unsafe
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
-        }
-
-        // Initialize
-        async function init() {
-            const isAuthenticated = await checkAuth()
-            if (isAuthenticated) {
-                await loadEbooks()
-            }
-        }
-
+        confirmDeleteBtn.addEventListener('click', async () => { if (!selectedEbookId) return; const { error } = await supabase.from('ebooks').delete().eq('id', selectedEbookId); if (error) showAlert('Error deleting: ' + error.message, 'error'); else { showAlert('Ebook deleted!', 'success'); deleteModal.classList.remove('show'); await loadEbooks() } selectedEbookId = null })
+        function filterEbooks() { let filtered = [...allEbooks]; const term = searchInput.value.toLowerCase(); const type = typeFilter.value; if (term) filtered = filtered.filter(e => e.title.toLowerCase().includes(term) || e.description.toLowerCase().includes(term)); if (type === 'free') filtered = filtered.filter(e => !e.is_paid); if (type === 'paid') filtered = filtered.filter(e => e.is_paid); renderEbooks(filtered) }
+        searchInput.addEventListener('input', filterEbooks); typeFilter.addEventListener('change', filterEbooks)
+        newEbookBtn.addEventListener('click', () => { resetForm(); ebookModal.classList.add('show') })
+        closeModalBtn.addEventListener('click', () => { ebookModal.classList.remove('show'); resetForm() })
+        cancelBtn.addEventListener('click', () => { ebookModal.classList.remove('show'); resetForm() })
+        closeDeleteModalBtn.addEventListener('click', () => { deleteModal.classList.remove('show'); selectedEbookId = null })
+        cancelDeleteBtn.addEventListener('click', () => { deleteModal.classList.remove('show'); selectedEbookId = null })
+        window.addEventListener('click', (e) => { if (e.target === ebookModal) { ebookModal.classList.remove('show'); resetForm() } if (e.target === deleteModal) { deleteModal.classList.remove('show'); selectedEbookId = null } })
+        logoutBtn.addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '../index.html' })
+        function escapeHtml(s) { if (!s) return ''; return s.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m }) }
+        async function init() { if (await checkAuth()) await loadEbooks() }
         init()
     </script>
 </body>
