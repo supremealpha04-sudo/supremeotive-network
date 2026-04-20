@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SupremeMotive - My Profile</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
             margin: 0;
@@ -25,13 +26,21 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-color);
+            background: linear-gradient(135deg, var(--bg-color) 0%, #0B1A33 100%);
             color: var(--text-color);
             min-height: 100vh;
             padding-bottom: 80px;
         }
 
-        /* Top Navigation */
+        body.light-mode {
+            --bg-color: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --border-color: #DDDDDD;
+        }
+
+        /* Navigation */
         .top-nav {
             background: var(--card-bg);
             padding: 1rem 2rem;
@@ -45,9 +54,17 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--gold);
+        }
+
+        .logo img {
+            height: 35px;
+            width: auto;
         }
 
         .menu-toggle {
@@ -68,6 +85,7 @@
             display: flex;
             gap: 1.5rem;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-links a {
@@ -82,6 +100,51 @@
             color: var(--gold);
         }
 
+        .auth-buttons {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background: var(--gold);
+            color: var(--bg-color);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid #F44336;
+            color: #F44336;
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #F44336;
+            color: white;
+        }
+
+        .user-greeting {
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
         .theme-toggle {
             background: none;
             border: none;
@@ -91,7 +154,6 @@
             padding: 0.3rem;
         }
 
-        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -125,306 +187,123 @@
             margin-bottom: 0.2rem;
         }
 
-        /* Main Content */
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
-        /* Header */
-        .header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .header h1 {
-            color: var(--gold);
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        /* Profile Card - Matching Home Design */
-        .profile-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .profile-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--gold);
-        }
-
-        /* Watermark */
-        .profile-card::after {
-            content: 'SUPREME MOTIVE';
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 0.7rem;
-            color: rgba(255, 215, 0, 0.15);
-            transform: rotate(-5deg);
-            pointer-events: none;
-            z-index: 1;
-        }
-
         /* Profile Header */
         .profile-header {
-            display: flex;
-            gap: 2rem;
-            align-items: flex-start;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Avatar Section */
-        .avatar-section {
-            position: relative;
-        }
-
-        .avatar-wrapper {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 3px solid var(--gold);
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .avatar-wrapper:hover {
-            transform: scale(1.05);
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--bg-color);
         }
 
         .profile-avatar {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .avatar-upload {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            width: 35px;
-            height: 35px;
-            background: var(--gold);
+            width: 100px;
+            height: 100px;
+            background: var(--bg-color);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            border: 2px solid var(--bg-color);
-            transition: all 0.3s ease;
-        }
-
-        .avatar-upload:hover {
-            transform: scale(1.1);
-            background: var(--electric-blue);
-        }
-
-        .avatar-upload span {
-            font-size: 1rem;
-            color: var(--bg-color);
-        }
-
-        /* Profile Info */
-        .profile-info {
-            flex: 1;
-        }
-
-        .name-section {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
+            margin: 0 auto 1rem;
+            font-size: 3rem;
+            border: 3px solid white;
         }
 
         .profile-name {
             font-size: 1.8rem;
-            color: var(--gold);
-        }
-
-        .role-badge {
-            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            color: var(--bg-color);
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
         }
 
         .profile-email {
-            color: var(--electric-blue);
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
-        /* Profile Meta - Like quote tag */
-        .profile-meta {
-            display: flex;
-            gap: 1.5rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .meta-item span:first-child {
-            color: var(--gold);
-        }
-
-        .meta-item strong {
-            color: var(--text-color);
-            margin-left: 0.3rem;
-        }
-
-        /* Bio - Like quote text */
-        .profile-bio {
-            background: rgba(255, 255, 255, 0.05);
-            border-left: 3px solid var(--gold);
-            padding: 1.2rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        /* Join Date */
-        .profile-joined {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Edit Button */
-        .edit-btn {
-            background: none;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .edit-btn:hover {
-            background: var(--gold);
-            color: var(--bg-color);
-        }
-
-        /* Stats Grid - Like home grid */
+        /* Stats Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-            position: relative;
-            z-index: 2;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
             background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.2rem;
             text-align: center;
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
+            transform: translateY(-4px);
             border-color: var(--gold);
-            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
 
         .stat-value {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: bold;
             color: var(--gold);
-            margin-bottom: 0.3rem;
         }
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
-        /* Edit Form - Matching Home Style */
-        .edit-form {
+        /* Sections */
+        .section {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid var(--gold);
-            position: relative;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
         }
 
-        .edit-form::after {
-            content: 'SUPREME MOTIVE';
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: 0.7rem;
-            color: rgba(255, 215, 0, 0.15);
-            transform: rotate(-5deg);
-            pointer-events: none;
-        }
-
-        .edit-form h2 {
+        .section-title {
+            font-size: 1.3rem;
             color: var(--gold);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
         }
 
+        /* Form */
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 0.9rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 0.8rem 1rem;
+            padding: 0.8rem;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-color);
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+            font-size: 1rem;
         }
 
         .form-control:focus {
@@ -433,109 +312,78 @@
         }
 
         textarea.form-control {
-            min-height: 100px;
+            min-height: 80px;
             resize: vertical;
         }
 
-        select.form-control {
-            cursor: pointer;
-        }
-
-        .file-input {
-            margin-top: 0.5rem;
-        }
-
-        .file-input label {
-            display: inline-block;
-            padding: 0.6rem 1.2rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .file-input label:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        .file-input input {
-            display: none;
-        }
-
-        .file-name {
-            margin-top: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .image-preview {
-            margin-top: 1rem;
-            max-width: 100px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .save-btn {
-            flex: 1;
-            padding: 0.8rem;
+        .btn-save {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            border: none;
-            border-radius: 8px;
             color: var(--bg-color);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .save-btn:hover {
+        .btn-save:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
 
-        .cancel-btn {
-            flex: 1;
-            padding: 0.8rem;
-            background: var(--error);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
+        /* Ebooks Grid */
+        .ebooks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .ebook-item {
+            background: var(--bg-color);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
-        .cancel-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+        .ebook-item:hover {
+            border-color: var(--gold);
+            transform: translateX(4px);
         }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 3rem;
+        .ebook-cover-small {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 6px;
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem;
+        .ebook-info-small {
+            flex: 1;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .ebook-title-small {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .ebook-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .read-btn {
+            background: var(--gold);
+            color: var(--bg-color);
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
         }
 
         /* Alert */
@@ -564,9 +412,28 @@
             }
         }
 
-        /* Hidden */
         .hidden {
             display: none !important;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Responsive */
@@ -577,44 +444,29 @@
 
             .nav-links {
                 position: fixed;
-                top: 60px;
+                top: 70px;
                 left: 0;
                 right: 0;
                 background: var(--card-bg);
                 flex-direction: column;
                 padding: 2rem;
-                gap: 1rem;
+                gap: 1.5rem;
                 transform: translateY(-150%);
                 transition: transform 0.3s ease;
-                border-bottom: 2px solid var(--gold);
                 z-index: 99;
+                border-bottom: 2px solid var(--gold);
             }
 
             .nav-links.active {
                 transform: translateY(0);
             }
 
-            .profile-header {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
             }
 
-            .name-section {
-                justify-content: center;
-            }
-
-            .profile-meta {
-                justify-content: center;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-
-            .avatar-wrapper {
-                width: 100px;
-                height: 100px;
+            .ebooks-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -622,7 +474,10 @@
 </head>
 <body>
     <nav class="top-nav">
-        <div class="logo">SupremeMotive</div>
+        <div class="logo">
+            <img src="logo.png" alt="SupremeMotive" onerror="this.style.display='none'">
+            <span>SupremeMotive</span>
+        </div>
 
         <div class="menu-toggle" id="menuToggle">
             <span></span>
@@ -638,6 +493,13 @@
             <a href="terms.html">Terms</a>
             <a href="support.html">Support</a>
             <a href="#" id="adminLink" style="display: none;">Admin</a>
+            
+            <div class="auth-buttons">
+                <span id="userGreeting" class="user-greeting hidden"></span>
+                <a href="login.html" class="login-btn" id="loginBtn">Login</a>
+                <button class="logout-btn hidden" id="logoutBtn">Logout</button>
+            </div>
+            
             <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
     </nav>
@@ -655,97 +517,24 @@
             <span class="nav-icon">👤</span>
             <span>Profile</span>
         </a>
-        <a href="post.html" class="nav-item">
-            <span class="nav-icon">📰</span>
-            <span>Articles</span>
-        </a>
     </nav>
 
     <main class="container">
-        <div class="header">
-            <h1>My Profile</h1>
-            <p>Manage your personal information</p>
-        </div>
-
         <div id="alertContainer"></div>
-
-        <!-- Profile View -->
-        <div id="profileView">
+        <div id="profileContent">
             <div class="loading">
                 <div class="spinner"></div>
                 <p>Loading profile...</p>
             </div>
         </div>
-
-        <!-- Edit Form -->
-        <div id="editForm" class="edit-form hidden">
-            <h2>✏️ Edit Profile</h2>
-            <form id="profileEditForm">
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" class="form-control" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="bio">Bio</label>
-                    <textarea id="bio" class="form-control" placeholder="Tell us about yourself..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="country">Country</label>
-                    <select id="country" class="form-control" required>
-                        <option value="">Select your country</option>
-                        <option value="United States">🇺🇸 United States</option>
-                        <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                        <option value="Canada">🇨🇦 Canada</option>
-                        <option value="Australia">🇦🇺 Australia</option>
-                        <option value="Germany">🇩🇪 Germany</option>
-                        <option value="France">🇫🇷 France</option>
-                        <option value="Spain">🇪🇸 Spain</option>
-                        <option value="Italy">🇮🇹 Italy</option>
-                        <option value="Japan">🇯🇵 Japan</option>
-                        <option value="India">🇮🇳 India</option>
-                        <option value="Brazil">🇧🇷 Brazil</option>
-                        <option value="Nigeria">🇳🇬 Nigeria</option>
-                        <option value="South Africa">🇿🇦 South Africa</option>
-                        <option value="Egypt">🇪🇬 Egypt</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="age">Age</label>
-                    <input type="number" id="age" class="form-control" min="13" max="120" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Profile Picture</label>
-                    <div class="file-input">
-                        <label for="avatarUpload">Choose Image</label>
-                        <input type="file" id="avatarUpload" accept="image/*">
-                    </div>
-                    <div id="fileName" class="file-name">No file chosen</div>
-                    <img id="imagePreview" class="image-preview hidden" alt="Preview">
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="save-btn">Save Changes</button>
-                    <button type="button" class="cancel-btn" onclick="cancelEdit()">Cancel</button>
-                </div>
-            </form>
-        </div>
     </main>
 
     <script>
-        // ============================================
-        // SUPABASE CONFIGURATION - FIXED
-        // ============================================
         const SUPABASE_URL = 'https://dzcykpbfykajhoutzhpf.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR6Y3lrcGJmeWthamhvdXR6aHBmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2MDcxNjQsImV4cCI6MjA4ODE4MzE2NH0.IcuAZj89hwpeRGokawx-V-6BAQtwsiOTBIS_E5-TSMg';
 
-        // Use a different variable name to avoid conflict with global supabase
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Admin emails
         const ADMIN_EMAILS = [
             'supremealpha04@gmail.com',
             'suprememotive43@gmail.com',
@@ -753,64 +542,40 @@
             'emmanuelamer6@gmail.com'
         ];
 
-        // State
         let currentUser = null;
-        let currentProfile = null;
+        let userProfile = null;
+        let userUnlocks = [];
+        let userSavedEbooks = [];
+        let paymentHistory = [];
 
-        // DOM Elements
-        const profileView = document.getElementById('profileView');
-        const editForm = document.getElementById('editForm');
+        const profileContent = document.getElementById('profileContent');
         const alertContainer = document.getElementById('alertContainer');
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
         const themeToggle = document.getElementById('themeToggle');
         const adminLink = document.getElementById('adminLink');
-        const avatarUpload = document.getElementById('avatarUpload');
-        const fileName = document.getElementById('fileName');
-        const imagePreview = document.getElementById('imagePreview');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userGreeting = document.getElementById('userGreeting');
 
-        // Theme toggle
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
-                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
-                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
-                document.documentElement.style.setProperty('--text-color', '#333333');
-                document.documentElement.style.setProperty('--text-secondary', '#666666');
-                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
+                document.body.classList.add('light-mode');
                 themeToggle.textContent = '☀️';
             } else {
-                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
-                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
-                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
-                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
-                document.documentElement.style.setProperty('--border-color', '#333333');
+                document.body.classList.remove('light-mode');
                 themeToggle.textContent = '🌙';
             }
         }
 
         themeToggle.addEventListener('click', () => {
-            const isLight = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim() === '#F5F5F5';
-            if (isLight) {
-                document.documentElement.style.setProperty('--bg-color', '#0A0A0A');
-                document.documentElement.style.setProperty('--card-bg', '#1A1A1A');
-                document.documentElement.style.setProperty('--text-color', '#FFFFFF');
-                document.documentElement.style.setProperty('--text-secondary', '#B0B0B0');
-                document.documentElement.style.setProperty('--border-color', '#333333');
-                themeToggle.textContent = '🌙';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.style.setProperty('--bg-color', '#F5F5F5');
-                document.documentElement.style.setProperty('--card-bg', '#FFFFFF');
-                document.documentElement.style.setProperty('--text-color', '#333333');
-                document.documentElement.style.setProperty('--text-secondary', '#666666');
-                document.documentElement.style.setProperty('--border-color', '#DDDDDD');
-                themeToggle.textContent = '☀️';
-                localStorage.setItem('theme', 'light');
-            }
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            themeToggle.textContent = isLight ? '☀️' : '🌙';
         });
 
-        // Mobile menu
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
@@ -821,318 +586,319 @@
             });
         });
 
-        // Show alert
-        function showAlert(message) {
-            alertContainer.innerHTML = `<div class="alert">${message}</div>`;
+        function showAlert(message, isError = false) {
+            alertContainer.innerHTML = `<div class="alert" style="border-color: ${isError ? '#F44336' : 'var(--gold)'}">${message}</div>`;
             setTimeout(() => {
                 alertContainer.innerHTML = '';
-            }, 2000);
+            }, 3000);
         }
 
-        // Check auth - using supabaseClient
         async function checkAuth() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 currentUser = user;
-
-                if (!user) {
-                    window.location.href = 'login.html';
-                    return false;
+                
+                if (user) {
+                    loginBtn.classList.add('hidden');
+                    logoutBtn.classList.remove('hidden');
+                    userGreeting.classList.remove('hidden');
+                    userGreeting.textContent = `Hi, ${user.email.split('@')[0]}!`;
+                    
+                    if (ADMIN_EMAILS.includes(user.email)) {
+                        adminLink.style.display = 'block';
+                        adminLink.href = 'admin/admin-dashboard.html';
+                    }
+                    
+                    await loadProfile();
+                    await loadUserData();
+                } else {
+                    loginBtn.classList.remove('hidden');
+                    logoutBtn.classList.add('hidden');
+                    userGreeting.classList.add('hidden');
+                    adminLink.style.display = 'none';
+                    profileContent.innerHTML = `
+                        <div class="section" style="text-align: center;">
+                            <h3>Please Login</h3>
+                            <p style="margin: 1rem 0;">You need to be logged in to view your profile.</p>
+                            <a href="login.html" class="btn-save" style="display: inline-block; text-decoration: none;">Login Now</a>
+                        </div>
+                    `;
                 }
-
-                if (user && ADMIN_EMAILS.includes(user.email)) {
-                    adminLink.style.display = 'block';
-                    adminLink.href = 'admin/admin-dashboard.html';
-                }
-
-                return true;
             } catch (error) {
                 console.error('Auth error:', error);
-                window.location.href = 'login.html';
-                return false;
             }
         }
 
-        // Load profile - using supabaseClient
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
+
         async function loadProfile() {
             try {
-                const { data: profile, error } = await supabaseClient
+                let { data: profile, error } = await supabaseClient
                     .from('profiles')
                     .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
+                    .eq('user_id', currentUser.id)
+                    .maybeSingle();
 
-                if (error && error.code === 'PGRST116') {
-                    // Profile doesn't exist, create one
+                if (error && error.code !== 'PGRST116') {
+                    console.error('Profile error:', error);
+                }
+
+                if (!profile) {
+                    const newProfileData = {
+                        user_id: currentUser.id,
+                        email: currentUser.email,
+                        name: currentUser.email.split('@')[0],
+                        full_name: currentUser.email.split('@')[0],
+                        total_purchases: 0,
+                        total_spent_stars: 0,
+                        created_at: new Date(),
+                        updated_at: new Date()
+                    };
+                    
                     const { data: newProfile, error: insertError } = await supabaseClient
                         .from('profiles')
-                        .insert([{
-                            id: currentUser.id,
-                            name: currentUser.email.split('@')[0],
-                            email: currentUser.email,
-                            country: 'Not specified',
-                            age: 18,
-                            bio: '',
-                            role: ADMIN_EMAILS.includes(currentUser.email) ? 
-                                (currentUser.email === 'supremealpha04@gmail.com' ? 'super_admin' :
-                                 currentUser.email === 'suprememotive43@gmail.com' ? 'post_admin' :
-                                 currentUser.email === 'sandrakukk055@gmail.com' ? 'ebook_admin' :
-                                 'unlock_admin') : 'user'
-                        }])
+                        .insert([newProfileData])
                         .select()
                         .single();
 
-                    if (insertError) throw insertError;
-                    currentProfile = newProfile;
-                } else if (error) {
-                    throw error;
+                    if (insertError) {
+                        console.error('Error creating profile:', insertError);
+                        userProfile = { user_id: currentUser.id, email: currentUser.email, name: currentUser.email.split('@')[0] };
+                    } else {
+                        userProfile = newProfile;
+                    }
                 } else {
-                    currentProfile = profile;
+                    userProfile = profile;
                 }
+                
+                return userProfile;
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                userProfile = { user_id: currentUser?.id, email: currentUser?.email, name: currentUser?.email?.split('@')[0] };
+                return userProfile;
+            }
+        }
+
+        async function loadUserData() {
+            try {
+                const { data: unlocks } = await supabaseClient
+                    .from('unlocks')
+                    .select(`*, ebook:ebooks(*)`)
+                    .eq('user_id', currentUser.id)
+                    .eq('status', 'approved')
+                    .order('created_at', { ascending: false });
+
+                userUnlocks = unlocks || [];
+
+                const { data: saved } = await supabaseClient
+                    .from('saved_ebooks')
+                    .select(`*, ebook:ebooks(*)`)
+                    .eq('user_id', currentUser.id);
+
+                userSavedEbooks = saved || [];
+
+                const { data: payments } = await supabaseClient
+                    .from('stars_payments')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .eq('status', 'completed')
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                paymentHistory = payments || [];
 
                 renderProfile();
 
             } catch (error) {
-                console.error('Error loading profile:', error);
-                profileView.innerHTML = `
-                    <div class="profile-card">
-                        <p style="color: var(--error);">Error loading profile. Please refresh.</p>
-                    </div>
-                `;
+                console.error('Error loading user data:', error);
+                renderProfile();
             }
         }
 
-        // Load user stats - using supabaseClient
-        async function loadUserStats() {
+        async function updateProfile(updates) {
             try {
-                const { count: postsCount } = await supabaseClient
-                    .from('posts')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('created_by', currentUser.id);
-
-                const { count: commentsCount } = await supabaseClient
-                    .from('comments')
-                    .select('*', { count: 'exact', head: true })
+                const { error } = await supabaseClient
+                    .from('profiles')
+                    .update({ ...updates, updated_at: new Date() })
                     .eq('user_id', currentUser.id);
 
-                const { count: unlocksCount } = await supabaseClient
-                    .from('unlocks')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', currentUser.id)
-                    .eq('status', 'approved');
-
-                const { count: savedCount } = await supabaseClient
-                    .from('saved_posts')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('user_id', currentUser.id);
-
-                return {
-                    posts: postsCount || 0,
-                    comments: commentsCount || 0,
-                    unlocks: unlocksCount || 0,
-                    saves: savedCount || 0
-                };
-
+                if (error) throw error;
+                
+                showAlert('Profile updated successfully!');
+                await loadProfile();
+                renderProfile();
             } catch (error) {
-                console.error('Error loading stats:', error);
-                return { posts: 0, comments: 0, unlocks: 0, saves: 0 };
+                console.error('Update error:', error);
+                showAlert('Error updating profile: ' + error.message, true);
             }
         }
 
-        // Render profile
-        async function renderProfile() {
-            const stats = await loadUserStats();
-            const joinDate = currentProfile.created_at 
-                ? new Date(currentProfile.created_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })
-                : 'Recently joined';
+        function renderProfile() {
+            if (!userProfile && !currentUser) {
+                profileContent.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading...</p></div>';
+                return;
+            }
 
-            const avatarUrl = currentProfile.profile_image_url || 
-                `https://ui-avatars.com/api/?name=${encodeURIComponent(currentProfile.name)}&background=FFD700&color=000&size=120&bold=true`;
+            const displayName = userProfile?.name || userProfile?.full_name || currentUser?.email?.split('@')[0] || 'User';
+            const telegramUsername = userProfile?.telegram_username || '';
+            const bio = userProfile?.bio || '';
+            const totalStarsSpent = userProfile?.total_spent_stars || 0;
+            const totalPurchases = userProfile?.total_purchases || 0;
+            const totalUnlocked = userUnlocks.length;
+            const totalSaved = userSavedEbooks.length;
 
-            const roleDisplay = currentProfile.role !== 'user' 
-                ? `<span class="role-badge">${currentProfile.role.replace('_', ' ').toUpperCase()}</span>`
-                : '';
+            profileContent.innerHTML = `
+                <div class="profile-header">
+                    <div class="profile-avatar">👤</div>
+                    <div class="profile-name">${escapeHtml(displayName)}</div>
+                    <div class="profile-email">${escapeHtml(currentUser?.email || '')}</div>
+                </div>
 
-            profileView.innerHTML = `
-                <div class="profile-card">
-                    <div class="profile-header">
-                        <div class="avatar-section">
-                            <div class="avatar-wrapper">
-                                <img src="${avatarUrl}" 
-                                     alt="${currentProfile.name}" 
-                                     class="profile-avatar"
-                                     onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(currentProfile.name)}&background=FFD700&color=000&size=120&bold=true'">
-                            </div>
-                            <div class="avatar-upload" onclick="showEditForm()" title="Edit profile picture">
-                                <span>✏️</span>
-                            </div>
-                        </div>
-
-                        <div class="profile-info">
-                            <div class="name-section">
-                                <h1 class="profile-name">${currentProfile.name}</h1>
-                                ${roleDisplay}
-                            </div>
-                            
-                            <div class="profile-email">
-                                <span>📧</span>
-                                ${currentProfile.email}
-                            </div>
-
-                            <div class="profile-meta">
-                                <div class="meta-item">
-                                    <span>📍</span>
-                                    Country: <strong>${currentProfile.country || 'Not specified'}</strong>
-                                </div>
-                                <div class="meta-item">
-                                    <span>🎂</span>
-                                    Age: <strong>${currentProfile.age || 'Not specified'}</strong>
-                                </div>
-                            </div>
-
-                            ${currentProfile.bio ? `
-                                <div class="profile-bio">
-                                    ${currentProfile.bio}
-                                </div>
-                            ` : ''}
-
-                            <div class="profile-joined">
-                                <span>📅</span>
-                                Joined ${joinDate}
-                            </div>
-
-                            <button class="edit-btn" onclick="showEditForm()">
-                                <span>✏️</span>
-                                Edit Profile
-                            </button>
-                        </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-value">${totalUnlocked}</div>
+                        <div class="stat-label">Ebooks Unlocked</div>
                     </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value">${stats.posts}</div>
-                            <div class="stat-label">Posts</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${stats.comments}</div>
-                            <div class="stat-label">Comments</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${stats.unlocks}</div>
-                            <div class="stat-label">Ebooks</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">${stats.saves}</div>
-                            <div class="stat-label">Saved</div>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-value">${totalStarsSpent}</div>
+                        <div class="stat-label">Stars Spent</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">${totalPurchases}</div>
+                        <div class="stat-label">Total Purchases</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔖</div>
+                        <div class="stat-value">${totalSaved}</div>
+                        <div class="stat-label">Saved Ebooks</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title"><span>✏️</span> Edit Profile</div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="fullNameInput" class="form-control" value="${escapeHtml(displayName)}" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Telegram Username</label>
+                        <input type="text" id="telegramInput" class="form-control" value="${escapeHtml(telegramUsername)}" placeholder="@username">
+                    </div>
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea id="bioInput" class="form-control" placeholder="Tell us about yourself...">${escapeHtml(bio)}</textarea>
+                    </div>
+                    <button class="btn-save" onclick="window.saveProfileChanges()">Save Changes</button>
+                </div>
+
+                <div class="section">
+                    <div class="section-title"><span>📖</span> My Unlocked Ebooks</div>
+                    ${userUnlocks.length === 0 ? `
+                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">You haven't unlocked any ebooks yet. <a href="ebooks.html" style="color: var(--gold);">Browse the library</a> to get started!</p>
+                    ` : `
+                        <div class="ebooks-grid">
+                            ${userUnlocks.map(unlock => `
+                                <div class="ebook-item">
+                                    <img src="${unlock.ebook?.cover_url || 'https://via.placeholder.com/50x70'}" class="ebook-cover-small" onerror="this.src='https://via.placeholder.com/50x70'">
+                                    <div class="ebook-info-small">
+                                        <div class="ebook-title-small">${escapeHtml(unlock.ebook?.title || 'Unknown')}</div>
+                                        <div class="ebook-date">Unlocked: ${new Date(unlock.created_at).toLocaleDateString()}</div>
+                                    </div>
+                                    <button class="read-btn" onclick="window.readEbook('${unlock.ebook_id}')">Read</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                </div>
+
+                <div class="section">
+                    <div class="section-title"><span>🔖</span> Saved for Later</div>
+                    ${userSavedEbooks.length === 0 ? `
+                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No saved ebooks. Click the save button on any ebook to add it here!</p>
+                    ` : `
+                        <div class="ebooks-grid">
+                            ${userSavedEbooks.map(saved => `
+                                <div class="ebook-item">
+                                    <img src="${saved.ebook?.cover_url || 'https://via.placeholder.com/50x70'}" class="ebook-cover-small" onerror="this.src='https://via.placeholder.com/50x70'">
+                                    <div class="ebook-info-small">
+                                        <div class="ebook-title-small">${escapeHtml(saved.ebook?.title || 'Unknown')}</div>
+                                        <div class="ebook-date">Saved: ${new Date(saved.saved_at).toLocaleDateString()}</div>
+                                    </div>
+                                    <button class="read-btn" onclick="window.readEbook('${saved.ebook_id}')">Read</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                </div>
+
+                <div class="section">
+                    <div class="section-title"><span>💳</span> Recent Payments</div>
+                    ${paymentHistory.length === 0 ? `
+                        <p style="color: var(--text-secondary); text-align: center; padding: 2rem;">No payment history yet.</p>
+                    ` : `
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <th style="padding: 0.8rem; text-align: left;">Ebook</th>
+                                        <th style="padding: 0.8rem; text-align: left;">Stars</th>
+                                        <th style="padding: 0.8rem; text-align: left;">Date</th>
+                                        <th style="padding: 0.8rem; text-align: left;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${paymentHistory.map(payment => `
+                                        <tr style="border-bottom: 1px solid var(--border-color);">
+                                            <td style="padding: 0.8rem;">${escapeHtml(payment.ebook_title || 'Unknown')}</td>
+                                            <td style="padding: 0.8rem;">⭐ ${payment.stars_amount}</td>
+                                            <td style="padding: 0.8rem;">${new Date(payment.created_at).toLocaleDateString()}</td>
+                                            <td style="padding: 0.8rem; color: var(--success);">✅ Completed</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `}
                 </div>
             `;
         }
 
-        // Show edit form
-        window.showEditForm = () => {
-            document.getElementById('name').value = currentProfile.name || '';
-            document.getElementById('bio').value = currentProfile.bio || '';
-            document.getElementById('country').value = currentProfile.country || '';
-            document.getElementById('age').value = currentProfile.age || 18;
+        window.saveProfileChanges = async () => {
+            const fullName = document.getElementById('fullNameInput')?.value;
+            const telegramUsername = document.getElementById('telegramInput')?.value;
+            const bio = document.getElementById('bioInput')?.value;
 
-            profileView.classList.add('hidden');
-            editForm.classList.remove('hidden');
+            const updates = {
+                name: fullName,
+                full_name: fullName,
+                telegram_username: telegramUsername,
+                bio: bio,
+                updated_at: new Date()
+            };
+
+            await updateProfile(updates);
         };
 
-        // Cancel edit
-        window.cancelEdit = () => {
-            editForm.classList.add('hidden');
-            profileView.classList.remove('hidden');
+        window.readEbook = (ebookId) => {
+            window.open(`ebook-reader.html?id=${ebookId}`, '_blank');
         };
 
-        // Handle file upload
-        avatarUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                fileName.textContent = file.name;
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                fileName.textContent = 'No file chosen';
-                imagePreview.classList.add('hidden');
-            }
-        });
-
-        // Handle form submission - using supabaseClient
-        document.getElementById('profileEditForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById('name').value;
-            const bio = document.getElementById('bio').value;
-            const country = document.getElementById('country').value;
-            const age = parseInt(document.getElementById('age').value);
-            const avatarFile = avatarUpload.files[0];
-
-            try {
-                let profileImageUrl = currentProfile.profile_image_url;
-
-                // Upload new avatar if selected
-                if (avatarFile) {
-                    const fileExt = avatarFile.name.split('.').pop();
-                    const fileName = `${currentUser.id}-${Date.now()}.${fileExt}`;
-                    const filePath = `profile-images/${fileName}`;
-
-                    const { error: uploadError } = await supabaseClient.storage
-                        .from('suprememotive-assets')
-                        .upload(filePath, avatarFile);
-
-                    if (uploadError) throw uploadError;
-
-                    const { data: { publicUrl } } = supabaseClient.storage
-                        .from('suprememotive-assets')
-                        .getPublicUrl(filePath);
-
-                    profileImageUrl = publicUrl;
-                }
-
-                // Update profile
-                const { error } = await supabaseClient
-                    .from('profiles')
-                    .update({
-                        name,
-                        bio,
-                        country,
-                        age,
-                        profile_image_url: profileImageUrl,
-                        updated_at: new Date()
-                    })
-                    .eq('id', currentUser.id);
-
-                if (error) throw error;
-
-                showAlert('Profile updated successfully!');
-                cancelEdit();
-                await loadProfile();
-
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                showAlert('Error updating profile: ' + error.message);
-            }
-        });
-
-        // Initialize
         async function init() {
             initTheme();
-            const authed = await checkAuth();
-            if (authed) {
-                await loadProfile();
-            }
+            await checkAuth();
         }
 
         init();
