@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>SupremeMotive - Ebook Library</title>
     <style>
         * {
@@ -521,9 +521,9 @@
             cursor: pointer;
         }
 
-        .whatsapp-info {
-            background: rgba(37, 211, 102, 0.1);
-            border: 1px solid #25D366;
+        .telegram-payment-info {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--electric-blue);
             border-radius: 10px;
             padding: 1rem;
             margin: 1rem 0;
@@ -532,19 +532,20 @@
             gap: 1rem;
         }
 
-        .whatsapp-icon {
+        .telegram-icon {
             font-size: 2rem;
-            color: #25D366;
+            color: var(--electric-blue);
         }
 
-        .admin-number {
+        .stars-amount {
             background: var(--bg-color);
-            padding: 1rem;
+            padding: 0.8rem;
             border-radius: 8px;
             margin: 1rem 0;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            word-break: break-all;
+            font-size: 1.2rem;
+            text-align: center;
+            color: var(--gold);
+            font-weight: bold;
         }
 
         .modal-actions {
@@ -556,10 +557,10 @@
         .btn-primary {
             flex: 1;
             padding: 0.8rem;
-            background: #25D366;
+            background: linear-gradient(135deg, var(--gold), var(--electric-blue));
             border: none;
             border-radius: 8px;
-            color: white;
+            color: var(--bg-color);
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -723,27 +724,27 @@
         </div>
     </main>
 
-    <!-- Unlock Modal -->
-    <div class="modal" id="unlockModal">
+    <!-- Telegram Stars Payment Modal -->
+    <div class="modal" id="paymentModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>🔓 Unlock Ebook</h3>
+                <h3>⭐ Telegram Stars Payment</h3>
                 <button class="close-btn" id="closeModalBtn">&times;</button>
             </div>
             
             <div id="modalEbookInfo" style="margin-bottom: 1rem;"></div>
 
-            <div class="whatsapp-info">
-                <span class="whatsapp-icon">📱</span>
-                <span>Complete payment via WhatsApp</span>
+            <div class="telegram-payment-info">
+                <span class="telegram-icon">⭐</span>
+                <span>Pay securely with Telegram Stars</span>
             </div>
 
-            <div class="admin-number" id="whatsappMessage"></div>
+            <div class="stars-amount" id="starsAmount"></div>
 
             <div class="modal-actions">
-                <button class="btn-primary" id="sendWhatsAppBtn">
-                    <span>📱</span>
-                    Open WhatsApp
+                <button class="btn-primary" id="payWithStarsBtn">
+                    <span>⭐</span>
+                    Pay with Telegram Stars
                 </button>
                 <button class="btn-secondary" id="cancelModalBtn">
                     Cancel
@@ -761,9 +762,6 @@
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Admin WhatsApp number
-        const ADMIN_WHATSAPP = '2347012315620';
-
         // Admin emails
         const ADMIN_EMAILS = [
             'supremealpha04@gmail.com',
@@ -772,6 +770,9 @@
             'emmanuelamer6@gmail.com'
         ];
 
+        // Telegram Bot Configuration (Replace with your actual bot username)
+        const TELEGRAM_BOT_USERNAME = 'SupremeMotiveBot';
+
         // State
         let currentUser = null;
         let currentCategory = 'all';
@@ -779,6 +780,7 @@
         let ebooks = [];
         let userUnlocks = new Set();
         let selectedEbook = null;
+        let activePaymentCheck = null;
 
         // Sample ebooks (in case database is empty)
         const sampleEbooks = [
@@ -788,8 +790,8 @@
                 description: 'A powerful guide to reclaiming your life and pursuing your purpose with unwavering determination.',
                 cover_url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400',
                 category: 'motivation',
-                price: 0,
-                is_paid: false,
+                price: 4.99,
+                is_paid: true,
                 tag: 'Mm'
             },
             {
@@ -801,6 +803,16 @@
                 price: 9.99,
                 is_paid: true,
                 tag: 'Mm'
+            },
+            {
+                id: '3',
+                title: 'Success Habits',
+                description: 'Daily routines of the worlds most successful people.',
+                cover_url: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400',
+                category: 'success',
+                price: 0,
+                is_paid: false,
+                tag: 'Free'
             }
         ];
 
@@ -819,12 +831,12 @@
         const totalEbooks = document.getElementById('totalEbooks');
         const freeEbooks = document.getElementById('freeEbooks');
         const paidEbooks = document.getElementById('paidEbooks');
-        const unlockModal = document.getElementById('unlockModal');
+        const paymentModal = document.getElementById('paymentModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const cancelModalBtn = document.getElementById('cancelModalBtn');
-        const sendWhatsAppBtn = document.getElementById('sendWhatsAppBtn');
+        const payWithStarsBtn = document.getElementById('payWithStarsBtn');
         const modalEbookInfo = document.getElementById('modalEbookInfo');
-        const whatsappMessage = document.getElementById('whatsappMessage');
+        const starsAmount = document.getElementById('starsAmount');
 
         // ============================================
         // THEME TOGGLE
@@ -885,11 +897,11 @@
         // ============================================
         // SHOW ALERT
         // ============================================
-        function showAlert(message) {
-            alertContainer.innerHTML = `<div class="alert">${message}</div>`;
+        function showAlert(message, isError = false) {
+            alertContainer.innerHTML = `<div class="alert" style="border-color: ${isError ? '#F44336' : 'var(--gold)'}">${message}</div>`;
             setTimeout(() => {
                 alertContainer.innerHTML = '';
-            }, 2000);
+            }, 3000);
         }
 
         // ============================================
@@ -947,6 +959,7 @@
                 if (unlocks) {
                     userUnlocks = new Set(unlocks.map(u => u.ebook_id));
                 }
+                renderEbooks();
             } catch (error) {
                 console.error('Error loading unlocks:', error);
             }
@@ -1024,6 +1037,7 @@
                 const isUnlocked = !ebook.is_paid || userUnlocks.has(ebook.id);
                 const priceDisplay = ebook.is_paid ? `$${ebook.price}` : 'FREE';
                 const priceClass = ebook.is_paid ? '' : 'free';
+                const starsCost = ebook.is_paid ? Math.ceil(ebook.price * 15) : 0;
                 
                 return `
                     <div class="ebook-card">
@@ -1039,7 +1053,7 @@
                             <p class="ebook-description">${ebook.description}</p>
                             
                             <div class="ebook-price ${priceClass}">
-                                ${priceDisplay}
+                                ${priceDisplay} ${ebook.is_paid ? `(${starsCost} ⭐)` : ''}
                             </div>
 
                             <div class="ebook-actions">
@@ -1049,9 +1063,9 @@
                                         Read Now
                                     </button>
                                 ` : `
-                                    <button class="action-btn primary" onclick="showUnlockModal('${ebook.id}')">
-                                        <span>🔓</span>
-                                        Unlock
+                                    <button class="action-btn primary" onclick="initiateStarsPayment('${ebook.id}')">
+                                        <span>⭐</span>
+                                        Unlock with Stars
                                     </button>
                                 `}
                                 <button class="action-btn" onclick="saveEbook('${ebook.id}')">
@@ -1066,9 +1080,9 @@
         }
 
         // ============================================
-        // SHOW UNLOCK MODAL - NOW CREATES DATABASE REQUEST
+        // INITIATE TELEGRAM STARS PAYMENT
         // ============================================
-        window.showUnlockModal = async (ebookId) => {
+        window.initiateStarsPayment = async (ebookId) => {
             if (!currentUser) {
                 if (confirm('Please login to unlock ebooks')) {
                     window.location.href = 'login.html';
@@ -1077,97 +1091,129 @@
             }
 
             const ebook = ebooks.find(e => e.id === ebookId);
-            if (!ebook) return;
+            if (!ebook || !ebook.is_paid) return;
 
             selectedEbook = ebook;
-
-            try {
-                // FIRST: Create unlock request in database
-                const { error } = await supabaseClient
-                    .from('unlocks')
-                    .insert([{
-                        user_id: currentUser.id,
-                        ebook_id: ebookId,
-                        status: 'pending',
-                        created_at: new Date()
-                    }]);
-
-                if (error) {
-                    // Check if it's a duplicate
-                    if (error.code === '23505') { // Unique violation
-                        showAlert('You already have a pending request for this ebook');
-                    } else {
-                        throw error;
-                    }
-                } else {
-                    console.log('✅ Unlock request created in database');
-                }
-
-                // THEN: Show modal with WhatsApp info
-                modalEbookInfo.innerHTML = `
-                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                        <img src="${ebook.cover_url}" alt="${ebook.title}" 
-                             style="width: 60px; height: 80px; object-fit: cover; border-radius: 8px;">
-                        <div>
-                            <h4 style="color: var(--gold);">${ebook.title}</h4>
-                            <p style="color: var(--text-secondary);">$${ebook.price}</p>
-                        </div>
+            const starsCost = Math.ceil(ebook.price * 15);
+            
+            modalEbookInfo.innerHTML = `
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <img src="${ebook.cover_url}" alt="${ebook.title}" 
+                         style="width: 60px; height: 80px; object-fit: cover; border-radius: 8px;">
+                    <div>
+                        <h4 style="color: var(--gold);">${ebook.title}</h4>
+                        <p style="color: var(--text-secondary);">${ebook.price} USD</p>
                     </div>
-                `;
-
-                const message = `*Unlock Request - SupremeMotive*\n\n` +
-                    `*User:* ${currentUser.email}\n` +
-                    `*User ID:* ${currentUser.id}\n` +
-                    `*Ebook:* ${ebook.title}\n` +
-                    `*Ebook ID:* ${ebook.id}\n` +
-                    `*Price:* $${ebook.price}`;
-
-                whatsappMessage.textContent = message;
-                unlockModal.classList.add('show');
-
-            } catch (error) {
-                console.error('Error creating unlock request:', error);
-                showAlert('Error creating request: ' + error.message);
-            }
+                </div>
+            `;
+            
+            starsAmount.innerHTML = `💰 ${starsCost} Telegram Stars`;
+            paymentModal.classList.add('show');
         };
 
         // ============================================
-        // SEND WHATSAPP
+        // PROCESS PAYMENT & AUTO UNLOCK
         // ============================================
-        sendWhatsAppBtn.addEventListener('click', () => {
+        payWithStarsBtn.addEventListener('click', async () => {
             if (!selectedEbook || !currentUser) return;
-
-            const message = encodeURIComponent(
-                `*Unlock Request - SupremeMotive*\n\n` +
-                `*User:* ${currentUser.email}\n` +
-                `*User ID:* ${currentUser.id}\n` +
-                `*Ebook:* ${selectedEbook.title}\n` +
-                `*Ebook ID:* ${selectedEbook.id}\n` +
-                `*Price:* $${selectedEbook.price}`
-            );
-
-            window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${message}`, '_blank');
-            showAlert('WhatsApp opened! Admin will process your request.');
             
+            const starsCost = Math.ceil(selectedEbook.price * 15);
+            const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            
+            // Create payment record in database
+            const { data: paymentRecord, error: insertError } = await supabaseClient
+                .from('stars_payments')
+                .insert([{
+                    id: paymentId,
+                    user_id: currentUser.id,
+                    ebook_id: selectedEbook.id,
+                    stars_amount: starsCost,
+                    amount_usd: selectedEbook.price,
+                    status: 'pending',
+                    created_at: new Date().toISOString()
+                }])
+                .select()
+                .single();
+            
+            if (insertError) {
+                console.error('Payment record error:', insertError);
+                showAlert('Failed to initiate payment. Please try again.', true);
+                return;
+            }
+            
+            // Create Telegram Stars invoice link
+            const invoiceLink = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=payment_${paymentId}`;
+            
+            showAlert('Opening Telegram for payment...');
+            window.open(invoiceLink, '_blank');
+            
+            // Start polling for payment confirmation
+            if (activePaymentCheck) clearInterval(activePaymentCheck);
+            
+            activePaymentCheck = setInterval(async () => {
+                const { data: payment } = await supabaseClient
+                    .from('stars_payments')
+                    .select('status')
+                    .eq('id', paymentId)
+                    .single();
+                
+                if (payment && payment.status === 'completed') {
+                    clearInterval(activePaymentCheck);
+                    activePaymentCheck = null;
+                    
+                    // Auto unlock ebook
+                    const { error: unlockError } = await supabaseClient
+                        .from('unlocks')
+                        .insert([{
+                            user_id: currentUser.id,
+                            ebook_id: selectedEbook.id,
+                            status: 'approved',
+                            payment_method: 'telegram_stars',
+                            payment_id: paymentId,
+                            created_at: new Date().toISOString()
+                        }]);
+                    
+                    if (!unlockError) {
+                        userUnlocks.add(selectedEbook.id);
+                        renderEbooks();
+                        showAlert(`✅ Payment confirmed! "${selectedEbook.title}" has been unlocked automatically!`);
+                        paymentModal.classList.remove('show');
+                    } else if (unlockError.code !== '23505') {
+                        showAlert('Unlock failed: ' + unlockError.message, true);
+                    }
+                } else if (payment && payment.status === 'failed') {
+                    clearInterval(activePaymentCheck);
+                    activePaymentCheck = null;
+                    showAlert('Payment failed or was cancelled.', true);
+                }
+            }, 3000);
+            
+            // Auto timeout after 2 minutes
             setTimeout(() => {
-                unlockModal.classList.remove('show');
-            }, 2000);
+                if (activePaymentCheck) {
+                    clearInterval(activePaymentCheck);
+                    activePaymentCheck = null;
+                    showAlert('Payment verification timeout. Please contact support if you completed payment.', true);
+                }
+            }, 120000);
+            
+            paymentModal.classList.remove('show');
         });
 
         // ============================================
         // CLOSE MODAL
         // ============================================
         closeModalBtn.addEventListener('click', () => {
-            unlockModal.classList.remove('show');
+            paymentModal.classList.remove('show');
         });
 
         cancelModalBtn.addEventListener('click', () => {
-            unlockModal.classList.remove('show');
+            paymentModal.classList.remove('show');
         });
 
         window.addEventListener('click', (e) => {
-            if (e.target === unlockModal) {
-                unlockModal.classList.remove('show');
+            if (e.target === paymentModal) {
+                paymentModal.classList.remove('show');
             }
         });
 
@@ -1217,7 +1263,7 @@
                 }
             } catch (error) {
                 console.error('Error saving ebook:', error);
-                showAlert('Error saving ebook');
+                showAlert('Error saving ebook', true);
             }
         };
 
