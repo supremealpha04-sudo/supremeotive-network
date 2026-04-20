@@ -213,8 +213,8 @@
         }
 
         .profile-avatar {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             background: var(--telegram-card);
             border-radius: 50%;
             display: flex;
@@ -224,6 +224,12 @@
             border: 4px solid var(--telegram-card);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.02);
         }
 
         .profile-avatar img {
@@ -232,21 +238,32 @@
             object-fit: cover;
         }
 
+        .profile-avatar .avatar-placeholder {
+            font-size: 3rem;
+            font-weight: 500;
+        }
+
         .edit-avatar-btn {
             position: absolute;
             bottom: 5px;
             right: 5px;
             background: var(--gold);
             border: none;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
             color: var(--bg-color);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .edit-avatar-btn:hover {
+            transform: scale(1.1);
         }
 
         .profile-info {
@@ -281,6 +298,21 @@
             line-height: 1.5;
             margin: 12px 0;
             padding: 8px 0;
+        }
+
+        .edit-profile-btn {
+            background: rgba(255, 215, 0, 0.15);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            color: var(--gold);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .edit-profile-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
         }
 
         /* Stats Cards - Telegram Style */
@@ -330,55 +362,72 @@
             font-size: 1.2rem;
         }
 
-        /* List Items - Telegram Style */
-        .list-item {
-            background: var(--telegram-card);
-            margin: 0 12px 8px;
-            border-radius: 14px;
+        /* Ebooks Grid */
+        .ebooks-grid-telegram {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
             padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: all 0.2s ease;
+            scrollbar-width: thin;
+        }
+
+        .ebooks-grid-telegram::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .ebook-card-telegram {
+            min-width: 140px;
+            background: var(--bg-color);
+            border-radius: 16px;
+            overflow: hidden;
             border: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
 
-        .list-item:hover {
-            transform: translateX(4px);
-            border-color: var(--gold);
+        .ebook-card-telegram img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
         }
 
-        .list-item-icon {
-            width: 44px;
-            height: 44px;
-            background: rgba(39, 165, 231, 0.15);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
+        .ebook-card-telegram .info {
+            padding: 10px;
         }
 
-        .list-item-content {
-            flex: 1;
-        }
-
-        .list-item-title {
+        .ebook-card-telegram .title {
+            font-size: 0.85rem;
             font-weight: 600;
             margin-bottom: 4px;
         }
 
-        .list-item-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+        .read-btn-sm {
+            background: var(--gold);
+            border: none;
+            padding: 6px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            font-weight: 600;
         }
 
-        .list-item-action {
-            color: var(--gold);
-            font-size: 0.85rem;
+        /* Payment History */
+        .payments-list {
+            padding: 0 12px 20px;
         }
 
-        /* Edit Profile Modal - Telegram Style */
+        .payment-item {
+            background: var(--bg-color);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -466,6 +515,45 @@
             resize: vertical;
         }
 
+        /* Avatar Upload Section */
+        .avatar-upload-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--bg-color);
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid var(--gold);
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-preview .preview-placeholder {
+            font-size: 3rem;
+        }
+
+        .upload-btn {
+            background: var(--gold);
+            color: var(--bg-color);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
         .modal-footer {
             display: flex;
             gap: 12px;
@@ -493,71 +581,6 @@
             border-radius: 14px;
             font-weight: 600;
             cursor: pointer;
-        }
-
-        /* Ebooks Grid inside profile */
-        .ebooks-grid-telegram {
-            display: flex;
-            overflow-x: auto;
-            gap: 12px;
-            padding: 12px 16px;
-            scrollbar-width: thin;
-        }
-
-        .ebooks-grid-telegram::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .ebook-card-telegram {
-            min-width: 140px;
-            background: var(--bg-color);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            flex-shrink: 0;
-        }
-
-        .ebook-card-telegram img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-        }
-
-        .ebook-card-telegram .info {
-            padding: 10px;
-        }
-
-        .ebook-card-telegram .title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .read-btn-sm {
-            background: var(--gold);
-            border: none;
-            padding: 6px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 8px;
-            font-weight: 600;
-        }
-
-        /* Payment History Table */
-        .payments-list {
-            padding: 0 12px 20px;
-        }
-
-        .payment-item {
-            background: var(--bg-color);
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         /* Alert */
@@ -591,7 +614,6 @@
             display: none !important;
         }
 
-        /* Loading */
         .loading {
             text-align: center;
             padding: 3rem;
@@ -648,6 +670,11 @@
             
             .stats-container {
                 flex-wrap: wrap;
+            }
+
+            .profile-avatar {
+                width: 90px;
+                height: 90px;
             }
         }
     </style>
@@ -709,7 +736,7 @@
         </div>
     </main>
 
-    <!-- Edit Profile Modal - Telegram Style -->
+    <!-- Edit Profile Modal -->
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -717,6 +744,13 @@
                 <button class="close-btn" id="closeModalBtn">&times;</button>
             </div>
             <div class="modal-body">
+                <div class="avatar-upload-section">
+                    <div class="avatar-preview" id="avatarPreview">
+                        <div class="preview-placeholder">👤</div>
+                    </div>
+                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                    <button class="upload-btn" id="uploadAvatarBtn">Change Photo</button>
+                </div>
                 <div class="form-field">
                     <label>Full Name</label>
                     <input type="text" id="editName" placeholder="Your name">
@@ -750,6 +784,8 @@
         let userUnlocks = [];
         let userSavedEbooks = [];
         let paymentHistory = [];
+        let selectedAvatarFile = null;
+        let currentAvatarUrl = null;
 
         const profileContent = document.getElementById('profileContent');
         const alertContainer = document.getElementById('alertContainer');
@@ -767,6 +803,9 @@
         const editName = document.getElementById('editName');
         const editTelegram = document.getElementById('editTelegram');
         const editBio = document.getElementById('editBio');
+        const avatarInput = document.getElementById('avatarInput');
+        const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+        const avatarPreview = document.getElementById('avatarPreview');
 
         function initTheme() {
             const savedTheme = localStorage.getItem('theme');
@@ -793,6 +832,46 @@
             alertContainer.innerHTML = `<div class="alert" style="border-left-color: ${isError ? '#F44336' : 'var(--gold)'}">${message}</div>`;
             setTimeout(() => alertContainer.innerHTML = '', 3000);
         }
+
+        async function uploadAvatar(file, userId) {
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `avatar_${userId}_${Date.now()}.${fileExt}`;
+                const filePath = `avatars/${fileName}`;
+
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('suprememotive-assets')
+                    .upload(filePath, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('suprememotive-assets')
+                    .getPublicUrl(filePath);
+
+                return publicUrl;
+            } catch (error) {
+                console.error('Upload error:', error);
+                throw error;
+            }
+        }
+
+        uploadAvatarBtn.addEventListener('click', () => avatarInput.click());
+        avatarInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    showAlert('Image too large. Max 2MB.', true);
+                    return;
+                }
+                selectedAvatarFile = file;
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    avatarPreview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
         async function checkAuth() {
             try {
@@ -852,6 +931,7 @@
                 } else {
                     userProfile = profile;
                 }
+                currentAvatarUrl = userProfile?.avatar_url;
             } catch (error) {
                 console.error('Error loading profile:', error);
                 userProfile = { user_id: currentUser?.id, email: currentUser?.email, name: currentUser?.email?.split('@')[0] };
@@ -885,10 +965,39 @@
             }
         }
 
+        async function saveProfileChanges() {
+            const updates = {
+                name: editName.value,
+                full_name: editName.value,
+                telegram_username: editTelegram.value,
+                bio: editBio.value
+            };
+
+            if (selectedAvatarFile) {
+                try {
+                    const avatarUrl = await uploadAvatar(selectedAvatarFile, currentUser.id);
+                    updates.avatar_url = avatarUrl;
+                } catch (error) {
+                    showAlert('Failed to upload avatar', true);
+                }
+            }
+
+            await updateProfile(updates);
+            closeEditModal();
+            selectedAvatarFile = null;
+        }
+
         function openEditModal() {
             editName.value = userProfile?.name || userProfile?.full_name || '';
             editTelegram.value = userProfile?.telegram_username || '';
             editBio.value = userProfile?.bio || '';
+            
+            if (userProfile?.avatar_url) {
+                avatarPreview.innerHTML = `<img src="${userProfile.avatar_url}" alt="Preview">`;
+            } else {
+                avatarPreview.innerHTML = `<div class="preview-placeholder">👤</div>`;
+            }
+            selectedAvatarFile = null;
             editModal.classList.add('show');
         }
 
@@ -896,16 +1005,7 @@
             editModal.classList.remove('show');
         }
 
-        saveEditBtn.addEventListener('click', async () => {
-            await updateProfile({
-                name: editName.value,
-                full_name: editName.value,
-                telegram_username: editTelegram.value,
-                bio: editBio.value
-            });
-            closeEditModal();
-        });
-
+        saveEditBtn.addEventListener('click', saveProfileChanges);
         closeModalBtn.addEventListener('click', closeEditModal);
         cancelEditBtn.addEventListener('click', closeEditModal);
         window.addEventListener('click', (e) => { if (e.target === editModal) closeEditModal(); });
@@ -923,21 +1023,22 @@
             const totalPurchases = userProfile?.total_purchases || 0;
             const totalUnlocked = userUnlocks.length;
             const totalSaved = userSavedEbooks.length;
+            const avatarUrl = userProfile?.avatar_url;
 
             profileContent.innerHTML = `
                 <div class="profile-cover">
                     <div class="profile-avatar-wrapper">
-                        <div class="profile-avatar">
-                            ${displayName.charAt(0).toUpperCase()}
+                        <div class="profile-avatar" onclick="openEditModal()">
+                            ${avatarUrl ? `<img src="${avatarUrl}" alt="Avatar">` : `<div class="avatar-placeholder">${displayName.charAt(0).toUpperCase()}</div>`}
                         </div>
-                        <button class="edit-avatar-btn" onclick="openEditModal()">✏️</button>
+                        <button class="edit-avatar-btn" onclick="openEditModal()">📷</button>
                     </div>
                 </div>
                 
                 <div class="profile-info">
                     <div class="profile-name-section">
                         <h1 class="profile-name">${escapeHtml(displayName)}</h1>
-                        <button class="edit-avatar-btn" style="position: relative; background: var(--gold);" onclick="openEditModal()">Edit</button>
+                        <button class="edit-profile-btn" onclick="openEditModal()">Edit Profile</button>
                     </div>
                     <div class="profile-username">@${escapeHtml(username)}</div>
                     <div class="profile-bio">${escapeHtml(bio)}</div>
