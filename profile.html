@@ -25,7 +25,6 @@
             --telegram-blue: #27A5E7;
             --telegram-bg: #17212B;
             --telegram-card: #1F2A3A;
-            --online-green: #4CAF50;
         }
 
         body {
@@ -199,10 +198,10 @@
             padding: 0;
         }
 
-        /* Telegram Style Profile Header */
+        /* Profile Header */
         .profile-cover {
             background: linear-gradient(135deg, var(--gold), var(--electric-blue));
-            height: 180px;
+            height: 160px;
             position: relative;
         }
 
@@ -298,6 +297,9 @@
             line-height: 1.5;
             margin: 12px 0;
             padding: 8px 0;
+            background: rgba(255, 215, 0, 0.05);
+            border-radius: 12px;
+            padding: 12px;
         }
 
         .edit-profile-btn {
@@ -315,7 +317,7 @@
             background: rgba(255, 215, 0, 0.3);
         }
 
-        /* Stats Cards - Telegram Style */
+        /* Stats Cards */
         .stats-container {
             display: flex;
             gap: 16px;
@@ -356,10 +358,6 @@
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        .section-header i {
-            font-size: 1.2rem;
         }
 
         /* Ebooks Grid */
@@ -427,7 +425,7 @@
             align-items: center;
         }
 
-        /* Modal Styles */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -639,7 +637,6 @@
             color: var(--text-secondary);
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .menu-toggle {
                 display: flex;
@@ -915,12 +912,14 @@
         async function loadProfile() {
             try {
                 let { data: profile, error } = await supabaseClient.from('profiles').select('*').eq('user_id', currentUser.id).maybeSingle();
+                
                 if (!profile) {
                     const newProfileData = {
                         user_id: currentUser.id,
                         email: currentUser.email,
                         name: currentUser.email.split('@')[0],
                         full_name: currentUser.email.split('@')[0],
+                        bio: 'No bio yet. Tap edit to add one!',
                         total_purchases: 0,
                         total_spent_stars: 0,
                         created_at: new Date(),
@@ -930,11 +929,15 @@
                     userProfile = newProfile || newProfileData;
                 } else {
                     userProfile = profile;
+                    if (!userProfile.bio) {
+                        await supabaseClient.from('profiles').update({ bio: 'No bio yet. Tap edit to add one!' }).eq('user_id', currentUser.id);
+                        userProfile.bio = 'No bio yet. Tap edit to add one!';
+                    }
                 }
                 currentAvatarUrl = userProfile?.avatar_url;
             } catch (error) {
                 console.error('Error loading profile:', error);
-                userProfile = { user_id: currentUser?.id, email: currentUser?.email, name: currentUser?.email?.split('@')[0] };
+                userProfile = { user_id: currentUser?.id, email: currentUser?.email, name: currentUser?.email?.split('@')[0], bio: 'No bio yet' };
             }
         }
 
@@ -970,7 +973,7 @@
                 name: editName.value,
                 full_name: editName.value,
                 telegram_username: editTelegram.value,
-                bio: editBio.value
+                bio: editBio.value || 'No bio yet. Tap edit to add one!'
             };
 
             if (selectedAvatarFile) {
